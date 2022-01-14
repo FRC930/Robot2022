@@ -30,8 +30,8 @@ public class DriveCommand extends CommandBase {
         driveSubsystem = dSubsystem;
         driverController = dController;
 
-        driveStick = () -> -deadbandCube(driverController.getY(GenericHID.Hand.kLeft)) * DriveSubsystem.kMaxSpeed;
-        rotationStick = () -> -deadbandCube(driverController.getX(GenericHID.Hand.kRight))
+        driveStick = () -> -deadbandCube(driverController.getLeftY()) * DriveSubsystem.kMaxSpeed;
+        rotationStick = () -> -deadbandCube(driverController.getRightX())
                 * DriveSubsystem.kMaxAngularSpeed;
 
         addRequirements(driveSubsystem);
