@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -22,7 +23,7 @@ public class ShifterSubsystem extends SubsystemBase {
      * @param solenoidID the ID of the solenoid
      */
     public ShifterSubsystem(int solenoidID) {
-        shifterSolenoid = new Solenoid(solenoidID);
+        shifterSolenoid = new Solenoid(PneumaticsModuleType.REVPH, solenoidID);
     }
 
     /**
