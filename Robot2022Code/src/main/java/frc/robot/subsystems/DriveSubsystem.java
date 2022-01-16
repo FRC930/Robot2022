@@ -15,7 +15,7 @@ import edu.wpi.first.math.MathUtil;
 
 public class DriveSubsystem extends SubsystemBase {
     public static final double kMaxSpeed = 1; // meters per second
-    public static final double kMaxAngularSpeed = 2 * Math.PI; // one rotation per second
+    public static final double kMaxAngularSpeed = Math.PI; // 1/2 rotation per second
 
     private static final double highGearRatio = 6.3;
     private static final double lowGearRatio = 12.9;

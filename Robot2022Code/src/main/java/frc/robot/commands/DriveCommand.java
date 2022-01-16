@@ -2,7 +2,6 @@ package frc.robot.commands;
 
 import java.util.function.DoubleSupplier;
 
-import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.DriveSubsystem;
@@ -10,7 +9,9 @@ import frc.robot.subsystems.DriveSubsystem;
 /**
  * <h3>DriveCommand</h3>
  * 
- * <p>Drives the robot with passed joysticks</p>
+ * <p>
+ * Drives the robot with passed joysticks
+ * </p>
  */
 public class DriveCommand extends CommandBase {
     private DriveSubsystem driveSubsystem;
@@ -22,7 +23,8 @@ public class DriveCommand extends CommandBase {
     private DoubleSupplier rotationStick;
 
     /**
-     * Initializes 
+     * Initializes
+     * 
      * @param dSubsystem
      * @param dController
      */
@@ -31,8 +33,7 @@ public class DriveCommand extends CommandBase {
         driverController = dController;
 
         driveStick = () -> -deadbandCube(driverController.getLeftY()) * DriveSubsystem.kMaxSpeed;
-        rotationStick = () -> -deadbandCube(driverController.getRightX())
-                * DriveSubsystem.kMaxAngularSpeed;
+        rotationStick = () -> -deadbandCube(driverController.getRightX()) * DriveSubsystem.kMaxAngularSpeed;
 
         addRequirements(driveSubsystem);
     }
