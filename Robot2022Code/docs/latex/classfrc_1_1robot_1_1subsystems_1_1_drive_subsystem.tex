@@ -1,0 +1,94 @@
+\hypertarget{classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem}{}\doxysection{frc.\+robot.\+subsystems.\+Drive\+Subsystem Class Reference}
+\label{classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem}\index{frc.robot.subsystems.DriveSubsystem@{frc.robot.subsystems.DriveSubsystem}}
+Inheritance diagram for frc.\+robot.\+subsystems.\+Drive\+Subsystem\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem}
+\end{center}
+\end{figure}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem_a0ff9f898f8fcd4153cf6bef25ea0aa8d}{Drive\+Subsystem}} ()
+\item 
+void \mbox{\hyperlink{classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem_a18ee6a49a45138ef34f0770b25b420ff}{set\+Speeds}} (Differential\+Drive\+Wheel\+Speeds speeds)
+\item 
+void \mbox{\hyperlink{classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem_a3756a0deffc832e0d7fbd0d2db877afa}{set\+Piston\+State}} (boolean state)
+\item 
+void \mbox{\hyperlink{classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem_a7a39523fdd20062a3857f24dd3d7a410}{drive}} (double x\+Speed, double rot)
+\item 
+void \mbox{\hyperlink{classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem_af0701555ab90dcc74d50664eba1b6ee6}{update\+Odometry}} ()
+\end{DoxyCompactItemize}
+\doxysubsection*{Static Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem_a282102c3fda8c388a89e1da7539e8f96}\label{classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem_a282102c3fda8c388a89e1da7539e8f96}} 
+static final double {\bfseries k\+Max\+Speed} = 1
+\item 
+\mbox{\Hypertarget{classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem_adc145e679a0b54f3b6a079d60fa9d0ef}\label{classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem_adc145e679a0b54f3b6a079d60fa9d0ef}} 
+static final double {\bfseries k\+Max\+Angular\+Speed} = Math.\+PI
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem_a0ff9f898f8fcd4153cf6bef25ea0aa8d}\label{classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem_a0ff9f898f8fcd4153cf6bef25ea0aa8d}} 
+\index{frc.robot.subsystems.DriveSubsystem@{frc.robot.subsystems.DriveSubsystem}!DriveSubsystem@{DriveSubsystem}}
+\index{DriveSubsystem@{DriveSubsystem}!frc.robot.subsystems.DriveSubsystem@{frc.robot.subsystems.DriveSubsystem}}
+\doxysubsubsection{\texorpdfstring{DriveSubsystem()}{DriveSubsystem()}}
+{\footnotesize\ttfamily frc.\+robot.\+subsystems.\+Drive\+Subsystem.\+Drive\+Subsystem (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+Constructs a differential drive object. Sets the encoder distance per pulse and resets the gyro. 
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem_a7a39523fdd20062a3857f24dd3d7a410}\label{classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem_a7a39523fdd20062a3857f24dd3d7a410}} 
+\index{frc.robot.subsystems.DriveSubsystem@{frc.robot.subsystems.DriveSubsystem}!drive@{drive}}
+\index{drive@{drive}!frc.robot.subsystems.DriveSubsystem@{frc.robot.subsystems.DriveSubsystem}}
+\doxysubsubsection{\texorpdfstring{drive()}{drive()}}
+{\footnotesize\ttfamily void frc.\+robot.\+subsystems.\+Drive\+Subsystem.\+drive (\begin{DoxyParamCaption}\item[{double}]{x\+Speed,  }\item[{double}]{rot }\end{DoxyParamCaption})}
+
+Drives the robot with the given linear velocity and angular velocity.
+
+
+\begin{DoxyParams}{Parameters}
+{\em x\+Speed} & Linear velocity in m/s. \\
+\hline
+{\em rot} & Angular velocity in rad/s. \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem_a3756a0deffc832e0d7fbd0d2db877afa}\label{classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem_a3756a0deffc832e0d7fbd0d2db877afa}} 
+\index{frc.robot.subsystems.DriveSubsystem@{frc.robot.subsystems.DriveSubsystem}!setPistonState@{setPistonState}}
+\index{setPistonState@{setPistonState}!frc.robot.subsystems.DriveSubsystem@{frc.robot.subsystems.DriveSubsystem}}
+\doxysubsubsection{\texorpdfstring{setPistonState()}{setPistonState()}}
+{\footnotesize\ttfamily void frc.\+robot.\+subsystems.\+Drive\+Subsystem.\+set\+Piston\+State (\begin{DoxyParamCaption}\item[{boolean}]{state }\end{DoxyParamCaption})}
+
+Set the shifting piston state
+
+
+\begin{DoxyParams}{Parameters}
+{\em state} & the state to set \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem_a18ee6a49a45138ef34f0770b25b420ff}\label{classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem_a18ee6a49a45138ef34f0770b25b420ff}} 
+\index{frc.robot.subsystems.DriveSubsystem@{frc.robot.subsystems.DriveSubsystem}!setSpeeds@{setSpeeds}}
+\index{setSpeeds@{setSpeeds}!frc.robot.subsystems.DriveSubsystem@{frc.robot.subsystems.DriveSubsystem}}
+\doxysubsubsection{\texorpdfstring{setSpeeds()}{setSpeeds()}}
+{\footnotesize\ttfamily void frc.\+robot.\+subsystems.\+Drive\+Subsystem.\+set\+Speeds (\begin{DoxyParamCaption}\item[{Differential\+Drive\+Wheel\+Speeds}]{speeds }\end{DoxyParamCaption})}
+
+Sets the desired wheel speeds.
+
+
+\begin{DoxyParams}{Parameters}
+{\em speeds} & The desired wheel speeds. \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem_af0701555ab90dcc74d50664eba1b6ee6}\label{classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem_af0701555ab90dcc74d50664eba1b6ee6}} 
+\index{frc.robot.subsystems.DriveSubsystem@{frc.robot.subsystems.DriveSubsystem}!updateOdometry@{updateOdometry}}
+\index{updateOdometry@{updateOdometry}!frc.robot.subsystems.DriveSubsystem@{frc.robot.subsystems.DriveSubsystem}}
+\doxysubsubsection{\texorpdfstring{updateOdometry()}{updateOdometry()}}
+{\footnotesize\ttfamily void frc.\+robot.\+subsystems.\+Drive\+Subsystem.\+update\+Odometry (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+Updates the field-\/relative position. 
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+src/main/java/frc/robot/subsystems/Drive\+Subsystem.\+java\end{DoxyCompactItemize}
