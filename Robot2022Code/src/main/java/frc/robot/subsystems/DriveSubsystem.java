@@ -48,7 +48,7 @@ public class DriveSubsystem extends SubsystemBase {
     private final DifferentialDriveOdometry m_odometry;
 
     // Gains are for example purposes only - must be determined for your own robot!
-    private final SimpleMotorFeedforward m_feedforward = new SimpleMotorFeedforward(1, 3);
+    private final SimpleMotorFeedforward m_feedforward = new SimpleMotorFeedforward(0.66764, 0.10838, 0.0056832);
 
     private boolean shifterState;
 
@@ -75,21 +75,28 @@ public class DriveSubsystem extends SubsystemBase {
      * @param speeds The desired wheel speeds.
      */
     public void setSpeeds(DifferentialDriveWheelSpeeds speeds) {
-        // final double leftFeedforward =
-        // m_feedforward.calculate(speeds.leftMetersPerSecond);
-        // final double rightFeedforward =
-        // m_feedforward.calculate(speeds.rightMetersPerSecond);
+        final double leftFeedforward = m_feedforward.calculate(speeds.leftMetersPerSecond);
+        final double rightFeedforward = m_feedforward.calculate(speeds.rightMetersPerSecond);
 
-        double leftOutput = speeds.leftMetersPerSecond * kMaxVolts / DriveSubsystem.kMaxSpeed; // m_leftPIDController.calculate(getLeftEncoder(),
+        double leftOutput = speeds.leftMetersPerSecond * kMaxVolts /
+                DriveSubsystem.kMaxSpeed;
+        // double leftPIDOutput = m_leftPIDController.calculate(getLeftEncoder(),
         // speeds.leftMetersPerSecond);
-        double rightOutput = speeds.rightMetersPerSecond * kMaxVolts / DriveSubsystem.kMaxSpeed; // m_rightPIDController.calculate(getRightEncoder(),
+        // leftPIDOutput *= kMaxVolts / DriveSubsystem.kMaxSpeed;
+
+        double rightOutput = speeds.rightMetersPerSecond * kMaxVolts /
+                DriveSubsystem.kMaxSpeed;
+        // double rightPIDOutput = m_rightPIDController.calculate(getRightEncoder(),
         // speeds.rightMetersPerSecond);
+        // rightPIDOutput *= kMaxVolts / DriveSubsystem.kMaxSpeed;
+
+        leftOutput += leftFeedforward;
+        rightOutput += rightFeedforward;
+
         leftOutput = MathUtil.clamp(leftOutput, -11.0, 11.0);
         rightOutput = MathUtil.clamp(rightOutput, -11.0, 11.0);
-        SmartDashboard.putNumber("Left Output", leftOutput);
-        SmartDashboard.putNumber("Right Output", rightOutput);
-        m_leftLeader.setVoltage(leftOutput /* + leftFeedforward */);
-        m_rightLeader.setVoltage(rightOutput /* + rightFeedforward */);
+        m_leftLeader.setVoltage(leftOutput);
+        m_rightLeader.setVoltage(rightOutput);
     }
 
     /**

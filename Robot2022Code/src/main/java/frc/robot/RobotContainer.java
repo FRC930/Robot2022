@@ -7,6 +7,7 @@ import frc.robot.commands.DriveCommand;
 import frc.robot.commands.ToggleShifterCommand;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.ShifterSubsystem;
+import frc.robot.triggers.AxisTrigger;
 
 public class RobotContainer {
     // The driver controller
@@ -40,8 +41,9 @@ public class RobotContainer {
      * </p>
      */
     public void beginTeleopRunCommands() {
-        JoystickButton toggleShifterButton = new JoystickButton(controller, 1);
-        toggleShifterButton.whenPressed(toggleShifterCommand);
+        AxisTrigger toggleShifterTrigger = new AxisTrigger(controller, 3);
+        toggleShifterTrigger.whenActive(toggleShifterCommand);
+        toggleShifterTrigger.whenInactive(toggleShifterCommand);
 
         CommandScheduler scheduler = CommandScheduler.getInstance();
 

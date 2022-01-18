@@ -23,10 +23,10 @@ public class DriveCommand extends CommandBase {
     private DoubleSupplier rotationStick;
 
     /**
-     * Initializes
+     * Initializes a new {@link frc.robot.commands.DriveCommand DriveCommand} with the passed variables
      * 
-     * @param dSubsystem
-     * @param dController
+     * @param dSubsystem the drive subsystem
+     * @param dController the driver controller
      */
     public DriveCommand(DriveSubsystem dSubsystem, XboxController dController) {
         driveSubsystem = dSubsystem;
