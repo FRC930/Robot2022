@@ -1,10 +1,13 @@
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
+import com.ctre.phoenix.sensors.PigeonIMU;
+import com.ctre.phoenix.sensors.PigeonIMU.CalibrationMode;
 
-import edu.wpi.first.wpilibj.AnalogGyro;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
@@ -37,8 +40,7 @@ public class DriveSubsystem extends SubsystemBase {
      * m_rightFollower);
      */
 
-    // TODO: Update to pigeon eventually
-    private final AnalogGyro m_gyro = new AnalogGyro(0);
+    private final PigeonIMU m_gyro = new PigeonIMU(new TalonSRX(4));
 
     private final PIDController m_leftPIDController = new PIDController(1, 0, 0);
     private final PIDController m_rightPIDController = new PIDController(1, 0, 0);
@@ -48,7 +50,9 @@ public class DriveSubsystem extends SubsystemBase {
     private final DifferentialDriveOdometry m_odometry;
 
     // Gains are for example purposes only - must be determined for your own robot!
-    private final SimpleMotorFeedforward m_feedforward = new SimpleMotorFeedforward(0.66764, 0.10838, 0.0056832);
+    private final SimpleMotorFeedforward m_feedforward = new SimpleMotorFeedforward(0.61961, 2.01492, 0.13214);// (0.66764,
+                                                                                                               // 0.10838,
+                                                                                                               // 0.0056832);
 
     private boolean shifterState;
 
@@ -57,16 +61,19 @@ public class DriveSubsystem extends SubsystemBase {
      * and resets the gyro.
      */
     public DriveSubsystem() {
-        m_gyro.reset();
-
         shifterState = false;
+
+        m_gyro.enterCalibrationMode(CalibrationMode.BootTareGyroAccel);
+
+        SmartDashboard.putNumber("Left kP", 1);
+        SmartDashboard.putNumber("Right kP", 1);
 
         m_leftLeader.getSensorCollection().setIntegratedSensorPosition(0.0, 100);
         m_rightLeader.getSensorCollection().setIntegratedSensorPosition(0.0, 100);
 
         m_leftLeader.setInverted(true);
 
-        m_odometry = new DifferentialDriveOdometry(m_gyro.getRotation2d());
+        m_odometry = new DifferentialDriveOdometry(new Rotation2d(Math.toRadians(m_gyro.getFusedHeading())));
     }
 
     /**
@@ -75,23 +82,27 @@ public class DriveSubsystem extends SubsystemBase {
      * @param speeds The desired wheel speeds.
      */
     public void setSpeeds(DifferentialDriveWheelSpeeds speeds) {
+        SmartDashboard.putNumber("Left wheel speed", speeds.leftMetersPerSecond);
+        SmartDashboard.putNumber("Right wheel speed", speeds.rightMetersPerSecond);
+
         final double leftFeedforward = m_feedforward.calculate(speeds.leftMetersPerSecond);
         final double rightFeedforward = m_feedforward.calculate(speeds.rightMetersPerSecond);
 
-        double leftOutput = speeds.leftMetersPerSecond * kMaxVolts /
+        double leftPIDOutput = m_leftPIDController.calculate(getLeftEncoder(),
+                speeds.leftMetersPerSecond);
+        double leftOutput = leftPIDOutput * kMaxVolts /
                 DriveSubsystem.kMaxSpeed;
-        // double leftPIDOutput = m_leftPIDController.calculate(getLeftEncoder(),
-        // speeds.leftMetersPerSecond);
-        // leftPIDOutput *= kMaxVolts / DriveSubsystem.kMaxSpeed;
 
-        double rightOutput = speeds.rightMetersPerSecond * kMaxVolts /
+        double rightPIDOutput = m_rightPIDController.calculate(getRightEncoder(),
+                speeds.rightMetersPerSecond);
+        double rightOutput = rightPIDOutput * kMaxVolts /
                 DriveSubsystem.kMaxSpeed;
-        // double rightPIDOutput = m_rightPIDController.calculate(getRightEncoder(),
-        // speeds.rightMetersPerSecond);
-        // rightPIDOutput *= kMaxVolts / DriveSubsystem.kMaxSpeed;
 
         leftOutput += leftFeedforward;
         rightOutput += rightFeedforward;
+
+        SmartDashboard.putNumber("Left feedforward", leftFeedforward);
+        SmartDashboard.putNumber("Right feedforward", rightFeedforward);
 
         leftOutput = MathUtil.clamp(leftOutput, -11.0, 11.0);
         rightOutput = MathUtil.clamp(rightOutput, -11.0, 11.0);
@@ -105,8 +116,7 @@ public class DriveSubsystem extends SubsystemBase {
      * @return the encoder speed
      */
     private double getLeftEncoder() {
-        return m_leftLeader.getSelectedSensorPosition() * 10
-                * (Math.PI * kWheelRadius * (shifterState ? lowGearRatio : highGearRatio) / kEncoderResolution);
+        return m_leftLeader.getSensorCollection().getIntegratedSensorVelocity() / 10 / kEncoderResolution * 0.3192;
     }
 
     /**
@@ -115,8 +125,7 @@ public class DriveSubsystem extends SubsystemBase {
      * @return the encoder speed
      */
     private double getRightEncoder() {
-        return m_rightLeader.getSelectedSensorPosition() * 10
-                * (Math.PI * kWheelRadius * (shifterState ? lowGearRatio : highGearRatio) / kEncoderResolution);
+        return m_rightLeader.getSensorCollection().getIntegratedSensorVelocity() / 10 / kEncoderResolution * 0.3192;
     }
 
     /**
@@ -146,11 +155,20 @@ public class DriveSubsystem extends SubsystemBase {
         // TODO: Attach a pigeon IMU and figure out how this whole distance thing works
         // we'll need a switch case to differentiate between high and low gear
 
-        m_odometry.update(m_gyro.getRotation2d(),
+        m_odometry.update(new Rotation2d(Math.toRadians(m_gyro.getFusedHeading())),
                 m_leftLeader.getSelectedSensorPosition() * ((1.0 / 2048.0) * kWheelRadius * Math.PI) / highGearRatio,
                 m_rightLeader.getSelectedSensorPosition() * ((1.0 / 2048.0) * kWheelRadius * Math.PI) / highGearRatio);
-        m_odometry.update(m_gyro.getRotation2d(),
+        m_odometry.update(new Rotation2d(Math.toRadians(m_gyro.getFusedHeading())),
                 m_leftLeader.getSelectedSensorPosition() * ((1.0 / 2048.0) * kWheelRadius * Math.PI) / highGearRatio,
                 m_rightLeader.getSelectedSensorPosition() * ((1.0 / 2048.0) * kWheelRadius * Math.PI) / highGearRatio);
+    }
+
+    @Override
+    public void periodic() {
+        SmartDashboard.putNumber("Pigeon fused heading", m_gyro.getFusedHeading() % 360);
+        SmartDashboard.putNumber("Left encoder value", getLeftEncoder());
+        SmartDashboard.putNumber("Right encoder value", getRightEncoder());
+        m_leftPIDController.setP(SmartDashboard.getNumber("Left kP", 1));
+        m_rightPIDController.setP(SmartDashboard.getNumber("Right kP", 1));
     }
 }
