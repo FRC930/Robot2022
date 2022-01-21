@@ -27,16 +27,19 @@ public class ToggleShifterCommand extends CommandBase {
     public ToggleShifterCommand(ShifterSubsystem sSubsystem, DriveSubsystem dSubsystem) {
         shifterSubsystem = sSubsystem;
         driveSubsystem = dSubsystem;
+
+        shifterSubsystem.setShifterState(false);
     }
 
     @Override
     public void initialize() {
-        shifterSubsystem.setShifterState(!shifterSubsystem.getShifterState());
+        shifterSubsystem.setShifterState(true);
         driveSubsystem.setPistonState(shifterSubsystem.getShifterState());
     }
 
     @Override
-    public boolean isFinished() {
-        return true;
+    public void end(boolean interrupted) {
+        shifterSubsystem.setShifterState(false);
+        driveSubsystem.setPistonState(shifterSubsystem.getShifterState());
     }
 }
