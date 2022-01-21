@@ -12,8 +12,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class ShifterSubsystem extends SubsystemBase {
     private Solenoid shifterSolenoid;
 
-    public static final int shifterSolenoidID = 0;
-
     /**
      * <h3>ShifterSubsystem</h3>
      * 
