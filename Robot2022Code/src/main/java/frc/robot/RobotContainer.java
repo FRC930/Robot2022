@@ -10,6 +10,7 @@ import frc.robot.commands.endgamecommands.EndgameArmCommand;
 import frc.robot.subsystems.CatapultSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.EndgameMotorSubsystem;
+import frc.robot.subsystems.EndgameSensorSubsystem;
 import frc.robot.subsystems.ShifterSubsystem;
 import frc.robot.triggers.AxisTrigger;
 
@@ -41,6 +42,11 @@ public class RobotContainer {
     private final EndgameMotorSubsystem endgameMotorSubsystem;
     private final EndgameArmCommand endgameArmCommand;
 
+    private final EndgameSensorSubsystem left2;
+    private final EndgameSensorSubsystem right2;
+    private final EndgameSensorSubsystem left4;
+    private final EndgameSensorSubsystem right4;
+
     private final CatapultSubsystem catapultSubsystem;
     private final CatapultCommand catapultCommand;
 
@@ -55,6 +61,11 @@ public class RobotContainer {
     public RobotContainer() {
         endgameMotorSubsystem = new EndgameMotorSubsystem(3, 4);
         endgameArmCommand = new EndgameArmCommand(endgameMotorSubsystem);
+
+        left2 = new EndgameSensorSubsystem(1);
+        right2 = new EndgameSensorSubsystem(2);
+        left4 = new EndgameSensorSubsystem(3);
+        right4 = new EndgameSensorSubsystem(4);
 
         driveSubsystem = new DriveSubsystem(1, 2);
         driveCommand = new DriveCommand(driveSubsystem, endgameMotorSubsystem, controller);
