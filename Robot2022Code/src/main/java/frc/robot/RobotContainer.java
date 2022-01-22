@@ -7,12 +7,14 @@ import frc.robot.commands.CatapultCommand;
 import frc.robot.commands.DriveCommand;
 import frc.robot.commands.ToggleShifterCommand;
 import frc.robot.commands.endgamecommands.EndgameArmCommand;
+import frc.robot.commands.endgamecommands.EndgameArmRevCommand;
 import frc.robot.commands.intakecommands.intakemotorcommands.ClockwiseIntakeMotorsCommand;
 import frc.robot.commands.intakecommands.intakemotorcommands.CounterclockwiseIntakeMotorsCommand;
 import frc.robot.commands.intakecommands.intakemotorcommands.StopIntakeMotorsCommand;
 import frc.robot.subsystems.CatapultSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.EndgameMotorSubsystem;
+import frc.robot.subsystems.EndgameSensorSubsystem;
 import frc.robot.subsystems.IntakeMotorSubsystem;
 import frc.robot.subsystems.ShifterSubsystem;
 import frc.robot.triggers.AxisTrigger;
@@ -44,6 +46,12 @@ public class RobotContainer {
 
     private final EndgameMotorSubsystem endgameMotorSubsystem;
     private final EndgameArmCommand endgameArmCommand;
+    private final EndgameArmRevCommand endgameArmRevCommand;
+
+    private final EndgameSensorSubsystem left2;
+    private final EndgameSensorSubsystem right2;
+    private final EndgameSensorSubsystem left4;
+    private final EndgameSensorSubsystem right4;
 
     private final CatapultSubsystem catapultSubsystem;
     private final CatapultCommand catapultCommand;
@@ -65,6 +73,12 @@ public class RobotContainer {
     public RobotContainer() {
         endgameMotorSubsystem = new EndgameMotorSubsystem(3, 4);
         endgameArmCommand = new EndgameArmCommand(endgameMotorSubsystem);
+        endgameArmRevCommand = new EndgameArmRevCommand(endgameMotorSubsystem);
+
+        left2 = new EndgameSensorSubsystem(1);
+        right2 = new EndgameSensorSubsystem(2);
+        left4 = new EndgameSensorSubsystem(3);
+        right4 = new EndgameSensorSubsystem(4);
 
         driveSubsystem = new DriveSubsystem(1, 2);
         driveCommand = new DriveCommand(driveSubsystem, endgameMotorSubsystem, controller);
@@ -109,6 +123,12 @@ public class RobotContainer {
 
         AxisTrigger stopReverseIntake = new AxisTrigger(controller, XB_AXIS_LT);
         stopReverseIntake.whenInactive(stopIntakeMotorsCommand);
+
+        JoystickButton rotateArmButton = new JoystickButton(controller, XB_Y);
+        rotateArmButton.whileActiveOnce(endgameArmCommand);
+
+        JoystickButton rotateArmRevButton = new JoystickButton(controller, XB_A);
+        rotateArmRevButton.whileActiveOnce(endgameArmRevCommand);
 
         CommandScheduler scheduler = CommandScheduler.getInstance();
 
