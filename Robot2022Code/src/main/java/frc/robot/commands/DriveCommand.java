@@ -49,6 +49,8 @@ public class DriveCommand extends CommandBase {
 
         m_odometry = new DifferentialDriveOdometry(new Rotation2d(Math.toRadians(m_gyro.getFusedHeading())));
 
+        // We are not adding endgame motor subsystem as a requirement because we are not
+        // using the subsystem in the command at all
         addRequirements(driveSubsystem);
     }
 
