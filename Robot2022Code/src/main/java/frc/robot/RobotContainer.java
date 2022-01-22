@@ -7,6 +7,7 @@ import frc.robot.commands.CatapultCommand;
 import frc.robot.commands.DriveCommand;
 import frc.robot.commands.ToggleShifterCommand;
 import frc.robot.commands.endgamecommands.EndgameArmCommand;
+import frc.robot.commands.endgamecommands.EndgameArmRevCommand;
 import frc.robot.commands.intakecommands.intakemotorcommands.ClockwiseIntakeMotorsCommand;
 import frc.robot.commands.intakecommands.intakemotorcommands.CounterclockwiseIntakeMotorsCommand;
 import frc.robot.commands.intakecommands.intakemotorcommands.StopIntakeMotorsCommand;
@@ -45,6 +46,7 @@ public class RobotContainer {
 
     private final EndgameMotorSubsystem endgameMotorSubsystem;
     private final EndgameArmCommand endgameArmCommand;
+    private final EndgameArmRevCommand endgameArmRevCommand;
 
     private final EndgameSensorSubsystem left2;
     private final EndgameSensorSubsystem right2;
@@ -71,6 +73,7 @@ public class RobotContainer {
     public RobotContainer() {
         endgameMotorSubsystem = new EndgameMotorSubsystem(3, 4);
         endgameArmCommand = new EndgameArmCommand(endgameMotorSubsystem);
+        endgameArmRevCommand = new EndgameArmRevCommand(endgameMotorSubsystem);
 
         left2 = new EndgameSensorSubsystem(1);
         right2 = new EndgameSensorSubsystem(2);
@@ -120,6 +123,12 @@ public class RobotContainer {
 
         JoystickButton stopReverseIntake = new JoystickButton(controller, XB_AXIS_LT);
         stopReverseIntake.whenReleased(stopIntakeMotorsCommand);
+
+        JoystickButton rotateArmButton = new JoystickButton(controller, XB_Y);
+        rotateArmButton.whileActiveOnce(endgameArmCommand);
+
+        JoystickButton rotateArmRevButton = new JoystickButton(controller, XB_A);
+        rotateArmRevButton.whileActiveOnce(endgameArmRevCommand);
 
         CommandScheduler scheduler = CommandScheduler.getInstance();
 
