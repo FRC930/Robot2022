@@ -48,10 +48,6 @@ public class IntakeMotorSubsystem extends SubsystemBase {
         intakeMotorController.set(ControlMode.PercentOutput, -speed);
     }
 
-    public WPI_TalonSRX getIntakeMotor() {
-        return intakeMotorController;
-    }
-
     /**
      * <h3>getMotorSpeed</h3>
      * This method returns the intake motor speed
