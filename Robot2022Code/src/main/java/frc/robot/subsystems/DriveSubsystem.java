@@ -1,8 +1,10 @@
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.sensors.PigeonIMU;
+import com.ctre.phoenix.sensors.SensorVelocityMeasPeriod;
 import com.ctre.phoenix.sensors.PigeonIMU.CalibrationMode;
 
 import edu.wpi.first.math.controller.PIDController;
@@ -12,6 +14,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
+import edu.wpi.first.wpilibj.drive.DifferentialDrive.WheelSpeeds;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.math.MathUtil;
@@ -19,7 +22,7 @@ import edu.wpi.first.math.MathUtil;
 import frc.robot.subsystems.EndgameMotorSubsystem;
 
 public class DriveSubsystem extends SubsystemBase {
-    public static final double kMaxSpeed = 1; // meters per second
+    public static final double kMaxSpeed = 3; // meters per second
     public static final double kMaxAngularSpeed = Math.PI; // 1/2 rotation per second
 
     private static final double highGearRatio = 6.3;
@@ -44,17 +47,16 @@ public class DriveSubsystem extends SubsystemBase {
 
     private final PigeonIMU m_gyro;
 
-    private final PIDController m_leftPIDController = new PIDController(1, 0, 0);
-    private final PIDController m_rightPIDController = new PIDController(1, 0, 0);
-
     private final DifferentialDriveKinematics m_kinematics = new DifferentialDriveKinematics(kTrackWidth);
 
     private final DifferentialDriveOdometry m_odometry;
 
     // Gains are for example purposes only - must be determined for your own robot!
-    private final SimpleMotorFeedforward m_feedforward = new SimpleMotorFeedforward(0.61961, 2.01492, 0.13214);// (0.66764,
-                                                                                                               // 0.10838,
-                                                                                                               // 0.0056832);
+    public final SimpleMotorFeedforward leftMotorFeedforward = new SimpleMotorFeedforward(0.61037, 0.68157, 0.023755);
+    public final SimpleMotorFeedforward rightMotorFeedforward = new SimpleMotorFeedforward(0.62728, 0.68254, 0.021885);
+
+    private final PIDController leftPIDController = new PIDController(0.50405, 0, 0);
+    private final PIDController rightPIDController = new PIDController(0.47029, 0, 0);
 
     private boolean shifterState;
 
@@ -68,8 +70,11 @@ public class DriveSubsystem extends SubsystemBase {
         m_gyro = new PigeonIMU(endgameMotorSubsystem.getEndgameMotorSlave());
         m_gyro.enterCalibrationMode(CalibrationMode.BootTareGyroAccel);
 
-        SmartDashboard.putNumber("Left kP", 1);
-        SmartDashboard.putNumber("Right kP", 1);
+        TalonFXConfiguration config = new TalonFXConfiguration();
+        config.velocityMeasurementPeriod = SensorVelocityMeasPeriod.Period_10Ms;
+
+        m_leftLeader.configAllSettings(config);
+        m_rightLeader.configAllSettings(config);
 
         m_leftLeader.getSensorCollection().setIntegratedSensorPosition(0.0, 100);
         m_rightLeader.getSensorCollection().setIntegratedSensorPosition(0.0, 100);
@@ -80,32 +85,94 @@ public class DriveSubsystem extends SubsystemBase {
     }
 
     /**
+     * <h3>setVoltages</h3>
+     * 
+     * Sets the voltages of the drivetrain to the passed values
+     * 
+     * @param leftVoltage  the left voltage
+     * @param rightVoltage the right voltage
+     */
+    public void setVoltages(double leftVoltage, double rightVoltage) {
+        leftVoltage = MathUtil.clamp(leftVoltage, -11.0, 11.0);
+        rightVoltage = MathUtil.clamp(rightVoltage, -11.0, 11.0);
+
+        m_leftLeader.setVoltage(leftVoltage);
+        m_rightLeader.setVoltage(rightVoltage);
+    }
+
+    /**
+     * Calculate the feedforward with the left controller
+     * 
+     * @param velocity the velocity for which to calculate feedforward
+     * @return the feedforward modified velocity
+     */
+    public double calculateLeftFeedforward(double velocity) {
+        return leftMotorFeedforward.calculate(velocity);
+    }
+
+    /**
+     * Calculate the feedforward with the right controller
+     * 
+     * @param velocity the velocity for which to calculate feedforward
+     * @return the feedforward modified velocity
+     */
+    public double calculateRightFeedforward(double velocity) {
+        return rightMotorFeedforward.calculate(velocity);
+    }
+
+    /**
+     * Calculate the left PID values
+     * 
+     * @param speed  the current speed
+     * @param target the target speed
+     * @return the PID corrected speed
+     */
+    public double calculateLeftPID(double speed, double target) {
+        return leftPIDController.calculate(speed, target);
+    }
+
+    /**
+     * Calculate the left PID values
+     * 
+     * @param speed  the current speed
+     * @param target the target speed
+     * @return the PID corrected speed
+     */
+    public double calculateRightPID(double speed, double target) {
+        return rightPIDController.calculate(speed, target);
+    }
+
+    /**
+     * Convert stick input values to wheel speeds
+     * 
+     * @param xSpeed speed stick
+     * @param rot    rotation stick
+     * @return the wheel speeds from the sticks
+     */
+    public DifferentialDriveWheelSpeeds getWheelSpeeds(double xSpeed, double rot) {
+        return m_kinematics.toWheelSpeeds(new ChassisSpeeds(xSpeed, 0.0, rot));
+    }
+
+    /**
+     * Convert speed to voltage
+     * 
+     * @param speed the speed at which the motor should turn
+     * @return the volatage at which to run the motor
+     */
+    public double speedToVoltage(double speed) {
+        return speed * kMaxVolts;
+    }
+
+    /**
      * Sets the desired wheel speeds.
      *
      * @param speeds The desired wheel speeds.
      */
     public void setSpeeds(DifferentialDriveWheelSpeeds speeds) {
-        SmartDashboard.putNumber("Left wheel speed", speeds.leftMetersPerSecond);
-        SmartDashboard.putNumber("Right wheel speed", speeds.rightMetersPerSecond);
-
-        final double leftFeedforward = m_feedforward.calculate(speeds.leftMetersPerSecond);
-        final double rightFeedforward = m_feedforward.calculate(speeds.rightMetersPerSecond);
-
-        double leftPIDOutput = m_leftPIDController.calculate(getLeftEncoder(),
-                speeds.leftMetersPerSecond);
-        double leftOutput = leftPIDOutput * kMaxVolts /
+        double leftOutput = speeds.leftMetersPerSecond * kMaxVolts /
                 DriveSubsystem.kMaxSpeed;
-
-        double rightPIDOutput = m_rightPIDController.calculate(getRightEncoder(),
-                speeds.rightMetersPerSecond);
-        double rightOutput = rightPIDOutput * kMaxVolts /
+        double rightOutput = speeds.rightMetersPerSecond * kMaxVolts /
                 DriveSubsystem.kMaxSpeed;
-
-        leftOutput += leftFeedforward;
-        rightOutput += rightFeedforward;
-
-        SmartDashboard.putNumber("Left feedforward", leftFeedforward);
-        SmartDashboard.putNumber("Right feedforward", rightFeedforward);
 
         leftOutput = MathUtil.clamp(leftOutput, -11.0, 11.0);
         rightOutput = MathUtil.clamp(rightOutput, -11.0, 11.0);
@@ -118,8 +185,10 @@ public class DriveSubsystem extends SubsystemBase {
      * 
      * @return the encoder speed
      */
-    private double getLeftEncoder() {
-        return m_leftLeader.getSensorCollection().getIntegratedSensorVelocity() / 10 / kEncoderResolution * 0.3192;
+    public double getLeftEncoder() {
+        // Multiply by 10 to get encoder units per second
+        return m_leftLeader.getSensorCollection().getIntegratedSensorVelocity() * 10 / kEncoderResolution
+                * (2 * Math.PI * kWheelRadius);
     }
 
     /**
@@ -127,8 +196,10 @@ public class DriveSubsystem extends SubsystemBase {
      * 
      * @return the encoder speed
      */
-    private double getRightEncoder() {
-        return m_rightLeader.getSensorCollection().getIntegratedSensorVelocity() / 10 / kEncoderResolution * 0.3192;
+    public double getRightEncoder() {
+        // Multiply by 10 to get encoder units per second
+        return m_rightLeader.getSensorCollection().getIntegratedSensorVelocity() * 10 / kEncoderResolution
+                * (2 * Math.PI * kWheelRadius);
     }
 
     /**
@@ -164,14 +235,5 @@ public class DriveSubsystem extends SubsystemBase {
         m_odometry.update(new Rotation2d(Math.toRadians(m_gyro.getFusedHeading())),
                 m_leftLeader.getSelectedSensorPosition() * ((1.0 / 2048.0) * kWheelRadius * Math.PI) / highGearRatio,
                 m_rightLeader.getSelectedSensorPosition() * ((1.0 / 2048.0) * kWheelRadius * Math.PI) / highGearRatio);
-    }
-
-    @Override
-    public void periodic() {
-        SmartDashboard.putNumber("Pigeon fused heading", m_gyro.getFusedHeading() % 360);
-        SmartDashboard.putNumber("Left encoder value", getLeftEncoder());
-        SmartDashboard.putNumber("Right encoder value", getRightEncoder());
-        m_leftPIDController.setP(SmartDashboard.getNumber("Left kP", 1));
-        m_rightPIDController.setP(SmartDashboard.getNumber("Right kP", 1));
     }
 }

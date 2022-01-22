@@ -2,6 +2,7 @@ package frc.robot.commands;
 
 import java.util.function.DoubleSupplier;
 
+import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.DriveSubsystem;
@@ -23,9 +24,10 @@ public class DriveCommand extends CommandBase {
     private DoubleSupplier rotationStick;
 
     /**
-     * Initializes a new {@link frc.robot.commands.DriveCommand DriveCommand} with the passed variables
+     * Initializes a new {@link frc.robot.commands.DriveCommand DriveCommand} with
+     * the passed variables
      * 
-     * @param dSubsystem the drive subsystem
+     * @param dSubsystem  the drive subsystem
      * @param dController the driver controller
      */
     public DriveCommand(DriveSubsystem dSubsystem, XboxController dController) {
@@ -40,7 +42,15 @@ public class DriveCommand extends CommandBase {
 
     @Override
     public void execute() {
-        driveSubsystem.drive(driveStick.getAsDouble(), rotationStick.getAsDouble());
+        // driveSubsystem.drive(driveStick.getAsDouble(), rotationStick.getAsDouble());
+        // driveSubsystem.getLeftEncoder();
+        // driveSubsystem.getRightEncoder();
+        DifferentialDriveWheelSpeeds wheelSpeeds = driveSubsystem.getWheelSpeeds(driveStick.getAsDouble(),
+                rotationStick.getAsDouble());
+        driveSubsystem.setVoltages(driveSubsystem.speedToVoltage(
+                driveSubsystem.calculateLeftFeedforward(wheelSpeeds.leftMetersPerSecond)),
+                driveSubsystem
+                        .speedToVoltage(driveSubsystem.calculateRightFeedforward(wheelSpeeds.rightMetersPerSecond)));
     }
 
     @Override
