@@ -6,8 +6,10 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.CatapultCommand;
 import frc.robot.commands.DriveCommand;
 import frc.robot.commands.ToggleShifterCommand;
+import frc.robot.commands.endgamecommands.EndgameArmCommand;
 import frc.robot.subsystems.CatapultSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.EndgameMotorSubsystem;
 import frc.robot.subsystems.ShifterSubsystem;
 import frc.robot.triggers.AxisTrigger;
 
@@ -36,6 +38,9 @@ public class RobotContainer {
     private final DriveSubsystem driveSubsystem;
     private final DriveCommand driveCommand;
 
+    private final EndgameMotorSubsystem endgameMotorSubsystem;
+    private final EndgameArmCommand endgameArmCommand;
+
     private final CatapultSubsystem catapultSubsystem;
     private final CatapultCommand catapultCommand;
 
@@ -48,7 +53,10 @@ public class RobotContainer {
      * Initializes the robot
      */
     public RobotContainer() {
-        driveSubsystem = new DriveSubsystem();
+        endgameMotorSubsystem = new EndgameMotorSubsystem();
+        endgameArmCommand = new EndgameArmCommand(endgameMotorSubsystem);
+
+        driveSubsystem = new DriveSubsystem(endgameMotorSubsystem);
         driveCommand = new DriveCommand(driveSubsystem, controller);
 
         catapultSubsystem = new CatapultSubsystem(1, 2);
@@ -74,6 +82,9 @@ public class RobotContainer {
 
         JoystickButton launchButton = new JoystickButton(controller, XB_RB);
         launchButton.whileActiveOnce(catapultCommand);
+
+        JoystickButton rotateArmButton = new JoystickButton(controller, XB_Y);
+        rotateArmButton.whileActiveOnce(endgameArmCommand);
 
         CommandScheduler scheduler = CommandScheduler.getInstance();
 

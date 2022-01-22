@@ -5,27 +5,35 @@ package frc.robot.subsystems;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.can.TalonSRXConfiguration;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
-public class EndgameMotorSubsystem {
+public class EndgameMotorSubsystem extends SubsystemBase {
 
      //-------- DECLARATIONS --------\\
 
     /**
      * The motor controller that controls the endgame motor
      */
-    private WPI_TalonSRX endgameMotorLeft; 
-    private WPI_TalonSRX endgameMotorRight;
+    private final WPI_TalonSRX endgameMotorMaster; 
+    private final WPI_TalonSRX endgameMotorSlave;
+
+    private static final int motorIDMaster = 3;
+    private static final int motorIDSlave = 4;
 
     //-------- CONSTRUCTOR --------\
 
     /**
-     * This constructor initializes the {@link #endgameMotorController} to the proper hardware
+     * This constructor initializes the endgame motors to the proper hardware
      */
-    public EndgameMotorSubsystem(int motorIDLeft, int motorIDRight) {
-        endgameMotorLeft = new WPI_TalonSRX(motorIDLeft);
-        endgameMotorRight = new WPI_TalonSRX(motorIDRight);
-        endgameMotorLeft.follow(endgameMotorRight);
+    public EndgameMotorSubsystem() {
+        endgameMotorMaster = new WPI_TalonSRX(motorIDMaster);
+        endgameMotorSlave = new WPI_TalonSRX(motorIDSlave);
+        endgameMotorSlave.follow(endgameMotorMaster);
+        endgameMotorSlave.setInverted(true);
+        endgameMotorMaster.setNeutralMode(NeutralMode.Brake);
+        endgameMotorSlave.setNeutralMode(NeutralMode.Brake);
     }
     
     //-------- METHODS --------\\
@@ -38,12 +46,11 @@ public class EndgameMotorSubsystem {
      * @param speed the speed at which to set the motor
      */
     public void setMotorSpeed(double speed) {
-        endgameMotorLeft.set(ControlMode.PercentOutput, speed);
+        endgameMotorMaster.set(ControlMode.PercentOutput, speed);
     }
 
     public void stopMotor() {
-        endgameMotorLeft.set(ControlMode.PercentOutput, 0.0);
- 
+        endgameMotorMaster.set(ControlMode.PercentOutput, 0.0);
     }
 
      /**
@@ -53,7 +60,18 @@ public class EndgameMotorSubsystem {
      * @return the current motor speed
      */
     public double getMotorSpeed() {
-        return endgameMotorLeft.getMotorOutputPercent();  
+        return endgameMotorMaster.getMotorOutputPercent();  
+    }
+
+    /**
+     * Returns slave TalonSRX controller
+     * </p>
+     * {@link frc.robot.subsystems.DriveSubsystem DriveSubsystem} 
+     * needs the slave talon for the Pigeon onboard.
+     * @return endgameSlaveMotor
+     */
+    public WPI_TalonSRX getEndgameMotorSlave() {
+        return endgameMotorSlave;
     }
 
     /**

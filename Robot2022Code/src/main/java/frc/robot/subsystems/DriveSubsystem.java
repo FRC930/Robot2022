@@ -16,6 +16,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.math.MathUtil;
 
+import frc.robot.subsystems.EndgameMotorSubsystem;
+
 public class DriveSubsystem extends SubsystemBase {
     public static final double kMaxSpeed = 1; // meters per second
     public static final double kMaxAngularSpeed = Math.PI; // 1/2 rotation per second
@@ -40,7 +42,7 @@ public class DriveSubsystem extends SubsystemBase {
      * m_rightFollower);
      */
 
-    private final PigeonIMU m_gyro = new PigeonIMU(new TalonSRX(4));
+    private final PigeonIMU m_gyro;
 
     private final PIDController m_leftPIDController = new PIDController(1, 0, 0);
     private final PIDController m_rightPIDController = new PIDController(1, 0, 0);
@@ -60,9 +62,10 @@ public class DriveSubsystem extends SubsystemBase {
      * Constructs a differential drive object. Sets the encoder distance per pulse
      * and resets the gyro.
      */
-    public DriveSubsystem() {
+    public DriveSubsystem(EndgameMotorSubsystem endgameMotorSubsystem) {
         shifterState = false;
 
+        m_gyro = new PigeonIMU(endgameMotorSubsystem.getEndgameMotorSlave());
         m_gyro.enterCalibrationMode(CalibrationMode.BootTareGyroAccel);
 
         SmartDashboard.putNumber("Left kP", 1);

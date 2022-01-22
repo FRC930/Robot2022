@@ -16,12 +16,13 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 
 //-------- COMMAND CLASS --------\\
 
-public class RotateArmCommand extends CommandBase {
+public class EndgameArmCommand extends CommandBase {
 
   //-------- CONSTANTS --------\\
 
-  // private static final Logger logger = Logger.getLogger(RotateArmCommand.class.getName());
-  private static double ARM_SPEED;
+  // private static final Logger logger = Logger.getLogger(EndgameArmCommand.class.getName());
+  //TODO: Establish speed for endgame arm
+  private static double ARM_SPEED = 0.3;
 
   //-------- DECLARATIONS --------\\
 
@@ -30,11 +31,11 @@ public class RotateArmCommand extends CommandBase {
 
   //-------- CONSTRUCTOR --------\\
 
-  public RotateArmCommand(EndgameMotorSubsystem motorSubsystem) {
+  public EndgameArmCommand(EndgameMotorSubsystem motorSubsystem) {
     m_MotorSubsystem = motorSubsystem;
-    // logger.log(LOG_LEVEL_FINE, "Initializing the RotateArmCommand...");
+    // logger.log(LOG_LEVEL_FINE, "Initializing the EndgameArmCommand...");
 
-    addRequirements(motorSubsystem);  // Use addRequirements() here to declare subsystem dependencies.
+    addRequirements(m_MotorSubsystem);  // Use addRequirements() here to declare subsystem dependencies.
   }
 
   //-------- COMMANDBASE METHODS --------\\
@@ -46,9 +47,8 @@ public class RotateArmCommand extends CommandBase {
     // logger.log(LOG_LEVEL_FINE, "Starting the arm motor (command)..."); 
   }
   
-  @Override   // Returns true when the command should end.
-  public boolean isFinished() {
-    return true;
-  }
-
-} // End of class RotateArmCommand
+  @Override
+    public void end(boolean interrupted) {
+      m_MotorSubsystem.setMotorSpeed(0.0);
+    }
+} // End of class EndgameArmCommand
