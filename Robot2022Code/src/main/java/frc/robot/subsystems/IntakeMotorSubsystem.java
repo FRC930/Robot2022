@@ -1,7 +1,7 @@
 //-------- IMPORTS --------\\
 
 package frc.robot.subsystems;
-
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
@@ -15,9 +15,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
  */
 public class IntakeMotorSubsystem extends SubsystemBase {
 
-    // -------- CONSTANTS --------\\
-
-    // -------- DECLARATIONS --------\\
+    //-------- DECLARATIONS --------\\
 
     /**
      * The motor controller that controls the intake motor
@@ -45,10 +43,6 @@ public class IntakeMotorSubsystem extends SubsystemBase {
      */
     public void setMotorSpeed(double speed) {
         intakeMotorController.set(ControlMode.PercentOutput, -speed);
-    }
-
-    public WPI_TalonSRX getIntakeMotor() {
-        return intakeMotorController;
     }
 
     /**

@@ -13,34 +13,52 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.IntakeMotorSubsystem;
 
 //-------- COMMAND CLASS --------\\
-
+/**
+ * <h3>ClockwiseIntakeMotorsCommand</h3>
+ * 
+ * This class contols the clockwise intake motors
+ */
 public class ClockwiseIntakeMotorsCommand extends CommandBase {
 
   // -------- CONSTANTS --------\\
 
-  private static final double INTAKE_SPEED = 0.6;
+  // INATKE_SPEED is how fast the rollers move
+  private static final double INTAKE_SPEED = 0.6; 
 
   // -------- DECLARATIONS --------\\
 
+  // IntakeMotorSubsystem controls the intake motors
   private final IntakeMotorSubsystem intakeMotors;
+  
+  //-------- CONSTRUCTOR --------\\
 
-  // -------- CONSTRUCTOR --------\\
-
+  /**
+   * <h3>ClockwiseIntakeMotorsCommand</h3>
+   * 
+   * This class contols the clockwise intake motors
+   * 
+   * @param iMotors - Intake motors subsystem
+   */
   public ClockwiseIntakeMotorsCommand(IntakeMotorSubsystem iMotors) {
     intakeMotors = iMotors;
 
     addRequirements(iMotors); // Use addRequirements() here to declare subsystem dependencies.
   }
 
-  // -------- COMMANDBASE METHODS --------\\
-
-  @Override // Called when the command is initially scheduled.
+  //-------- COMMANDBASE METHODS --------\\
+ 
+  /**
+   * Called when the command is initially scheduled.
+   */
+  @Override   
   public void initialize() {
     intakeMotors.setMotorSpeed(INTAKE_SPEED);
-
   }
 
-  @Override // Returns true when the command should end.
+   /**
+   * Returns true when the command should end.
+   */
+  @Override   
   public boolean isFinished() {
     return true;
   }

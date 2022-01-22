@@ -7,10 +7,14 @@ import frc.robot.commands.CatapultCommand;
 import frc.robot.commands.DriveCommand;
 import frc.robot.commands.ToggleShifterCommand;
 import frc.robot.commands.endgamecommands.EndgameArmCommand;
+import frc.robot.commands.intakecommands.intakemotorcommands.ClockwiseIntakeMotorsCommand;
+import frc.robot.commands.intakecommands.intakemotorcommands.CounterclockwiseIntakeMotorsCommand;
+import frc.robot.commands.intakecommands.intakemotorcommands.StopIntakeMotorsCommand;
 import frc.robot.subsystems.CatapultSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.EndgameMotorSubsystem;
 import frc.robot.subsystems.EndgameSensorSubsystem;
+import frc.robot.subsystems.IntakeMotorSubsystem;
 import frc.robot.subsystems.ShifterSubsystem;
 import frc.robot.triggers.AxisTrigger;
 
@@ -53,6 +57,12 @@ public class RobotContainer {
     private final ShifterSubsystem shifterSubsystem;
     private final ToggleShifterCommand toggleShifterCommand;
 
+    private final IntakeMotorSubsystem intakeMotorSubsystem;
+    private final ClockwiseIntakeMotorsCommand clockwiseIntakeMotorsCommand;
+    private final CounterclockwiseIntakeMotorsCommand counterClockwiseIntakeMotorsCommand;
+    private final StopIntakeMotorsCommand stopIntakeMotorsCommand;
+
+
     /**
      * <h3>RobotContainer</h3>
      * 
@@ -75,16 +85,21 @@ public class RobotContainer {
 
         shifterSubsystem = new ShifterSubsystem(0);
         toggleShifterCommand = new ToggleShifterCommand(shifterSubsystem, driveSubsystem);
+
+        intakeMotorSubsystem = new IntakeMotorSubsystem(5);
+        clockwiseIntakeMotorsCommand = new ClockwiseIntakeMotorsCommand(intakeMotorSubsystem);
+        counterClockwiseIntakeMotorsCommand = new CounterclockwiseIntakeMotorsCommand(intakeMotorSubsystem);
+        stopIntakeMotorsCommand = new StopIntakeMotorsCommand(intakeMotorSubsystem);
     }
 
     /**
      * <h3>beginTeleopRunCommands</h3>
      * 
      * <p>
-     * Executes when the robot is enabled in teleop mode.
+     * Runs when the robot is enabled in teleop mode.
      * </p>
      * <p>
-     * This runs the command scheduler and sets up buttons
+     * This gets the command scheduler and sets up buttons
      * </p>
      */
     public void beginTeleopRunCommands() {
@@ -94,13 +109,23 @@ public class RobotContainer {
         JoystickButton launchButton = new JoystickButton(controller, XB_RB);
         launchButton.whileActiveOnce(catapultCommand);
 
-        JoystickButton rotateArmButton = new JoystickButton(controller, XB_Y);
-        rotateArmButton.whileActiveOnce(endgameArmCommand);
+        JoystickButton reverseIntakeButton = new JoystickButton(controller, XB_AXIS_LT);
+        reverseIntakeButton.whileActiveOnce(clockwiseIntakeMotorsCommand);
+        
+        JoystickButton intakeButton = new JoystickButton(controller, XB_LB);
+        intakeButton.whileActiveOnce(counterClockwiseIntakeMotorsCommand);
+
+        JoystickButton stopIntake = new JoystickButton(controller, XB_LB);
+        stopIntake.whenReleased(stopIntakeMotorsCommand);
+
+        JoystickButton stopReverseIntake = new JoystickButton(controller, XB_AXIS_LT);
+        stopReverseIntake.whenReleased(stopIntakeMotorsCommand);
 
         CommandScheduler scheduler = CommandScheduler.getInstance();
 
         scheduler.unregisterSubsystem(driveSubsystem);
 
         scheduler.setDefaultCommand(driveSubsystem, driveCommand);
+        
     }
 }
