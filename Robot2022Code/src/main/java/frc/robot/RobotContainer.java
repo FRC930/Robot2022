@@ -62,10 +62,10 @@ public class RobotContainer {
      * <h3>beginTeleopRunCommands</h3>
      * 
      * <p>
-     * Runs when the robot is enabled in teleop mode.
+     * Executes when the robot is enabled in teleop mode.
      * </p>
      * <p>
-     * This gets the command scheduler and sets up buttons
+     * This runs the command scheduler and sets up buttons
      * </p>
      */
     public void beginTeleopRunCommands() {
