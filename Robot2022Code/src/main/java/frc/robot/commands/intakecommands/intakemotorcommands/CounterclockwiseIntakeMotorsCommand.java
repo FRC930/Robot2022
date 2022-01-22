@@ -21,7 +21,7 @@ public class CounterclockwiseIntakeMotorsCommand extends CommandBase {
 
   // -------- CONSTANTS --------\\
 
-  private static final double INTAKE_SPEED = -0.6;
+  private final double INTAKE_SPEED = -0.6;
 
   // -------- DECLARATIONS --------\\
 

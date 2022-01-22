@@ -23,7 +23,7 @@ public class ClockwiseIntakeMotorsCommand extends CommandBase {
   // -------- CONSTANTS --------\\
 
   // INATKE_SPEED is how fast the rollers move
-  private static final double INTAKE_SPEED = 0.6; 
+  private final double INTAKE_SPEED = 0.6; 
 
   // -------- DECLARATIONS --------\\
 

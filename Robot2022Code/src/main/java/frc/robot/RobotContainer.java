@@ -6,11 +6,13 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.CatapultCommand;
 import frc.robot.commands.DriveCommand;
 import frc.robot.commands.ToggleShifterCommand;
+import frc.robot.commands.endgamecommands.EndgameArmCommand;
 import frc.robot.commands.intakecommands.intakemotorcommands.ClockwiseIntakeMotorsCommand;
 import frc.robot.commands.intakecommands.intakemotorcommands.CounterclockwiseIntakeMotorsCommand;
 import frc.robot.commands.intakecommands.intakemotorcommands.StopIntakeMotorsCommand;
 import frc.robot.subsystems.CatapultSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.EndgameMotorSubsystem;
 import frc.robot.subsystems.IntakeMotorSubsystem;
 import frc.robot.subsystems.ShifterSubsystem;
 import frc.robot.triggers.AxisTrigger;
@@ -96,7 +98,7 @@ public class RobotContainer {
         JoystickButton launchButton = new JoystickButton(controller, XB_RB);
         launchButton.whileActiveOnce(catapultCommand);
 
-        JoystickButton reverseIntakeButton = new JoystickButton(controller, XB_AXIS_LT);
+        AxisTrigger reverseIntakeButton = new AxisTrigger(controller, XB_AXIS_LT);
         reverseIntakeButton.whileActiveOnce(clockwiseIntakeMotorsCommand);
         
         JoystickButton intakeButton = new JoystickButton(controller, XB_LB);
@@ -105,8 +107,8 @@ public class RobotContainer {
         JoystickButton stopIntake = new JoystickButton(controller, XB_LB);
         stopIntake.whenReleased(stopIntakeMotorsCommand);
 
-        JoystickButton stopReverseIntake = new JoystickButton(controller, XB_AXIS_LT);
-        stopReverseIntake.whenReleased(stopIntakeMotorsCommand);
+        AxisTrigger stopReverseIntake = new AxisTrigger(controller, XB_AXIS_LT);
+        stopReverseIntake.whenInactive(stopIntakeMotorsCommand);
 
         CommandScheduler scheduler = CommandScheduler.getInstance();
 

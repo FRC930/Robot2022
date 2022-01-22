@@ -15,13 +15,41 @@
         "header": {
           "open": true
         }
+      },
+      "Talon SRX[5]": {
+        "header": {
+          "open": true
+        }
+      },
+      "Talon SRX[5]/Analog In": {
+        "header": {
+          "open": true
+        }
+      },
+      "Talon SRX[5]/Fwd Limit": {
+        "header": {
+          "open": true
+        }
+      },
+      "Talon SRX[5]/Pulse Width Input": {
+        "header": {
+          "open": true
+        }
+      },
+      "Talon SRX[5]/Quad Encoder": {
+        "header": {
+          "open": true
+        }
       }
     }
   },
   "NTProvider": {
     "types": {
       "/FMSInfo": "FMSInfo",
+      "/LiveWindow/CatapultSubsystem": "Subsystem",
       "/LiveWindow/DriveSubsystem": "Subsystem",
+      "/LiveWindow/EndgameMotorSubsystem": "Subsystem",
+      "/LiveWindow/IntakeMotorSubsystem": "Subsystem",
       "/LiveWindow/ShifterSubsystem": "Subsystem",
       "/LiveWindow/Ungrouped/AnalogGyro[0]": "Gyro",
       "/LiveWindow/Ungrouped/PIDController[1]": "PIDController",
