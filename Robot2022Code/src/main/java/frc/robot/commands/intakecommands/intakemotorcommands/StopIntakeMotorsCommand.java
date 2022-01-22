@@ -34,7 +34,7 @@ public class StopIntakeMotorsCommand extends CommandBase {
    */
   public StopIntakeMotorsCommand(IntakeMotorSubsystem iMotors) {
     intakeMotors = iMotors;
-    addRequirements(iMotors);  // Use addRequirements() here to declare subsystem dependencies.
+    addRequirements(iMotors); // Use addRequirements() here to declare subsystem dependencies.
   }
 
   //-------- COMMANDBASE METHODS --------\\
@@ -44,7 +44,7 @@ public class StopIntakeMotorsCommand extends CommandBase {
   */
   @Override
   public void initialize() {
-     intakeMotors.setMotorSpeed(0.0);
+    intakeMotors.setMotorSpeed(0.0);
   }
   
    /**
@@ -55,4 +55,4 @@ public class StopIntakeMotorsCommand extends CommandBase {
     return true;
   }
 
-} //End of class StopIntakeMotorsCommand
+} // End of class StopIntakeMotorsCommand

@@ -8,8 +8,9 @@
 //-------- IMPORTS --------\\
 
 package frc.robot.commands.intakecommands.intakemotorcommands;
-import frc.robot.subsystems.IntakeMotorSubsystem;
+
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.subsystems.IntakeMotorSubsystem;
 
 //-------- COMMAND CLASS --------\\
 /**
@@ -19,12 +20,12 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
  */
 public class ClockwiseIntakeMotorsCommand extends CommandBase {
 
-  //-------- CONSTANTS --------\\
+  // -------- CONSTANTS --------\\
 
   // INATKE_SPEED is how fast the rollers move
   private static final double INTAKE_SPEED = 0.6; 
 
-  //-------- DECLARATIONS --------\\
+  // -------- DECLARATIONS --------\\
 
   // IntakeMotorSubsystem controls the intake motors
   private final IntakeMotorSubsystem intakeMotors;
@@ -41,7 +42,7 @@ public class ClockwiseIntakeMotorsCommand extends CommandBase {
   public ClockwiseIntakeMotorsCommand(IntakeMotorSubsystem iMotors) {
     intakeMotors = iMotors;
 
-    addRequirements(iMotors);  // Use addRequirements() here to declare subsystem dependencies.
+    addRequirements(iMotors); // Use addRequirements() here to declare subsystem dependencies.
   }
 
   //-------- COMMANDBASE METHODS --------\\
@@ -62,4 +63,4 @@ public class ClockwiseIntakeMotorsCommand extends CommandBase {
     return true;
   }
 
-} //End of class RunIntakeMotorsCommand
+} // End of class RunIntakeMotorsCommand

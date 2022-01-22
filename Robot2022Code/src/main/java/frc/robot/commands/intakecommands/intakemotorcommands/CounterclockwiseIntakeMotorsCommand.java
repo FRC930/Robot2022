@@ -19,11 +19,11 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
  */
 public class CounterclockwiseIntakeMotorsCommand extends CommandBase {
 
-  //-------- CONSTANTS --------\\
+  // -------- CONSTANTS --------\\
 
-  private static final double INTAKE_SPEED = -0.6;  
+  private static final double INTAKE_SPEED = -0.6;
 
-  //-------- DECLARATIONS --------\\
+  // -------- DECLARATIONS --------\\
 
   private final IntakeMotorSubsystem intakeMotors;
 
@@ -38,18 +38,18 @@ public class CounterclockwiseIntakeMotorsCommand extends CommandBase {
   public CounterclockwiseIntakeMotorsCommand(IntakeMotorSubsystem iMotors) {
     intakeMotors = iMotors;
 
-    addRequirements(iMotors);  // Use addRequirements() here to declare subsystem dependencies.
+    addRequirements(iMotors); // Use addRequirements() here to declare subsystem dependencies.
   }
 
-  //-------- COMMANDBASE METHODS --------\\
+  // -------- COMMANDBASE METHODS --------\\
 
   /**
   * Called when the command is initially scheduled. 
   */
   @Override  
   public void initialize() {
-     intakeMotors.setMotorSpeed(INTAKE_SPEED);
-     
+    intakeMotors.setMotorSpeed(INTAKE_SPEED);
+
   }
   
   /**
@@ -60,4 +60,4 @@ public class CounterclockwiseIntakeMotorsCommand extends CommandBase {
     return true;
   }
 
-} //End of class RunIntakeMotorsCommand
+} // End of class RunIntakeMotorsCommand
