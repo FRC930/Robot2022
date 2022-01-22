@@ -14,6 +14,7 @@ import frc.robot.commands.intakecommands.intakemotorcommands.StopIntakeMotorsCom
 import frc.robot.subsystems.CatapultSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.EndgameMotorSubsystem;
+import frc.robot.subsystems.EndgamePistonSubsystem;
 import frc.robot.subsystems.EndgameSensorSubsystem;
 import frc.robot.subsystems.IntakeMotorSubsystem;
 import frc.robot.subsystems.ShifterSubsystem;
@@ -48,10 +49,19 @@ public class RobotContainer {
     private final EndgameArmCommand endgameArmCommand;
     private final EndgameArmRevCommand endgameArmRevCommand;
 
-    private final EndgameSensorSubsystem left2;
-    private final EndgameSensorSubsystem right2;
-    private final EndgameSensorSubsystem left4;
-    private final EndgameSensorSubsystem right4;
+    private final EndgameSensorSubsystem left2Sensor;
+    private final EndgameSensorSubsystem right2Sensor;
+    private final EndgameSensorSubsystem left4Sensor;
+    private final EndgameSensorSubsystem right4Sensor;
+
+    private final EndgamePistonSubsystem left1piston;
+    private final EndgamePistonSubsystem left2piston;
+    private final EndgamePistonSubsystem left3piston;
+    private final EndgamePistonSubsystem left4piston;
+    private final EndgamePistonSubsystem right1piston;
+    private final EndgamePistonSubsystem right2piston;
+    private final EndgamePistonSubsystem right3piston;
+    private final EndgamePistonSubsystem right4piston;
 
     private final CatapultSubsystem catapultSubsystem;
     private final CatapultCommand catapultCommand;
@@ -75,10 +85,19 @@ public class RobotContainer {
         endgameArmCommand = new EndgameArmCommand(endgameMotorSubsystem);
         endgameArmRevCommand = new EndgameArmRevCommand(endgameMotorSubsystem);
 
-        left2 = new EndgameSensorSubsystem(1);
-        right2 = new EndgameSensorSubsystem(2);
-        left4 = new EndgameSensorSubsystem(3);
-        right4 = new EndgameSensorSubsystem(4);
+        left2Sensor = new EndgameSensorSubsystem(1);
+        right2Sensor = new EndgameSensorSubsystem(2);
+        left4Sensor = new EndgameSensorSubsystem(3);
+        right4Sensor = new EndgameSensorSubsystem(4);
+
+        left1piston = new EndgamePistonSubsystem(3);
+        left2piston = new EndgamePistonSubsystem(4);
+        left3piston = new EndgamePistonSubsystem(5);
+        left4piston = new EndgamePistonSubsystem(6);
+        right1piston = new EndgamePistonSubsystem(7);
+        right2piston = new EndgamePistonSubsystem(8);
+        right3piston = new EndgamePistonSubsystem(9);
+        right4piston = new EndgamePistonSubsystem(10);
 
         driveSubsystem = new DriveSubsystem(1, 2);
         driveCommand = new DriveCommand(driveSubsystem, endgameMotorSubsystem, controller);
