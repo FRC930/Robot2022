@@ -1,0 +1,80 @@
+\hypertarget{classfrc_1_1robot_1_1subsystems_1_1_endgame_motor_subsystem}{}\doxysection{frc.\+robot.\+subsystems.\+Endgame\+Motor\+Subsystem Class Reference}
+\label{classfrc_1_1robot_1_1subsystems_1_1_endgame_motor_subsystem}\index{frc.robot.subsystems.EndgameMotorSubsystem@{frc.robot.subsystems.EndgameMotorSubsystem}}
+Inheritance diagram for frc.\+robot.\+subsystems.\+Endgame\+Motor\+Subsystem\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{classfrc_1_1robot_1_1subsystems_1_1_endgame_motor_subsystem}
+\end{center}
+\end{figure}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{classfrc_1_1robot_1_1subsystems_1_1_endgame_motor_subsystem_a748cf3476e0eb929d24f690a642520f6}{Endgame\+Motor\+Subsystem}} ()
+\item 
+void \mbox{\hyperlink{classfrc_1_1robot_1_1subsystems_1_1_endgame_motor_subsystem_a96003cbd850f05cc2416af699e2c87e6}{set\+Motor\+Speed}} (double speed)
+\item 
+\mbox{\Hypertarget{classfrc_1_1robot_1_1subsystems_1_1_endgame_motor_subsystem_a34b97c598961a2a6637ec4f6a5d57da2}\label{classfrc_1_1robot_1_1subsystems_1_1_endgame_motor_subsystem_a34b97c598961a2a6637ec4f6a5d57da2}} 
+void {\bfseries stop\+Motor} ()
+\item 
+double \mbox{\hyperlink{classfrc_1_1robot_1_1subsystems_1_1_endgame_motor_subsystem_a0ca88b7107c3829e995059157af8e240}{get\+Motor\+Speed}} ()
+\item 
+WPI\+\_\+\+Talon\+SRX \mbox{\hyperlink{classfrc_1_1robot_1_1subsystems_1_1_endgame_motor_subsystem_a7ff81cc70835dad1f807537544676f69}{get\+Endgame\+Motor\+Slave}} ()
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{classfrc_1_1robot_1_1subsystems_1_1_endgame_motor_subsystem_a748cf3476e0eb929d24f690a642520f6}\label{classfrc_1_1robot_1_1subsystems_1_1_endgame_motor_subsystem_a748cf3476e0eb929d24f690a642520f6}} 
+\index{frc.robot.subsystems.EndgameMotorSubsystem@{frc.robot.subsystems.EndgameMotorSubsystem}!EndgameMotorSubsystem@{EndgameMotorSubsystem}}
+\index{EndgameMotorSubsystem@{EndgameMotorSubsystem}!frc.robot.subsystems.EndgameMotorSubsystem@{frc.robot.subsystems.EndgameMotorSubsystem}}
+\doxysubsubsection{\texorpdfstring{EndgameMotorSubsystem()}{EndgameMotorSubsystem()}}
+{\footnotesize\ttfamily frc.\+robot.\+subsystems.\+Endgame\+Motor\+Subsystem.\+Endgame\+Motor\+Subsystem (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+This constructor initializes the endgame motors to the proper hardware 
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{classfrc_1_1robot_1_1subsystems_1_1_endgame_motor_subsystem_a7ff81cc70835dad1f807537544676f69}\label{classfrc_1_1robot_1_1subsystems_1_1_endgame_motor_subsystem_a7ff81cc70835dad1f807537544676f69}} 
+\index{frc.robot.subsystems.EndgameMotorSubsystem@{frc.robot.subsystems.EndgameMotorSubsystem}!getEndgameMotorSlave@{getEndgameMotorSlave}}
+\index{getEndgameMotorSlave@{getEndgameMotorSlave}!frc.robot.subsystems.EndgameMotorSubsystem@{frc.robot.subsystems.EndgameMotorSubsystem}}
+\doxysubsubsection{\texorpdfstring{getEndgameMotorSlave()}{getEndgameMotorSlave()}}
+{\footnotesize\ttfamily WPI\+\_\+\+Talon\+SRX frc.\+robot.\+subsystems.\+Endgame\+Motor\+Subsystem.\+get\+Endgame\+Motor\+Slave (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+Returns slave Talon\+SRX controller 
+
+{\ttfamily \mbox{\hyperlink{classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem}{Drive\+Subsystem}}} needs the slave talon for the Pigeon onboard.
+
+\begin{DoxyReturn}{Returns}
+endgame\+Slave\+Motor 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classfrc_1_1robot_1_1subsystems_1_1_endgame_motor_subsystem_a0ca88b7107c3829e995059157af8e240}\label{classfrc_1_1robot_1_1subsystems_1_1_endgame_motor_subsystem_a0ca88b7107c3829e995059157af8e240}} 
+\index{frc.robot.subsystems.EndgameMotorSubsystem@{frc.robot.subsystems.EndgameMotorSubsystem}!getMotorSpeed@{getMotorSpeed}}
+\index{getMotorSpeed@{getMotorSpeed}!frc.robot.subsystems.EndgameMotorSubsystem@{frc.robot.subsystems.EndgameMotorSubsystem}}
+\doxysubsubsection{\texorpdfstring{getMotorSpeed()}{getMotorSpeed()}}
+{\footnotesize\ttfamily double frc.\+robot.\+subsystems.\+Endgame\+Motor\+Subsystem.\+get\+Motor\+Speed (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+\doxyparagraph*{get\+Motor\+Speed}
+
+This method returns the endgame motor speed
+
+\begin{DoxyReturn}{Returns}
+the current motor speed 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classfrc_1_1robot_1_1subsystems_1_1_endgame_motor_subsystem_a96003cbd850f05cc2416af699e2c87e6}\label{classfrc_1_1robot_1_1subsystems_1_1_endgame_motor_subsystem_a96003cbd850f05cc2416af699e2c87e6}} 
+\index{frc.robot.subsystems.EndgameMotorSubsystem@{frc.robot.subsystems.EndgameMotorSubsystem}!setMotorSpeed@{setMotorSpeed}}
+\index{setMotorSpeed@{setMotorSpeed}!frc.robot.subsystems.EndgameMotorSubsystem@{frc.robot.subsystems.EndgameMotorSubsystem}}
+\doxysubsubsection{\texorpdfstring{setMotorSpeed()}{setMotorSpeed()}}
+{\footnotesize\ttfamily void frc.\+robot.\+subsystems.\+Endgame\+Motor\+Subsystem.\+set\+Motor\+Speed (\begin{DoxyParamCaption}\item[{double}]{speed }\end{DoxyParamCaption})}
+
+\doxyparagraph*{set\+Motor\+Speed}
+
+This method sets the endgame motor speed to the passed variable
+
+
+\begin{DoxyParams}{Parameters}
+{\em speed} & the speed at which to set the motor \\
+\hline
+\end{DoxyParams}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+src/main/java/frc/robot/subsystems/Endgame\+Motor\+Subsystem.\+java\end{DoxyCompactItemize}
