@@ -20,17 +20,17 @@ public class DriveSubsystem extends SubsystemBase {
     public static final double kMaxSpeed = 3; // meters per second
     public static final double kMaxAngularSpeed = Math.PI; // 1/2 rotation per second
 
-    private static final double highGearRatio = 6.3;
-    private static final double lowGearRatio = 12.9;
+    public static final double highGearRatio = 6.3;
+    public static final double lowGearRatio = 12.9;
 
-    private static final double kTrackWidth = 0.381 * 2; // meters // 26.5 inch
-    private static final double kWheelRadius = 0.0508; // meters // 2 inch
-    private static final int kEncoderResolution = 2048; // 2048 CPR
-    private static final double kMaxVolts = 12.0;
+    public static final double kTrackWidth = 0.381 * 2; // meters // 26.5 inch
+    public static final double kWheelRadius = 0.0508; // meters // 2 inch
+    public static final int kEncoderResolution = 2048; // 2048 CPR
+    public static final double kMaxVolts = 12.0;
 
-    private final WPI_TalonFX m_leftLeader = new WPI_TalonFX(1);
+    private final WPI_TalonFX m_leftLeader;
     // private final SpeedController m_leftFollower = new WPI_TalonFX(2);
-    private final WPI_TalonFX m_rightLeader = new WPI_TalonFX(2);
+    private final WPI_TalonFX m_rightLeader;
     // private final SpeedController m_rightFollower = new WPI_TalonFX(4);
 
     /*
@@ -40,11 +40,7 @@ public class DriveSubsystem extends SubsystemBase {
      * m_rightFollower);
      */
 
-    private final PigeonIMU m_gyro;
-
     private final DifferentialDriveKinematics m_kinematics = new DifferentialDriveKinematics(kTrackWidth);
-
-    private final DifferentialDriveOdometry m_odometry;
 
     // Gains are for example purposes only - must be determined for your own robot!
     public final SimpleMotorFeedforward leftMotorFeedforward = new SimpleMotorFeedforward(0.61037, 0.68157, 0.023755);
@@ -59,11 +55,11 @@ public class DriveSubsystem extends SubsystemBase {
      * Constructs a differential drive object. Sets the encoder distance per pulse
      * and resets the gyro.
      */
-    public DriveSubsystem(EndgameMotorSubsystem endgameMotorSubsystem) {
-        shifterState = false;
+    public DriveSubsystem(int leftMotorID, int rightMotorID) {
+        m_leftLeader = new WPI_TalonFX(leftMotorID);
+        m_rightLeader = new WPI_TalonFX(rightMotorID);
 
-        m_gyro = new PigeonIMU(endgameMotorSubsystem.getEndgameMotorSlave());
-        m_gyro.enterCalibrationMode(CalibrationMode.BootTareGyroAccel);
+        shifterState = false;
 
         TalonFXConfiguration config = new TalonFXConfiguration();
         config.velocityMeasurementPeriod = SensorVelocityMeasPeriod.Period_10Ms;
@@ -75,8 +71,6 @@ public class DriveSubsystem extends SubsystemBase {
         m_rightLeader.getSensorCollection().setIntegratedSensorPosition(0.0, 100);
 
         m_leftLeader.setInverted(true);
-
-        m_odometry = new DifferentialDriveOdometry(new Rotation2d(Math.toRadians(m_gyro.getFusedHeading())));
     }
 
     /**
@@ -197,6 +191,14 @@ public class DriveSubsystem extends SubsystemBase {
                 * (2 * Math.PI * kWheelRadius);
     }
 
+    public double getRawLeftSensorPosition() {
+        return m_leftLeader.getSelectedSensorPosition();
+    }
+
+    public double getRawRightSensorPosition() {
+        return m_rightLeader.getSelectedSensorPosition();
+    }
+
     /**
      * Set the shifting piston state
      * 
@@ -216,19 +218,5 @@ public class DriveSubsystem extends SubsystemBase {
     public void drive(double xSpeed, double rot) {
         var wheelSpeeds = m_kinematics.toWheelSpeeds(new ChassisSpeeds(xSpeed, 0.0, rot));
         setSpeeds(wheelSpeeds);
-    }
-
-    /** Updates the field-relative position. */
-    public void updateOdometry() {
-
-        // TODO: Attach a pigeon IMU and figure out how this whole distance thing works
-        // we'll need a switch case to differentiate between high and low gear
-
-        m_odometry.update(new Rotation2d(Math.toRadians(m_gyro.getFusedHeading())),
-                m_leftLeader.getSelectedSensorPosition() * ((1.0 / 2048.0) * kWheelRadius * Math.PI) / highGearRatio,
-                m_rightLeader.getSelectedSensorPosition() * ((1.0 / 2048.0) * kWheelRadius * Math.PI) / highGearRatio);
-        m_odometry.update(new Rotation2d(Math.toRadians(m_gyro.getFusedHeading())),
-                m_leftLeader.getSelectedSensorPosition() * ((1.0 / 2048.0) * kWheelRadius * Math.PI) / highGearRatio,
-                m_rightLeader.getSelectedSensorPosition() * ((1.0 / 2048.0) * kWheelRadius * Math.PI) / highGearRatio);
     }
 }

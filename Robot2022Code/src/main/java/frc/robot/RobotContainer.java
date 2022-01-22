@@ -56,8 +56,8 @@ public class RobotContainer {
         endgameMotorSubsystem = new EndgameMotorSubsystem(3, 4);
         endgameArmCommand = new EndgameArmCommand(endgameMotorSubsystem);
 
-        driveSubsystem = new DriveSubsystem(endgameMotorSubsystem);
-        driveCommand = new DriveCommand(driveSubsystem, controller);
+        driveSubsystem = new DriveSubsystem(1, 2);
+        driveCommand = new DriveCommand(driveSubsystem, endgameMotorSubsystem, controller);
 
         catapultSubsystem = new CatapultSubsystem(1, 2);
         catapultCommand = new CatapultCommand(catapultSubsystem);
