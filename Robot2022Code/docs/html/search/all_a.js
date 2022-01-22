@@ -7,6 +7,5 @@ var searchData=
   ['setvoltages_4',['setVoltages',['../classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem.html#ad55ff101390932755974b445c1b58c02',1,'frc::robot::subsystems::DriveSubsystem']]],
   ['shiftersubsystem_5',['ShifterSubsystem',['../classfrc_1_1robot_1_1subsystems_1_1_shifter_subsystem.html',1,'frc.robot.subsystems.ShifterSubsystem'],['../classfrc_1_1robot_1_1subsystems_1_1_shifter_subsystem.html#aa396e6375b288b058f6f25987f8f2855',1,'frc.robot.subsystems.ShifterSubsystem.ShifterSubsystem()']]],
   ['speedtovoltage_6',['speedToVoltage',['../classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem.html#a3bb2b79d822e0313a3934d29cefa333a',1,'frc::robot::subsystems::DriveSubsystem']]],
-  ['stoparmcommand_7',['StopArmCommand',['../classfrc_1_1robot_1_1commands_1_1endgamecommands_1_1_stop_arm_command.html',1,'frc::robot::commands::endgamecommands']]],
-  ['stopintakemotorscommand_8',['StopIntakeMotorsCommand',['../classfrc_1_1robot_1_1commands_1_1intakecommands_1_1intakemotorcommands_1_1_stop_intake_motors_command.html',1,'frc::robot::commands::intakecommands::intakemotorcommands']]]
+  ['stopintakemotorscommand_7',['StopIntakeMotorsCommand',['../classfrc_1_1robot_1_1commands_1_1intakecommands_1_1intakemotorcommands_1_1_stop_intake_motors_command.html',1,'frc::robot::commands::intakecommands::intakemotorcommands']]]
 ];

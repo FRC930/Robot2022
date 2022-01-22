@@ -9,46 +9,47 @@
 
 package frc.robot.commands.endgamecommands;
 
+import edu.wpi.first.wpilibj2.command.CommandBase;
+
 // import java.util.logging.Logger;
 
 import frc.robot.subsystems.EndgameMotorSubsystem;
-import edu.wpi.first.wpilibj2.command.CommandBase;
 
 //-------- COMMAND CLASS --------\\
 
 public class EndgameArmCommand extends CommandBase {
 
-  //-------- CONSTANTS --------\\
+  // -------- CONSTANTS --------\\
 
-  // private static final Logger logger = Logger.getLogger(EndgameArmCommand.class.getName());
-  //TODO: Establish speed for endgame arm
+  // private static final Logger logger =
+  // Logger.getLogger(EndgameArmCommand.class.getName());
+  // TODO: Establish speed for endgame arm
   private static double ARM_SPEED = 0.3;
 
-  //-------- DECLARATIONS --------\\
+  // -------- DECLARATIONS --------\\
 
   private final EndgameMotorSubsystem m_MotorSubsystem;
-  
 
-  //-------- CONSTRUCTOR --------\\
+  // -------- CONSTRUCTOR --------\\
 
   public EndgameArmCommand(EndgameMotorSubsystem motorSubsystem) {
     m_MotorSubsystem = motorSubsystem;
     // logger.log(LOG_LEVEL_FINE, "Initializing the EndgameArmCommand...");
 
-    addRequirements(m_MotorSubsystem);  // Use addRequirements() here to declare subsystem dependencies.
+    addRequirements(m_MotorSubsystem); // Use addRequirements() here to declare subsystem dependencies.
   }
 
-  //-------- COMMANDBASE METHODS --------\\
+  // -------- COMMANDBASE METHODS --------\\
 
-  @Override   // Called when the command is initially scheduled.
+  @Override // Called when the command is initially scheduled.
   public void initialize() {
-     m_MotorSubsystem.setMotorSpeed(ARM_SPEED);
-     
-    // logger.log(LOG_LEVEL_FINE, "Starting the arm motor (command)..."); 
+    m_MotorSubsystem.setMotorSpeed(ARM_SPEED);
+
+    // logger.log(LOG_LEVEL_FINE, "Starting the arm motor (command)...");
   }
-  
+
   @Override
-    public void end(boolean interrupted) {
-      m_MotorSubsystem.setMotorSpeed(0.0);
-    }
+  public void end(boolean interrupted) {
+    m_MotorSubsystem.setMotorSpeed(0.0);
+  }
 } // End of class EndgameArmCommand

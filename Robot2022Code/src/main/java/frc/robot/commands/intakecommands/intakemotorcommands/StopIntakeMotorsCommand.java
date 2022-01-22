@@ -9,39 +9,36 @@
 
 package frc.robot.commands.intakecommands.intakemotorcommands;
 
-
-import frc.robot.subsystems.IntakeMotorSubsystem;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-
+import frc.robot.subsystems.IntakeMotorSubsystem;
 
 //-------- COMMAND CLASS --------\\
 
 public class StopIntakeMotorsCommand extends CommandBase {
 
-  //-------- CONSTANTS --------\\
+  // -------- CONSTANTS --------\\
 
-
-  //-------- DECLARATIONS --------\\
+  // -------- DECLARATIONS --------\\
 
   private final IntakeMotorSubsystem intakeMotors;
 
-  //-------- CONSTRUCTOR --------\\
+  // -------- CONSTRUCTOR --------\\
 
   public StopIntakeMotorsCommand(IntakeMotorSubsystem iMotors) {
     intakeMotors = iMotors;
-    addRequirements(iMotors);  // Use addRequirements() here to declare subsystem dependencies.
+    addRequirements(iMotors); // Use addRequirements() here to declare subsystem dependencies.
   }
 
-  //-------- COMMANDBASE METHODS --------\\
+  // -------- COMMANDBASE METHODS --------\\
 
-  @Override   // Called when the command is initially scheduled.
+  @Override // Called when the command is initially scheduled.
   public void initialize() {
-     intakeMotors.setMotorSpeed(0.0);
+    intakeMotors.setMotorSpeed(0.0);
   }
 
-  @Override   // Returns true when the command should end.
+  @Override // Returns true when the command should end.
   public boolean isFinished() {
     return true;
   }
 
-} //End of class StopIntakeMotorsCommand
+} // End of class StopIntakeMotorsCommand

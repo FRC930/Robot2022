@@ -9,43 +9,40 @@
 
 package frc.robot.commands.intakecommands.intakemotorcommands;
 
-
-import frc.robot.subsystems.IntakeMotorSubsystem;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-
+import frc.robot.subsystems.IntakeMotorSubsystem;
 
 //-------- COMMAND CLASS --------\\
 
 public class CounterclockwiseIntakeMotorsCommand extends CommandBase {
 
-  //-------- CONSTANTS --------\\
+  // -------- CONSTANTS --------\\
 
-  private static final double INTAKE_SPEED = -0.6;  
+  private static final double INTAKE_SPEED = -0.6;
 
-  //-------- DECLARATIONS --------\\
+  // -------- DECLARATIONS --------\\
 
   private final IntakeMotorSubsystem intakeMotors;
-  
 
-  //-------- CONSTRUCTOR --------\\
+  // -------- CONSTRUCTOR --------\\
 
   public CounterclockwiseIntakeMotorsCommand(IntakeMotorSubsystem iMotors) {
     intakeMotors = iMotors;
 
-    addRequirements(iMotors);  // Use addRequirements() here to declare subsystem dependencies.
+    addRequirements(iMotors); // Use addRequirements() here to declare subsystem dependencies.
   }
 
-  //-------- COMMANDBASE METHODS --------\\
+  // -------- COMMANDBASE METHODS --------\\
 
-  @Override   // Called when the command is initially scheduled.
+  @Override // Called when the command is initially scheduled.
   public void initialize() {
-     intakeMotors.setMotorSpeed(INTAKE_SPEED);
-     
+    intakeMotors.setMotorSpeed(INTAKE_SPEED);
+
   }
-  
-  @Override   // Returns true when the command should end.
+
+  @Override // Returns true when the command should end.
   public boolean isFinished() {
     return true;
   }
 
-} //End of class RunIntakeMotorsCommand
+} // End of class RunIntakeMotorsCommand
