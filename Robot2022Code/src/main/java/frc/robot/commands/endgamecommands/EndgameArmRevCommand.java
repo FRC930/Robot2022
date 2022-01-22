@@ -35,7 +35,10 @@ public class EndgameArmRevCommand extends CommandBase {
   private final EndgameMotorSubsystem m_MotorSubsystem;
 
   // -------- CONSTRUCTOR --------\\
-
+  /**
+   * Creates command
+   * @param motorSubsystem motor subsystem to control
+   */
   public EndgameArmRevCommand(EndgameMotorSubsystem motorSubsystem) {
     m_MotorSubsystem = motorSubsystem;
     // logger.log(LOG_LEVEL_FINE, "Initializing the EndgameArmRevCommand...");

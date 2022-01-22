@@ -2,6 +2,7 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Solenoid;
+import frc.robot.Robot;
 
 /**
  * <h3> EndgamePistonSubsystem </h3>
@@ -16,7 +17,10 @@ public class EndgamePistonSubsystem {
      * @param solenoid_ID id of solenoid port
      */
     public EndgamePistonSubsystem(int solenoid_ID) {
-        grabberPiston = new Solenoid(PneumaticsModuleType.REVPH, solenoid_ID);
+        //CTRE pneumatic hub has 8 slots. Cap is placed on simulation to prevent errors.
+        grabberPiston = new Solenoid(
+            Robot.isReal()||solenoid_ID>7?PneumaticsModuleType.REVPH:PneumaticsModuleType.CTREPCM, 
+            solenoid_ID);
     }
     /**
      * changes grabber position. If true sets false, 
