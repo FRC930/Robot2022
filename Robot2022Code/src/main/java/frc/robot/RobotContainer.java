@@ -53,7 +53,7 @@ public class RobotContainer {
      * Initializes the robot
      */
     public RobotContainer() {
-        endgameMotorSubsystem = new EndgameMotorSubsystem();
+        endgameMotorSubsystem = new EndgameMotorSubsystem(3, 4);
         endgameArmCommand = new EndgameArmCommand(endgameMotorSubsystem);
 
         driveSubsystem = new DriveSubsystem(endgameMotorSubsystem);

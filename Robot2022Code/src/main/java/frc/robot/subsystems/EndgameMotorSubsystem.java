@@ -7,7 +7,11 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 // import java.util.logging.Logger;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-
+/**
+ * <h3> EndgameMotorSubsystem </h3>
+ * 
+ * Initializes and controls the two endgame arm motors.
+ */
 public class EndgameMotorSubsystem extends SubsystemBase {
 
     // -------- DECLARATIONS --------\\
@@ -18,15 +22,15 @@ public class EndgameMotorSubsystem extends SubsystemBase {
     private final WPI_TalonSRX endgameMotorMaster;
     private final WPI_TalonSRX endgameMotorSlave;
 
-    private static final int motorIDMaster = 3;
-    private static final int motorIDSlave = 4;
-
     // -------- CONSTRUCTOR --------\
 
     /**
      * This constructor initializes the endgame motors to the proper hardware
+     * 
+     * @param motorIDMaster ID for the master TalonSRX-has endgame encoder attached
+     * @param motorIDSlave ID for the slave TalonSRX-has pigeon attached
      */
-    public EndgameMotorSubsystem() {
+    public EndgameMotorSubsystem(int motorIDMaster, int motorIDSlave) {
         endgameMotorMaster = new WPI_TalonSRX(motorIDMaster);
         endgameMotorSlave = new WPI_TalonSRX(motorIDSlave);
         endgameMotorSlave.follow(endgameMotorMaster);
