@@ -18,7 +18,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class DriveSubsystem extends SubsystemBase {
     public static final double kMaxSpeed = 3; // meters per second
-    public static final double kMaxAngularSpeed = Math.PI; // 1/2 rotation per second
+    public static final double kMaxAngularSpeed = Math.PI/2; // 1/2 rotation per second
 
     public static final double highGearRatio = 6.3;
     public static final double lowGearRatio = 12.9;

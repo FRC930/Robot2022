@@ -2,6 +2,7 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.can.TalonSRXConfiguration;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 // import java.util.logging.Logger;
@@ -34,7 +35,7 @@ public class EndgameMotorSubsystem extends SubsystemBase {
         endgameMotorMaster = new WPI_TalonSRX(motorIDMaster);
         endgameMotorSlave = new WPI_TalonSRX(motorIDSlave);
         endgameMotorSlave.follow(endgameMotorMaster);
-        endgameMotorSlave.setInverted(true);
+        // endgameMotorSlave.setInverted(true);
         endgameMotorMaster.setNeutralMode(NeutralMode.Brake);
         endgameMotorSlave.setNeutralMode(NeutralMode.Brake);
     }

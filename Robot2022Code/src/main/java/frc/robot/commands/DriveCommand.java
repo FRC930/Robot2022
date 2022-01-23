@@ -59,9 +59,10 @@ public class DriveCommand extends CommandBase {
         DifferentialDriveWheelSpeeds wheelSpeeds = driveSubsystem.getWheelSpeeds(driveStick.getAsDouble(),
                 rotationStick.getAsDouble());
         driveSubsystem.setVoltages(driveSubsystem.speedToVoltage(
-                driveSubsystem.calculateLeftFeedforward(wheelSpeeds.leftMetersPerSecond)),
+                driveSubsystem.calculateLeftFeedforward(wheelSpeeds.leftMetersPerSecond)) / 2,
                 driveSubsystem
-                        .speedToVoltage(driveSubsystem.calculateRightFeedforward(wheelSpeeds.rightMetersPerSecond)));
+                        .speedToVoltage(driveSubsystem.calculateRightFeedforward(wheelSpeeds.rightMetersPerSecond))
+                        / 2);
         m_odometry.update(new Rotation2d(Math.toRadians(m_gyro.getFusedHeading())),
                 driveSubsystem.getRawLeftSensorPosition() * ((1.0 / 2048.0) * DriveSubsystem.kWheelRadius * Math.PI)
                         / DriveSubsystem.highGearRatio,

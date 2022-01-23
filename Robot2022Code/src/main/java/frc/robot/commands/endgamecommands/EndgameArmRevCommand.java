@@ -28,7 +28,7 @@ public class EndgameArmRevCommand extends CommandBase {
   // private static final Logger logger =
   // Logger.getLogger(EndgameArmRevCommand.class.getName());
   // TODO: Establish speed for endgame arm
-  private final double ARM_SPEED = -0.3;
+  private final double ARM_SPEED = -0.2;
 
   // -------- DECLARATIONS --------\\
 
