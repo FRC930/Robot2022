@@ -9,6 +9,7 @@ import frc.robot.commands.ToggleShifterCommand;
 import frc.robot.commands.endgamecommands.EndgameArmCommand;
 import frc.robot.commands.endgamecommands.EndgameArmRevCommand;
 import frc.robot.commands.endgamecommands.EndgameSensorCloseCommand;
+import frc.robot.commands.endgamecommands.EndgameRotateUntilTouching;
 import frc.robot.commands.intakecommands.intakemotorcommands.ClockwiseIntakeMotorsCommand;
 import frc.robot.commands.intakecommands.intakemotorcommands.CounterclockwiseIntakeMotorsCommand;
 import frc.robot.commands.intakecommands.intakemotorcommands.StopIntakeMotorsCommand;
@@ -19,6 +20,7 @@ import frc.robot.subsystems.EndgamePistonSubsystem;
 import frc.robot.subsystems.EndgameSensorSubsystem;
 import frc.robot.subsystems.IntakeMotorSubsystem;
 import frc.robot.subsystems.ShifterSubsystem;
+import frc.robot.subsystems.VisionCameraSubsystem;
 import frc.robot.triggers.AxisTrigger;
 
 public class RobotContainer {
@@ -51,6 +53,10 @@ public class RobotContainer {
     private final EndgameMotorSubsystem endgameMotorSubsystem;
     private final EndgameArmCommand endgameArmCommand;
     private final EndgameArmRevCommand endgameArmRevCommand;
+    private final EndgameRotateUntilTouching rotateUntilTouchingLeft2;
+    private final EndgameRotateUntilTouching rotateUntilTouchingLeft4;
+    private final EndgameRotateUntilTouching rotateUntilTouchingRight2;
+    private final EndgameRotateUntilTouching rotateUntilTouchingRight4;
 
     private final EndgameSensorSubsystem left2Sensor;
     private final EndgameSensorSubsystem right2Sensor;
@@ -76,7 +82,6 @@ public class RobotContainer {
     private final ClockwiseIntakeMotorsCommand clockwiseIntakeMotorsCommand;
     private final CounterclockwiseIntakeMotorsCommand counterClockwiseIntakeMotorsCommand;
     private final StopIntakeMotorsCommand stopIntakeMotorsCommand;
-
 
     /**
      * <h3>RobotContainer</h3>
@@ -104,19 +109,27 @@ public class RobotContainer {
         endgameSensorCloseCommand = new EndgameSensorCloseCommand(left1piston, right2Sensor);
 
 
+        VisionCameraSubsystem reflectiveTapeSubsystem = new VisionCameraSubsystem(
+                VisionCameraSubsystem.CameraType.REFLECTIVE_TAPE);
+
         driveSubsystem = new DriveSubsystem(1, 2);
-        driveCommand = new DriveCommand(driveSubsystem, endgameMotorSubsystem, controller);
+        driveCommand = new DriveCommand(driveSubsystem, endgameMotorSubsystem, reflectiveTapeSubsystem, controller);
 
         catapultSubsystem = new CatapultSubsystem(1, 2);
         catapultCommand = new CatapultCommand(catapultSubsystem);
 
         shifterSubsystem = new ShifterSubsystem(0);
-        toggleShifterCommand = new ToggleShifterCommand(shifterSubsystem, driveSubsystem);
+        toggleShifterCommand = new ToggleShifterCommand(shifterSubsystem);
 
         intakeMotorSubsystem = new IntakeMotorSubsystem(5);
         clockwiseIntakeMotorsCommand = new ClockwiseIntakeMotorsCommand(intakeMotorSubsystem);
         counterClockwiseIntakeMotorsCommand = new CounterclockwiseIntakeMotorsCommand(intakeMotorSubsystem);
         stopIntakeMotorsCommand = new StopIntakeMotorsCommand(intakeMotorSubsystem);
+
+        rotateUntilTouchingLeft2 = new EndgameRotateUntilTouching(endgameMotorSubsystem, left2Sensor);
+        rotateUntilTouchingLeft4 = new EndgameRotateUntilTouching(endgameMotorSubsystem, left4Sensor);
+        rotateUntilTouchingRight2 = new EndgameRotateUntilTouching(endgameMotorSubsystem, right2Sensor);
+        rotateUntilTouchingRight4 = new EndgameRotateUntilTouching(endgameMotorSubsystem, right4Sensor);
     }
 
     /**
@@ -138,7 +151,7 @@ public class RobotContainer {
 
         AxisTrigger reverseIntakeButton = new AxisTrigger(controller, XB_AXIS_LT);
         reverseIntakeButton.whileActiveOnce(clockwiseIntakeMotorsCommand);
-        
+
         JoystickButton intakeButton = new JoystickButton(controller, XB_LB);
         intakeButton.whileActiveOnce(counterClockwiseIntakeMotorsCommand);
 
@@ -158,11 +171,17 @@ public class RobotContainer {
             JoystickButton endgameSensorCloseButton = new JoystickButton(controller, XB_X);
         endgameSensorCloseButton.whileActiveOnce(endgameSensorCloseCommand, false);
         }
+        // This button is for simulation
+        if(!Robot.isReal()) {
+        JoystickButton rotateUntilTouchingButton = new JoystickButton(controller, XB_B);
+        rotateUntilTouchingButton.whileActiveOnce(rotateUntilTouchingLeft2);
+        }
+
         CommandScheduler scheduler = CommandScheduler.getInstance();
 
         scheduler.unregisterSubsystem(driveSubsystem);
 
         scheduler.setDefaultCommand(driveSubsystem, driveCommand);
-        
+
     }
 }

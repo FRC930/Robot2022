@@ -3,6 +3,10 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.ShifterSubsystem;
+import frc.robot.utilities.ShifterUtility;
+import frc.robot.utilities.ShuffleboardUtility;
+import frc.robot.utilities.ShuffleboardUtility.ShuffleBoardData;
+import frc.robot.utilities.ShuffleboardUtility.ShuffleboardKeys;
 
 /**
  * <h3>ToggleShifterCommand</h3>
@@ -11,7 +15,6 @@ import frc.robot.subsystems.ShifterSubsystem;
  */
 public class ToggleShifterCommand extends CommandBase {
     private ShifterSubsystem shifterSubsystem;
-    private DriveSubsystem driveSubsystem;
 
     /**
      * <h3>ToggleShifterCommand</h3>
@@ -24,22 +27,29 @@ public class ToggleShifterCommand extends CommandBase {
      * @param sSubsystem a ShifterSubsystem representing the solenoid
      * @param dSubsystem a DriveSubsystem representing the drive base of the robot
      */
-    public ToggleShifterCommand(ShifterSubsystem sSubsystem, DriveSubsystem dSubsystem) {
+    public ToggleShifterCommand(ShifterSubsystem sSubsystem) {
         shifterSubsystem = sSubsystem;
-        driveSubsystem = dSubsystem;
 
         shifterSubsystem.setShifterState(false);
+
+        addRequirements(shifterSubsystem);
     }
 
     @Override
     public void initialize() {
         shifterSubsystem.setShifterState(true);
-        driveSubsystem.setPistonState(shifterSubsystem.getShifterState());
+        ShifterUtility.setShifterState(true);
+        ShuffleboardUtility.getInstance().putToShuffleboard(ShuffleboardUtility.driverTab,
+                ShuffleboardKeys.DRIVETRAIN_SHIFTED,
+                new ShuffleBoardData<Boolean>(true));
     }
 
     @Override
     public void end(boolean interrupted) {
         shifterSubsystem.setShifterState(false);
-        driveSubsystem.setPistonState(shifterSubsystem.getShifterState());
+        ShifterUtility.setShifterState(false);
+        ShuffleboardUtility.getInstance().putToShuffleboard(ShuffleboardUtility.driverTab,
+                ShuffleboardKeys.DRIVETRAIN_SHIFTED,
+                new ShuffleBoardData<Boolean>(false));
     }
 }

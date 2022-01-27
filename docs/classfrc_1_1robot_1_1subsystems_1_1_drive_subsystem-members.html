@@ -9,6 +9,10 @@
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
+<link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="resize.js"></script>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
 <link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="search/searchdata.js"></script>
 <script type="text/javascript" src="search/search.js"></script>
@@ -47,6 +51,23 @@ $(function() {
 /* @license-end */
 </script>
 <div id="main-nav"></div>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+$(document).ready(function(){initNavTree('classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem.html',''); initResizable(); });
+/* @license-end */
+</script>
+<div id="doc-content">
 <!-- window showing the filter options -->
 <div id="MSearchSelectWindow"
      onmouseover="return searchBox.OnSearchSelectShow()"
@@ -61,11 +82,6 @@ $(function() {
 </iframe>
 </div>
 
-<div id="nav-path" class="navpath">
-  <ul>
-<li class="navelem"><b>frc</b></li><li class="navelem"><b>robot</b></li><li class="navelem"><b>subsystems</b></li><li class="navelem"><a class="el" href="classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem.html">DriveSubsystem</a></li>  </ul>
-</div>
-</div><!-- top -->
 <div class="header">
   <div class="headertitle"><div class="title">frc.robot.subsystems.DriveSubsystem Member List</div></div>
 </div><!--header-->
@@ -78,23 +94,32 @@ $(function() {
   <tr class="even"><td class="entry"><a class="el" href="classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem.html#abfaaa50fc9228c8b009294a91866215e">calculateRightFeedforward</a>(double velocity)</td><td class="entry"><a class="el" href="classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem.html">frc.robot.subsystems.DriveSubsystem</a></td><td class="entry"></td></tr>
   <tr class="odd"><td class="entry"><a class="el" href="classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem.html#a989b01cc434ad673650193bdc153b593">calculateRightPID</a>(double speed, double target)</td><td class="entry"><a class="el" href="classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem.html">frc.robot.subsystems.DriveSubsystem</a></td><td class="entry"></td></tr>
   <tr class="even"><td class="entry"><a class="el" href="classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem.html#a7a39523fdd20062a3857f24dd3d7a410">drive</a>(double xSpeed, double rot)</td><td class="entry"><a class="el" href="classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem.html">frc.robot.subsystems.DriveSubsystem</a></td><td class="entry"></td></tr>
-  <tr class="odd"><td class="entry"><a class="el" href="classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem.html#a2b9205aa949624f99cdb58f92f1f86e0">DriveSubsystem</a>(EndgameMotorSubsystem endgameMotorSubsystem)</td><td class="entry"><a class="el" href="classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem.html">frc.robot.subsystems.DriveSubsystem</a></td><td class="entry"></td></tr>
+  <tr class="odd"><td class="entry"><a class="el" href="classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem.html#ad890a129186b7050adcd0e786650fc34">DriveSubsystem</a>(int leftMotorID, int rightMotorID)</td><td class="entry"><a class="el" href="classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem.html">frc.robot.subsystems.DriveSubsystem</a></td><td class="entry"></td></tr>
   <tr class="even"><td class="entry"><a class="el" href="classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem.html#a1933186360b659a209a0d27dabca51cd">getLeftEncoder</a>()</td><td class="entry"><a class="el" href="classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem.html">frc.robot.subsystems.DriveSubsystem</a></td><td class="entry"></td></tr>
-  <tr class="odd"><td class="entry"><a class="el" href="classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem.html#ab24936e7b1d8366006e83c00e5b8bac4">getRightEncoder</a>()</td><td class="entry"><a class="el" href="classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem.html">frc.robot.subsystems.DriveSubsystem</a></td><td class="entry"></td></tr>
-  <tr class="even"><td class="entry"><a class="el" href="classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem.html#a1dd868cfac15cd864465cc9b1b946312">getWheelSpeeds</a>(double xSpeed, double rot)</td><td class="entry"><a class="el" href="classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem.html">frc.robot.subsystems.DriveSubsystem</a></td><td class="entry"></td></tr>
-  <tr bgcolor="#f0f0f0" class="odd"><td class="entry"><b>kMaxAngularSpeed</b> (defined in <a class="el" href="classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem.html">frc.robot.subsystems.DriveSubsystem</a>)</td><td class="entry"><a class="el" href="classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem.html">frc.robot.subsystems.DriveSubsystem</a></td><td class="entry"><span class="mlabel">static</span></td></tr>
-  <tr bgcolor="#f0f0f0" class="even"><td class="entry"><b>kMaxSpeed</b> (defined in <a class="el" href="classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem.html">frc.robot.subsystems.DriveSubsystem</a>)</td><td class="entry"><a class="el" href="classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem.html">frc.robot.subsystems.DriveSubsystem</a></td><td class="entry"><span class="mlabel">static</span></td></tr>
-  <tr bgcolor="#f0f0f0" class="odd"><td class="entry"><b>leftMotorFeedforward</b> (defined in <a class="el" href="classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem.html">frc.robot.subsystems.DriveSubsystem</a>)</td><td class="entry"><a class="el" href="classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem.html">frc.robot.subsystems.DriveSubsystem</a></td><td class="entry"></td></tr>
-  <tr bgcolor="#f0f0f0" class="even"><td class="entry"><b>rightMotorFeedforward</b> (defined in <a class="el" href="classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem.html">frc.robot.subsystems.DriveSubsystem</a>)</td><td class="entry"><a class="el" href="classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem.html">frc.robot.subsystems.DriveSubsystem</a></td><td class="entry"></td></tr>
-  <tr class="odd"><td class="entry"><a class="el" href="classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem.html#a3756a0deffc832e0d7fbd0d2db877afa">setPistonState</a>(boolean state)</td><td class="entry"><a class="el" href="classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem.html">frc.robot.subsystems.DriveSubsystem</a></td><td class="entry"></td></tr>
-  <tr class="even"><td class="entry"><a class="el" href="classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem.html#a18ee6a49a45138ef34f0770b25b420ff">setSpeeds</a>(DifferentialDriveWheelSpeeds speeds)</td><td class="entry"><a class="el" href="classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem.html">frc.robot.subsystems.DriveSubsystem</a></td><td class="entry"></td></tr>
-  <tr class="odd"><td class="entry"><a class="el" href="classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem.html#ad55ff101390932755974b445c1b58c02">setVoltages</a>(double leftVoltage, double rightVoltage)</td><td class="entry"><a class="el" href="classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem.html">frc.robot.subsystems.DriveSubsystem</a></td><td class="entry"></td></tr>
-  <tr class="even"><td class="entry"><a class="el" href="classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem.html#a3bb2b79d822e0313a3934d29cefa333a">speedToVoltage</a>(double speed)</td><td class="entry"><a class="el" href="classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem.html">frc.robot.subsystems.DriveSubsystem</a></td><td class="entry"></td></tr>
-  <tr class="odd"><td class="entry"><a class="el" href="classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem.html#af0701555ab90dcc74d50664eba1b6ee6">updateOdometry</a>()</td><td class="entry"><a class="el" href="classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem.html">frc.robot.subsystems.DriveSubsystem</a></td><td class="entry"></td></tr>
+  <tr class="odd"><td class="entry"><a class="el" href="classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem.html#a8c6b75995cdfc3a4da6416b58c7256c0">getPistonState</a>()</td><td class="entry"><a class="el" href="classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem.html">frc.robot.subsystems.DriveSubsystem</a></td><td class="entry"></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem.html#ad4bba4ef2990e858b9efa9dd389f8338">getRawLeftSensorPosition</a>()</td><td class="entry"><a class="el" href="classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem.html">frc.robot.subsystems.DriveSubsystem</a></td><td class="entry"></td></tr>
+  <tr class="odd"><td class="entry"><a class="el" href="classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem.html#a6a0f5f700b76fa87359d01509a95591d">getRawRightSensorPosition</a>()</td><td class="entry"><a class="el" href="classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem.html">frc.robot.subsystems.DriveSubsystem</a></td><td class="entry"></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem.html#ab24936e7b1d8366006e83c00e5b8bac4">getRightEncoder</a>()</td><td class="entry"><a class="el" href="classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem.html">frc.robot.subsystems.DriveSubsystem</a></td><td class="entry"></td></tr>
+  <tr class="odd"><td class="entry"><a class="el" href="classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem.html#a1dd868cfac15cd864465cc9b1b946312">getWheelSpeeds</a>(double xSpeed, double rot)</td><td class="entry"><a class="el" href="classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem.html">frc.robot.subsystems.DriveSubsystem</a></td><td class="entry"></td></tr>
+  <tr bgcolor="#f0f0f0" class="even"><td class="entry"><b>highGearRatio</b> (defined in <a class="el" href="classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem.html">frc.robot.subsystems.DriveSubsystem</a>)</td><td class="entry"><a class="el" href="classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem.html">frc.robot.subsystems.DriveSubsystem</a></td><td class="entry"><span class="mlabel">static</span></td></tr>
+  <tr bgcolor="#f0f0f0" class="odd"><td class="entry"><b>kEncoderResolution</b> (defined in <a class="el" href="classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem.html">frc.robot.subsystems.DriveSubsystem</a>)</td><td class="entry"><a class="el" href="classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem.html">frc.robot.subsystems.DriveSubsystem</a></td><td class="entry"><span class="mlabel">static</span></td></tr>
+  <tr bgcolor="#f0f0f0" class="even"><td class="entry"><b>kMaxAngularSpeed</b> (defined in <a class="el" href="classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem.html">frc.robot.subsystems.DriveSubsystem</a>)</td><td class="entry"><a class="el" href="classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem.html">frc.robot.subsystems.DriveSubsystem</a></td><td class="entry"><span class="mlabel">static</span></td></tr>
+  <tr bgcolor="#f0f0f0" class="odd"><td class="entry"><b>kMaxSpeed</b> (defined in <a class="el" href="classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem.html">frc.robot.subsystems.DriveSubsystem</a>)</td><td class="entry"><a class="el" href="classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem.html">frc.robot.subsystems.DriveSubsystem</a></td><td class="entry"><span class="mlabel">static</span></td></tr>
+  <tr bgcolor="#f0f0f0" class="even"><td class="entry"><b>kMaxVolts</b> (defined in <a class="el" href="classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem.html">frc.robot.subsystems.DriveSubsystem</a>)</td><td class="entry"><a class="el" href="classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem.html">frc.robot.subsystems.DriveSubsystem</a></td><td class="entry"><span class="mlabel">static</span></td></tr>
+  <tr bgcolor="#f0f0f0" class="odd"><td class="entry"><b>kTrackWidth</b> (defined in <a class="el" href="classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem.html">frc.robot.subsystems.DriveSubsystem</a>)</td><td class="entry"><a class="el" href="classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem.html">frc.robot.subsystems.DriveSubsystem</a></td><td class="entry"><span class="mlabel">static</span></td></tr>
+  <tr bgcolor="#f0f0f0" class="even"><td class="entry"><b>kWheelRadius</b> (defined in <a class="el" href="classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem.html">frc.robot.subsystems.DriveSubsystem</a>)</td><td class="entry"><a class="el" href="classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem.html">frc.robot.subsystems.DriveSubsystem</a></td><td class="entry"><span class="mlabel">static</span></td></tr>
+  <tr bgcolor="#f0f0f0" class="odd"><td class="entry"><b>lowGearRatio</b> (defined in <a class="el" href="classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem.html">frc.robot.subsystems.DriveSubsystem</a>)</td><td class="entry"><a class="el" href="classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem.html">frc.robot.subsystems.DriveSubsystem</a></td><td class="entry"><span class="mlabel">static</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem.html#a3756a0deffc832e0d7fbd0d2db877afa">setPistonState</a>(boolean state)</td><td class="entry"><a class="el" href="classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem.html">frc.robot.subsystems.DriveSubsystem</a></td><td class="entry"></td></tr>
+  <tr class="odd"><td class="entry"><a class="el" href="classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem.html#a18ee6a49a45138ef34f0770b25b420ff">setSpeeds</a>(DifferentialDriveWheelSpeeds speeds)</td><td class="entry"><a class="el" href="classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem.html">frc.robot.subsystems.DriveSubsystem</a></td><td class="entry"></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem.html#ad55ff101390932755974b445c1b58c02">setVoltages</a>(double leftVoltage, double rightVoltage)</td><td class="entry"><a class="el" href="classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem.html">frc.robot.subsystems.DriveSubsystem</a></td><td class="entry"></td></tr>
+  <tr class="odd"><td class="entry"><a class="el" href="classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem.html#a3bb2b79d822e0313a3934d29cefa333a">speedToVoltage</a>(double speed)</td><td class="entry"><a class="el" href="classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem.html">frc.robot.subsystems.DriveSubsystem</a></td><td class="entry"></td></tr>
 </table></div><!-- contents -->
+</div><!-- doc-content -->
 <!-- start footer part -->
-<hr class="footer"/><address class="footer"><small>
-Generated by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.3
-</small></address>
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="footer">Generated on Wed Jan 26 2022 20:11:31 for Robot2022 by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.3 </li>
+  </ul>
+</div>
 </body>
 </html>

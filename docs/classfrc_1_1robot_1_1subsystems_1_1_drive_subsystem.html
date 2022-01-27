@@ -9,6 +9,10 @@
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
+<link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="resize.js"></script>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
 <link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="search/searchdata.js"></script>
 <script type="text/javascript" src="search/search.js"></script>
@@ -47,6 +51,23 @@ $(function() {
 /* @license-end */
 </script>
 <div id="main-nav"></div>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+$(document).ready(function(){initNavTree('classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem.html',''); initResizable(); });
+/* @license-end */
+</script>
+<div id="doc-content">
 <!-- window showing the filter options -->
 <div id="MSearchSelectWindow"
      onmouseover="return searchBox.OnSearchSelectShow()"
@@ -61,31 +82,41 @@ $(function() {
 </iframe>
 </div>
 
-<div id="nav-path" class="navpath">
-  <ul>
-<li class="navelem"><b>frc</b></li><li class="navelem"><b>robot</b></li><li class="navelem"><b>subsystems</b></li><li class="navelem"><a class="el" href="classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem.html">DriveSubsystem</a></li>  </ul>
-</div>
-</div><!-- top -->
 <div class="header">
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
-<a href="#pub-attribs">Public Attributes</a> &#124;
 <a href="#pub-static-attribs">Static Public Attributes</a> &#124;
 <a href="classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem-members.html">List of all members</a>  </div>
   <div class="headertitle"><div class="title">frc.robot.subsystems.DriveSubsystem Class Reference</div></div>
 </div><!--header-->
 <div class="contents">
-<div class="dynheader">
-Inheritance diagram for frc.robot.subsystems.DriveSubsystem:</div>
-<div class="dyncontent">
- <div class="center">
-  <img src="classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem.png" alt=""/>
- </div></div>
+<div id="dynsection-0" onclick="return toggleVisibility(this)" class="dynheader closed" style="cursor:pointer;">
+  <img id="dynsection-0-trigger" src="closed.png" alt="+"/> Inheritance diagram for frc.robot.subsystems.DriveSubsystem:</div>
+<div id="dynsection-0-summary" class="dynsummary" style="display:block;">
+</div>
+<div id="dynsection-0-content" class="dyncontent" style="display:none;">
+<div class="center"><img src="classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem__inherit__graph.png" border="0" usemap="#afrc_8robot_8subsystems_8_drive_subsystem_inherit__map" alt="Inheritance graph"/></div>
+<map name="afrc_8robot_8subsystems_8_drive_subsystem_inherit__map" id="afrc_8robot_8subsystems_8_drive_subsystem_inherit__map">
+<area shape="rect" title=" " alt="" coords="5,80,181,121"/>
+<area shape="rect" title=" " alt="" coords="34,5,153,32"/>
+</map>
+<center><span class="legend">[<a target="top" href="graph_legend.html">legend</a>]</span></center></div>
+<div id="dynsection-1" onclick="return toggleVisibility(this)" class="dynheader closed" style="cursor:pointer;">
+  <img id="dynsection-1-trigger" src="closed.png" alt="+"/> Collaboration diagram for frc.robot.subsystems.DriveSubsystem:</div>
+<div id="dynsection-1-summary" class="dynsummary" style="display:block;">
+</div>
+<div id="dynsection-1-content" class="dyncontent" style="display:none;">
+<div class="center"><img src="classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem__coll__graph.png" border="0" usemap="#afrc_8robot_8subsystems_8_drive_subsystem_coll__map" alt="Collaboration graph"/></div>
+<map name="afrc_8robot_8subsystems_8_drive_subsystem_coll__map" id="afrc_8robot_8subsystems_8_drive_subsystem_coll__map">
+<area shape="rect" title=" " alt="" coords="5,80,181,121"/>
+<area shape="rect" title=" " alt="" coords="34,5,153,32"/>
+</map>
+<center><span class="legend">[<a target="top" href="graph_legend.html">legend</a>]</span></center></div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a2b9205aa949624f99cdb58f92f1f86e0"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem.html#a2b9205aa949624f99cdb58f92f1f86e0">DriveSubsystem</a> (<a class="el" href="classfrc_1_1robot_1_1subsystems_1_1_endgame_motor_subsystem.html">EndgameMotorSubsystem</a> endgameMotorSubsystem)</td></tr>
-<tr class="separator:a2b9205aa949624f99cdb58f92f1f86e0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad890a129186b7050adcd0e786650fc34"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem.html#ad890a129186b7050adcd0e786650fc34">DriveSubsystem</a> (int leftMotorID, int rightMotorID)</td></tr>
+<tr class="separator:ad890a129186b7050adcd0e786650fc34"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad55ff101390932755974b445c1b58c02"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem.html#ad55ff101390932755974b445c1b58c02">setVoltages</a> (double leftVoltage, double rightVoltage)</td></tr>
 <tr class="separator:ad55ff101390932755974b445c1b58c02"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a76b2911ec5557caa3cfc6fce74ba0621"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem.html#a76b2911ec5557caa3cfc6fce74ba0621">calculateLeftFeedforward</a> (double velocity)</td></tr>
@@ -106,21 +137,16 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a1933186360b659a209a0d27dabca51cd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab24936e7b1d8366006e83c00e5b8bac4"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem.html#ab24936e7b1d8366006e83c00e5b8bac4">getRightEncoder</a> ()</td></tr>
 <tr class="separator:ab24936e7b1d8366006e83c00e5b8bac4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad4bba4ef2990e858b9efa9dd389f8338"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem.html#ad4bba4ef2990e858b9efa9dd389f8338">getRawLeftSensorPosition</a> ()</td></tr>
+<tr class="separator:ad4bba4ef2990e858b9efa9dd389f8338"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6a0f5f700b76fa87359d01509a95591d"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem.html#a6a0f5f700b76fa87359d01509a95591d">getRawRightSensorPosition</a> ()</td></tr>
+<tr class="separator:a6a0f5f700b76fa87359d01509a95591d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3756a0deffc832e0d7fbd0d2db877afa"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem.html#a3756a0deffc832e0d7fbd0d2db877afa">setPistonState</a> (boolean state)</td></tr>
 <tr class="separator:a3756a0deffc832e0d7fbd0d2db877afa"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8c6b75995cdfc3a4da6416b58c7256c0"><td class="memItemLeft" align="right" valign="top">boolean&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem.html#a8c6b75995cdfc3a4da6416b58c7256c0">getPistonState</a> ()</td></tr>
+<tr class="separator:a8c6b75995cdfc3a4da6416b58c7256c0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7a39523fdd20062a3857f24dd3d7a410"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem.html#a7a39523fdd20062a3857f24dd3d7a410">drive</a> (double xSpeed, double rot)</td></tr>
 <tr class="separator:a7a39523fdd20062a3857f24dd3d7a410"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af0701555ab90dcc74d50664eba1b6ee6"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem.html#af0701555ab90dcc74d50664eba1b6ee6">updateOdometry</a> ()</td></tr>
-<tr class="separator:af0701555ab90dcc74d50664eba1b6ee6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
-Public Attributes</h2></td></tr>
-<tr class="memitem:a1466d57e4dbd0d7abae1e352ff350a45"><td class="memItemLeft" align="right" valign="top"><a id="a1466d57e4dbd0d7abae1e352ff350a45" name="a1466d57e4dbd0d7abae1e352ff350a45"></a>
-final SimpleMotorFeedforward&#160;</td><td class="memItemRight" valign="bottom"><b>leftMotorFeedforward</b> = new SimpleMotorFeedforward(0.61037, 0.68157, 0.023755)</td></tr>
-<tr class="separator:a1466d57e4dbd0d7abae1e352ff350a45"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa39b7ef2a36d266046192586514a475c"><td class="memItemLeft" align="right" valign="top"><a id="aa39b7ef2a36d266046192586514a475c" name="aa39b7ef2a36d266046192586514a475c"></a>
-final SimpleMotorFeedforward&#160;</td><td class="memItemRight" valign="bottom"><b>rightMotorFeedforward</b> = new SimpleMotorFeedforward(0.62728, 0.68254, 0.021885)</td></tr>
-<tr class="separator:aa39b7ef2a36d266046192586514a475c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-attribs" name="pub-static-attribs"></a>
 Static Public Attributes</h2></td></tr>
@@ -128,12 +154,36 @@ Static Public Attributes</h2></td></tr>
 static final double&#160;</td><td class="memItemRight" valign="bottom"><b>kMaxSpeed</b> = 3</td></tr>
 <tr class="separator:a282102c3fda8c388a89e1da7539e8f96"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adc145e679a0b54f3b6a079d60fa9d0ef"><td class="memItemLeft" align="right" valign="top"><a id="adc145e679a0b54f3b6a079d60fa9d0ef" name="adc145e679a0b54f3b6a079d60fa9d0ef"></a>
-static final double&#160;</td><td class="memItemRight" valign="bottom"><b>kMaxAngularSpeed</b> = Math.PI</td></tr>
+static final double&#160;</td><td class="memItemRight" valign="bottom"><b>kMaxAngularSpeed</b> = Math.PI / 2</td></tr>
 <tr class="separator:adc145e679a0b54f3b6a079d60fa9d0ef"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9d6b3c98b0faa88d8fd5dd0cf945f4ea"><td class="memItemLeft" align="right" valign="top"><a id="a9d6b3c98b0faa88d8fd5dd0cf945f4ea" name="a9d6b3c98b0faa88d8fd5dd0cf945f4ea"></a>
+static final double&#160;</td><td class="memItemRight" valign="bottom"><b>highGearRatio</b> = 6.3</td></tr>
+<tr class="separator:a9d6b3c98b0faa88d8fd5dd0cf945f4ea"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a089c790a0d27ac80481d5415f207cd0e"><td class="memItemLeft" align="right" valign="top"><a id="a089c790a0d27ac80481d5415f207cd0e" name="a089c790a0d27ac80481d5415f207cd0e"></a>
+static final double&#160;</td><td class="memItemRight" valign="bottom"><b>lowGearRatio</b> = 12.9</td></tr>
+<tr class="separator:a089c790a0d27ac80481d5415f207cd0e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a12f61fb4325a6ad566c278eef87bd004"><td class="memItemLeft" align="right" valign="top"><a id="a12f61fb4325a6ad566c278eef87bd004" name="a12f61fb4325a6ad566c278eef87bd004"></a>
+static final double&#160;</td><td class="memItemRight" valign="bottom"><b>kTrackWidth</b> = 0.381 * 2</td></tr>
+<tr class="separator:a12f61fb4325a6ad566c278eef87bd004"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac29eb8f1e425dcd5edee4618c75d4a7d"><td class="memItemLeft" align="right" valign="top"><a id="ac29eb8f1e425dcd5edee4618c75d4a7d" name="ac29eb8f1e425dcd5edee4618c75d4a7d"></a>
+static final double&#160;</td><td class="memItemRight" valign="bottom"><b>kWheelRadius</b> = 0.0508</td></tr>
+<tr class="separator:ac29eb8f1e425dcd5edee4618c75d4a7d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa7b155208d046c04e060a9c842de7839"><td class="memItemLeft" align="right" valign="top"><a id="aa7b155208d046c04e060a9c842de7839" name="aa7b155208d046c04e060a9c842de7839"></a>
+static final int&#160;</td><td class="memItemRight" valign="bottom"><b>kEncoderResolution</b> = 2048</td></tr>
+<tr class="separator:aa7b155208d046c04e060a9c842de7839"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae005c218395b30fee5e52df715f312e5"><td class="memItemLeft" align="right" valign="top"><a id="ae005c218395b30fee5e52df715f312e5" name="ae005c218395b30fee5e52df715f312e5"></a>
+static final double&#160;</td><td class="memItemRight" valign="bottom"><b>kMaxVolts</b> = 12.0</td></tr>
+<tr class="separator:ae005c218395b30fee5e52df715f312e5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a id="a2b9205aa949624f99cdb58f92f1f86e0" name="a2b9205aa949624f99cdb58f92f1f86e0"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a2b9205aa949624f99cdb58f92f1f86e0">&#9670;&nbsp;</a></span>DriveSubsystem()</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><h3><a class="el" href="classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem.html">DriveSubsystem</a></h3>
+<p ><a class="el" href="classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem.html">DriveSubsystem</a> represents the drivetrain to our code</p>
+<dl class="section author"><dt>Author</dt><dd>Alexander Taylor </dd></dl>
+<dl class="section since"><dt>Since</dt><dd>22 January 2022 </dd></dl>
+<dl class="section version"><dt>Version</dt><dd>1.0 </dd></dl>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a id="ad890a129186b7050adcd0e786650fc34" name="ad890a129186b7050adcd0e786650fc34"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad890a129186b7050adcd0e786650fc34">&#9670;&nbsp;</a></span>DriveSubsystem()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -141,9 +191,19 @@ static final double&#160;</td><td class="memItemRight" valign="bottom"><b>kMaxAn
         <tr>
           <td class="memname">frc.robot.subsystems.DriveSubsystem.DriveSubsystem </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="classfrc_1_1robot_1_1subsystems_1_1_endgame_motor_subsystem.html">EndgameMotorSubsystem</a>&#160;</td>
-          <td class="paramname"><em>endgameMotorSubsystem</em></td><td>)</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>leftMotorID</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>rightMotorID</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -312,6 +372,19 @@ static final double&#160;</td><td class="memItemRight" valign="bottom"><b>kMaxAn
   </dd>
 </dl>
 
+<p class="reference">References <a class="el" href="classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem.html#a18ee6a49a45138ef34f0770b25b420ff">frc.robot.subsystems.DriveSubsystem.setSpeeds()</a>.</p>
+<div id="dynsection-2" onclick="return toggleVisibility(this)" class="dynheader closed" style="cursor:pointer;">
+  <img id="dynsection-2-trigger" src="closed.png" alt="+"/> Here is the call graph for this function:</div>
+<div id="dynsection-2-summary" class="dynsummary" style="display:block;">
+</div>
+<div id="dynsection-2-content" class="dyncontent" style="display:none;">
+<div class="center"><img src="classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem_a7a39523fdd20062a3857f24dd3d7a410_cgraph.png" border="0" usemap="#aclassfrc_1_1robot_1_1subsystems_1_1_drive_subsystem_a7a39523fdd20062a3857f24dd3d7a410_cgraph" alt=""/></div>
+<map name="aclassfrc_1_1robot_1_1subsystems_1_1_drive_subsystem_a7a39523fdd20062a3857f24dd3d7a410_cgraph" id="aclassfrc_1_1robot_1_1subsystems_1_1_drive_subsystem_a7a39523fdd20062a3857f24dd3d7a410_cgraph">
+<area shape="rect" title=" " alt="" coords="5,5,181,47"/>
+<area shape="rect" href="classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem.html#a18ee6a49a45138ef34f0770b25b420ff" title=" " alt="" coords="229,5,405,47"/>
+</map>
+</div>
+
 </div>
 </div>
 <a id="a1933186360b659a209a0d27dabca51cd" name="a1933186360b659a209a0d27dabca51cd"></a>
@@ -330,6 +403,67 @@ static final double&#160;</td><td class="memItemRight" valign="bottom"><b>kMaxAn
 </div><div class="memdoc">
 <p >Gets the reading from the left encoder</p>
 <dl class="section return"><dt>Returns</dt><dd>the encoder speed </dd></dl>
+
+</div>
+</div>
+<a id="a8c6b75995cdfc3a4da6416b58c7256c0" name="a8c6b75995cdfc3a4da6416b58c7256c0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8c6b75995cdfc3a4da6416b58c7256c0">&#9670;&nbsp;</a></span>getPistonState()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">boolean frc.robot.subsystems.DriveSubsystem.getPistonState </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p >Gets the state of the shifter</p>
+<dl class="section return"><dt>Returns</dt><dd>the state of the shifter </dd></dl>
+
+</div>
+</div>
+<a id="ad4bba4ef2990e858b9efa9dd389f8338" name="ad4bba4ef2990e858b9efa9dd389f8338"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad4bba4ef2990e858b9efa9dd389f8338">&#9670;&nbsp;</a></span>getRawLeftSensorPosition()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">double frc.robot.subsystems.DriveSubsystem.getRawLeftSensorPosition </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<h3>getRawLeftSensorPosition</h3>
+<p >This method gets the position of the right encoder</p>
+<dl class="section return"><dt>Returns</dt><dd>the position of the right encoder in raw encoder units </dd></dl>
+<dl class="section see"><dt>See also</dt><dd><code><a class="el" href="">getIntegratedSensorPosition()</a></code> </dd></dl>
+
+</div>
+</div>
+<a id="a6a0f5f700b76fa87359d01509a95591d" name="a6a0f5f700b76fa87359d01509a95591d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6a0f5f700b76fa87359d01509a95591d">&#9670;&nbsp;</a></span>getRawRightSensorPosition()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">double frc.robot.subsystems.DriveSubsystem.getRawRightSensorPosition </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<h3>getRawRightSensorPosition</h3>
+<p >This method gets the position of the right encoder</p>
+<dl class="section return"><dt>Returns</dt><dd>the position of the left encoder in raw encoder units </dd></dl>
+<dl class="section see"><dt>See also</dt><dd><code><a class="el" href="">getIntegratedSensorPosition()</a></code> </dd></dl>
 
 </div>
 </div>
@@ -437,6 +571,8 @@ static final double&#160;</td><td class="memItemRight" valign="bottom"><b>kMaxAn
   </dd>
 </dl>
 
+<p class="reference">Referenced by <a class="el" href="classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem.html#a7a39523fdd20062a3857f24dd3d7a410">frc.robot.subsystems.DriveSubsystem.drive()</a>.</p>
+
 </div>
 </div>
 <a id="ad55ff101390932755974b445c1b58c02" name="ad55ff101390932755974b445c1b58c02"></a>
@@ -502,31 +638,17 @@ static final double&#160;</td><td class="memItemRight" valign="bottom"><b>kMaxAn
 
 </div>
 </div>
-<a id="af0701555ab90dcc74d50664eba1b6ee6" name="af0701555ab90dcc74d50664eba1b6ee6"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af0701555ab90dcc74d50664eba1b6ee6">&#9670;&nbsp;</a></span>updateOdometry()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void frc.robot.subsystems.DriveSubsystem.updateOdometry </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p >Updates the field-relative position. </p>
-
-</div>
-</div>
 <hr/>The documentation for this class was generated from the following file:<ul>
 <li>src/main/java/frc/robot/subsystems/DriveSubsystem.java</li>
 </ul>
 </div><!-- contents -->
+</div><!-- doc-content -->
 <!-- start footer part -->
-<hr class="footer"/><address class="footer"><small>
-Generated by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.3
-</small></address>
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="navelem"><b>frc</b></li><li class="navelem"><b>robot</b></li><li class="navelem"><b>subsystems</b></li><li class="navelem"><a class="el" href="classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem.html">DriveSubsystem</a></li>
+    <li class="footer">Generated on Wed Jan 26 2022 20:11:31 for Robot2022 by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.3 </li>
+  </ul>
+</div>
 </body>
 </html>

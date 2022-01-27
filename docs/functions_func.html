@@ -9,6 +9,10 @@
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
+<link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="resize.js"></script>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
 <link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="search/searchdata.js"></script>
 <script type="text/javascript" src="search/search.js"></script>
@@ -48,6 +52,22 @@ $(function() {
 </script>
 <div id="main-nav"></div>
 </div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+$(document).ready(function(){initNavTree('functions_func.html',''); initResizable(); });
+/* @license-end */
+</script>
+<div id="doc-content">
 <!-- window showing the filter options -->
 <div id="MSearchSelectWindow"
      onmouseover="return searchBox.OnSearchSelectShow()"
@@ -65,6 +85,11 @@ $(function() {
 <div class="contents">
 &#160;
 
+<h3><a id="index_a" name="index_a"></a>- a -</h3><ul>
+<li>addAutonOptions()&#160;:&#160;<a class="el" href="classfrc_1_1robot_1_1utilities_1_1_shuffleboard_utility.html#a042264dbe7304c26404b3369dd52b1d8">frc.robot.utilities.ShuffleboardUtility</a></li>
+</ul>
+
+
 <h3><a id="index_b" name="index_b"></a>- b -</h3><ul>
 <li>beginTeleopRunCommands()&#160;:&#160;<a class="el" href="classfrc_1_1robot_1_1_robot_container.html#a3f2d487ab46df802d2edc35108482806">frc.robot.RobotContainer</a></li>
 </ul>
@@ -77,39 +102,70 @@ $(function() {
 <li>calculateRightPID()&#160;:&#160;<a class="el" href="classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem.html#a989b01cc434ad673650193bdc153b593">frc.robot.subsystems.DriveSubsystem</a></li>
 <li>CatapultCommand()&#160;:&#160;<a class="el" href="classfrc_1_1robot_1_1commands_1_1_catapult_command.html#ad2dc486cfe3bb82696bc63e3d73934bd">frc.robot.commands.CatapultCommand</a></li>
 <li>CatapultSubsystem()&#160;:&#160;<a class="el" href="classfrc_1_1robot_1_1subsystems_1_1_catapult_subsystem.html#a2f06177275173d528d0fef1eb6f94e1b">frc.robot.subsystems.CatapultSubsystem</a></li>
+<li>ClockwiseIntakeMotorsCommand()&#160;:&#160;<a class="el" href="classfrc_1_1robot_1_1commands_1_1intakecommands_1_1intakemotorcommands_1_1_clockwise_intake_motors_command.html#a89404fe0501b83ad1ee1f0b35b82f068">frc.robot.commands.intakecommands.intakemotorcommands.ClockwiseIntakeMotorsCommand</a></li>
+<li>closed()&#160;:&#160;<a class="el" href="classfrc_1_1robot_1_1subsystems_1_1_endgame_piston_subsystem.html#af0a853b1a3fa6955eaef9a704a82b34d">frc.robot.subsystems.EndgamePistonSubsystem</a></li>
 </ul>
 
 
 <h3><a id="index_d" name="index_d"></a>- d -</h3><ul>
+<li>DefaultAutoPath()&#160;:&#160;<a class="el" href="classfrc_1_1robot_1_1commands_1_1autocommands_1_1paths_1_1_default_auto_path.html#abc58f2221ba8f370f83acc2d4083e91c">frc.robot.commands.autocommands.paths.DefaultAutoPath</a></li>
 <li>drive()&#160;:&#160;<a class="el" href="classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem.html#a7a39523fdd20062a3857f24dd3d7a410">frc.robot.subsystems.DriveSubsystem</a></li>
-<li>DriveCommand()&#160;:&#160;<a class="el" href="classfrc_1_1robot_1_1commands_1_1_drive_command.html#abb2f652bda25671ca7fdfecb2d8cd146">frc.robot.commands.DriveCommand</a></li>
-<li>DriveSubsystem()&#160;:&#160;<a class="el" href="classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem.html#a2b9205aa949624f99cdb58f92f1f86e0">frc.robot.subsystems.DriveSubsystem</a></li>
+<li>DriveCommand()&#160;:&#160;<a class="el" href="classfrc_1_1robot_1_1commands_1_1_drive_command.html#a6f76dde81a07bb9b120de8d7d43899d1">frc.robot.commands.DriveCommand</a></li>
+<li>DriveSubsystem()&#160;:&#160;<a class="el" href="classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem.html#ad890a129186b7050adcd0e786650fc34">frc.robot.subsystems.DriveSubsystem</a></li>
 </ul>
 
 
 <h3><a id="index_e" name="index_e"></a>- e -</h3><ul>
-<li>EndgameMotorSubsystem()&#160;:&#160;<a class="el" href="classfrc_1_1robot_1_1subsystems_1_1_endgame_motor_subsystem.html#a748cf3476e0eb929d24f690a642520f6">frc.robot.subsystems.EndgameMotorSubsystem</a></li>
+<li>end()&#160;:&#160;<a class="el" href="classfrc_1_1robot_1_1commands_1_1intakecommands_1_1intake_piston_commands_1_1_disengage_intake_pistons_command.html#afd87b641f086d38e338236ca019a6325">frc.robot.commands.intakecommands.intakePistonCommands.DisengageIntakePistonsCommand</a>, <a class="el" href="classfrc_1_1robot_1_1commands_1_1intakecommands_1_1intake_piston_commands_1_1_engage_intake_pistons_command.html#ad5de4ad9ef59f06b91790bc147ce3cba">frc.robot.commands.intakecommands.intakePistonCommands.EngageIntakePistonsCommand</a></li>
+<li>EndgameCloseClawCommand()&#160;:&#160;<a class="el" href="classfrc_1_1robot_1_1commands_1_1endgamecommands_1_1_endgame_close_claw_command.html#a0c8ace78cc9055894d7690335fb00392">frc.robot.commands.endgamecommands.EndgameCloseClawCommand</a></li>
+<li>EndgameMotorSubsystem()&#160;:&#160;<a class="el" href="classfrc_1_1robot_1_1subsystems_1_1_endgame_motor_subsystem.html#a818b96747132986438ff1ba58753ee7a">frc.robot.subsystems.EndgameMotorSubsystem</a></li>
+<li>EndgameOpenClawCommand()&#160;:&#160;<a class="el" href="classfrc_1_1robot_1_1commands_1_1endgamecommands_1_1_endgame_open_claw_command.html#a9808787a0720e7c9daf37f1e5bc9dbe0">frc.robot.commands.endgamecommands.EndgameOpenClawCommand</a></li>
+<li>EndgamePistonSubsystem()&#160;:&#160;<a class="el" href="classfrc_1_1robot_1_1subsystems_1_1_endgame_piston_subsystem.html#aec1dc0006bac5a05e625535910b64e05">frc.robot.subsystems.EndgamePistonSubsystem</a></li>
+<li>EndgameSensorSubsystem()&#160;:&#160;<a class="el" href="classfrc_1_1robot_1_1subsystems_1_1_endgame_sensor_subsystem.html#a71552234ae91fda6d4a385d6d81e0a4d">frc.robot.subsystems.EndgameSensorSubsystem</a></li>
+<li>execute()&#160;:&#160;<a class="el" href="classfrc_1_1robot_1_1commands_1_1intakecommands_1_1intake_piston_commands_1_1_disengage_intake_pistons_command.html#aeb076bf2454bbb3e86287b67647630a9">frc.robot.commands.intakecommands.intakePistonCommands.DisengageIntakePistonsCommand</a>, <a class="el" href="classfrc_1_1robot_1_1commands_1_1intakecommands_1_1intake_piston_commands_1_1_engage_intake_pistons_command.html#a443511b20e31adace430b21e1a9003bc">frc.robot.commands.intakecommands.intakePistonCommands.EngageIntakePistonsCommand</a></li>
 <li>extend()&#160;:&#160;<a class="el" href="classfrc_1_1robot_1_1subsystems_1_1_catapult_subsystem.html#a86e5d4f230901c143c3df740565a3749">frc.robot.subsystems.CatapultSubsystem</a></li>
 </ul>
 
 
 <h3><a id="index_g" name="index_g"></a>- g -</h3><ul>
 <li>getEndgameMotorSlave()&#160;:&#160;<a class="el" href="classfrc_1_1robot_1_1subsystems_1_1_endgame_motor_subsystem.html#a7ff81cc70835dad1f807537544676f69">frc.robot.subsystems.EndgameMotorSubsystem</a></li>
+<li>getInstance()&#160;:&#160;<a class="el" href="classfrc_1_1robot_1_1utilities_1_1_shuffleboard_utility.html#a0fbc22ec0554d158dc76531a2e592e3f">frc.robot.utilities.ShuffleboardUtility</a></li>
+<li>getIntakeSolenoidOneState()&#160;:&#160;<a class="el" href="classfrc_1_1robot_1_1subsystems_1_1_intake_piston_subsystem.html#ac499af543e7cc1761324a2d179d47a4a">frc.robot.subsystems.IntakePistonSubsystem</a></li>
+<li>getIntakeSolenoidTwoState()&#160;:&#160;<a class="el" href="classfrc_1_1robot_1_1subsystems_1_1_intake_piston_subsystem.html#adab9c236fd57a4e6e69d60dfe9caae4f">frc.robot.subsystems.IntakePistonSubsystem</a></li>
 <li>getLeftEncoder()&#160;:&#160;<a class="el" href="classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem.html#a1933186360b659a209a0d27dabca51cd">frc.robot.subsystems.DriveSubsystem</a></li>
 <li>getMotorSpeed()&#160;:&#160;<a class="el" href="classfrc_1_1robot_1_1subsystems_1_1_endgame_motor_subsystem.html#a0ca88b7107c3829e995059157af8e240">frc.robot.subsystems.EndgameMotorSubsystem</a>, <a class="el" href="classfrc_1_1robot_1_1subsystems_1_1_intake_motor_subsystem.html#ad198d2e87937abaaac4a505163f76aef">frc.robot.subsystems.IntakeMotorSubsystem</a></li>
+<li>getPistonState()&#160;:&#160;<a class="el" href="classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem.html#a8c6b75995cdfc3a4da6416b58c7256c0">frc.robot.subsystems.DriveSubsystem</a></li>
+<li>getRawLeftSensorPosition()&#160;:&#160;<a class="el" href="classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem.html#ad4bba4ef2990e858b9efa9dd389f8338">frc.robot.subsystems.DriveSubsystem</a></li>
+<li>getRawRightSensorPosition()&#160;:&#160;<a class="el" href="classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem.html#a6a0f5f700b76fa87359d01509a95591d">frc.robot.subsystems.DriveSubsystem</a></li>
 <li>getRightEncoder()&#160;:&#160;<a class="el" href="classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem.html#ab24936e7b1d8366006e83c00e5b8bac4">frc.robot.subsystems.DriveSubsystem</a></li>
+<li>getSelectedAutonPath()&#160;:&#160;<a class="el" href="classfrc_1_1robot_1_1utilities_1_1_shuffleboard_utility.html#a4b1c4d3ecaa5b859dafd34fe6b6fb300">frc.robot.utilities.ShuffleboardUtility</a></li>
 <li>getShifterState()&#160;:&#160;<a class="el" href="classfrc_1_1robot_1_1subsystems_1_1_shifter_subsystem.html#aa2ecc9964037c89c89dde570ffa56947">frc.robot.subsystems.ShifterSubsystem</a></li>
+<li>getVisionCamera()&#160;:&#160;<a class="el" href="classfrc_1_1robot_1_1subsystems_1_1_vision_camera_subsystem.html#a0806bca34065b47af7de8b1543c2e4ba">frc.robot.subsystems.VisionCameraSubsystem</a></li>
 <li>getWheelSpeeds()&#160;:&#160;<a class="el" href="classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem.html#a1dd868cfac15cd864465cc9b1b946312">frc.robot.subsystems.DriveSubsystem</a></li>
 </ul>
 
 
 <h3><a id="index_i" name="index_i"></a>- i -</h3><ul>
+<li>initialize()&#160;:&#160;<a class="el" href="classfrc_1_1robot_1_1commands_1_1intakecommands_1_1intakemotorcommands_1_1_clockwise_intake_motors_command.html#ab02107b4678ad4c12caa71fd18268875">frc.robot.commands.intakecommands.intakemotorcommands.ClockwiseIntakeMotorsCommand</a>, <a class="el" href="classfrc_1_1robot_1_1commands_1_1intakecommands_1_1intakemotorcommands_1_1_counterclockwise_intake_motors_command.html#a10513db31632351a9ed79572fc302f05">frc.robot.commands.intakecommands.intakemotorcommands.CounterclockwiseIntakeMotorsCommand</a>, <a class="el" href="classfrc_1_1robot_1_1commands_1_1intakecommands_1_1intakemotorcommands_1_1_stop_intake_motors_command.html#a00c9e3cf9d970a8b1a07719768569d74">frc.robot.commands.intakecommands.intakemotorcommands.StopIntakeMotorsCommand</a>, <a class="el" href="classfrc_1_1robot_1_1commands_1_1intakecommands_1_1intake_piston_commands_1_1_disengage_intake_pistons_command.html#a59f17d84543c5e90aabb8b3e4c14b642">frc.robot.commands.intakecommands.intakePistonCommands.DisengageIntakePistonsCommand</a>, <a class="el" href="classfrc_1_1robot_1_1commands_1_1intakecommands_1_1intake_piston_commands_1_1_engage_intake_pistons_command.html#a5f3c35a3bb5703a40fbb6732033a8d37">frc.robot.commands.intakecommands.intakePistonCommands.EngageIntakePistonsCommand</a></li>
 <li>IntakeMotorSubsystem()&#160;:&#160;<a class="el" href="classfrc_1_1robot_1_1subsystems_1_1_intake_motor_subsystem.html#a6252d8d61e197dd8e374024bdf1071aa">frc.robot.subsystems.IntakeMotorSubsystem</a></li>
+<li>isFinished()&#160;:&#160;<a class="el" href="classfrc_1_1robot_1_1commands_1_1intakecommands_1_1intakemotorcommands_1_1_clockwise_intake_motors_command.html#a24a4595de744a2bb08208563e5341228">frc.robot.commands.intakecommands.intakemotorcommands.ClockwiseIntakeMotorsCommand</a>, <a class="el" href="classfrc_1_1robot_1_1commands_1_1intakecommands_1_1intakemotorcommands_1_1_counterclockwise_intake_motors_command.html#a04ec6c987f3aaf9ead717627861566c9">frc.robot.commands.intakecommands.intakemotorcommands.CounterclockwiseIntakeMotorsCommand</a>, <a class="el" href="classfrc_1_1robot_1_1commands_1_1intakecommands_1_1intakemotorcommands_1_1_stop_intake_motors_command.html#a36326de573c11b64b582d1223148702d">frc.robot.commands.intakecommands.intakemotorcommands.StopIntakeMotorsCommand</a></li>
+<li>isOpen()&#160;:&#160;<a class="el" href="classfrc_1_1robot_1_1subsystems_1_1_endgame_piston_subsystem.html#a6f7025f9738ae0277755d36bb2260966">frc.robot.subsystems.EndgamePistonSubsystem</a></li>
+<li>isTouching()&#160;:&#160;<a class="el" href="classfrc_1_1robot_1_1subsystems_1_1_endgame_sensor_subsystem.html#a7b5d5af1612e91ad1c6c5918c831f186">frc.robot.subsystems.EndgameSensorSubsystem</a></li>
 </ul>
 
 
 <h3><a id="index_m" name="index_m"></a>- m -</h3><ul>
 <li>main()&#160;:&#160;<a class="el" href="classfrc_1_1robot_1_1_main.html#ae60066a646cefc16d3e7d57b8fa22097">frc.robot.Main</a></li>
+</ul>
+
+
+<h3><a id="index_o" name="index_o"></a>- o -</h3><ul>
+<li>open()&#160;:&#160;<a class="el" href="classfrc_1_1robot_1_1subsystems_1_1_endgame_piston_subsystem.html#a502f8207acaa0b30c4b9e1a9195c1a8c">frc.robot.subsystems.EndgamePistonSubsystem</a></li>
+</ul>
+
+
+<h3><a id="index_p" name="index_p"></a>- p -</h3><ul>
+<li>putToShuffleboard()&#160;:&#160;<a class="el" href="classfrc_1_1robot_1_1utilities_1_1_shuffleboard_utility.html#a62e1e7e6b06231a83eac8b83fa882362">frc.robot.utilities.ShuffleboardUtility</a></li>
 </ul>
 
 
@@ -120,6 +176,8 @@ $(function() {
 
 
 <h3><a id="index_s" name="index_s"></a>- s -</h3><ul>
+<li>setDefaultAutonOptions()&#160;:&#160;<a class="el" href="classfrc_1_1robot_1_1utilities_1_1_shuffleboard_utility.html#a96c72b888d44ef10bb2c2e8437c99ca1">frc.robot.utilities.ShuffleboardUtility</a></li>
+<li>setIntakePistonState()&#160;:&#160;<a class="el" href="classfrc_1_1robot_1_1subsystems_1_1_intake_piston_subsystem.html#a6a8ef1b2a00942e66d7fb7325ab895c5">frc.robot.subsystems.IntakePistonSubsystem</a></li>
 <li>setMotorSpeed()&#160;:&#160;<a class="el" href="classfrc_1_1robot_1_1subsystems_1_1_endgame_motor_subsystem.html#a96003cbd850f05cc2416af699e2c87e6">frc.robot.subsystems.EndgameMotorSubsystem</a>, <a class="el" href="classfrc_1_1robot_1_1subsystems_1_1_intake_motor_subsystem.html#af6ac3c8ce7994e36e576bc9ed18e8956">frc.robot.subsystems.IntakeMotorSubsystem</a></li>
 <li>setPistonState()&#160;:&#160;<a class="el" href="classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem.html#a3756a0deffc832e0d7fbd0d2db877afa">frc.robot.subsystems.DriveSubsystem</a></li>
 <li>setShifterState()&#160;:&#160;<a class="el" href="classfrc_1_1robot_1_1subsystems_1_1_shifter_subsystem.html#ad750a3ea0b381aa1d54365f536b877cf">frc.robot.subsystems.ShifterSubsystem</a></li>
@@ -131,17 +189,26 @@ $(function() {
 
 
 <h3><a id="index_t" name="index_t"></a>- t -</h3><ul>
-<li>ToggleShifterCommand()&#160;:&#160;<a class="el" href="classfrc_1_1robot_1_1commands_1_1_toggle_shifter_command.html#a1ab656718660880d129b25ee50f1e4c9">frc.robot.commands.ToggleShifterCommand</a></li>
+<li>toggle()&#160;:&#160;<a class="el" href="classfrc_1_1robot_1_1subsystems_1_1_endgame_piston_subsystem.html#afb3e03c7b491fe8d56c35c9701753148">frc.robot.subsystems.EndgamePistonSubsystem</a></li>
+<li>ToggleShifterCommand()&#160;:&#160;<a class="el" href="classfrc_1_1robot_1_1commands_1_1_toggle_shifter_command.html#a51844a6004857157b8d7684a4a86ca00">frc.robot.commands.ToggleShifterCommand</a></li>
 </ul>
 
 
 <h3><a id="index_u" name="index_u"></a>- u -</h3><ul>
-<li>updateOdometry()&#160;:&#160;<a class="el" href="classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem.html#af0701555ab90dcc74d50664eba1b6ee6">frc.robot.subsystems.DriveSubsystem</a></li>
+<li>update()&#160;:&#160;<a class="el" href="classfrc_1_1robot_1_1utilities_1_1_shuffleboard_utility.html#a834ddefd8c39c5f306567c5fb229ea47">frc.robot.utilities.ShuffleboardUtility</a></li>
+</ul>
+
+
+<h3><a id="index_v" name="index_v"></a>- v -</h3><ul>
+<li>VisionCameraSubsystem()&#160;:&#160;<a class="el" href="classfrc_1_1robot_1_1subsystems_1_1_vision_camera_subsystem.html#a1d2dfd24aa866c3dc127282eb685911a">frc.robot.subsystems.VisionCameraSubsystem</a></li>
 </ul>
 </div><!-- contents -->
+</div><!-- doc-content -->
 <!-- start footer part -->
-<hr class="footer"/><address class="footer"><small>
-Generated by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.3
-</small></address>
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="footer">Generated on Wed Jan 26 2022 20:11:32 for Robot2022 by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.3 </li>
+  </ul>
+</div>
 </body>
 </html>
