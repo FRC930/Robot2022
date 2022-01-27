@@ -8,6 +8,7 @@ import frc.robot.commands.DriveCommand;
 import frc.robot.commands.ToggleShifterCommand;
 import frc.robot.commands.endgamecommands.EndgameArmCommand;
 import frc.robot.commands.endgamecommands.EndgameArmRevCommand;
+import frc.robot.commands.endgamecommands.EndgameRotateUntilTouching;
 import frc.robot.commands.intakecommands.intakemotorcommands.ClockwiseIntakeMotorsCommand;
 import frc.robot.commands.intakecommands.intakemotorcommands.CounterclockwiseIntakeMotorsCommand;
 import frc.robot.commands.intakecommands.intakemotorcommands.StopIntakeMotorsCommand;
@@ -48,6 +49,10 @@ public class RobotContainer {
     private final EndgameMotorSubsystem endgameMotorSubsystem;
     private final EndgameArmCommand endgameArmCommand;
     private final EndgameArmRevCommand endgameArmRevCommand;
+    private final EndgameRotateUntilTouching rotateUntilTouchingLeft2;
+    private final EndgameRotateUntilTouching rotateUntilTouchingLeft4;
+    private final EndgameRotateUntilTouching rotateUntilTouchingRight2;
+    private final EndgameRotateUntilTouching rotateUntilTouchingRight4;
 
     private final EndgameSensorSubsystem left2Sensor;
     private final EndgameSensorSubsystem right2Sensor;
@@ -112,6 +117,11 @@ public class RobotContainer {
         clockwiseIntakeMotorsCommand = new ClockwiseIntakeMotorsCommand(intakeMotorSubsystem);
         counterClockwiseIntakeMotorsCommand = new CounterclockwiseIntakeMotorsCommand(intakeMotorSubsystem);
         stopIntakeMotorsCommand = new StopIntakeMotorsCommand(intakeMotorSubsystem);
+
+        rotateUntilTouchingLeft2 = new EndgameRotateUntilTouching(endgameMotorSubsystem, left2Sensor);
+        rotateUntilTouchingLeft4 = new EndgameRotateUntilTouching(endgameMotorSubsystem, left4Sensor);
+        rotateUntilTouchingRight2 = new EndgameRotateUntilTouching(endgameMotorSubsystem, right2Sensor);
+        rotateUntilTouchingRight4 = new EndgameRotateUntilTouching(endgameMotorSubsystem, right4Sensor);
     }
 
     /**
@@ -148,6 +158,12 @@ public class RobotContainer {
 
         JoystickButton rotateArmRevButton = new JoystickButton(controller, XB_A);
         rotateArmRevButton.whileActiveOnce(endgameArmRevCommand);
+
+        // This button is for simulation
+        if(!Robot.isReal()) {
+        JoystickButton rotateUntilTouchingButton = new JoystickButton(controller, XB_B);
+        rotateUntilTouchingButton.whileActiveOnce(rotateUntilTouchingLeft2);
+        }
 
         CommandScheduler scheduler = CommandScheduler.getInstance();
 
