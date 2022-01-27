@@ -18,6 +18,7 @@ import frc.robot.subsystems.EndgamePistonSubsystem;
 import frc.robot.subsystems.EndgameSensorSubsystem;
 import frc.robot.subsystems.IntakeMotorSubsystem;
 import frc.robot.subsystems.ShifterSubsystem;
+import frc.robot.subsystems.VisionCameraSubsystem;
 import frc.robot.triggers.AxisTrigger;
 
 public class RobotContainer {
@@ -74,7 +75,6 @@ public class RobotContainer {
     private final CounterclockwiseIntakeMotorsCommand counterClockwiseIntakeMotorsCommand;
     private final StopIntakeMotorsCommand stopIntakeMotorsCommand;
 
-
     /**
      * <h3>RobotContainer</h3>
      * 
@@ -99,14 +99,17 @@ public class RobotContainer {
         right3piston = new EndgamePistonSubsystem(9);
         right4piston = new EndgamePistonSubsystem(10);
 
+        VisionCameraSubsystem reflectiveTapeSubsystem = new VisionCameraSubsystem(
+                VisionCameraSubsystem.CameraType.REFLECTIVE_TAPE);
+
         driveSubsystem = new DriveSubsystem(1, 2);
-        driveCommand = new DriveCommand(driveSubsystem, endgameMotorSubsystem, controller);
+        driveCommand = new DriveCommand(driveSubsystem, endgameMotorSubsystem, reflectiveTapeSubsystem, controller);
 
         catapultSubsystem = new CatapultSubsystem(1, 2);
         catapultCommand = new CatapultCommand(catapultSubsystem);
 
         shifterSubsystem = new ShifterSubsystem(0);
-        toggleShifterCommand = new ToggleShifterCommand(shifterSubsystem, driveSubsystem);
+        toggleShifterCommand = new ToggleShifterCommand(shifterSubsystem);
 
         intakeMotorSubsystem = new IntakeMotorSubsystem(5);
         clockwiseIntakeMotorsCommand = new ClockwiseIntakeMotorsCommand(intakeMotorSubsystem);
@@ -133,7 +136,7 @@ public class RobotContainer {
 
         AxisTrigger reverseIntakeButton = new AxisTrigger(controller, XB_AXIS_LT);
         reverseIntakeButton.whileActiveOnce(clockwiseIntakeMotorsCommand);
-        
+
         JoystickButton intakeButton = new JoystickButton(controller, XB_LB);
         intakeButton.whileActiveOnce(counterClockwiseIntakeMotorsCommand);
 
@@ -154,6 +157,6 @@ public class RobotContainer {
         scheduler.unregisterSubsystem(driveSubsystem);
 
         scheduler.setDefaultCommand(driveSubsystem, driveCommand);
-        
+
     }
 }

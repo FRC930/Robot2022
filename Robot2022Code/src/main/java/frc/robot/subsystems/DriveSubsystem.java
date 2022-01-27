@@ -2,23 +2,28 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
-import com.ctre.phoenix.sensors.PigeonIMU;
-import com.ctre.phoenix.sensors.PigeonIMU.CalibrationMode;
 import com.ctre.phoenix.sensors.SensorVelocityMeasPeriod;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
-import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
+/**
+ * <h3>DriveSubsystem</h3>
+ * 
+ * DriveSubsystem represents the drivetrain to our code
+ * 
+ * @author Alexander Taylor
+ * @since 22 January 2022
+ * @version 1.0
+ */
 public class DriveSubsystem extends SubsystemBase {
     public static final double kMaxSpeed = 3; // meters per second
-    public static final double kMaxAngularSpeed = Math.PI/2; // 1/2 rotation per second
+    public static final double kMaxAngularSpeed = Math.PI / 2; // 1/2 rotation per second
 
     public static final double highGearRatio = 6.3;
     public static final double lowGearRatio = 12.9;
@@ -43,8 +48,8 @@ public class DriveSubsystem extends SubsystemBase {
     private final DifferentialDriveKinematics m_kinematics = new DifferentialDriveKinematics(kTrackWidth);
 
     // Gains are for example purposes only - must be determined for your own robot!
-    public final SimpleMotorFeedforward leftMotorFeedforward = new SimpleMotorFeedforward(0.61037, 0.68157, 0.023755);
-    public final SimpleMotorFeedforward rightMotorFeedforward = new SimpleMotorFeedforward(0.62728, 0.68254, 0.021885);
+    private final SimpleMotorFeedforward leftMotorFeedforward = new SimpleMotorFeedforward(0.61037, 0.68157, 0.023755);
+    private final SimpleMotorFeedforward rightMotorFeedforward = new SimpleMotorFeedforward(0.62728, 0.68254, 0.021885);
 
     private final PIDController leftPIDController = new PIDController(0.50405, 0, 0);
     private final PIDController rightPIDController = new PIDController(0.47029, 0, 0);
@@ -158,13 +163,17 @@ public class DriveSubsystem extends SubsystemBase {
      * @param speeds The desired wheel speeds.
      */
     public void setSpeeds(DifferentialDriveWheelSpeeds speeds) {
+        // Convert speeds to volts
         double leftOutput = speeds.leftMetersPerSecond * kMaxVolts /
                 DriveSubsystem.kMaxSpeed;
         double rightOutput = speeds.rightMetersPerSecond * kMaxVolts /
                 DriveSubsystem.kMaxSpeed;
 
+        // Ensure that we are not sending rogue values to the motors
         leftOutput = MathUtil.clamp(leftOutput, -11.0, 11.0);
         rightOutput = MathUtil.clamp(rightOutput, -11.0, 11.0);
+
+        // Actually set the voltages
         m_leftLeader.setVoltage(leftOutput);
         m_rightLeader.setVoltage(rightOutput);
     }
@@ -175,8 +184,12 @@ public class DriveSubsystem extends SubsystemBase {
      * @return the encoder speed
      */
     public double getLeftEncoder() {
-        // Multiply by 10 to get encoder units per second
-        return m_leftLeader.getSensorCollection().getIntegratedSensorVelocity() * 10 / kEncoderResolution
+        return m_leftLeader.getSensorCollection().getIntegratedSensorVelocity()
+                // Multiply by 10 to get encoder units per second
+                * 10
+                // Divide by the number of ticks in a rotation
+                / kEncoderResolution
+                // Multiply by the circumference of the wheel
                 * (2 * Math.PI * kWheelRadius);
     }
 
@@ -191,14 +204,33 @@ public class DriveSubsystem extends SubsystemBase {
                 * (2 * Math.PI * kWheelRadius);
     }
 
+    /**
+     * <h3>getRawLeftSensorPosition</h3>
+     * 
+     * This method gets the position of the right encoder
+     * 
+     * @return the position of the right encoder in raw encoder units
+     * @see {@link com.ctre.phoenix.motorcontrol.TalonFXSensorCollection#getIntegratedSensorPosition()
+     *      getIntegratedSensorPosition()}
+     */
     public double getRawLeftSensorPosition() {
-        return m_leftLeader.getSelectedSensorPosition();
+        return m_leftLeader.getSensorCollection().getIntegratedSensorPosition();
     }
 
+    /**
+     * <h3>getRawRightSensorPosition</h3>
+     * 
+     * This method gets the position of the right encoder
+     * 
+     * @return the position of the left encoder in raw encoder units
+     * @see {@link com.ctre.phoenix.motorcontrol.TalonFXSensorCollection#getIntegratedSensorPosition()
+     *      getIntegratedSensorPosition()}
+     */
     public double getRawRightSensorPosition() {
-        return m_rightLeader.getSelectedSensorPosition();
+        return m_rightLeader.getSensorCollection().getIntegratedSensorPosition();
     }
 
+    // TODO: Look into making this into a separate state machine class
     /**
      * Set the shifting piston state
      * 
@@ -206,6 +238,15 @@ public class DriveSubsystem extends SubsystemBase {
      */
     public void setPistonState(boolean state) {
         shifterState = state;
+    }
+
+    /**
+     * Gets the state of the shifter
+     * 
+     * @return the state of the shifter
+     */
+    public boolean getPistonState() {
+        return shifterState;
     }
 
     /**
