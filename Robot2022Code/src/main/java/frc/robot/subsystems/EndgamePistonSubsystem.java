@@ -29,10 +29,7 @@ public class EndgamePistonSubsystem extends SubsystemBase{
      * 
      */
     public void toggle() {
-        if (grabberPiston.get())
-            grabberPiston.set(false);
-        else 
-            grabberPiston.set(true);
+        grabberPiston.set(!grabberPiston.get());
     }
     /**
      * method returns if piston is open

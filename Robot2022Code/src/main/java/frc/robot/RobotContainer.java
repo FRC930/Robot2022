@@ -90,8 +90,6 @@ public class RobotContainer {
      */
     public RobotContainer() {
         endgameMotorSubsystem = new EndgameMotorSubsystem(3, 4);
-        endgameArmCommand = new EndgameArmCommand(endgameMotorSubsystem);
-        endgameArmRevCommand = new EndgameArmRevCommand(endgameMotorSubsystem);
         
         left2Sensor = new EndgameSensorSubsystem(1);
         right2Sensor = new EndgameSensorSubsystem(2);
@@ -106,8 +104,15 @@ public class RobotContainer {
         right2piston = new EndgamePistonSubsystem(8);
         right3piston = new EndgamePistonSubsystem(9);
         right4piston = new EndgamePistonSubsystem(10);
-        endgameSensorCloseCommand = new EndgameSensorCloseCommand(left1piston, right2Sensor);
+        
+        rotateUntilTouchingLeft2 = new EndgameRotateUntilTouching(endgameMotorSubsystem, left2Sensor);
+        rotateUntilTouchingLeft4 = new EndgameRotateUntilTouching(endgameMotorSubsystem, left4Sensor);
+        rotateUntilTouchingRight2 = new EndgameRotateUntilTouching(endgameMotorSubsystem, right2Sensor);
+        rotateUntilTouchingRight4 = new EndgameRotateUntilTouching(endgameMotorSubsystem, right4Sensor);
 
+        endgameArmCommand = new EndgameArmCommand(endgameMotorSubsystem);
+        endgameArmRevCommand = new EndgameArmRevCommand(endgameMotorSubsystem);
+        endgameSensorCloseCommand = new EndgameSensorCloseCommand(left1piston, right2Sensor);
 
         VisionCameraSubsystem reflectiveTapeSubsystem = new VisionCameraSubsystem(
                 VisionCameraSubsystem.CameraType.REFLECTIVE_TAPE);
@@ -126,10 +131,6 @@ public class RobotContainer {
         counterClockwiseIntakeMotorsCommand = new CounterclockwiseIntakeMotorsCommand(intakeMotorSubsystem);
         stopIntakeMotorsCommand = new StopIntakeMotorsCommand(intakeMotorSubsystem);
 
-        rotateUntilTouchingLeft2 = new EndgameRotateUntilTouching(endgameMotorSubsystem, left2Sensor);
-        rotateUntilTouchingLeft4 = new EndgameRotateUntilTouching(endgameMotorSubsystem, left4Sensor);
-        rotateUntilTouchingRight2 = new EndgameRotateUntilTouching(endgameMotorSubsystem, right2Sensor);
-        rotateUntilTouchingRight4 = new EndgameRotateUntilTouching(endgameMotorSubsystem, right4Sensor);
     }
 
     /**
@@ -167,14 +168,12 @@ public class RobotContainer {
         JoystickButton rotateArmRevButton = new JoystickButton(controller, XB_A);
         rotateArmRevButton.whileActiveOnce(endgameArmRevCommand);
 
+        // Buttons for simulation
         if (!Robot.isReal()){ 
             JoystickButton endgameSensorCloseButton = new JoystickButton(controller, XB_X);
-        endgameSensorCloseButton.whileActiveOnce(endgameSensorCloseCommand, false);
-        }
-        // This button is for simulation
-        if(!Robot.isReal()) {
-        JoystickButton rotateUntilTouchingButton = new JoystickButton(controller, XB_B);
-        rotateUntilTouchingButton.whileActiveOnce(rotateUntilTouchingLeft2);
+            endgameSensorCloseButton.whileActiveOnce(endgameSensorCloseCommand, false);
+            JoystickButton rotateUntilTouchingButton = new JoystickButton(controller, XB_B);
+            rotateUntilTouchingButton.whileActiveOnce(rotateUntilTouchingLeft2);
         }
 
         CommandScheduler scheduler = CommandScheduler.getInstance();
