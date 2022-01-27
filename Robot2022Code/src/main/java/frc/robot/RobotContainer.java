@@ -8,6 +8,7 @@ import frc.robot.commands.DriveCommand;
 import frc.robot.commands.ToggleShifterCommand;
 import frc.robot.commands.endgamecommands.EndgameArmCommand;
 import frc.robot.commands.endgamecommands.EndgameArmRevCommand;
+import frc.robot.commands.endgamecommands.EndgameSensorCloseCommand;
 import frc.robot.commands.intakecommands.intakemotorcommands.ClockwiseIntakeMotorsCommand;
 import frc.robot.commands.intakecommands.intakemotorcommands.CounterclockwiseIntakeMotorsCommand;
 import frc.robot.commands.intakecommands.intakemotorcommands.StopIntakeMotorsCommand;
@@ -44,6 +45,8 @@ public class RobotContainer {
 
     private final DriveSubsystem driveSubsystem;
     private final DriveCommand driveCommand;
+
+    private final EndgameSensorCloseCommand endgameSensorCloseCommand;
 
     private final EndgameMotorSubsystem endgameMotorSubsystem;
     private final EndgameArmCommand endgameArmCommand;
@@ -84,7 +87,7 @@ public class RobotContainer {
         endgameMotorSubsystem = new EndgameMotorSubsystem(3, 4);
         endgameArmCommand = new EndgameArmCommand(endgameMotorSubsystem);
         endgameArmRevCommand = new EndgameArmRevCommand(endgameMotorSubsystem);
-
+        
         left2Sensor = new EndgameSensorSubsystem(1);
         right2Sensor = new EndgameSensorSubsystem(2);
         left4Sensor = new EndgameSensorSubsystem(3);
@@ -98,6 +101,8 @@ public class RobotContainer {
         right2piston = new EndgamePistonSubsystem(8);
         right3piston = new EndgamePistonSubsystem(9);
         right4piston = new EndgamePistonSubsystem(10);
+        endgameSensorCloseCommand = new EndgameSensorCloseCommand(left1piston, right2Sensor);
+
 
         driveSubsystem = new DriveSubsystem(1, 2);
         driveCommand = new DriveCommand(driveSubsystem, endgameMotorSubsystem, controller);
@@ -149,6 +154,10 @@ public class RobotContainer {
         JoystickButton rotateArmRevButton = new JoystickButton(controller, XB_A);
         rotateArmRevButton.whileActiveOnce(endgameArmRevCommand);
 
+        if (!Robot.isReal()){ 
+            JoystickButton endgameSensorCloseButton = new JoystickButton(controller, XB_X);
+        endgameSensorCloseButton.whileActiveOnce(endgameSensorCloseCommand, false);
+        }
         CommandScheduler scheduler = CommandScheduler.getInstance();
 
         scheduler.unregisterSubsystem(driveSubsystem);
