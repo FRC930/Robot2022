@@ -152,15 +152,11 @@ public class RobotContainer {
 
         AxisTrigger reverseIntakeButton = new AxisTrigger(controller, XB_AXIS_LT);
         reverseIntakeButton.whileActiveOnce(clockwiseIntakeMotorsCommand);
+        reverseIntakeButton.whenInactive(stopIntakeMotorsCommand);
 
         JoystickButton intakeButton = new JoystickButton(controller, XB_LB);
         intakeButton.whileActiveOnce(counterClockwiseIntakeMotorsCommand);
-
-        JoystickButton stopIntake = new JoystickButton(controller, XB_LB);
-        stopIntake.whenReleased(stopIntakeMotorsCommand);
-
-        AxisTrigger stopReverseIntake = new AxisTrigger(controller, XB_AXIS_LT);
-        stopReverseIntake.whenInactive(stopIntakeMotorsCommand);
+        intakeButton.whenReleased(stopIntakeMotorsCommand);
 
         JoystickButton rotateArmButton = new JoystickButton(controller, XB_Y);
         rotateArmButton.whileActiveOnce(endgameArmCommand);
