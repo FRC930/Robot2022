@@ -16,6 +16,7 @@ public class EndgameRotateUntilTouching extends CommandBase {
 
     //-------- CONSTANTS --------\\
     
+    // TODO: Establish speed for endgame arm
     private final double ARM_SPEED = 0.2;
 
     //-------- DECLARATIONS --------\\
@@ -27,8 +28,8 @@ public class EndgameRotateUntilTouching extends CommandBase {
     /**
      * EndgameRotateUntilTouching
      * 
-     * @param m_MotorSubsystem The motor to be set
-     * @param m_SensorSubsystem The sensor whose value is used
+     * @param motorSubsystem The motor to be set
+     * @param sensorSubsystem The sensor whose value is used
      */ 
     public EndgameRotateUntilTouching(EndgameMotorSubsystem motorSubsystem, EndgameSensorSubsystem sensorSubsystem) {
         m_MotorSubsystem = motorSubsystem;

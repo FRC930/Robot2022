@@ -16,9 +16,9 @@ public class EndgameSensorCloseCommand extends CommandBase {
 
     /**
      * EndgameSensorCloseCommand
-     * @param pistonSubsystem
+     * @param pistonSubsystem piston of claw to be closed
      * 
-     * @param sensorSubsystem sensor to detect
+     * @param sensorSubsystem sensor used to detect
      */
     public EndgameSensorCloseCommand(EndgamePistonSubsystem pistonSubsystem, EndgameSensorSubsystem sensorSubsystem) {
         piston = pistonSubsystem;

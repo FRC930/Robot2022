@@ -4,7 +4,7 @@ package frc.robot.commands.endgamecommands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.EndgamePistonSubsystem;
-
+//-------- COMMAND CLASS --------\\
 /**
  * <h3>EndgameOpenClawCommand</h3>
  * 
@@ -12,7 +12,11 @@ import frc.robot.subsystems.EndgamePistonSubsystem;
  */
 public class EndgameOpenClawCommand extends CommandBase {
 
+    //-------- DECLARATIONS --------\\
+
     private final EndgamePistonSubsystem piston;
+
+    //-------- CONSTRUCTOR --------\\
     /**
      * EndgameOpenClawCommand
      * 
@@ -22,6 +26,8 @@ public class EndgameOpenClawCommand extends CommandBase {
         piston = pistonSubsystem;
     }
     
+    //-------- CLASS METHODS --------\\
+
     public void initialize() { // Runs once when called
         piston.open();
     }
