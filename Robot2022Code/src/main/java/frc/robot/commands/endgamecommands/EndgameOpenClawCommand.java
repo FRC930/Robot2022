@@ -20,6 +20,7 @@ public class EndgameOpenClawCommand extends CommandBase {
      */ 
     public EndgameOpenClawCommand(EndgamePistonSubsystem pistonSubsystem) {
         piston = pistonSubsystem;
+        addRequirements(pistonSubsystem);
     }
     
     public void initialize() { // Runs once when called

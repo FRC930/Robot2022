@@ -112,7 +112,7 @@ public class RobotContainer {
 
         endgameArmCommand = new EndgameArmCommand(endgameMotorSubsystem);
         endgameArmRevCommand = new EndgameArmRevCommand(endgameMotorSubsystem);
-        endgameSensorCloseCommand = new EndgameSensorCloseCommand(left1piston, right2Sensor);
+        endgameSensorCloseCommand = new EndgameSensorCloseCommand(left1piston, left2Sensor);
 
         VisionCameraSubsystem reflectiveTapeSubsystem = new VisionCameraSubsystem(
                 VisionCameraSubsystem.CameraType.REFLECTIVE_TAPE);
@@ -168,13 +168,11 @@ public class RobotContainer {
         JoystickButton rotateArmRevButton = new JoystickButton(controller, XB_A);
         rotateArmRevButton.whileActiveOnce(endgameArmRevCommand);
 
-        // Buttons for simulation
-        if (!Robot.isReal()){ 
-            JoystickButton endgameSensorCloseButton = new JoystickButton(controller, XB_X);
-            endgameSensorCloseButton.whileActiveOnce(endgameSensorCloseCommand, false);
-            JoystickButton rotateUntilTouchingButton = new JoystickButton(controller, XB_B);
-            rotateUntilTouchingButton.whileActiveOnce(rotateUntilTouchingLeft2);
-        }
+        JoystickButton endgameSensorCloseButton = new JoystickButton(controller, XB_X);
+        endgameSensorCloseButton.whileActiveOnce(endgameSensorCloseCommand);
+        
+        JoystickButton rotateUntilTouchingButton = new JoystickButton(controller, XB_B);
+        rotateUntilTouchingButton.whileActiveOnce(rotateUntilTouchingLeft2);
 
         CommandScheduler scheduler = CommandScheduler.getInstance();
 

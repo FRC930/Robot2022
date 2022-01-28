@@ -18,6 +18,7 @@ public class EndgameCloseClawCommand extends CommandBase{
      */
     public EndgameCloseClawCommand(EndgamePistonSubsystem pistonSubsystem) {
         piston = pistonSubsystem;
+        addRequirements(pistonSubsystem);
     }
     
     public void initialize() { // runs once when called
