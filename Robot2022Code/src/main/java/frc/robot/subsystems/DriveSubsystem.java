@@ -199,6 +199,22 @@ public class DriveSubsystem extends SubsystemBase {
         return m_rightLeader.getSelectedSensorPosition();
     }
 
+    public SimpleMotorFeedforward getLeftFeedforward(){
+        return leftMotorFeedforward;
+    }
+    
+    public SimpleMotorFeedforward getRightFeedForward(){
+        return rightMotorFeedforward;
+    }
+
+    public PIDController getLeftPID(){
+        return leftPIDController;
+    }
+
+    public PIDController getRightPID(){
+        return rightPIDController;
+    }
+
     /**
      * Set the shifting piston state
      * 
