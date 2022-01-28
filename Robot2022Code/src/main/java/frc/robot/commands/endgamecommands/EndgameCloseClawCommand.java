@@ -22,6 +22,7 @@ public class EndgameCloseClawCommand extends CommandBase{
      */
     public EndgameCloseClawCommand(EndgamePistonSubsystem pistonSubsystem) {
         piston = pistonSubsystem;
+        addRequirements(pistonSubsystem);
     }
 
     //-------- CLASS METHODS  --------\\

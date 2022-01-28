@@ -23,7 +23,9 @@ public class EndgameSensorCloseCommand extends CommandBase {
     public EndgameSensorCloseCommand(EndgamePistonSubsystem pistonSubsystem, EndgameSensorSubsystem sensorSubsystem) {
         piston = pistonSubsystem;
         sensor = sensorSubsystem;
+        addRequirements(pistonSubsystem, sensorSubsystem);
     }
+
     @Override
     public boolean isFinished() { // returns true when the sensor is clear
         return !sensor.isTouching();
@@ -31,12 +33,7 @@ public class EndgameSensorCloseCommand extends CommandBase {
 
     @Override
     public void end(boolean interuppted) { // closes the claw
-        if(!interuppted){
-            piston.closed();
-        }
-        else{
-            piston.open();
-        }
+        piston.closed();
     }
 
 }

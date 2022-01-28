@@ -34,6 +34,7 @@ public class EndgameRotateUntilTouching extends CommandBase {
     public EndgameRotateUntilTouching(EndgameMotorSubsystem motorSubsystem, EndgameSensorSubsystem sensorSubsystem) {
         m_MotorSubsystem = motorSubsystem;
         m_SensorSubsystem = sensorSubsystem;
+        addRequirements(sensorSubsystem, motorSubsystem);
     }
 
     //-----------------------------\\

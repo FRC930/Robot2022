@@ -34,6 +34,8 @@ public class EndgameSensorSubsystem extends SubsystemBase {
      * @return the value of the sensor
      */
     public boolean isTouching() {
+        //DIO is opposite of sensor contact
+        //DIO is 0 when sensor is activated(touching metal)
         return !sensor.get();
     }
 }

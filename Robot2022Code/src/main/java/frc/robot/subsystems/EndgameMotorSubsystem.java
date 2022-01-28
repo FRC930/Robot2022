@@ -34,7 +34,6 @@ public class EndgameMotorSubsystem extends SubsystemBase {
     public EndgameMotorSubsystem(int motorIDMaster, int motorIDSlave) {
         endgameMotorMaster = new WPI_TalonSRX(motorIDMaster);
         endgameMotorSlave = new WPI_TalonSRX(motorIDSlave);
-        endgameMotorSlave.setInverted(true);
         endgameMotorMaster.setNeutralMode(NeutralMode.Brake);
         endgameMotorSlave.setNeutralMode(NeutralMode.Brake);
     }
@@ -49,7 +48,7 @@ public class EndgameMotorSubsystem extends SubsystemBase {
      * @param speed the speed at which to set the motor
      */
     public void setMotorSpeed(double speed) {
-        endgameMotorMaster.set(ControlMode.PercentOutput, speed);
+        endgameMotorMaster.set(ControlMode.PercentOutput, -speed);
         endgameMotorSlave.set(ControlMode.PercentOutput, speed);
     }
 
