@@ -34,8 +34,6 @@ public class EndgameMotorSubsystem extends SubsystemBase {
     public EndgameMotorSubsystem(int motorIDMaster, int motorIDSlave) {
         endgameMotorMaster = new WPI_TalonSRX(motorIDMaster);
         endgameMotorSlave = new WPI_TalonSRX(motorIDSlave);
-        endgameMotorSlave.follow(endgameMotorMaster);
-        // endgameMotorSlave.setInverted(true);
         endgameMotorMaster.setNeutralMode(NeutralMode.Brake);
         endgameMotorSlave.setNeutralMode(NeutralMode.Brake);
     }
@@ -50,11 +48,13 @@ public class EndgameMotorSubsystem extends SubsystemBase {
      * @param speed the speed at which to set the motor
      */
     public void setMotorSpeed(double speed) {
-        endgameMotorMaster.set(ControlMode.PercentOutput, speed);
+        endgameMotorMaster.set(ControlMode.PercentOutput, -speed);
+        endgameMotorSlave.set(ControlMode.PercentOutput, speed);
     }
 
     public void stopMotor() {
-        endgameMotorMaster.set(ControlMode.PercentOutput, 0.0);
+        endgameMotorMaster.set(0);
+        endgameMotorSlave.set(0);
     }
 
     /**
@@ -79,18 +79,17 @@ public class EndgameMotorSubsystem extends SubsystemBase {
         return endgameMotorSlave;
     }
 
-    /**
-     * <h3>getEncoderPosition</h3>
-     * How far the motor has rotated from it's original position
-     * Units are 2048 per rotation
-     * 
-     * @param position the position at which to set the encoder
-     * @return the current encoder positio
-     */
     // TODO: ATTATCH ENCODER AND FINISH GETTER
-    /*
-     * public double getEncoderPosition(double position) {
+
+    /**
+     * getEncoderPosition </p>
+     * How far the encoder has rotated from the starting position.
+     * 4096 units per rotation
      * 
-     * }
+     * @return the position of the encoder 
      */
+    public double getEncoderPosition() {
+        return endgameMotorMaster.getSelectedSensorPosition();
+    }
+    
 }

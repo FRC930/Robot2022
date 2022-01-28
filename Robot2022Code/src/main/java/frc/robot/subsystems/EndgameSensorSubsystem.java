@@ -1,13 +1,14 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 /**
  * <h3>EndgameSensorSubsystem</h3>
  * 
  * Manages sensor on endgame claw.
  */
-public class EndgameSensorSubsystem {
+public class EndgameSensorSubsystem extends SubsystemBase {
 
     // -------- DECLARATIONS --------\\
 
@@ -33,6 +34,8 @@ public class EndgameSensorSubsystem {
      * @return the value of the sensor
      */
     public boolean isTouching() {
+        //DIO is opposite of sensor contact
+        //DIO is 0 when sensor is activated(touching metal)
         return !sensor.get();
     }
 }

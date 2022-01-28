@@ -5,6 +5,9 @@ package frc.robot.subsystems;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.utilities.ShuffleboardUtility;
+
+import static frc.robot.utilities.ShuffleboardUtility.ShuffleboardKeys;
 
 //----- CLASS -----\\
 /**
@@ -14,12 +17,12 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
  */
 public class IntakePistonSubsystem extends SubsystemBase {
 
-    //----- SOLENOID(S) -----\\
+    // ----- SOLENOID(S) -----\\
 
     private Solenoid solenoidOne;
     private Solenoid solenoidTwo;
 
-    //----- CONSTRUCTOR -----\\
+    // ----- CONSTRUCTOR -----\\
     /**
      * <h3>Intake Piston Subsystem</h3>
      * 
@@ -33,7 +36,7 @@ public class IntakePistonSubsystem extends SubsystemBase {
         solenoidTwo = new Solenoid(PneumaticsModuleType.REVPH, solenoidTwoID);
     }
 
-        /**
+    /**
      * <h3>setIntakePistonState</h3>
      * 
      * Sets the shifter to the passed state
@@ -43,6 +46,9 @@ public class IntakePistonSubsystem extends SubsystemBase {
     public void setIntakePistonState(boolean state) {
         solenoidOne.set(state);
         solenoidTwo.set(state);
+
+        ShuffleboardUtility.getInstance().putToShuffleboard(ShuffleboardUtility.driverTab, ShuffleboardKeys.INTAKE_DOWN,
+                new ShuffleboardUtility.ShuffleBoardData<Boolean>(state));
     }
 
     /**
