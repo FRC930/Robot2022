@@ -1,5 +1,7 @@
 package frc.robot.subsystems;
 
+import java.util.function.BiConsumer;
+
 import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.sensors.SensorVelocityMeasPeriod;
@@ -7,10 +9,15 @@ import com.ctre.phoenix.sensors.SensorVelocityMeasPeriod;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
+import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
+import edu.wpi.first.math.trajectory.constraint.DifferentialDriveVoltageConstraint;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.utilities.Gyro;
+import frc.robot.utilities.ShifterUtility;
 
 /**
  * <h3>DriveSubsystem</h3>
@@ -37,7 +44,12 @@ public class DriveSubsystem extends SubsystemBase {
     // private final SpeedController m_leftFollower = new WPI_TalonFX(2);
     private final WPI_TalonFX m_rightLeader;
     // private final SpeedController m_rightFollower = new WPI_TalonFX(4);
-
+    private final double m_rightKV = 0.62728;
+    private final double m_rightKS = 0.68254;
+    private final double m_rightKA = 0.021885;
+    private final double m_leftKV = 0.61037;
+    private final double m_leftKS = 0.68157;
+    private final double m_leftKA = 0.023755;
     /*
      * private final SpeedControllerGroup m_leftGroup = new
      * SpeedControllerGroup(m_leftLeader, m_leftFollower); private final
@@ -50,12 +62,17 @@ public class DriveSubsystem extends SubsystemBase {
     // Gains are for example purposes only - must be determined for your own robot!
     private final SimpleMotorFeedforward leftMotorFeedforward = new SimpleMotorFeedforward(0.61037, 0.68157, 0.023755);
     private final SimpleMotorFeedforward rightMotorFeedforward = new SimpleMotorFeedforward(0.62728, 0.68254, 0.021885);
+    private final SimpleMotorFeedforward constraintFeedforward = new SimpleMotorFeedforward(m_leftKS+m_rightKS/2, m_leftKV+m_rightKV/2, m_leftKA+m_rightKA/2);
 
     private final PIDController leftPIDController = new PIDController(0.50405, 0, 0);
     private final PIDController rightPIDController = new PIDController(0.47029, 0, 0);
 
     private boolean shifterState;
 
+    private final DifferentialDriveVoltageConstraint voltageConstraint = new DifferentialDriveVoltageConstraint(constraintFeedforward, getKinematics(), 10);
+
+    private DifferentialDriveOdometry m_odometry = new DifferentialDriveOdometry(new Rotation2d(Math.toRadians(Gyro.getInstance().getGyro().getFusedHeading())));
+    
     /**
      * Constructs a differential drive object. Sets the encoder distance per pulse
      * and resets the gyro.
@@ -94,6 +111,46 @@ public class DriveSubsystem extends SubsystemBase {
         m_rightLeader.setVoltage(rightVoltage);
     }
 
+    public BiConsumer<Double, Double> setVoltage(){
+        BiConsumer<Double, Double> voltages = new BiConsumer<Double,Double>() {
+            @Override
+            public void accept(Double leftVoltage, Double rightVoltage) {
+                setVoltages(leftVoltage, rightVoltage);
+            }
+        };
+        return voltages;
+    }
+
+    /**
+     * <h3>getLeftVoltage</h3>
+     * 
+     * Gets the voltage of the left motor
+     * 
+     */
+    public double getLeftVoltage(){
+        return m_leftLeader.getMotorOutputVoltage();
+    }
+
+    /**
+     * <h3>getRightVoltage</h3>
+     * 
+     * Gets the voltage of the right motor
+     * 
+     */
+    public double getRightVoltage(){
+        return m_rightLeader.getMotorOutputVoltage();
+    }
+
+    /**
+     * <h3>getKinematics</h3>
+     * 
+     * Gets the kinematics
+     * 
+     */
+    public DifferentialDriveKinematics getKinematics(){
+        return m_kinematics;
+    }
+
     /**
      * Calculate the feedforward with the left controller
      * 
@@ -105,6 +162,17 @@ public class DriveSubsystem extends SubsystemBase {
     }
 
     /**
+     * Calculate the feedforward with the left controller
+     * Overloaded method to allow the input of acceleration
+     * 
+     * @param velocity the velocity for which to calculate feedforward
+     * @return the feedforward modified 
+     */
+    public double calculateLeftFeedforward(double velocity, double acceleration){
+        return leftMotorFeedforward.calculate(velocity, acceleration);
+    }
+
+    /**
      * Calculate the feedforward with the right controller
      * 
      * @param velocity the velocity for which to calculate feedforward
@@ -112,6 +180,17 @@ public class DriveSubsystem extends SubsystemBase {
      */
     public double calculateRightFeedforward(double velocity) {
         return rightMotorFeedforward.calculate(velocity);
+    }
+
+    /**
+     * Calculate the feedforward with the right controller
+     * Overloaded method to allow the input of acceleration
+     * 
+     * @param velocity the velocity for which to calculate feedforward
+     * @return the feedforward modified 
+     */
+    public double calculateRightFeedforward(double velocity, double acceleration){
+        return rightMotorFeedforward.calculate(velocity, acceleration);
     }
 
     /**
@@ -145,6 +224,16 @@ public class DriveSubsystem extends SubsystemBase {
      */
     public DifferentialDriveWheelSpeeds getWheelSpeeds(double xSpeed, double rot) {
         return m_kinematics.toWheelSpeeds(new ChassisSpeeds(xSpeed, 0.0, rot));
+    }
+
+    /**
+     * Returns the speeds in the differential drive
+     * Overloaded getWheelSpeed that just gets the motor encoder position
+     * 
+     * @return A DifferentialDriveWheelSpeeds object, has the rotations of the left and right wheels
+     */
+    public DifferentialDriveWheelSpeeds getWheelSpeeds() {
+        return new DifferentialDriveWheelSpeeds(getLeftEncoder(), getRightEncoder());
     }
 
     /**
@@ -190,7 +279,7 @@ public class DriveSubsystem extends SubsystemBase {
                 // Divide by the number of ticks in a rotation
                 / kEncoderResolution
                 // Multiply by the circumference of the wheel
-                * (2 * Math.PI * kWheelRadius);
+                * (2 * Math.PI * kWheelRadius) / (ShifterUtility.getShifterState() ? highGearRatio : lowGearRatio);
     }
 
     /**
@@ -201,7 +290,7 @@ public class DriveSubsystem extends SubsystemBase {
     public double getRightEncoder() {
         // Multiply by 10 to get encoder units per second
         return m_rightLeader.getSensorCollection().getIntegratedSensorVelocity() * 10 / kEncoderResolution
-                * (2 * Math.PI * kWheelRadius);
+                * (2 * Math.PI * kWheelRadius) / (ShifterUtility.getShifterState() ? highGearRatio : lowGearRatio);
     }
 
     /**
@@ -230,20 +319,24 @@ public class DriveSubsystem extends SubsystemBase {
         return m_rightLeader.getSensorCollection().getIntegratedSensorPosition();
     }
 
-    public SimpleMotorFeedforward getLeftFeedforward(){
-        return leftMotorFeedforward;
-    }
-    
-    public SimpleMotorFeedforward getRightFeedForward(){
-        return rightMotorFeedforward;
-    }
-
-    public PIDController getLeftPID(){
-        return leftPIDController;
+    /**
+     * <h3>resetLeftPID</h3>
+     * 
+     * This method resets the left PID controller
+     * 
+     */
+    public void resetLeftPID(){
+        leftPIDController.reset();
     }
 
-    public PIDController getRightPID(){
-        return rightPIDController;
+    /**
+     * <h3>resetRightPID</h3>
+     * 
+     * This method resets the right PID controller
+     * 
+     */
+    public void resetRightPID(){
+        rightPIDController.reset();
     }
 
     // TODO: Look into making this into a separate state machine class
@@ -265,6 +358,10 @@ public class DriveSubsystem extends SubsystemBase {
         return shifterState;
     }
 
+    public DifferentialDriveVoltageConstraint getVoltageContraint(){
+        return voltageConstraint;
+    }
+
     /**
      * Drives the robot with the given linear velocity and angular velocity.
      *
@@ -274,6 +371,28 @@ public class DriveSubsystem extends SubsystemBase {
     @SuppressWarnings("ParameterName")
     public void drive(double xSpeed, double rot) {
         var wheelSpeeds = m_kinematics.toWheelSpeeds(new ChassisSpeeds(xSpeed, 0.0, rot));
-        setSpeeds(wheelSpeeds);
+        setSpeeds(wheelSpeeds); 
+    }
+
+    public DifferentialDriveOdometry getOdometry(){
+        return m_odometry;
+    }
+
+    @Override
+    public void periodic(){
+        m_odometry.update(
+                // Create a new Rotation2d object with the reading from the pigeon
+                new Rotation2d(Math.toRadians(Gyro.getInstance().getGyro().getFusedHeading())),
+                // Convert raw sensor units to meters
+                // TODO: Check if we need to multiply by 2*pi*r because circumference
+                getRawLeftSensorPosition() *
+                        ((1.0 / 2048.0) * kWheelRadius * Math.PI)
+                        // Divide by the current gear ratio because the motors turn more than the wheels
+                        / highGearRatio,
+                // Convert raw sensor units to meters
+                // TODO: Check if we need to multiply by 2*pi*r because circumference
+                getRawRightSensorPosition() * ((1.0 / 2048.0) * kWheelRadius * Math.PI)
+                // Divide by the current gear ratio because the motors turn more than the wheels
+                        / highGearRatio);
     }
 }

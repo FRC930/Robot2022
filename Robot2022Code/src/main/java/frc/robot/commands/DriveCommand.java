@@ -2,12 +2,8 @@ package frc.robot.commands;
 
 import java.util.function.DoubleSupplier;
 
-import com.ctre.phoenix.sensors.PigeonIMU;
-
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
@@ -33,14 +29,11 @@ public class DriveCommand extends CommandBase {
     private DriveSubsystem driveSubsystem;
     private VisionCameraSubsystem reflectiveCameraSubsystem;
     private XboxController driverController;
-    private PigeonIMU m_gyro;
 
     private final double JOYSTICK_DEADBAND = 0.15;
 
     private DoubleSupplier driveStick;
     private DoubleSupplier rotationStick;
-
-    private DifferentialDriveOdometry m_odometry;
 
     private PIDController turnController = new PIDController(1, 0, 0);
 
@@ -59,12 +52,8 @@ public class DriveCommand extends CommandBase {
         reflectiveCameraSubsystem = reflectSubsystem;
         driverController = dController;
 
-        m_gyro = new PigeonIMU(eSubsystem.getEndgameMotorSlave());
-
         driveStick = () -> -deadbandCube(driverController.getLeftY()) * DriveSubsystem.kMaxSpeed;
         rotationStick = () -> -deadbandCube(driverController.getRightX()) * DriveSubsystem.kMaxAngularSpeed;
-
-        m_odometry = new DifferentialDriveOdometry(new Rotation2d(Math.toRadians(m_gyro.getFusedHeading())));
 
         // We are not adding endgame motor subsystem as a requirement because we are not
         // using the subsystem in the command at all
@@ -120,20 +109,6 @@ public class DriveCommand extends CommandBase {
                         driveSubsystem.calculateRightFeedforward(wheelSpeeds.rightMetersPerSecond)));
         // Update the differential drive odometry
         // Might be possible to remove it from the default teleop command
-        m_odometry.update(
-                // Create a new Rotation2d object with the reading from the pigeon
-                new Rotation2d(Math.toRadians(m_gyro.getFusedHeading())),
-                // Convert raw sensor units to meters
-                // TODO: Check if we need to multiply by 2*pi*r because circumference
-                driveSubsystem.getRawLeftSensorPosition() *
-                        ((1.0 / 2048.0) * DriveSubsystem.kWheelRadius * Math.PI)
-                        // Divide by the current gear ratio because the motors turn more than the wheels
-                        / DriveSubsystem.highGearRatio,
-                // Convert raw sensor units to meters
-                // TODO: Check if we need to multiply by 2*pi*r because circumference
-                driveSubsystem.getRawRightSensorPosition() * ((1.0 / 2048.0) * DriveSubsystem.kWheelRadius * Math.PI)
-                // Divide by the current gear ratio because the motors turn more than the wheels
-                        / DriveSubsystem.highGearRatio);
     }
 
     @Override
