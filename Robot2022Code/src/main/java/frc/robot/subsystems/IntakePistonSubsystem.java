@@ -20,7 +20,6 @@ public class IntakePistonSubsystem extends SubsystemBase {
     // ----- SOLENOID(S) -----\\
 
     private Solenoid solenoidOne;
-    private Solenoid solenoidTwo;
 
     // ----- CONSTRUCTOR -----\\
     /**
@@ -29,11 +28,9 @@ public class IntakePistonSubsystem extends SubsystemBase {
      * Handles the pistons that raise and lower the intake.
      * 
      * @param solenoidOneID ID for the first intake solenoid.
-     * @param solenoidTwoID ID for the second intake solenoid.
      */
-    public IntakePistonSubsystem(int solenoidOneID, int solenoidTwoID) {
+    public IntakePistonSubsystem(int solenoidOneID) {
         solenoidOne = new Solenoid(PneumaticsModuleType.REVPH, solenoidOneID);
-        solenoidTwo = new Solenoid(PneumaticsModuleType.REVPH, solenoidTwoID);
     }
 
     /**
@@ -45,7 +42,6 @@ public class IntakePistonSubsystem extends SubsystemBase {
      */
     public void setIntakePistonState(boolean state) {
         solenoidOne.set(state);
-        solenoidTwo.set(state);
 
         ShuffleboardUtility.getInstance().putToShuffleboard(ShuffleboardUtility.driverTab, ShuffleboardKeys.INTAKE_DOWN,
                 new ShuffleboardUtility.ShuffleBoardData<Boolean>(state));
@@ -60,17 +56,6 @@ public class IntakePistonSubsystem extends SubsystemBase {
      */
     public boolean getIntakeSolenoidOneState() {
         return solenoidOne.get();
-    }
-
-    /**
-     * <h3>getIntakeSolenoidTwoState</h3>
-     * 
-     * Reads the state of the second intake piston
-     * 
-     * @return the piston state
-     */
-    public boolean getIntakeSolenoidTwoState() {
-        return solenoidTwo.get();
     }
 
 }
