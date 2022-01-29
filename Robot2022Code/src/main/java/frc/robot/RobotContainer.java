@@ -1,9 +1,11 @@
 package frc.robot;
 
-import com.fasterxml.jackson.databind.ser.std.StdKeySerializers.Default;
-
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.cscore.UsbCamera;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
@@ -36,14 +38,16 @@ import frc.robot.subsystems.ShifterSubsystem;
 import frc.robot.subsystems.VisionCameraSubsystem;
 import frc.robot.triggers.AxisTrigger;
 import frc.robot.utilities.ShuffleboardUtility;
+import frc.robot.utilities.DriveCameraUtility;
+import frc.robot.utilities.DriveCameraUtility.BallColor;
 
 public class RobotContainer {
     public static final int XB_AXIS_LEFT_X = 0;
     public static final int XB_AXIS_LEFT_Y = 1;
-    public static final int XB_AXIS_RIGHT_X = 4;
-    public static final int XB_AXIS_RIGHT_Y = 5;
     public static final int XB_AXIS_LT = 2;
     public static final int XB_AXIS_RT = 3;
+    public static final int XB_AXIS_RIGHT_X = 4;
+    public static final int XB_AXIS_RIGHT_Y = 5;
 
     public static final int XB_A = 1;
     public static final int XB_B = 2;
@@ -56,8 +60,13 @@ public class RobotContainer {
     public static final int XB_LEFTSTICK_BUTTON = 9;
     public static final int XB_RIGHTSTICK_BUTTON = 10;
 
+    public static final int CAMERA_WIDTH = 160;
+    public static final int CAMERA_HEIGHT = 120;
+    public static final int CAMERA_FPS = 30;
+
     // The driver controller
-    private final XboxController controller = new XboxController(0);
+    private final XboxController driverController = new XboxController(0);
+    private final XboxController codriverController = new XboxController(1);
 
     private final DriveSubsystem driveSubsystem;
     private final DriveCommand driveCommand;
@@ -119,7 +128,8 @@ public class RobotContainer {
      * Initializes the robot
      */
     public RobotContainer() {
-        //endgame has to be instantiated before drive subsystem because we need to initialize the gyro
+        // endgame has to be instantiated before drive subsystem because we need to
+        // initialize the gyro
         endgameMotorSubsystem = new EndgameMotorSubsystem(3, 4);
 
         endgameArmCommand = new EndgameArmCommand(endgameMotorSubsystem);
@@ -170,22 +180,30 @@ public class RobotContainer {
 
         VisionCameraSubsystem reflectiveTapeSubsystem = new VisionCameraSubsystem(
                 VisionCameraSubsystem.CameraType.REFLECTIVE_TAPE);
+        VisionCameraSubsystem ballSubsystem = new VisionCameraSubsystem(VisionCameraSubsystem.CameraType.BALL_DETECTOR);
 
         driveSubsystem = new DriveSubsystem(1, 2);
-        driveCommand = new DriveCommand(driveSubsystem, endgameMotorSubsystem, reflectiveTapeSubsystem, controller);
+        driveCommand = new DriveCommand(driveSubsystem, endgameMotorSubsystem, reflectiveTapeSubsystem, ballSubsystem,
+                driverController);
 
-        catapultSubsystem = new CatapultSubsystem(1, 2);
+        catapultSubsystem = new CatapultSubsystem(1, 2, 3, 4, 5);
         catapultCommand = new CatapultCommand(catapultSubsystem);
 
         shifterSubsystem = new ShifterSubsystem(0);
         toggleShifterCommand = new ToggleShifterCommand(shifterSubsystem);
-        
+
         defaultAutoPathCommand = new DefaultAutoPathCommand(driveSubsystem);
 
         intakeMotorSubsystem = new IntakeMotorSubsystem(5);
         clockwiseIntakeMotorsCommand = new ClockwiseIntakeMotorsCommand(intakeMotorSubsystem);
         counterClockwiseIntakeMotorsCommand = new CounterclockwiseIntakeMotorsCommand(intakeMotorSubsystem);
         stopIntakeMotorsCommand = new StopIntakeMotorsCommand(intakeMotorSubsystem);
+
+        if (DriverStation.getAlliance() == Alliance.Blue) {
+            DriveCameraUtility.getInstance().setBallColor(BallColor.BLUE);
+        } else {
+            DriveCameraUtility.getInstance().setBallColor(BallColor.RED);
+        }
 
     }
 
@@ -200,50 +218,49 @@ public class RobotContainer {
      * </p>
      */
     public void beginTeleopRunCommands() {
-        AxisTrigger shifterTrigger = new AxisTrigger(controller, XB_AXIS_RT);
+        AxisTrigger shifterTrigger = new AxisTrigger(driverController, XB_AXIS_RT);
         shifterTrigger.whileActiveOnce(toggleShifterCommand);
 
-        JoystickButton launchButton = new JoystickButton(controller, XB_RB);
+        JoystickButton launchButton = new JoystickButton(codriverController, XB_RB);
         launchButton.whileActiveOnce(catapultCommand);
 
-        AxisTrigger reverseIntakeButton = new AxisTrigger(controller, XB_AXIS_LT);
+        AxisTrigger reverseIntakeButton = new AxisTrigger(codriverController, XB_AXIS_LT);
         reverseIntakeButton.whileActiveOnce(clockwiseIntakeMotorsCommand);
         reverseIntakeButton.whenInactive(stopIntakeMotorsCommand);
 
-        JoystickButton intakeButton = new JoystickButton(controller, XB_LB);
+        JoystickButton intakeButton = new JoystickButton(codriverController, XB_LB);
         intakeButton.whileActiveOnce(counterClockwiseIntakeMotorsCommand);
         intakeButton.whenReleased(stopIntakeMotorsCommand);
 
-        JoystickButton rotateArmButton = new JoystickButton(controller, XB_Y);
+        JoystickButton rotateArmButton = new JoystickButton(driverController, XB_Y);
         rotateArmButton.whileActiveOnce(endgameArmCommand);
 
-        JoystickButton rotateArmRevButton = new JoystickButton(controller, XB_A);
+        JoystickButton rotateArmRevButton = new JoystickButton(driverController, XB_A);
         rotateArmRevButton.whileActiveOnce(endgameArmRevCommand);
 
         // Two endgame commands used for testing
-        JoystickButton endgameSensorCloseButton = new JoystickButton(controller, XB_X);
+        JoystickButton endgameSensorCloseButton = new JoystickButton(driverController, XB_X);
         endgameSensorCloseButton.whileActiveOnce(endgameCloseAwayLeft4);
-        JoystickButton rotateUntilTouchingButton = new JoystickButton(controller, XB_B);
+        JoystickButton rotateUntilTouchingButton = new JoystickButton(driverController, XB_B);
         rotateUntilTouchingButton.whileActiveOnce(new SequentialCommandGroup(
                 new ParallelRaceGroup(endgameArmCommand, endgameCloseTouchingLeft1, endgameCloseTouchingRight1),
                 new WaitCommand(10)));
 
-        JoystickButton endgameComplete = new JoystickButton(controller, XB_START);
+        JoystickButton endgameComplete = new JoystickButton(driverController, XB_START);
         endgameComplete.whileActiveOnce(new SequentialCommandGroup(
                 // TODO:USE ENCODER AS PROGRESS TOOL
                 /* verticalCommand-NEED TO GET ENCODER WORKING!!!, */
-                endgame2, endgame3, endgame4, endgame5, endgame6, new WaitCommand(ENDGAME_RELEASE_DELAY), endgame8, endgame9, endgame10
+                endgame2, endgame3, endgame4, endgame5, endgame6, new WaitCommand(ENDGAME_RELEASE_DELAY), endgame8,
+                endgame9, endgame10
         /* new verticalCommand-NEED TO GET ENDCODER WORKING!! */
         ));
 
+        // startCamera();
+
         CommandScheduler scheduler = CommandScheduler.getInstance();
 
-        scheduler.unregisterSubsystem(driveSubsystem);
-
-        scheduler.setDefaultCommand(driveSubsystem, driveCommand);
-
         scheduler.unregisterSubsystem(left1piston, left2piston, left3piston, left4piston,
-                right1piston, right2piston, right3piston, right4piston/* , endgameMotorSubsystem */);
+                right1piston, right2piston, right3piston, right4piston, driveSubsystem/* , endgameMotorSubsystem */);
         // scheduler.setDefaultCommand(endgameMotorSubsystem, new
         // EndgameRotateHorizonalCommand(endgameMotorSubsystem));-GET ENCODER WORKING
         scheduler.setDefaultCommand(left1piston, new EndgameCloseClawCommand(left1piston));
@@ -254,30 +271,40 @@ public class RobotContainer {
         scheduler.setDefaultCommand(right2piston, new EndgameCloseClawCommand(right2piston));
         scheduler.setDefaultCommand(right3piston, new EndgameCloseClawCommand(right3piston));
         scheduler.setDefaultCommand(right4piston, new EndgameCloseClawCommand(right4piston));
+
+        scheduler.setDefaultCommand(driveSubsystem, driveCommand);
+    }
+
+    private void startCamera() {
+        UsbCamera camera = CameraServer.startAutomaticCapture(0);
+        if (camera != null) {
+            camera.setResolution(CAMERA_WIDTH, CAMERA_HEIGHT);
+            camera.setFPS(CAMERA_FPS);
+        }
     }
 
     public void beginAutoRunCommands() {
 
         // --The instance of the scheduler
         CommandScheduler scheduler = CommandScheduler.getInstance();
-    
+
         scheduler.unregisterSubsystem(catapultSubsystem,
-            //catapultSensorSubsystem,
-            driveSubsystem,
-            endgameMotorSubsystem, 
-            //endgamePistonSubsystem, 
-            //endgameSensorSubsystem, 
-            intakeMotorSubsystem, 
-            //intakePistonSubsystem, 
-            shifterSubsystem//, 
-            //visionCameraSubsystem
-            );
-        //  TODO set default command for each subsystem
-        //scheduler.setDefaultCommand(driveSubsystem, driveCommand);
-    } 
+                // catapultSensorSubsystem,
+                driveSubsystem,
+                endgameMotorSubsystem,
+                // endgamePistonSubsystem,
+                // endgameSensorSubsystem,
+                intakeMotorSubsystem,
+                // intakePistonSubsystem,
+                shifterSubsystem// ,
+        // visionCameraSubsystem
+        );
+        // TODO set default command for each subsystem
+        // scheduler.setDefaultCommand(driveSubsystem, driveCommand);
+    }
 
     public Command getAutonomousCommand() {
-        //return ShuffleboardUtility.getInstance().getSelectedAutonPath();
+        // return ShuffleboardUtility.getInstance().getSelectedAutonPath();
         return defaultAutoPathCommand;
         // Run path following command, then stop at the end.
     }

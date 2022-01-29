@@ -4,6 +4,8 @@ package frc.robot.commands.intakecommands.intakePistonCommands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.IntakePistonSubsystem;
+import frc.robot.utilities.DriveCameraUtility;
+import frc.robot.utilities.DriveCameraUtility.CameraStates;
 
 //----- CLASS -----\\
 /**
@@ -11,13 +13,13 @@ import frc.robot.subsystems.IntakePistonSubsystem;
  * 
  * Engages the intake pistons.
  */
-public class EngageIntakePistonsCommand extends CommandBase{
-    
-    //----- SUBSYSTEM(S) -----\\
+public class EngageIntakePistonsCommand extends CommandBase {
+
+    // ----- SUBSYSTEM(S) -----\\
 
     private IntakePistonSubsystem intakePistonSubsystem;
 
-    //----- CONSTRUCTOR -----\\
+    // ----- CONSTRUCTOR -----\\
     /**
      * <h3>Engage Piston Intake Piston Command</h3>
      * 
@@ -36,7 +38,7 @@ public class EngageIntakePistonsCommand extends CommandBase{
      */
     @Override
     public void initialize() {
-
+        DriveCameraUtility.getInstance().setCameraState(CameraStates.BALL);
     }
 
     /**
@@ -56,7 +58,7 @@ public class EngageIntakePistonsCommand extends CommandBase{
      */
     @Override
     public void end(boolean interrupted) {
-        
+        DriveCameraUtility.getInstance().setCameraState(CameraStates.REFLECTIVE_TAPE);
     }
 
 }

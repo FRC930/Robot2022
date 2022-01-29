@@ -16,8 +16,12 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
  * @version 1.0.0
  */
 public class CatapultSubsystem extends SubsystemBase {
-    private Solenoid solenoid1;
-    private Solenoid solenoid2;
+    private Solenoid launchSolenoid1;
+    private Solenoid launchSolenoid2;
+    private Solenoid launchSolenoid3;
+    private Solenoid launchSolenoid4;
+
+    private Solenoid ballHolderSolenoid;
 
     /**
      * <h3>CatapultSubsystem</h3>
@@ -27,12 +31,21 @@ public class CatapultSubsystem extends SubsystemBase {
      * @param solenoidID1 ID of the first solenoid
      * @param solenoidID2 ID of the second solenoid
      */
-    public CatapultSubsystem(int solenoidID1, int solenoidID2) {
-        solenoid1 = new Solenoid(PneumaticsModuleType.REVPH, solenoidID1);
-        solenoid2 = new Solenoid(PneumaticsModuleType.REVPH, solenoidID2);
+    public CatapultSubsystem(int solenoidID1, int solenoidID2, int solenoidID3, int solenoidID4,
+            int ballHolderSolenoidID) {
+        launchSolenoid1 = new Solenoid(PneumaticsModuleType.REVPH, solenoidID1);
+        launchSolenoid2 = new Solenoid(PneumaticsModuleType.REVPH, solenoidID2);
+        launchSolenoid3 = new Solenoid(PneumaticsModuleType.REVPH, solenoidID3);
+        launchSolenoid4 = new Solenoid(PneumaticsModuleType.REVPH, solenoidID4);
 
-        solenoid1.set(false);
-        solenoid2.set(false);
+        ballHolderSolenoid = new Solenoid(PneumaticsModuleType.REVPH, ballHolderSolenoidID);
+
+        launchSolenoid1.set(false);
+        launchSolenoid2.set(false);
+        launchSolenoid3.set(false);
+        launchSolenoid4.set(false);
+
+        ballHolderSolenoid.set(true);
     }
 
     /**
@@ -41,8 +54,12 @@ public class CatapultSubsystem extends SubsystemBase {
      * Extends the pistons on the catapult
      */
     public void extend() {
-        solenoid1.set(true);
-        solenoid2.set(true);
+        ballHolderSolenoid.set(false);
+
+        launchSolenoid1.set(true);
+        launchSolenoid2.set(true);
+        launchSolenoid3.set(true);
+        launchSolenoid4.set(true);
     }
 
     /**
@@ -51,7 +68,11 @@ public class CatapultSubsystem extends SubsystemBase {
      * Retracts the pistons on the catapult
      */
     public void retract() {
-        solenoid1.set(false);
-        solenoid2.set(false);
+        launchSolenoid1.set(false);
+        launchSolenoid2.set(false);
+        launchSolenoid3.set(false);
+        launchSolenoid4.set(false);
+
+        ballHolderSolenoid.set(true);
     }
 }

@@ -2,17 +2,24 @@ package frc.robot.commands;
 
 import java.util.function.DoubleSupplier;
 
+import org.photonvision.targeting.PhotonPipelineResult;
+
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.EndgameMotorSubsystem;
 import frc.robot.subsystems.VisionCameraSubsystem;
+import frc.robot.utilities.DriveCameraUtility;
 import frc.robot.utilities.ShuffleboardUtility;
+import frc.robot.utilities.DriveCameraUtility.BallColor;
 import frc.robot.utilities.ShuffleboardUtility.ShuffleBoardData;
 import frc.robot.utilities.ShuffleboardUtility.ShuffleboardKeys;
+
+import static frc.robot.utilities.DriveCameraUtility.CameraStates;
 
 /**
  * <h3>DriveCommand</h3>
@@ -21,13 +28,14 @@ import frc.robot.utilities.ShuffleboardUtility.ShuffleboardKeys;
  * is pressed, the robot will automatically take over aiming using the
  * PhotonCamera passed in the constructor
  * 
- * @author Alexander Taylor
+ * @author Alexander Taylor, Jack LaFreniere, and Anthony Witt
  * @since 22 January 2022
  * @version 1.0
  */
 public class DriveCommand extends CommandBase {
     private DriveSubsystem driveSubsystem;
     private VisionCameraSubsystem reflectiveCameraSubsystem;
+    private VisionCameraSubsystem ballCameraSubsystem;
     private XboxController driverController;
 
     private final double JOYSTICK_DEADBAND = 0.15;
@@ -47,9 +55,10 @@ public class DriveCommand extends CommandBase {
      * @param dController      the driver's controller
      */
     public DriveCommand(DriveSubsystem dSubsystem, EndgameMotorSubsystem eSubsystem,
-            VisionCameraSubsystem reflectSubsystem, XboxController dController) {
+            VisionCameraSubsystem reflectSubsystem, VisionCameraSubsystem ballCamera, XboxController dController) {
         driveSubsystem = dSubsystem;
         reflectiveCameraSubsystem = reflectSubsystem;
+        ballCameraSubsystem = ballCamera;
         driverController = dController;
 
         driveStick = () -> -deadbandCube(driverController.getLeftY()) * DriveSubsystem.kMaxSpeed;
@@ -64,38 +73,59 @@ public class DriveCommand extends CommandBase {
     public void execute() {
         // No need to modify drive speed axis
         double xStick = driveStick.getAsDouble();
-        double rot;
+        double rotationSpeed;
 
         // If the right stick button is pressed
         if (driverController.getRightStickButton()) {
             // Get the frame with annotations from PhotonVision
-            var result = reflectiveCameraSubsystem.getVisionCamera().getLatestResult();
+            PhotonPipelineResult result;
+            if (DriveCameraUtility.getInstance().getCameraState() == CameraStates.BALL) {
+                if (DriveCameraUtility.getInstance().getBallColor() == BallColor.BLUE) {
+                    ballCameraSubsystem.getVisionCamera().setPipelineIndex(1);
+                    result = ballCameraSubsystem.getVisionCamera().getLatestResult();
+                } else {
+                    ballCameraSubsystem.getVisionCamera().setPipelineIndex(0);
+                    result = ballCameraSubsystem.getVisionCamera().getLatestResult();
+                }
+            } else {
+                result = reflectiveCameraSubsystem.getVisionCamera().getLatestResult();
+            }
+            
             // Check if the camera sees any targets
             if (result.hasTargets()) {
+                
+
                 // Use the turnController PID controller to orient the robot toward the goal
                 // May want to use a smoothing function to try and reduce the effects of wayward
                 // vision targets
-                rot = -turnController.calculate(result.getBestTarget().getYaw(), 0);
+                rotationSpeed = -turnController.calculate(result.getBestTarget().getYaw(), 0);
                 // Make sure we are not passing in weird values for the imaginary stick
-                rot = MathUtil.clamp(rot, -1, 1);
+                rotationSpeed = MathUtil.clamp(rotationSpeed, -1, 1);
+
+                //if degrees is equal to -1 to 1, vibrate the controller
+                double xDegreeOffset = result.getBestTarget().getYaw();
+                if(xDegreeOffset > -1 && xDegreeOffset < 1) {
+                    driverController.setRumble(RumbleType.kLeftRumble, 1);
+                }
             } else {
                 // Since there are no targets, set rotation to zero
                 // TODO: don't have this in a println
                 System.out.println("NO TARGETS: AUTOVISION CAN\'T PERFORM");
-                rot = 0;
+                rotationSpeed = 0;
             }
         } else {
             // Just get the right stick horizontal axis
-            rot = rotationStick.getAsDouble();
+            rotationSpeed = rotationStick.getAsDouble();
         }
 
         // Get the wheel speeds from the stick values
         DifferentialDriveWheelSpeeds wheelSpeeds = driveSubsystem.getWheelSpeeds(xStick,
-                rot);
+                rotationSpeed);
 
-        ShuffleboardUtility.getInstance().putToShuffleboard(ShuffleboardUtility.driverTab, ShuffleboardKeys.LEFT_SPEED,
+        ShuffleboardUtility.getInstance().putToShuffleboard(ShuffleboardUtility.testingTab, ShuffleboardKeys.LEFT_SPEED,
                 new ShuffleBoardData<Double>(wheelSpeeds.leftMetersPerSecond));
-        ShuffleboardUtility.getInstance().putToShuffleboard(ShuffleboardUtility.driverTab, ShuffleboardKeys.RIGHT_SPEED,
+        ShuffleboardUtility.getInstance().putToShuffleboard(ShuffleboardUtility.testingTab,
+                ShuffleboardKeys.RIGHT_SPEED,
                 new ShuffleBoardData<Double>(wheelSpeeds.rightMetersPerSecond));
 
         driveSubsystem.setVoltages(
