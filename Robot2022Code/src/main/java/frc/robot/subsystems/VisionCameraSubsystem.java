@@ -24,12 +24,8 @@ public class VisionCameraSubsystem extends SubsystemBase {
     public VisionCameraSubsystem(CameraType camera) {
         if (camera == CameraType.REFLECTIVE_TAPE) {
             visionCamera = new PhotonCamera("REFLECTIVE_TAPE_CAMERA_NAME");
-        } else if (camera == CameraType.RED_BALL_DETECTOR) {
-            visionCamera = new PhotonCamera("BALL_DETECTOR_CAMERA_NAME");
-            visionCamera.setPipelineIndex(0);
         } else {
             visionCamera = new PhotonCamera("BALL_DETECTOR_CAMERA_NAME");
-            visionCamera.setPipelineIndex(1);
         }
     }
 
@@ -48,6 +44,6 @@ public class VisionCameraSubsystem extends SubsystemBase {
      * CameraType represents the three types of cameras
      */
     public static enum CameraType {
-        REFLECTIVE_TAPE, RED_BALL_DETECTOR, BLUE_BALL_DETECTOR
+        REFLECTIVE_TAPE, BALL_DETECTOR
     }
 }

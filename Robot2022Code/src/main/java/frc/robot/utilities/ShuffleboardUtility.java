@@ -1,8 +1,10 @@
+//----- IMPORTS -----\\
+
 package frc.robot.utilities;
+
 
 import java.util.HashMap;
 import java.util.Map;
-
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
@@ -10,6 +12,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
+//----- CLASS -----\\
 /**
  * <h3>ShuffleboardUtility</h3>
  * 
@@ -20,14 +23,23 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
  * @version 1.0
  */
 public class ShuffleboardUtility {
+
+    // ----- VARIABLES -----\\
+
     private static ShuffleboardUtility instance;
 
     private Map<ShuffleboardKeys, MapData> shuffleboardMap;
 
     private SendableChooser<Command> autonChooser;
 
+    private final boolean IS_DEBUGGING = false;
+
+    // ----- TABS -----\\
+
     public static final ShuffleboardTab driverTab = Shuffleboard.getTab("Driver Tab");
     public static final ShuffleboardTab testingTab = Shuffleboard.getTab("Testing Tab");
+
+    // ----- CONSTRUCTOR -----\\
 
     private ShuffleboardUtility() {
         shuffleboardMap = new HashMap<>();
@@ -36,6 +48,8 @@ public class ShuffleboardUtility {
 
         driverTab.add("Auton Path Selector", autonChooser);
     }
+
+    // ----- METHOD(S) -----\\
 
     /**
      * <h3>getInstance</h3>
@@ -62,13 +76,15 @@ public class ShuffleboardUtility {
      * @param data
      */
     public void putToShuffleboard(ShuffleboardTab tab, ShuffleboardKeys key, ShuffleBoardData<?> data) {
-        // Check to see if we have to add a new widget to the Shuffleboard tab
-        if (shuffleboardMap.containsKey(key)) {
-            // If the widget exists, simply update it to the new value
-            shuffleboardMap.put(key, new MapData(data, shuffleboardMap.get(key).m_entry));
-        } else {
-            // Since the widget doesn't exist, we need to create a new entry for it
-            shuffleboardMap.put(key, new MapData(data, tab.add(key.m_name, data.m_data).getEntry()));
+        if (IS_DEBUGGING || !tab.equals(testingTab)) {
+            // Check to see if we have to add a new widget to the Shuffleboard tab
+            if (shuffleboardMap.containsKey(key)) {
+                // If the widget exists, simply update it to the new value
+                shuffleboardMap.put(key, new MapData(data, shuffleboardMap.get(key).m_entry));
+            } else {
+                // Since the widget doesn't exist, we need to create a new entry for it
+                shuffleboardMap.put(key, new MapData(data, tab.add(key.m_name, data.m_data).getEntry()));
+            }
         }
     }
 
@@ -123,6 +139,7 @@ public class ShuffleboardUtility {
         autonChooser.setDefaultOption(pathName, autoCommand);
     }
 
+    // ----- ENUM KEYS -----\\
     /**
      * <h3>ShuffleboardKeys</h3>
      * 
@@ -131,11 +148,24 @@ public class ShuffleboardUtility {
     public static enum ShuffleboardKeys {
 
         // BALL MANAGEMENT
+        CATAPULT_SENSOR("Catapult Sensor"),
+        ALLIANCE_COLOR("Alliance Color"),
+        LED_PATTERNS("LED Patterns"),
+        AUTONOMOUS_PATH("Autonomous Paths"),
+        INTAKE_SENSOR("Intake Sensor"),
+        INTAKE_POSITIONING("Intake Positioning"),
+        INTAKE_DIRECTION("Intake Direction"),
         // CATAPULT_LOADED("Catapult loaded"),
         INTAKE_DOWN("Intake down"),
 
         // ENDGAME
-        ENDGAME_CLAMPED("Endgame clamped"),
+
+        ENDGAME_SENSOR1("Endgame Sensor 1"),
+        ENDGAME_SENSOR2("Endgame Sensor 2"),
+        ENDGAME_SENSOR3("Endgame Sensor 3"),
+        ENDGAME_SENSOR4("Endgame Sensor 4"),
+        ENDGAME_ENCODER("Endgame Encoder"),
+        PISTON_SENSOR("Piston Sensor"),
 
         // DRIVE TRAIN
         LEFT_SPEED("Speed of left drivetrain"),
@@ -153,6 +183,7 @@ public class ShuffleboardUtility {
         }
     }
 
+    // ----- STRUCT(S) -----\\
     /**
      * <h3>ShuffleboardData</h3>
      * 
