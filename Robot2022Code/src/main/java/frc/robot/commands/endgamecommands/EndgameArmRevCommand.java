@@ -56,6 +56,11 @@ public class EndgameArmRevCommand extends CommandBase {
   }
 
   @Override
+  public boolean isFinished() { // when true, ends command
+    return false;
+  }
+
+  @Override
   public void end(boolean interrupted) {
     m_MotorSubsystem.setMotorSpeed(0.0);
   }

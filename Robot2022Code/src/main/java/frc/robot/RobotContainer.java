@@ -2,14 +2,21 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.CatapultCommand;
 import frc.robot.commands.DriveCommand;
 import frc.robot.commands.ToggleShifterCommand;
 import frc.robot.commands.endgamecommands.EndgameArmCommand;
 import frc.robot.commands.endgamecommands.EndgameArmRevCommand;
-import frc.robot.commands.endgamecommands.EndgameSensorCloseCommand;
-import frc.robot.commands.endgamecommands.EndgameRotateUntilTouching;
+import frc.robot.commands.endgamecommands.EndgameCloseClawCommand;
+import frc.robot.commands.endgamecommands.EndgameCloseWhenAway;
+import frc.robot.commands.endgamecommands.EndgameCloseWhenTouching;
+import frc.robot.commands.endgamecommands.EndgameOpenClawCommand;
+import frc.robot.commands.endgamecommands.EndgameRotateVerticalCommand;
 import frc.robot.commands.intakecommands.intakemotorcommands.ClockwiseIntakeMotorsCommand;
 import frc.robot.commands.intakecommands.intakemotorcommands.CounterclockwiseIntakeMotorsCommand;
 import frc.robot.commands.intakecommands.intakemotorcommands.StopIntakeMotorsCommand;
@@ -48,15 +55,16 @@ public class RobotContainer {
     private final DriveSubsystem driveSubsystem;
     private final DriveCommand driveCommand;
 
-    private final EndgameSensorCloseCommand endgameSensorCloseCommand;
+    private final EndgameCloseWhenAway endgameCloseAwayLeft4;
+    private final EndgameCloseWhenAway endgameCloseAwayRight4;
+    private final EndgameCloseWhenTouching endgameCloseTouchingLeft3;
+    private final EndgameCloseWhenTouching endgameCloseTouchingRight3;
+    private final EndgameCloseWhenTouching endgameCloseTouchingLeft1;
+    private final EndgameCloseWhenTouching endgameCloseTouchingRight1;
 
     private final EndgameMotorSubsystem endgameMotorSubsystem;
     private final EndgameArmCommand endgameArmCommand;
     private final EndgameArmRevCommand endgameArmRevCommand;
-    private final EndgameRotateUntilTouching rotateUntilTouchingLeft2;
-    private final EndgameRotateUntilTouching rotateUntilTouchingLeft4;
-    private final EndgameRotateUntilTouching rotateUntilTouchingRight2;
-    private final EndgameRotateUntilTouching rotateUntilTouchingRight4;
 
     private final EndgameSensorSubsystem left2Sensor;
     private final EndgameSensorSubsystem right2Sensor;
@@ -71,6 +79,19 @@ public class RobotContainer {
     private final EndgamePistonSubsystem right2piston;
     private final EndgamePistonSubsystem right3piston;
     private final EndgamePistonSubsystem right4piston;
+
+    private final double ENDGAME_PISTON_DELAY = 0.25;
+    private final double ENDGAME_RELEASE_DELAY = 5;
+
+    private final EndgameRotateVerticalCommand verticalCommand;
+    private final ParallelRaceGroup endgame2;
+    private final ParallelCommandGroup endgame3;
+    private final ParallelRaceGroup endgame4;
+    private final ParallelRaceGroup endgame5;
+    private final ParallelRaceGroup endgame6;
+    private final ParallelRaceGroup endgame8;
+    private final ParallelRaceGroup endgame9;
+    private final ParallelRaceGroup endgame10;
 
     private final CatapultSubsystem catapultSubsystem;
     private final CatapultCommand catapultCommand;
@@ -90,7 +111,11 @@ public class RobotContainer {
      */
     public RobotContainer() {
         endgameMotorSubsystem = new EndgameMotorSubsystem(3, 4);
-        
+
+        endgameArmCommand = new EndgameArmCommand(endgameMotorSubsystem);
+        endgameArmRevCommand = new EndgameArmRevCommand(endgameMotorSubsystem);
+        verticalCommand = new EndgameRotateVerticalCommand(endgameMotorSubsystem);
+
         left2Sensor = new EndgameSensorSubsystem(1);
         right2Sensor = new EndgameSensorSubsystem(2);
         left4Sensor = new EndgameSensorSubsystem(3);
@@ -104,15 +129,34 @@ public class RobotContainer {
         right2piston = new EndgamePistonSubsystem(8);
         right3piston = new EndgamePistonSubsystem(9);
         right4piston = new EndgamePistonSubsystem(10);
-        
-        rotateUntilTouchingLeft2 = new EndgameRotateUntilTouching(endgameMotorSubsystem, left2Sensor);
-        rotateUntilTouchingLeft4 = new EndgameRotateUntilTouching(endgameMotorSubsystem, left4Sensor);
-        rotateUntilTouchingRight2 = new EndgameRotateUntilTouching(endgameMotorSubsystem, right2Sensor);
-        rotateUntilTouchingRight4 = new EndgameRotateUntilTouching(endgameMotorSubsystem, right4Sensor);
 
-        endgameArmCommand = new EndgameArmCommand(endgameMotorSubsystem);
-        endgameArmRevCommand = new EndgameArmRevCommand(endgameMotorSubsystem);
-        endgameSensorCloseCommand = new EndgameSensorCloseCommand(left1piston, left2Sensor);
+        endgameCloseAwayLeft4 = new EndgameCloseWhenAway(left4piston, left4Sensor);
+        endgameCloseAwayRight4 = new EndgameCloseWhenAway(right4piston, right4Sensor);
+        endgameCloseTouchingLeft3 = new EndgameCloseWhenTouching(left3piston, left4Sensor);
+        endgameCloseTouchingRight3 = new EndgameCloseWhenTouching(right3piston, right4Sensor);
+        endgameCloseTouchingLeft1 = new EndgameCloseWhenTouching(left1piston, left2Sensor);
+        endgameCloseTouchingRight1 = new EndgameCloseWhenTouching(right1piston, right2Sensor);
+
+        double ENDGAME_PISTON_DELAY = 0.25;
+        endgame2 = new ParallelRaceGroup(new EndgameOpenClawCommand(left3piston),
+                new EndgameOpenClawCommand(right3piston), new WaitCommand(ENDGAME_PISTON_DELAY));
+        endgame3 = new ParallelCommandGroup(new EndgameCloseWhenTouching(left3piston, left4Sensor),
+                new EndgameCloseWhenTouching(right3piston, right4Sensor));
+        endgame4 = new ParallelRaceGroup(new EndgameOpenClawCommand(left1piston),
+                new EndgameOpenClawCommand(right1piston), new WaitCommand(ENDGAME_PISTON_DELAY));
+        endgame5 = new ParallelRaceGroup(new EndgameArmCommand(endgameMotorSubsystem),
+                new EndgameCloseWhenTouching(left1piston, left2Sensor),
+                new EndgameCloseWhenTouching(right1piston, right2Sensor));
+        endgame6 = new ParallelRaceGroup(new EndgameOpenClawCommand(left3piston),
+                new EndgameOpenClawCommand(right3piston), new EndgameOpenClawCommand(left4piston),
+                new EndgameOpenClawCommand(right4piston), new WaitCommand(ENDGAME_PISTON_DELAY));
+        endgame8 = new ParallelRaceGroup(new EndgameCloseClawCommand(left4piston),
+                new EndgameCloseClawCommand(right4piston), new WaitCommand(ENDGAME_PISTON_DELAY));
+        endgame9 = new ParallelRaceGroup(new EndgameArmCommand(endgameMotorSubsystem),
+                new EndgameCloseWhenTouching(left3piston, left4Sensor),
+                new EndgameCloseWhenTouching(right3piston, right4Sensor));
+        endgame10 = new ParallelRaceGroup(new EndgameOpenClawCommand(left2piston),
+                new EndgameOpenClawCommand(right2piston), new WaitCommand(ENDGAME_PISTON_DELAY));
 
         VisionCameraSubsystem reflectiveTapeSubsystem = new VisionCameraSubsystem(
                 VisionCameraSubsystem.CameraType.REFLECTIVE_TAPE);
@@ -164,11 +208,21 @@ public class RobotContainer {
         JoystickButton rotateArmRevButton = new JoystickButton(controller, XB_A);
         rotateArmRevButton.whileActiveOnce(endgameArmRevCommand);
 
+        // Two endgame commands used for testing
         JoystickButton endgameSensorCloseButton = new JoystickButton(controller, XB_X);
-        endgameSensorCloseButton.whileActiveOnce(endgameSensorCloseCommand);
-        
+        endgameSensorCloseButton.whileActiveOnce(endgameCloseAwayLeft4);
         JoystickButton rotateUntilTouchingButton = new JoystickButton(controller, XB_B);
-        rotateUntilTouchingButton.whileActiveOnce(rotateUntilTouchingLeft2);
+        rotateUntilTouchingButton.whileActiveOnce(new SequentialCommandGroup(
+                new ParallelRaceGroup(endgameArmCommand, endgameCloseTouchingLeft1, endgameCloseTouchingRight1),
+                new WaitCommand(10)));
+
+        JoystickButton endgameComplete = new JoystickButton(controller, XB_START);
+        endgameComplete.whileActiveOnce(new SequentialCommandGroup(
+                // TODO:USE ENCODER AS PROGRESS TOOL
+                /* verticalCommand-NEED TO GET ENCODER WORKING!!!, */
+                endgame2, endgame3, endgame4, endgame5, endgame6, new WaitCommand(ENDGAME_RELEASE_DELAY), endgame8, endgame9, endgame10
+        /* new verticalCommand-NEED TO GET ENDCODER WORKING!! */
+        ));
 
         CommandScheduler scheduler = CommandScheduler.getInstance();
 
@@ -176,5 +230,17 @@ public class RobotContainer {
 
         scheduler.setDefaultCommand(driveSubsystem, driveCommand);
 
+        scheduler.unregisterSubsystem(left1piston, left2piston, left3piston, left4piston,
+                right1piston, right2piston, right3piston, right4piston/* , endgameMotorSubsystem */);
+        // scheduler.setDefaultCommand(endgameMotorSubsystem, new
+        // EndgameRotateHorizonalCommand(endgameMotorSubsystem));-GET ENCODER WORKING
+        scheduler.setDefaultCommand(left1piston, new EndgameCloseClawCommand(left1piston));
+        scheduler.setDefaultCommand(left2piston, new EndgameCloseClawCommand(left2piston));
+        scheduler.setDefaultCommand(left3piston, new EndgameCloseClawCommand(left3piston));
+        scheduler.setDefaultCommand(left4piston, new EndgameCloseClawCommand(left4piston));
+        scheduler.setDefaultCommand(right1piston, new EndgameCloseClawCommand(right1piston));
+        scheduler.setDefaultCommand(right2piston, new EndgameCloseClawCommand(right2piston));
+        scheduler.setDefaultCommand(right3piston, new EndgameCloseClawCommand(right3piston));
+        scheduler.setDefaultCommand(right4piston, new EndgameCloseClawCommand(right4piston));
     }
 }

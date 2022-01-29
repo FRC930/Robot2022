@@ -31,7 +31,9 @@ public class EndgameCloseClawCommand extends CommandBase{
         piston.closed();
     }
     
+    //Leave false for default command
+    @Override
     public boolean isFinished() { // when true, ends command
-       return true;
+       return false;
     }
 } // End of class EndgameCloseClawCommand

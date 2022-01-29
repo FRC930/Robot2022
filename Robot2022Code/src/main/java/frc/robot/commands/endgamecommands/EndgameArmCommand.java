@@ -54,6 +54,13 @@ public class EndgameArmCommand extends CommandBase {
 
     // logger.log(LOG_LEVEL_FINE, "Starting the arm motor (command)...");
   }
+  
+
+  //isFinished() is left false on purpose. Needs to be interrupted.
+  @Override
+  public boolean isFinished() { // when true, ends command
+    return false;
+  }
 
   @Override
   public void end(boolean interrupted) {
