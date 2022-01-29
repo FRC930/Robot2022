@@ -8,6 +8,7 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 // import java.util.logging.Logger;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.utilities.Gyro;
 /**
  * <h3> EndgameMotorSubsystem </h3>
  * 
@@ -34,6 +35,7 @@ public class EndgameMotorSubsystem extends SubsystemBase {
     public EndgameMotorSubsystem(int motorIDMaster, int motorIDSlave) {
         endgameMotorMaster = new WPI_TalonSRX(motorIDMaster);
         endgameMotorSlave = new WPI_TalonSRX(motorIDSlave);
+        Gyro.getInstance().setGyro(this);
         endgameMotorMaster.setNeutralMode(NeutralMode.Brake);
         endgameMotorSlave.setNeutralMode(NeutralMode.Brake);
     }

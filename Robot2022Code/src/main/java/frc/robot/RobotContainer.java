@@ -1,11 +1,15 @@
 package frc.robot;
 
+import com.fasterxml.jackson.databind.ser.std.StdKeySerializers.Default;
+
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.CatapultCommand;
 import frc.robot.commands.DriveCommand;
 import frc.robot.commands.ToggleShifterCommand;
+import frc.robot.commands.autocommands.paths.DefaultAutoPathCommand;
 import frc.robot.commands.endgamecommands.EndgameArmCommand;
 import frc.robot.commands.endgamecommands.EndgameArmRevCommand;
 import frc.robot.commands.endgamecommands.EndgameSensorCloseCommand;
@@ -13,15 +17,18 @@ import frc.robot.commands.endgamecommands.EndgameRotateUntilTouching;
 import frc.robot.commands.intakecommands.intakemotorcommands.ClockwiseIntakeMotorsCommand;
 import frc.robot.commands.intakecommands.intakemotorcommands.CounterclockwiseIntakeMotorsCommand;
 import frc.robot.commands.intakecommands.intakemotorcommands.StopIntakeMotorsCommand;
+import frc.robot.subsystems.CatapultSensorSubsystem;
 import frc.robot.subsystems.CatapultSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.EndgameMotorSubsystem;
 import frc.robot.subsystems.EndgamePistonSubsystem;
 import frc.robot.subsystems.EndgameSensorSubsystem;
 import frc.robot.subsystems.IntakeMotorSubsystem;
+import frc.robot.subsystems.IntakePistonSubsystem;
 import frc.robot.subsystems.ShifterSubsystem;
 import frc.robot.subsystems.VisionCameraSubsystem;
 import frc.robot.triggers.AxisTrigger;
+import frc.robot.utilities.ShuffleboardUtility;
 
 public class RobotContainer {
     public static final int XB_AXIS_LEFT_X = 0;
@@ -83,12 +90,15 @@ public class RobotContainer {
     private final CounterclockwiseIntakeMotorsCommand counterClockwiseIntakeMotorsCommand;
     private final StopIntakeMotorsCommand stopIntakeMotorsCommand;
 
+    private final DefaultAutoPathCommand defaultAutoPathCommand;
+
     /**
      * <h3>RobotContainer</h3>
      * 
      * Initializes the robot
      */
     public RobotContainer() {
+        //endgame has to be instantiated before drive subsystem because we need to initialize the gyro
         endgameMotorSubsystem = new EndgameMotorSubsystem(3, 4);
         
         left2Sensor = new EndgameSensorSubsystem(1);
@@ -125,6 +135,8 @@ public class RobotContainer {
 
         shifterSubsystem = new ShifterSubsystem(0);
         toggleShifterCommand = new ToggleShifterCommand(shifterSubsystem);
+        
+        defaultAutoPathCommand = new DefaultAutoPathCommand(driveSubsystem);
 
         intakeMotorSubsystem = new IntakeMotorSubsystem(5);
         clockwiseIntakeMotorsCommand = new ClockwiseIntakeMotorsCommand(intakeMotorSubsystem);
@@ -176,5 +188,31 @@ public class RobotContainer {
 
         scheduler.setDefaultCommand(driveSubsystem, driveCommand);
 
+    }
+
+    public void beginAutoRunCommands() {
+
+        // --The instance of the scheduler
+        CommandScheduler scheduler = CommandScheduler.getInstance();
+    
+        scheduler.unregisterSubsystem(catapultSubsystem,
+            //catapultSensorSubsystem,
+            driveSubsystem,
+            endgameMotorSubsystem, 
+            //endgamePistonSubsystem, 
+            //endgameSensorSubsystem, 
+            intakeMotorSubsystem, 
+            //intakePistonSubsystem, 
+            shifterSubsystem//, 
+            //visionCameraSubsystem
+            );
+        //  TODO set default command for each subsystem
+        //scheduler.setDefaultCommand(driveSubsystem, driveCommand);
+    } 
+
+    public Command getAutonomousCommand() {
+        //return ShuffleboardUtility.getInstance().getSelectedAutonPath();
+        return defaultAutoPathCommand;
+        // Run path following command, then stop at the end.
     }
 }
