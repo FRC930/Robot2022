@@ -75,47 +75,50 @@ public class DriveCommand extends CommandBase {
         double xStick = driveStick.getAsDouble();
         double rotationSpeed;
 
-        // If the right stick button is pressed
-        if (driverController.getRightStickButton()) {
-            // Get the frame with annotations from PhotonVision
-            PhotonPipelineResult result;
-            if (DriveCameraUtility.getInstance().getCameraState() == CameraStates.BALL) {
-                if (DriveCameraUtility.getInstance().getBallColor() == BallColor.BLUE) {
-                    ballCameraSubsystem.getVisionCamera().setPipelineIndex(1);
-                    result = ballCameraSubsystem.getVisionCamera().getLatestResult();
-                } else {
-                    ballCameraSubsystem.getVisionCamera().setPipelineIndex(0);
-                    result = ballCameraSubsystem.getVisionCamera().getLatestResult();
-                }
-            } else {
-                result = reflectiveCameraSubsystem.getVisionCamera().getLatestResult();
-            }
-            
-            // Check if the camera sees any targets
-            if (result.hasTargets()) {
-                
+        // Result from the pipeline
+        PhotonPipelineResult result;
 
-                // Use the turnController PID controller to orient the robot toward the goal
-                // May want to use a smoothing function to try and reduce the effects of wayward
-                // vision targets
-                rotationSpeed = -turnController.calculate(result.getBestTarget().getYaw(), 0);
-                // Make sure we are not passing in weird values for the imaginary stick
-                rotationSpeed = MathUtil.clamp(rotationSpeed, -1, 1);
+        // If X button is pressed, aim towards reflective tape
+        // Else if B button is pressed, aim towards position of ball
+        // Else drive with right joystick (manual)
+        if (driverController.getXButtonPressed()) {
 
-                //if degrees is equal to -1 to 1, vibrate the controller
-                double xDegreeOffset = result.getBestTarget().getYaw();
-                if(xDegreeOffset > -1 && xDegreeOffset < 1) {
-                    driverController.setRumble(RumbleType.kLeftRumble, 1);
-                }
+            // Get latest result from the reflective camera
+            result = reflectiveCameraSubsystem.getVisionCamera().getLatestResult();
+
+            // Gets rotation speed required to face the reflective tape
+            rotationSpeed = rotateTowardsTarget(result);
+
+        } else if (driverController.getBButtonPressed()) {
+
+            // If the ball is red, set the pipeline to red and get the latest result
+            // Else (the ball is blue), set the pipeline to blue and get the latest result
+            if (DriveCameraUtility.getInstance().getBallColor() == BallColor.RED) {
+
+                // Sets the pipeline to red
+                ballCameraSubsystem.getVisionCamera().setPipelineIndex(0);
+
+                // Gets latest result from the ball camera
+                result = ballCameraSubsystem.getVisionCamera().getLatestResult();
+
             } else {
-                // Since there are no targets, set rotation to zero
-                // TODO: don't have this in a println
-                System.out.println("NO TARGETS: AUTOVISION CAN\'T PERFORM");
-                rotationSpeed = 0;
+
+                // Sets the pipeline to blue
+                ballCameraSubsystem.getVisionCamera().setPipelineIndex(1);
+
+                // Gets latest result from the ball camera
+                result = ballCameraSubsystem.getVisionCamera().getLatestResult();
+
             }
+
+            // Gets rotation speed required to face towards the targetted ball
+            rotationSpeed = rotateTowardsTarget(result);
+
         } else {
+
             // Just get the right stick horizontal axis
             rotationSpeed = rotationStick.getAsDouble();
+
         }
 
         // Get the wheel speeds from the stick values
@@ -157,5 +160,34 @@ public class DriveCommand extends CommandBase {
             // speeds
             return Math.pow(stickPos, 3);
         }
+    }
+
+    private double rotateTowardsTarget(PhotonPipelineResult result) {
+
+        double rotationSpeed = 0;
+
+        // Check if the camera sees any targets
+        if (result.hasTargets()) {
+
+            // Use the turnController PID controller to orient the robot toward the goal
+            // May want to use a smoothing function to try and reduce the effects of wayward
+            // vision targets
+            rotationSpeed = -turnController.calculate(result.getBestTarget().getYaw(), 0);
+            // Make sure we are not passing in weird values for the imaginary stick
+            rotationSpeed = MathUtil.clamp(rotationSpeed, -1, 1);
+
+            // if degrees is equal to -1 to 1, vibrate the controller
+            double xDegreeOffset = result.getBestTarget().getYaw();
+            if (xDegreeOffset > -1 && xDegreeOffset < 1) {
+                driverController.setRumble(RumbleType.kLeftRumble, 1);
+            }
+        } else {
+            // Since there are no targets, set rotation to zero
+            // TODO: don't have this in a println
+            System.out.println("NO TARGETS: AUTOVISION CAN\'T PERFORM");
+            rotationSpeed = 0;
+        }
+
+        return rotationSpeed;
     }
 }
