@@ -250,7 +250,7 @@ public class RobotContainer {
         endgameSensorCloseButton.whileActiveOnce(endgameCloseTouchingLeft1);
         JoystickButton rotateUntilTouchingButton = new JoystickButton(driverController, XB_B);
         rotateUntilTouchingButton.whileActiveOnce(new SequentialCommandGroup(
-                new ParallelRaceGroup(endgameArmCommand, endgameCloseTouchingLeft1, endgameCloseTouchingRight1),
+                new ParallelRaceGroup(new EndgameArmCommand(endgameMotorSubsystem), endgameCloseTouchingLeft1, endgameCloseTouchingRight1),
                 new WaitCommand(10)));
 
         JoystickButton endgameComplete = new JoystickButton(driverController, XB_START);
