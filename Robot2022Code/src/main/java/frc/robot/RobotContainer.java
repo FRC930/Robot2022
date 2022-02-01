@@ -15,6 +15,8 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.CatapultCommand;
 import frc.robot.commands.DriveCommand;
 import frc.robot.commands.ToggleShifterCommand;
+import frc.robot.commands.autocommands.paths.BottomBackShootCommand;
+import frc.robot.commands.autocommands.paths.BottomBackSideShootCommand;
 import frc.robot.commands.autocommands.paths.DefaultAutoPathCommand;
 import frc.robot.commands.endgamecommands.EndgameArmCommand;
 import frc.robot.commands.endgamecommands.EndgameArmRevCommand;
@@ -120,6 +122,8 @@ public class RobotContainer {
     private final StopIntakeMotorsCommand stopIntakeMotorsCommand;
 
     private final DefaultAutoPathCommand defaultAutoPathCommand;
+    private final BottomBackShootCommand bottomBackShootCommand;
+    private final BottomBackSideShootCommand bottomBackSideShootCommand;
 
     /**
      * <h3>RobotContainer</h3>
@@ -198,7 +202,16 @@ public class RobotContainer {
         shifterSubsystem = new ShifterSubsystem(0);
         toggleShifterCommand = new ToggleShifterCommand(shifterSubsystem);
 
+        // This is where the Autonomous commands are being added to shuffleboard 
+        ShuffleboardUtility.getInstance().setDefaultAutonOptions("Default (None)", null);
         defaultAutoPathCommand = new DefaultAutoPathCommand(driveSubsystem);
+        ShuffleboardUtility.getInstance().addAutonOptions("defaultAutoPathCommand", defaultAutoPathCommand);
+        bottomBackShootCommand = new BottomBackShootCommand(driveSubsystem);
+        ShuffleboardUtility.getInstance().addAutonOptions("bottomBackShootCommand", bottomBackShootCommand);
+        bottomBackSideShootCommand = new BottomBackSideShootCommand(driveSubsystem);
+        ShuffleboardUtility.getInstance().addAutonOptions("bottomBackSideShootCommand", bottomBackSideShootCommand);
+
+        
 
         intakeMotorSubsystem = new IntakeMotorSubsystem(5);
         //intakePistonSubsystem = new IntakePistonSubsystem(1);
@@ -311,8 +324,6 @@ public class RobotContainer {
     }
 
     public Command getAutonomousCommand() {
-        // return ShuffleboardUtility.getInstance().getSelectedAutonPath();
-        return defaultAutoPathCommand;
-        // Run path following command, then stop at the end.
+        return ShuffleboardUtility.getInstance().getSelectedAutonPath();
     }
 }
