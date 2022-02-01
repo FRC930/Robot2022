@@ -76,7 +76,7 @@ public class DriveCommand extends CommandBase {
         double rotationSpeed;
 
         // Result from the pipeline
-        PhotonPipelineResult result;
+        PhotonPipelineResult result = null;
 
         // If X button is pressed, aim towards reflective tape
         // Else if B button is pressed, aim towards position of ball
@@ -119,6 +119,21 @@ public class DriveCommand extends CommandBase {
             // Just get the right stick horizontal axis
             rotationSpeed = rotationStick.getAsDouble();
 
+        }
+
+        // Checking a result exists and X or B is pressed
+        // If true, it will rumble based on a Yaw range
+        // Else, no rumble
+        if(result != null && (driverController.getBButtonPressed() || driverController.getXButtonPressed())) {
+            // Checking if the result is within one degree of the target
+            // If true, rumble. If not within the range, no rumble.
+            if(result.getBestTarget().getYaw() > -1 && result.getBestTarget().getYaw() < 1) {
+                driverController.setRumble(RumbleType.kRightRumble, 1);
+            } else {
+                driverController.setRumble(RumbleType.kRightRumble, 0);
+            }
+        } else {
+            driverController.setRumble(RumbleType.kRightRumble, 0);
         }
 
         // Get the wheel speeds from the stick values
