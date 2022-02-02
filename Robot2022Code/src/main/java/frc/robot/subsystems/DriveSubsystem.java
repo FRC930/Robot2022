@@ -17,7 +17,7 @@ import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.math.trajectory.constraint.DifferentialDriveVoltageConstraint;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.utilities.Gyro;
+import frc.robot.utilities.GyroUtility;
 import frc.robot.utilities.ShifterUtility;
 
 /**
@@ -74,9 +74,9 @@ public class DriveSubsystem extends SubsystemBase {
     private final DifferentialDriveVoltageConstraint voltageConstraint = new DifferentialDriveVoltageConstraint(
             constraintFeedforward, getKinematics(), 10);
 
-    private DifferentialDriveOdometry m_odometry = new DifferentialDriveOdometry(
-            new Rotation2d(Math.toRadians(Gyro.getInstance().getGyro().getFusedHeading())));
-
+    private final DifferentialDriveOdometry m_odometry = new DifferentialDriveOdometry(
+        new Rotation2d(Math.toRadians(GyroUtility.getInstance().getGyro().getFusedHeading())));
+    
     /**
      * Constructs a differential drive object. Sets the encoder distance per pulse
      * and resets the gyro.
@@ -387,7 +387,7 @@ public class DriveSubsystem extends SubsystemBase {
     public void periodic() {
         m_odometry.update(
                 // Create a new Rotation2d object with the reading from the pigeon
-                new Rotation2d(Math.toRadians(Gyro.getInstance().getGyro().getFusedHeading())),
+                new Rotation2d(Math.toRadians(GyroUtility.getInstance().getGyro().getFusedHeading())),
                 // Convert raw sensor units to meters
                 // TODO: Check if we need to multiply by 2*pi*r because circumference
                 getRawLeftSensorPosition() *

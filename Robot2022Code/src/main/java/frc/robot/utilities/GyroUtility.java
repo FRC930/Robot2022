@@ -1,15 +1,16 @@
 package frc.robot.utilities;
 
 import frc.robot.subsystems.EndgameMotorSubsystem;
+import frc.robot.subsystems.IntakeMotorSubsystem;
 
 import com.ctre.phoenix.sensors.PigeonIMU;
 
-public class Gyro {
-    private static Gyro instance;
+public class GyroUtility {
+    private static GyroUtility instance;
     private static PigeonIMU m_gyro;
 
 
-    private Gyro() {
+    private GyroUtility() {
 
     }
     /**
@@ -22,8 +23,8 @@ public class Gyro {
     * Gets the gyro
      */
 
-    public void setGyro(EndgameMotorSubsystem eSubsystem){
-        m_gyro = new PigeonIMU(eSubsystem.getEndgameMotorSlave());
+    public void setGyro(IntakeMotorSubsystem eSubsystem){
+        m_gyro = new PigeonIMU(eSubsystem.getIntakeMotor());
     }
     public PigeonIMU getGyro(){
         //  TO-DO if m_gyro not set return error
@@ -37,9 +38,9 @@ public class Gyro {
      * 
      * @return the instance
      */
-    public static Gyro getInstance() {
+    public static GyroUtility getInstance() {
         if (instance == null) {
-            instance = new Gyro();
+            instance = new GyroUtility();
         }
         return instance;
     }

@@ -2,13 +2,12 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
-import com.ctre.phoenix.motorcontrol.can.TalonSRXConfiguration;
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
 // import java.util.logging.Logger;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.utilities.Gyro;
+
 /**
  * <h3> EndgameMotorSubsystem </h3>
  * 
@@ -21,21 +20,20 @@ public class EndgameMotorSubsystem extends SubsystemBase {
     /**
      * The motor controller that controls the endgame motor
      */
-    private final WPI_TalonSRX endgameMotorMaster;
-    private final WPI_TalonSRX endgameMotorSlave;
+    private final WPI_TalonFX endgameMotorMaster;
+    private final WPI_TalonFX endgameMotorSlave;
 
     // -------- CONSTRUCTOR --------\
 
     /**
      * This constructor initializes the endgame motors to the proper hardware
      * 
-     * @param motorIDMaster ID for the master TalonSRX-has endgame encoder attached
-     * @param motorIDSlave ID for the slave TalonSRX-has pigeon attached
+     * @param motorIDMaster ID for the master TalonFX
+     * @param motorIDSlave ID for the slave TalonFX
      */
     public EndgameMotorSubsystem(int motorIDMaster, int motorIDSlave) {
-        endgameMotorMaster = new WPI_TalonSRX(motorIDMaster);
-        endgameMotorSlave = new WPI_TalonSRX(motorIDSlave);
-        Gyro.getInstance().setGyro(this);
+        endgameMotorMaster = new WPI_TalonFX(motorIDMaster);
+        endgameMotorSlave = new WPI_TalonFX(motorIDSlave);
         endgameMotorMaster.setNeutralMode(NeutralMode.Brake);
         endgameMotorSlave.setNeutralMode(NeutralMode.Brake);
     }
@@ -55,8 +53,8 @@ public class EndgameMotorSubsystem extends SubsystemBase {
     }
 
     public void stopMotor() {
-        endgameMotorMaster.set(0);
-        endgameMotorSlave.set(0);
+        endgameMotorMaster.set(ControlMode.PercentOutput, 0.0);
+        endgameMotorSlave.set(ControlMode.PercentOutput, 0.0);
     }
 
     /**
@@ -67,18 +65,6 @@ public class EndgameMotorSubsystem extends SubsystemBase {
      */
     public double getMotorSpeed() {
         return endgameMotorMaster.getMotorOutputPercent();
-    }
-
-    /**
-     * Returns slave TalonSRX controller
-     * </p>
-     * {@link frc.robot.subsystems.DriveSubsystem DriveSubsystem}
-     * needs the slave talon for the Pigeon onboard.
-     * 
-     * @return endgameSlaveMotor
-     */
-    public WPI_TalonSRX getEndgameMotorSlave() {
-        return endgameMotorSlave;
     }
 
     // TODO: ATTATCH ENCODER AND FINISH GETTER

@@ -2,10 +2,10 @@
 
 package frc.robot.subsystems;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.utilities.GyroUtility;
+
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
-
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 //-------- SUBSYSTEM CLASS --------\\
 /**
@@ -30,6 +30,7 @@ public class IntakeMotorSubsystem extends SubsystemBase {
      */
     public IntakeMotorSubsystem(int intakeID) {
         intakeMotorController = new WPI_TalonSRX(intakeID);
+        GyroUtility.getInstance().setGyro(this);
     }
 
     // -------- METHODS --------\\
@@ -53,6 +54,18 @@ public class IntakeMotorSubsystem extends SubsystemBase {
      */
     public double getMotorSpeed() {
         return intakeMotorController.getMotorOutputPercent();
+    }
+
+    /**
+     * Returns TalonSRX controller
+     * </p>
+     * {@link frc.robot.subsystems.DriveSubsystem DriveSubsystem}
+     * needs the talon for the Pigeon onboard.
+     * 
+     * @return intakeMotor
+     */
+    public WPI_TalonSRX getIntakeMotor() {
+        return intakeMotorController;
     }
 
 } // end of class IntakeMotorSubsystem

@@ -131,8 +131,6 @@ public class RobotContainer {
      * Initializes the robot
      */
     public RobotContainer() {
-        // endgame has to be instantiated before drive subsystem because we need to
-        // initialize the gyro
         endgameMotorSubsystem = new EndgameMotorSubsystem(3, 4);
 
         endgameArmCommand = new EndgameArmCommand(endgameMotorSubsystem);
@@ -190,6 +188,11 @@ public class RobotContainer {
                 VisionCameraSubsystem.CameraType.REFLECTIVE_TAPE);
         VisionCameraSubsystem ballSubsystem = new VisionCameraSubsystem(VisionCameraSubsystem.CameraType.BALL_DETECTOR);
 
+        // endgame has to be instantiated before drive subsystem because we need to
+        // initialize the gyro
+        intakeMotorSubsystem = new IntakeMotorSubsystem(5);
+        //intakePistonSubsystem = new IntakePistonSubsystem(1);
+
         driveSubsystem = new DriveSubsystem(1, 2);
         driveCommand = new DriveCommand(driveSubsystem, endgameMotorSubsystem, reflectiveTapeSubsystem, ballSubsystem,
                 driverController);
@@ -211,10 +214,6 @@ public class RobotContainer {
         bottomBackSideShootCommand = new BottomBackSideShootCommand(driveSubsystem);
         ShuffleboardUtility.getInstance().addAutonOptions("bottomBackSideShootCommand", bottomBackSideShootCommand);
 
-        
-
-        intakeMotorSubsystem = new IntakeMotorSubsystem(5);
-        //intakePistonSubsystem = new IntakePistonSubsystem(1);
         clockwiseIntakeMotorsCommand = new ClockwiseIntakeMotorsCommand(intakeMotorSubsystem);
         counterClockwiseIntakeMotorsCommand = new CounterclockwiseIntakeMotorsCommand(intakeMotorSubsystem);
         stopIntakeMotorsCommand = new StopIntakeMotorsCommand(intakeMotorSubsystem);
@@ -260,10 +259,11 @@ public class RobotContainer {
 
         // Two endgame commands used for testing
         JoystickButton endgameSensorCloseButton = new JoystickButton(driverController, XB_X);
-        endgameSensorCloseButton.whileActiveOnce(endgameCloseTouchingLeft1);
+        endgameSensorCloseButton.whileActiveOnce(new EndgameCloseWhenTouching(left1piston, left2Sensor));
         JoystickButton rotateUntilTouchingButton = new JoystickButton(driverController, XB_B);
         rotateUntilTouchingButton.whileActiveOnce(new SequentialCommandGroup(
-                new ParallelRaceGroup(new EndgameArmCommand(endgameMotorSubsystem), endgameCloseTouchingLeft1, endgameCloseTouchingRight1),
+                new ParallelRaceGroup(new EndgameArmCommand(endgameMotorSubsystem), 
+                new EndgameCloseWhenTouching(left1piston, left2Sensor), endgameCloseTouchingRight1),
                 new WaitCommand(10)));
 
         JoystickButton endgameComplete = new JoystickButton(driverController, XB_START);
