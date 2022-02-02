@@ -52,7 +52,7 @@ public class StopIntakeMotorsCommand extends CommandBase {
    */
   @Override
   public boolean isFinished() {
-    return true;
+    return false;
   }
 
 } // End of class StopIntakeMotorsCommand

@@ -17,15 +17,16 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
  * 
  * This class contols the counter-clockwise intake motors
  */
-public class CounterclockwiseIntakeMotorsCommand extends CommandBase {
+public class RunIntakeMotorsCommand extends CommandBase {
 
   // -------- CONSTANTS --------\\
 
   private final double INTAKE_SPEED = -0.5;
 
-  // -------- DECLARATIONS --------\\
+  // -------- VARIABLES --------\\
 
   private final IntakeMotorSubsystem intakeMotors;
+  private boolean reversed = false;
 
   //-------- CONSTRUCTOR --------\\
    /**
@@ -35,8 +36,9 @@ public class CounterclockwiseIntakeMotorsCommand extends CommandBase {
    * 
    * @param iMotors - Intake motors subsystem
    */
-  public CounterclockwiseIntakeMotorsCommand(IntakeMotorSubsystem iMotors) {
+  public RunIntakeMotorsCommand(IntakeMotorSubsystem iMotors, boolean isReversed) {
     intakeMotors = iMotors;
+    reversed = isReversed;
 
     addRequirements(iMotors); // Use addRequirements() here to declare subsystem dependencies.
   }
@@ -48,7 +50,11 @@ public class CounterclockwiseIntakeMotorsCommand extends CommandBase {
   */
   @Override  
   public void initialize() {
-    intakeMotors.setMotorSpeed(INTAKE_SPEED);
+    if(!reversed) {
+      intakeMotors.setMotorSpeed(INTAKE_SPEED);
+    } else {
+      intakeMotors.setMotorSpeed(-INTAKE_SPEED);
+    }
 
   }
   
@@ -57,7 +63,7 @@ public class CounterclockwiseIntakeMotorsCommand extends CommandBase {
    */
   @Override
   public boolean isFinished() {
-    return true;
+    return false;
   }
 
 } // End of class RunIntakeMotorsCommand
