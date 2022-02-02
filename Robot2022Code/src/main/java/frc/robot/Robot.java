@@ -54,4 +54,14 @@ public class Robot extends TimedRobot {
     m_robotContainer.beginTeleopRunCommands();
   }
 
+  @Override
+  public void testInit() {
+
+  }
+  
+  @Override
+  public void testPeriodic() {
+
+  }
+
 }

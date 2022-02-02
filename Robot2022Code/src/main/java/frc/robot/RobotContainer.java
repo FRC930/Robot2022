@@ -328,4 +328,17 @@ public class RobotContainer {
     public Command getAutonomousCommand() {
         return ShuffleboardUtility.getInstance().getSelectedAutonPath();
     }
+
+    public void testInit() {
+        stopSubsystems();
+    }
+
+    public void testPeriodic() {
+    }
+
+    public void stopSubsystems() {
+        endgameMotorSubsystem.setMotorSpeed(0.0);
+        intakeMotorSubsystem.setMotorSpeed(0.0);
+        driveSubsystem.setVoltages(0.0, 0.0);
+    }
 }
