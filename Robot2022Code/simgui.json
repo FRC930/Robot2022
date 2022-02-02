@@ -26,7 +26,42 @@
           "open": true
         }
       },
+      "Talon SRX[3]/Analog In": {
+        "header": {
+          "open": true
+        }
+      },
+      "Talon SRX[3]/Fwd Limit": {
+        "header": {
+          "open": true
+        }
+      },
+      "Talon SRX[3]/Pulse Width Input": {
+        "header": {
+          "open": true
+        }
+      },
+      "Talon SRX[3]/Quad Encoder": {
+        "header": {
+          "open": true
+        }
+      },
+      "Talon SRX[3]/Rev Limit": {
+        "header": {
+          "open": true
+        }
+      },
       "Talon SRX[4]": {
+        "header": {
+          "open": true
+        }
+      },
+      "Talon SRX[4]/Analog In": {
+        "header": {
+          "open": true
+        }
+      },
+      "Talon SRX[4]/Quad Encoder": {
         "header": {
           "open": true
         }
