@@ -15,6 +15,7 @@ import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.math.trajectory.constraint.DifferentialDriveVoltageConstraint;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.utilities.Gyro;
 import frc.robot.utilities.ShifterUtility;
@@ -62,17 +63,20 @@ public class DriveSubsystem extends SubsystemBase {
     // Gains are for example purposes only - must be determined for your own robot!
     private final SimpleMotorFeedforward leftMotorFeedforward = new SimpleMotorFeedforward(0.61037, 0.68157, 0.023755);
     private final SimpleMotorFeedforward rightMotorFeedforward = new SimpleMotorFeedforward(0.62728, 0.68254, 0.021885);
-    private final SimpleMotorFeedforward constraintFeedforward = new SimpleMotorFeedforward(m_leftKS+m_rightKS/2, m_leftKV+m_rightKV/2, m_leftKA+m_rightKA/2);
+    private final SimpleMotorFeedforward constraintFeedforward = new SimpleMotorFeedforward(m_leftKS + m_rightKS / 2,
+            m_leftKV + m_rightKV / 2, m_leftKA + m_rightKA / 2);
 
     private final PIDController leftPIDController = new PIDController(0.50405, 0, 0);
     private final PIDController rightPIDController = new PIDController(0.47029, 0, 0);
 
     private boolean shifterState;
 
-    private final DifferentialDriveVoltageConstraint voltageConstraint = new DifferentialDriveVoltageConstraint(constraintFeedforward, getKinematics(), 10);
+    private final DifferentialDriveVoltageConstraint voltageConstraint = new DifferentialDriveVoltageConstraint(
+            constraintFeedforward, getKinematics(), 10);
 
-    private DifferentialDriveOdometry m_odometry = new DifferentialDriveOdometry(new Rotation2d(Math.toRadians(Gyro.getInstance().getGyro().getFusedHeading())));
-    
+    private DifferentialDriveOdometry m_odometry = new DifferentialDriveOdometry(
+            new Rotation2d(Math.toRadians(Gyro.getInstance().getGyro().getFusedHeading())));
+
     /**
      * Constructs a differential drive object. Sets the encoder distance per pulse
      * and resets the gyro.
@@ -111,8 +115,8 @@ public class DriveSubsystem extends SubsystemBase {
         m_rightLeader.setVoltage(rightVoltage);
     }
 
-    public BiConsumer<Double, Double> setVoltage(){
-        BiConsumer<Double, Double> voltages = new BiConsumer<Double,Double>() {
+    public BiConsumer<Double, Double> setVoltage() {
+        BiConsumer<Double, Double> voltages = new BiConsumer<Double, Double>() {
             @Override
             public void accept(Double leftVoltage, Double rightVoltage) {
                 setVoltages(leftVoltage, rightVoltage);
@@ -127,7 +131,7 @@ public class DriveSubsystem extends SubsystemBase {
      * Gets the voltage of the left motor
      * 
      */
-    public double getLeftVoltage(){
+    public double getLeftVoltage() {
         return m_leftLeader.getMotorOutputVoltage();
     }
 
@@ -137,7 +141,7 @@ public class DriveSubsystem extends SubsystemBase {
      * Gets the voltage of the right motor
      * 
      */
-    public double getRightVoltage(){
+    public double getRightVoltage() {
         return m_rightLeader.getMotorOutputVoltage();
     }
 
@@ -147,7 +151,7 @@ public class DriveSubsystem extends SubsystemBase {
      * Gets the kinematics
      * 
      */
-    public DifferentialDriveKinematics getKinematics(){
+    public DifferentialDriveKinematics getKinematics() {
         return m_kinematics;
     }
 
@@ -166,9 +170,9 @@ public class DriveSubsystem extends SubsystemBase {
      * Overloaded method to allow the input of acceleration
      * 
      * @param velocity the velocity for which to calculate feedforward
-     * @return the feedforward modified 
+     * @return the feedforward modified
      */
-    public double calculateLeftFeedforward(double velocity, double acceleration){
+    public double calculateLeftFeedforward(double velocity, double acceleration) {
         return leftMotorFeedforward.calculate(velocity, acceleration);
     }
 
@@ -187,9 +191,9 @@ public class DriveSubsystem extends SubsystemBase {
      * Overloaded method to allow the input of acceleration
      * 
      * @param velocity the velocity for which to calculate feedforward
-     * @return the feedforward modified 
+     * @return the feedforward modified
      */
-    public double calculateRightFeedforward(double velocity, double acceleration){
+    public double calculateRightFeedforward(double velocity, double acceleration) {
         return rightMotorFeedforward.calculate(velocity, acceleration);
     }
 
@@ -230,7 +234,8 @@ public class DriveSubsystem extends SubsystemBase {
      * Returns the speeds in the differential drive
      * Overloaded getWheelSpeed that just gets the motor encoder position
      * 
-     * @return A DifferentialDriveWheelSpeeds object, has the rotations of the left and right wheels
+     * @return A DifferentialDriveWheelSpeeds object, has the rotations of the left
+     *         and right wheels
      */
     public DifferentialDriveWheelSpeeds getWheelSpeeds() {
         return new DifferentialDriveWheelSpeeds(getLeftEncoder(), getRightEncoder());
@@ -243,7 +248,7 @@ public class DriveSubsystem extends SubsystemBase {
      * @return the volatage at which to run the motor
      */
     public double speedToVoltage(double speed) {
-        return speed * kMaxVolts;
+        return speed / kMaxSpeed * kMaxVolts;
     }
 
     /**
@@ -325,7 +330,7 @@ public class DriveSubsystem extends SubsystemBase {
      * This method resets the left PID controller
      * 
      */
-    public void resetLeftPID(){
+    public void resetLeftPID() {
         leftPIDController.reset();
     }
 
@@ -335,7 +340,7 @@ public class DriveSubsystem extends SubsystemBase {
      * This method resets the right PID controller
      * 
      */
-    public void resetRightPID(){
+    public void resetRightPID() {
         rightPIDController.reset();
     }
 
@@ -358,7 +363,7 @@ public class DriveSubsystem extends SubsystemBase {
         return shifterState;
     }
 
-    public DifferentialDriveVoltageConstraint getVoltageContraint(){
+    public DifferentialDriveVoltageConstraint getVoltageContraint() {
         return voltageConstraint;
     }
 
@@ -371,15 +376,15 @@ public class DriveSubsystem extends SubsystemBase {
     @SuppressWarnings("ParameterName")
     public void drive(double xSpeed, double rot) {
         var wheelSpeeds = m_kinematics.toWheelSpeeds(new ChassisSpeeds(xSpeed, 0.0, rot));
-        setSpeeds(wheelSpeeds); 
+        setSpeeds(wheelSpeeds);
     }
 
-    public DifferentialDriveOdometry getOdometry(){
+    public DifferentialDriveOdometry getOdometry() {
         return m_odometry;
     }
 
     @Override
-    public void periodic(){
+    public void periodic() {
         m_odometry.update(
                 // Create a new Rotation2d object with the reading from the pigeon
                 new Rotation2d(Math.toRadians(Gyro.getInstance().getGyro().getFusedHeading())),

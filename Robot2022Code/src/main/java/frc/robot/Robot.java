@@ -29,8 +29,6 @@ public class Robot extends TimedRobot {
   public void robotInit() {
     m_robotContainer = new RobotContainer();
     commandScheduler = CommandScheduler.getInstance();
-
-    m_robotContainer.beginTeleopRunCommands();
   }
 
   @Override
@@ -41,14 +39,19 @@ public class Robot extends TimedRobot {
   }
 
   @Override
-    public void autonomousInit() {
-        m_robotContainer.beginAutoRunCommands();
-        Command m_autonomousCommand = m_robotContainer.getAutonomousCommand();
-        
-        // schedule the autonomous command (example)
-        if (m_autonomousCommand != null) {
-            m_autonomousCommand.schedule();
-        }
+  public void autonomousInit() {
+    m_robotContainer.beginAutoRunCommands();
+    Command m_autonomousCommand = m_robotContainer.getAutonomousCommand();
+
+    // schedule the autonomous command (example)
+    if (m_autonomousCommand != null) {
+      m_autonomousCommand.schedule();
     }
+  }
+    
+  @Override
+  public void teleopInit() {
+    m_robotContainer.beginTeleopRunCommands();
+  }
 
 }
