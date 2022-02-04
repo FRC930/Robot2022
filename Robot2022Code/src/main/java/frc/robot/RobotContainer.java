@@ -334,6 +334,13 @@ public class RobotContainer {
     }
 
     public void testPeriodic() {
+        if (driverController.getRawButton(XB_Y)) {
+            endgameMotorSubsystem.setMotorSpeed(0.3);
+        } else if (driverController.getRawButton(XB_A)) {
+            endgameMotorSubsystem.setMotorSpeed(-0.3);
+        } else {
+            endgameMotorSubsystem.setMotorSpeed(0.0);
+        }
     }
 
     public void stopSubsystems() {

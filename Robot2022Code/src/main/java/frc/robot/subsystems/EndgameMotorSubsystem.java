@@ -78,6 +78,13 @@ public class EndgameMotorSubsystem extends SubsystemBase {
      */
     public double getEncoderPosition() {
         return endgameMotorMaster.getSelectedSensorPosition();
+        //endgameMotorMaster.getSelectedSensorPosition()
+        //endgameMotorMaster.getSensorCollection().getIntegratedSensorAbsolutePosition();
+    }
+
+    public void resetEncoderPosition() {
+        //endgameMotorMaster.setSelectedSensorPosition(0.0);
+        //endgameMotorMaster.getSensorCollection().setIntegratedSensorPosition(0.0, 0);
     }
     
 }
