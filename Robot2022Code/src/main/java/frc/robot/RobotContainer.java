@@ -15,6 +15,8 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.CatapultCommand;
 import frc.robot.commands.DriveCommand;
 import frc.robot.commands.ToggleShifterCommand;
+import frc.robot.commands.autocommands.AutoCommandManager;
+import frc.robot.commands.autocommands.AutoCommandManager.subNames;
 import frc.robot.commands.autocommands.paths.BottomBackShootCommand;
 import frc.robot.commands.autocommands.paths.BottomBackSideShootCommand;
 import frc.robot.commands.autocommands.paths.DefaultAutoPathCommand;
@@ -169,6 +171,7 @@ public class RobotContainer {
 
     // ----- AUTONOMOUS -----\\
 
+    private final AutoCommandManager autoManager;
     // Default 
 
     // ----- CONSTRUCTOR -----\\
@@ -180,6 +183,14 @@ public class RobotContainer {
      */
     public RobotContainer() {
 
+        /*
+        --------------------------------------------------------------------------------
+        CONSTRUCT COMMAND MANAGER
+        --------------------------------------------------------------------------------
+        */
+        autoManager = new AutoCommandManager();
+
+        
         /*
         --------------------------------------------------------------------------------
         SUBSYSTEM INITIALIZATIONS
@@ -205,6 +216,7 @@ public class RobotContainer {
         // ----- DRIVETRAIN SUBSYSTEM INITS -----\\
 
         driveSubsystem = new DriveSubsystem(1, 2);
+        autoManager.addSubsystem(subNames.DriveSubsystem, driveSubsystem);
 
         // ----- DRIVETRAIN SHIFTER SUBSYSTEM INITS -----\\
 
@@ -246,6 +258,9 @@ public class RobotContainer {
         COMMAND INITIALIZATIONS
         --------------------------------------------------------------------------------
         */
+
+        // ----- AUTO COMMAND INITS -----\\
+        autoManager.initComands();
 
         // ----- INTAKE COMMAND INITS -----\\
 
@@ -326,11 +341,6 @@ public class RobotContainer {
                 new EndgameOpenClawCommand(left2piston),
                 new EndgameOpenClawCommand(right2piston),
                 new WaitCommand(ENDGAME_RELEASE_DELAY));
-
-        // ----- SHUFFLEBOARD AUTONOMOUS OPTIONS -----\\
-
-        // This is where the Autonomous commands are being added to shuffleboard
-        
 
         // ----- SETTING BALL COLOR -----\\
 
@@ -450,6 +460,10 @@ public class RobotContainer {
             camera.setResolution(CAMERA_WIDTH, CAMERA_HEIGHT);
             camera.setFPS(CAMERA_FPS);
         }
+    }
+
+    public Command getAutonomousCommand(){
+        return autoManager.getAutonomousCommand();
     }
 
     public void beginAutoRunCommands() {

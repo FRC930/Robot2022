@@ -12,41 +12,42 @@ import frc.robot.commands.autocommands.paths.DefaultAutoPathCommand;
 import frc.robot.subsystems.*;
 
 public class AutoCommandManager {
-    HashMap<String, CommandBase> commandMap = new HashMap<>();
-    HashMap<String, Subsystem> subsystemMap = new HashMap<>();
+    HashMap<String, Subsystem> subsystemMap = new HashMap<String, Subsystem>();
 
     public static enum subNames{
-        CatapultSensorSubsystem,
-        CatapultSubsystem,
-        DriveSubsystem,
-        EndgameMotorSubsystem,
-        EndgamePistonSubsystem,
-        EndgameSensorSubsystem,
-        IntakeMotorSubsystem,
-        IntakePistonSubsystem,
-        ShifterSubsystem,
-        VisionCameraSubsystem
+        CatapultSensorSubsystem("Catapult Sensor"),
+        CatapultSubsystem("Catapult"),
+        DriveSubsystem("Drive"),
+        EndgameMotorSubsystem("Endgame Motor"),
+        EndgamePistonSubsystem("Endgame Piston"),
+        EndgameSensorSubsystem("Endgame Sensor"),
+        IntakeMotorSubsystem("Intake Motor"),
+        IntakePistonSubsystem("Intake Piston"),
+        ShifterSubsystem("Shifter"),
+        VisionCameraSubsystem("Vision Camera");
+
+        final String m_name;
+
+        subNames(String name) {
+            m_name = name;
+        }
+    }
+    
+    public void addSubsystem(subNames SubNames, Subsystem subsystem){
+        subsystemMap.put(SubNames.toString(), subsystem);
     }
 
-    public AutoCommandManager(DriveSubsystem driveSubsystem){
-        CommandBase defaultAutoPathCommand = new DefaultAutoPathCommand(driveSubsystem);
-        CommandBase bottomBackSideShootCommand = new BottomBackSideShootCommand(driveSubsystem);
-        CommandBase bottomBackShootCommand = new BottomBackShootCommand(driveSubsystem);
-
-        commandMap.put("defaultAutoPathCommand", defaultAutoPathCommand);
-        commandMap.put("bottomBackSideShootCommand", bottomBackSideShootCommand);
-        commandMap.put("bottomBackShootCommand", bottomBackShootCommand);
+    public void initComands(){
+        CommandBase defaultAutoPathCommand = new DefaultAutoPathCommand((DriveSubsystem) subsystemMap.get(subNames.DriveSubsystem.toString()));
+        CommandBase bottomBackSideShootCommand = new BottomBackSideShootCommand((DriveSubsystem) subsystemMap.get(subNames.DriveSubsystem.toString()));
+        CommandBase bottomBackShootCommand = new BottomBackShootCommand((DriveSubsystem) subsystemMap.get(subNames.DriveSubsystem.toString()));
 
         ShuffleboardUtility.getInstance().setDefaultAutonOptions("Default (None)", null);
-        ShuffleboardUtility.getInstance().addAutonOptions("defaultAutoPathCommand", commandMap.get("defaultAutoPathCommand"));
-        ShuffleboardUtility.getInstance().addAutonOptions("bottomBackShootCommand", commandMap.get("bottomBackSideShootCommand"));
-        ShuffleboardUtility.getInstance().addAutonOptions("bottomBackSideShootCommand", commandMap.get("bottomBackShootCommand"));
+        ShuffleboardUtility.getInstance().addAutonOptions("defaultAutoPathCommand", defaultAutoPathCommand);
+        ShuffleboardUtility.getInstance().addAutonOptions("bottomBackShootCommand", bottomBackSideShootCommand);
+        ShuffleboardUtility.getInstance().addAutonOptions("bottomBackSideShootCommand", bottomBackShootCommand);
     }
-    /*
-    public void addSubsystem(){
-        subsystemMap.put("key", subNames.CatapultSensorSubsystem);
-    }
-*/
+
     public Command getAutonomousCommand(){
         return ShuffleboardUtility.getInstance().getSelectedAutonPath();
     }
