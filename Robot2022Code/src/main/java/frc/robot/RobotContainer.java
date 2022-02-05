@@ -165,12 +165,7 @@ public class RobotContainer {
 
     // ----- AUTONOMOUS -----\\
 
-    // Default autonomous path
-    private final DefaultAutoPathCommand defaultAutoPathCommand;
-    //
-    private final BottomBackShootCommand bottomBackShootCommand;
-    //
-    private final BottomBackSideShootCommand bottomBackSideShootCommand;
+    // Default 
 
     // ----- CONSTRUCTOR -----\\
 
@@ -314,13 +309,7 @@ public class RobotContainer {
         // ----- SHUFFLEBOARD AUTONOMOUS OPTIONS -----\\
 
         // This is where the Autonomous commands are being added to shuffleboard
-        ShuffleboardUtility.getInstance().setDefaultAutonOptions("Default (None)", null);
-        defaultAutoPathCommand = new DefaultAutoPathCommand(driveSubsystem);
-        ShuffleboardUtility.getInstance().addAutonOptions("defaultAutoPathCommand", defaultAutoPathCommand);
-        bottomBackShootCommand = new BottomBackShootCommand(driveSubsystem);
-        ShuffleboardUtility.getInstance().addAutonOptions("bottomBackShootCommand", bottomBackShootCommand);
-        bottomBackSideShootCommand = new BottomBackSideShootCommand(driveSubsystem);
-        ShuffleboardUtility.getInstance().addAutonOptions("bottomBackSideShootCommand", bottomBackSideShootCommand);
+        
 
         // ----- SETTING BALL COLOR -----\\
 
@@ -428,10 +417,6 @@ public class RobotContainer {
         );
         // TODO set default command for each subsystem
         // scheduler.setDefaultCommand(driveSubsystem, driveCommand);
-    }
-
-    public Command getAutonomousCommand() {
-        return ShuffleboardUtility.getInstance().getSelectedAutonPath();
     }
 
     public void testInit() {
