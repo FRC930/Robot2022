@@ -25,8 +25,8 @@ import frc.robot.commands.endgamecommands.EndgameCloseWhenAway;
 import frc.robot.commands.endgamecommands.EndgameCloseWhenTouching;
 import frc.robot.commands.endgamecommands.EndgameOpenClawCommand;
 import frc.robot.commands.endgamecommands.EndgameRotateVerticalCommand;
-import frc.robot.commands.intakecommands.intakemotorcommands.RunIntakeMotorsCommand;
-import frc.robot.commands.intakecommands.intakemotorcommands.StopIntakeMotorsCommand;
+import frc.robot.commands.intakecommands.intakePistonCommands.*;
+import frc.robot.commands.intakecommands.intakemotorcommands.*;
 import frc.robot.subsystems.CatapultSensorSubsystem;
 import frc.robot.subsystems.CatapultSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
@@ -86,6 +86,22 @@ public class RobotContainer {
     public static final int CAMERA_HEIGHT = 120;
     public static final int CAMERA_FPS = 30;
 
+    // ----- INTAKE -----\\
+
+    // Intake Motor Subsystem
+    private final IntakeMotorSubsystem intakeMotorSubsystem;
+    // Intake Piston Subsystem
+    private final IntakePistonSubsystem intakePistonSubsystem;
+
+    // Intake Motor Commands
+    private final RunIntakeMotorsCommand runIntakeMotorsCommand;
+    private final RunIntakeMotorsCommand reverseIntakeMotorsCommand;
+    private final StopIntakeMotorsCommand stopIntakeMotorsCommand;
+
+    // Intake Piston Commands
+    private final EngageIntakePistonsCommand engageIntakePistonsCommand;
+    private final DisengageIntakePistonsCommand disengageIntakePistonsCommand;
+
     // ----- DRIVETRAIN -----\\
 
     // Drive Subsystem
@@ -99,18 +115,6 @@ public class RobotContainer {
     private final ShifterSubsystem shifterSubsystem;
     // Drivetrain Shifter Command
     private final ToggleShifterCommand toggleShifterCommand;
-
-    // ----- INTAKE -----\\
-
-    // Intake Motor Subsystem
-    private final IntakeMotorSubsystem intakeMotorSubsystem;
-    // Intake Piston Subsystem
-    // private final IntakePistonSubsystem intakePistonSubsystem;
-
-    // Intake Motor Commands
-    private final RunIntakeMotorsCommand runIntakeMotorsCommand;
-    private final RunIntakeMotorsCommand reverseIntakeMotorsCommand;
-    private final StopIntakeMotorsCommand stopIntakeMotorsCommand;
 
     // ----- CATAPULT -----\\
 
@@ -181,6 +185,12 @@ public class RobotContainer {
      */
     public RobotContainer() {
 
+        /*
+        --------------------------------------------------------------------------------
+        SUBSYSTEM INITIALIZATIONS
+        --------------------------------------------------------------------------------
+        */
+
         // ----- CAMERA SUBSYSTEM INITS -----\\
 
         // Camera subsystem for reflective tape
@@ -190,38 +200,20 @@ public class RobotContainer {
         cargoCameraSubsystem = new VisionCameraSubsystem(
                 VisionCameraSubsystem.CameraType.BALL_DETECTOR);
 
-        // ----- DRIVETRAIN SUBSYSTEM INITS -----\\
-
-        driveSubsystem = new DriveSubsystem(1, 2);
-
-        // ----- DRIVETRAIN COMMAND INITS -----\\
-
-        driveCommand = new DriveCommand(
-                driveSubsystem,
-                reflectiveTapeCameraSubsystem,
-                cargoCameraSubsystem,
-                driverController);
-
-        // ----- DRIVETRAIN SHIFTER SUBSYSTEM INITS -----\\
-
-        shifterSubsystem = new ShifterSubsystem(0);
-
-        // ----- DRIVETRAIN SHIFTER COMMAND INITS -----\\
-
-        toggleShifterCommand = new ToggleShifterCommand(shifterSubsystem);
-
         // ----- INTAKE SUBSYSTEM INITS -----\\
 
         // Intake has to be instantiated before drive subsystem because we need to
         // initialize the gyro
         intakeMotorSubsystem = new IntakeMotorSubsystem(5);
-        // intakePistonSubsystem = new IntakePistonSubsystem(1);
+        intakePistonSubsystem = new IntakePistonSubsystem(1);
 
-        // ----- INTAKE COMMAND INITS -----\\
+        // ----- DRIVETRAIN SUBSYSTEM INITS -----\\
 
-        runIntakeMotorsCommand = new RunIntakeMotorsCommand(intakeMotorSubsystem, false);
-        reverseIntakeMotorsCommand = new RunIntakeMotorsCommand(intakeMotorSubsystem, true);
-        stopIntakeMotorsCommand = new StopIntakeMotorsCommand(intakeMotorSubsystem);
+        driveSubsystem = new DriveSubsystem(1, 2);
+
+        // ----- DRIVETRAIN SHIFTER SUBSYSTEM INITS -----\\
+
+        shifterSubsystem = new ShifterSubsystem(0);
 
         // ----- CATAPULT SUBSYSTEM INITS -----\\
 
@@ -235,10 +227,10 @@ public class RobotContainer {
 
         // ----- ENDGAME SUBSYSTEM INITS -----\\
 
-        // Endgame Motor Subsystem
+        // Endgame Motor Subsystems
         endgameMotorSubsystem = new EndgameMotorSubsystem(3, 4);
 
-        // Endgame Sensors
+        // Endgame Sensor Subsystems
         left2Sensor = new EndgameSensorSubsystem(1);
         right2Sensor = new EndgameSensorSubsystem(2);
         left4Sensor = new EndgameSensorSubsystem(3);
@@ -253,6 +245,35 @@ public class RobotContainer {
         right2piston = new EndgamePistonSubsystem(13);
         right3piston = new EndgamePistonSubsystem(14);
         right4piston = new EndgamePistonSubsystem(15);
+
+        /*
+        --------------------------------------------------------------------------------
+        COMMAND INITIALIZATIONS
+        --------------------------------------------------------------------------------
+        */
+
+        // ----- INTAKE COMMAND INITS -----\\
+
+        // Intake Motor Commands
+        runIntakeMotorsCommand = new RunIntakeMotorsCommand(intakeMotorSubsystem, false);
+        reverseIntakeMotorsCommand = new RunIntakeMotorsCommand(intakeMotorSubsystem, true);
+        stopIntakeMotorsCommand = new StopIntakeMotorsCommand(intakeMotorSubsystem);
+
+        // Intake Piston Commands
+        engageIntakePistonsCommand = new EngageIntakePistonsCommand(intakePistonSubsystem);
+        disengageIntakePistonsCommand = new DisengageIntakePistonsCommand(intakePistonSubsystem);
+
+        // ----- DRIVETRAIN COMMAND INITS -----\\
+
+        driveCommand = new DriveCommand(
+                driveSubsystem,
+                reflectiveTapeCameraSubsystem,
+                cargoCameraSubsystem,
+                driverController);
+
+        // ----- DRIVETRAIN SHIFTER COMMAND INITS -----\\
+
+        toggleShifterCommand = new ToggleShifterCommand(shifterSubsystem);
 
         // ----- ENDGAME COMMAND INITS -----\\
 
@@ -343,35 +364,54 @@ public class RobotContainer {
      * </p>
      */
     public void beginTeleopRunCommands() {
+
+        // DRIVER CONTROLLER BINDS
         AxisTrigger shifterTrigger = new AxisTrigger(driverController, XB_AXIS_RT);
-        shifterTrigger.whileActiveOnce(toggleShifterCommand);
 
         JoystickButton launchButton = new JoystickButton(driverController, XB_LB);
+        JoystickButton rotateArmButton = new JoystickButton(driverController, XB_Y);
+        JoystickButton rotateArmRevButton = new JoystickButton(driverController, XB_A);
+        JoystickButton endgameSensorCloseButton = new JoystickButton(driverController, XB_X);
+        JoystickButton rotateUntilTouchingButton = new JoystickButton(driverController, XB_B);
+        JoystickButton endgameComplete = new JoystickButton(driverController, XB_START);
+
+        // CODRIVER CONTROLLER BINDS
+        JoystickButton intakeButton = new JoystickButton(codriverController, XB_LB);
+        JoystickButton reverseIntakeButton = new JoystickButton(codriverController, XB_B);
+
+        // Shifts the drivetrain when shifter trigger is pulled
+        shifterTrigger.whileActiveOnce(toggleShifterCommand);
+
+        // Launches a cargo ball when the launch button is pressed
         launchButton.whileActiveOnce(catapultCommand);
 
-        // Checks if LB and B is pressed, then it will reverse the intake
-        new JoystickButton(codriverController, XB_LB).and(new JoystickButton(codriverController, XB_B))
-                .whileActiveOnce(reverseIntakeMotorsCommand);
-        // Checks if LB is pressed and B isn't pressed, then it will run intake
-        new JoystickButton(codriverController, XB_LB).and(new JoystickButton(codriverController, XB_B).negate())
-                .whileActiveOnce(runIntakeMotorsCommand);
+        // Checks if LB is pressed, then it will engage the intake pistons
+        intakeButton.whileActiveOnce(engageIntakePistonsCommand);
 
-        JoystickButton rotateArmButton = new JoystickButton(driverController, XB_Y);
+        // Checks if LB is pressed and B isn't pressed, then it will run intake
+        intakeButton.and(reverseIntakeButton.negate()).whileActiveOnce(runIntakeMotorsCommand);
+        // Checks if LB and B is pressed, then it will reverse the intake
+        intakeButton.and(reverseIntakeButton).whileActiveOnce(reverseIntakeMotorsCommand);
+
+        // Manually rotates the endgame arms while pressed
         rotateArmButton.whileActiveOnce(endgameArmCommand);
 
-        JoystickButton rotateArmRevButton = new JoystickButton(driverController, XB_A);
+        // Manually rotates the endgame arms in reverse while pressed
         rotateArmRevButton.whileActiveOnce(endgameArmRevCommand);
 
         // Two endgame commands used for testing
-        JoystickButton endgameSensorCloseButton = new JoystickButton(driverController, XB_X);
         endgameSensorCloseButton.whileActiveOnce(new EndgameCloseWhenTouching(left1piston, left2Sensor));
-        JoystickButton rotateUntilTouchingButton = new JoystickButton(driverController, XB_B);
-        rotateUntilTouchingButton.whileActiveOnce(new SequentialCommandGroup(
-                new ParallelRaceGroup(new EndgameArmCommand(endgameMotorSubsystem),
-                        new EndgameCloseWhenTouching(left1piston, left2Sensor), endgameCloseTouchingRight1),
-                new WaitCommand(10)));
+        rotateUntilTouchingButton.whileActiveOnce(
+                new SequentialCommandGroup(
+                        new ParallelRaceGroup(
+                                new EndgameArmCommand(endgameMotorSubsystem),
+                                new EndgameCloseWhenTouching(left1piston, left2Sensor), 
+                                endgameCloseTouchingRight1
+                        ),
+                        new WaitCommand(10)
+                )
+        );
 
-        JoystickButton endgameComplete = new JoystickButton(driverController, XB_START);
         endgameComplete.whileActiveOnce(new SequentialCommandGroup(
                 // TODO:USE ENCODER AS PROGRESS TOOL
                 /* verticalCommand-NEED TO GET ENCODER WORKING!!!, */
@@ -382,12 +422,29 @@ public class RobotContainer {
 
         // startCamera();
 
+        // Manages commands via stacking
         CommandScheduler scheduler = CommandScheduler.getInstance();
 
-        scheduler.unregisterSubsystem(left1piston, left2piston, left3piston, left4piston,
-                right1piston, right2piston, right3piston, right4piston, driveSubsystem/* , endgameMotorSubsystem */);
-        // scheduler.setDefaultCommand(endgameMotorSubsystem, new
-        // EndgameRotateHorizonalCommand(endgameMotorSubsystem));-GET ENCODER WORKING
+        /*
+        Unregisters subsystems to prevent hanging resources
+        */
+        scheduler.unregisterSubsystem(
+                driveSubsystem,                                         // Drivetrain
+                intakeMotorSubsystem, intakePistonSubsystem,            // Intake
+                left1piston, left2piston, left3piston, left4piston,     // Endgame Left Arm
+                right1piston, right2piston, right3piston, right4piston  // Endgame Right Arm
+                /* , endgameMotorSubsystem */                           // Endgame Motors
+        );
+        
+        // DRIVETRAIN DEFAULTS
+        scheduler.setDefaultCommand(driveSubsystem, driveCommand);
+
+        // INTAKE DEFAULTS
+        scheduler.setDefaultCommand(intakeMotorSubsystem, stopIntakeMotorsCommand);
+        scheduler.setDefaultCommand(intakePistonSubsystem, disengageIntakePistonsCommand);
+
+        // ENDGAME DEFAULTS
+        // scheduler.setDefaultCommand(endgameMotorSubsystem, new EndgameRotateHorizonalCommand(endgameMotorSubsystem)); // -GET ENCODER WORKING
         scheduler.setDefaultCommand(left1piston, new EndgameCloseClawCommand(left1piston));
         scheduler.setDefaultCommand(left2piston, new EndgameCloseClawCommand(left2piston));
         scheduler.setDefaultCommand(left3piston, new EndgameCloseClawCommand(left3piston));
@@ -396,10 +453,6 @@ public class RobotContainer {
         scheduler.setDefaultCommand(right2piston, new EndgameCloseClawCommand(right2piston));
         scheduler.setDefaultCommand(right3piston, new EndgameCloseClawCommand(right3piston));
         scheduler.setDefaultCommand(right4piston, new EndgameCloseClawCommand(right4piston));
-
-        scheduler.setDefaultCommand(intakeMotorSubsystem, stopIntakeMotorsCommand);
-
-        scheduler.setDefaultCommand(driveSubsystem, driveCommand);
     }
 
     private void startCamera() {
@@ -414,7 +467,7 @@ public class RobotContainer {
 
         // --The instance of the scheduler
         CommandScheduler scheduler = CommandScheduler.getInstance();
-
+        
         scheduler.unregisterSubsystem(catapultSubsystem,
                 // catapultSensorSubsystem,
                 driveSubsystem,
@@ -423,8 +476,8 @@ public class RobotContainer {
                 // endgameSensorSubsystem,
                 intakeMotorSubsystem,
                 // intakePistonSubsystem,
-                shifterSubsystem// ,
-        // visionCameraSubsystem
+                shifterSubsystem//,
+                // visionCameraSubsystem
         );
         // TODO set default command for each subsystem
         // scheduler.setDefaultCommand(driveSubsystem, driveCommand);
