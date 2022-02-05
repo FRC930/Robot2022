@@ -29,6 +29,7 @@ public class EngageIntakePistonsCommand extends CommandBase {
      */
     public EngageIntakePistonsCommand(IntakePistonSubsystem ipSubsystem) {
         intakePistonSubsystem = ipSubsystem;
+        addRequirements(intakePistonSubsystem);
     }
 
     /**

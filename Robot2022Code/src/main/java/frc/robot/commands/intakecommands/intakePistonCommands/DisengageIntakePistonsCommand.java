@@ -27,6 +27,7 @@ public class DisengageIntakePistonsCommand extends CommandBase{
      */
     public DisengageIntakePistonsCommand(IntakePistonSubsystem ipSubsystem) {
         intakePistonSubsystem = ipSubsystem;
+        addRequirements(intakePistonSubsystem);
     }
 
     /**
