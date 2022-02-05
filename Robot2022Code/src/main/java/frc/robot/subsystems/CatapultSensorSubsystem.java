@@ -23,19 +23,11 @@ public class CatapultSensorSubsystem extends SubsystemBase{
     }
 
     /**
-    * <h3>getDigitalInput</h3>
-    * Returns the catapultSensor.
-    */
-    public DigitalInput getDigitalInput(){
-        return catapultSensor;
-    }
-
-    /**
-    * <h3>isActivated</h3>
+    * <h3>isTripped</h3>
     * Returns true if the sensor detects a ball.
-    * @return true or false
+    * @return if the sensor was tripped
     */
-    public boolean isActivated() {
-        return catapultSensor.get();
+    public boolean isTripped() {
+        return !catapultSensor.get();
     }
 }

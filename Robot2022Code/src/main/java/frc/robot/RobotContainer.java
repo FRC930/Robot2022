@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.CatapultCommand;
 import frc.robot.commands.DriveCommand;
+import frc.robot.commands.IndexerForwardCommand;
 import frc.robot.commands.ToggleShifterCommand;
 import frc.robot.commands.autocommands.AutoCommandManager;
 import frc.robot.commands.autocommands.AutoCommandManager.subNames;
@@ -35,6 +36,7 @@ import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.EndgameMotorSubsystem;
 import frc.robot.subsystems.EndgamePistonSubsystem;
 import frc.robot.subsystems.EndgameSensorSubsystem;
+import frc.robot.subsystems.IndexerMotorSubsystem;
 import frc.robot.subsystems.IntakeMotorSubsystem;
 import frc.robot.subsystems.IntakePistonSubsystem;
 import frc.robot.subsystems.ShifterSubsystem;
@@ -122,6 +124,9 @@ public class RobotContainer {
 
     // Catapult Subsystem
     private final CatapultSubsystem catapultSubsystem;
+    private final IndexerMotorSubsystem indexerMotorSubsystem;
+    private final CatapultSensorSubsystem catapultSensor;
+    private final CatapultSensorSubsystem indexerSensor;
     // Catapult Launch Command
     private final CatapultCommand catapultCommand;
 
@@ -227,7 +232,9 @@ public class RobotContainer {
         // TODO:ADD CATAPULT SENSOR
         // TODO:ADD SOLENOID ID 7 FOR HARD-STOP
         catapultSubsystem = new CatapultSubsystem(2, 3, 4, 5, 6);
-
+        indexerMotorSubsystem = new IndexerMotorSubsystem(6);
+        catapultSensor = new CatapultSensorSubsystem(0);
+        indexerSensor = new CatapultSensorSubsystem(5);
         // ----- CATAPULT COMMAND INITS -----\\
 
         catapultCommand = new CatapultCommand(catapultSubsystem);
@@ -431,8 +438,9 @@ public class RobotContainer {
                 driveSubsystem,                                         // Drivetrain
                 intakeMotorSubsystem, intakePistonSubsystem,            // Intake
                 left1piston, left2piston, left3piston, left4piston,     // Endgame Left Arm
-                right1piston, right2piston, right3piston, right4piston  // Endgame Right Arm
+                right1piston, right2piston, right3piston, right4piston,  // Endgame Right Arm
                 /* , endgameMotorSubsystem */                           // Endgame Motors
+                indexerMotorSubsystem
         );
         
         // DRIVETRAIN DEFAULTS
@@ -452,6 +460,7 @@ public class RobotContainer {
         scheduler.setDefaultCommand(right2piston, new EndgameCloseClawCommand(right2piston));
         scheduler.setDefaultCommand(right3piston, new EndgameCloseClawCommand(right3piston));
         scheduler.setDefaultCommand(right4piston, new EndgameCloseClawCommand(right4piston));
+        scheduler.setDefaultCommand(indexerMotorSubsystem, new IndexerForwardCommand(indexerMotorSubsystem));
     }
 
     private void startCamera() {
