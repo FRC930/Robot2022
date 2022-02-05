@@ -54,8 +54,12 @@ public class DriveCommand extends CommandBase {
      * @param reflectSubsystem the camera subsystem to use to autmatically aim
      * @param dController      the driver's controller
      */
-    public DriveCommand(DriveSubsystem dSubsystem, EndgameMotorSubsystem eSubsystem,
-            VisionCameraSubsystem reflectSubsystem, VisionCameraSubsystem ballCamera, XboxController dController) {
+    public DriveCommand(
+        DriveSubsystem dSubsystem, 
+        VisionCameraSubsystem reflectSubsystem, 
+        VisionCameraSubsystem ballCamera, 
+        XboxController dController
+    ) {
         driveSubsystem = dSubsystem;
         reflectiveCameraSubsystem = reflectSubsystem;
         ballCameraSubsystem = ballCamera;

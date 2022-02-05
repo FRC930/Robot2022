@@ -43,13 +43,25 @@ import frc.robot.utilities.DriveCameraUtility;
 import frc.robot.utilities.DriveCameraUtility.BallColor;
 
 public class RobotContainer {
+
+    // ----- XBOX CONTROLLER(S) -----\\
+
+    // Driver Controller
+    private final XboxController driverController = new XboxController(0);
+    // Codriver Controller
+    private final XboxController codriverController = new XboxController(1);
+
+    // Left Joystick
     public static final int XB_AXIS_LEFT_X = 0;
     public static final int XB_AXIS_LEFT_Y = 1;
+    // Triggers
     public static final int XB_AXIS_LT = 2;
     public static final int XB_AXIS_RT = 3;
+    // Right Joystick
     public static final int XB_AXIS_RIGHT_X = 4;
     public static final int XB_AXIS_RIGHT_Y = 5;
 
+    // Buttons
     public static final int XB_A = 1;
     public static final int XB_B = 2;
     public static final int XB_X = 3;
@@ -61,31 +73,72 @@ public class RobotContainer {
     public static final int XB_LEFTSTICK_BUTTON = 9;
     public static final int XB_RIGHTSTICK_BUTTON = 10;
 
+    // ----- CAMERA -----\\
+
+    // Camera subsystem for reflective tape
+    private final VisionCameraSubsystem reflectiveTapeCameraSubsystem;
+    // Camera subsystem for cargo balls
+    private final VisionCameraSubsystem cargoCameraSubsystem;
+
+    // ----- CAMERA CONSTANTS -----\\
+
     public static final int CAMERA_WIDTH = 160;
     public static final int CAMERA_HEIGHT = 120;
     public static final int CAMERA_FPS = 30;
 
-    // The driver controller
-    private final XboxController driverController = new XboxController(0);
-    private final XboxController codriverController = new XboxController(1);
+    // ----- DRIVETRAIN -----\\
 
+    // Drive Subsystem
     private final DriveSubsystem driveSubsystem;
+    // Drive Command
     private final DriveCommand driveCommand;
 
+    // ----- DRIVETRAIN SHIFTER -----\\
+
+    // Drivetrain Shifter Subsystem
+    private final ShifterSubsystem shifterSubsystem;
+    // Drivetrain Shifter Command
+    private final ToggleShifterCommand toggleShifterCommand;
+
+    // ----- INTAKE -----\\
+
+    // Intake Motor Subsystem
+    private final IntakeMotorSubsystem intakeMotorSubsystem;
+    // Intake Piston Subsystem
+    // private final IntakePistonSubsystem intakePistonSubsystem;
+
+    // Intake Motor Commands
+    private final RunIntakeMotorsCommand runIntakeMotorsCommand;
+    private final RunIntakeMotorsCommand reverseIntakeMotorsCommand;
+    private final StopIntakeMotorsCommand stopIntakeMotorsCommand;
+
+    // ----- CATAPULT -----\\
+
+    // Catapult Subsystem
+    private final CatapultSubsystem catapultSubsystem;
+    // Catapult Launch Command
+    private final CatapultCommand catapultCommand;
+
+    // ----- ENDGAME -----\\
+
+    // Endgame Sensor Commands (Clamps on touch)
     private final EndgameCloseWhenTouching endgameCloseTouchingLeft3;
     private final EndgameCloseWhenTouching endgameCloseTouchingRight3;
     private final EndgameCloseWhenTouching endgameCloseTouchingLeft1;
     private final EndgameCloseWhenTouching endgameCloseTouchingRight1;
 
+    // Endgame Arm Commands
     private final EndgameMotorSubsystem endgameMotorSubsystem;
     private final EndgameArmCommand endgameArmCommand;
     private final EndgameArmRevCommand endgameArmRevCommand;
 
+    // Endgame Sensor Subsystems
     private final EndgameSensorSubsystem left2Sensor;
     private final EndgameSensorSubsystem right2Sensor;
     private final EndgameSensorSubsystem left4Sensor;
     private final EndgameSensorSubsystem right4Sensor;
 
+    // Endgame Piston Subsystems
     private final EndgamePistonSubsystem left1piston;
     private final EndgamePistonSubsystem left2piston;
     private final EndgamePistonSubsystem left3piston;
@@ -95,9 +148,11 @@ public class RobotContainer {
     private final EndgamePistonSubsystem right3piston;
     private final EndgamePistonSubsystem right4piston;
 
+    // Endgame Miscellaneous Constants
     private final double ENDGAME_PISTON_DELAY = 0.25;
     private final double ENDGAME_RELEASE_DELAY = 5;
 
+    // Endgame Traversal Command [Groups]
     private final EndgameRotateVerticalCommand verticalCommand;
     private final ParallelRaceGroup endgame2;
     private final ParallelCommandGroup endgame3;
@@ -108,21 +163,16 @@ public class RobotContainer {
     private final ParallelRaceGroup endgame9;
     private final ParallelRaceGroup endgame10;
 
-    private final CatapultSubsystem catapultSubsystem;
-    private final CatapultCommand catapultCommand;
+    // ----- AUTONOMOUS -----\\
 
-    private final ShifterSubsystem shifterSubsystem;
-    private final ToggleShifterCommand toggleShifterCommand;
-
-    private final IntakeMotorSubsystem intakeMotorSubsystem;
-    //private final IntakePistonSubsystem intakePistonSubsystem;
-    private final RunIntakeMotorsCommand runIntakeMotorsCommand;
-    private final RunIntakeMotorsCommand reverseIntakeMotorsCommand;
-    private final StopIntakeMotorsCommand stopIntakeMotorsCommand;
-
+    // Default autonomous path
     private final DefaultAutoPathCommand defaultAutoPathCommand;
+    //
     private final BottomBackShootCommand bottomBackShootCommand;
+    //
     private final BottomBackSideShootCommand bottomBackSideShootCommand;
+
+    // ----- CONSTRUCTOR -----\\
 
     /**
      * <h3>RobotContainer</h3>
@@ -130,17 +180,71 @@ public class RobotContainer {
      * Initializes the robot
      */
     public RobotContainer() {
+
+        // ----- CAMERA SUBSYSTEM INITS -----\\
+
+        // Camera subsystem for reflective tape
+        reflectiveTapeCameraSubsystem = new VisionCameraSubsystem(
+                VisionCameraSubsystem.CameraType.REFLECTIVE_TAPE);
+        // Camera subsystem for cargo balls
+        cargoCameraSubsystem = new VisionCameraSubsystem(
+                VisionCameraSubsystem.CameraType.BALL_DETECTOR);
+
+        // ----- DRIVETRAIN SUBSYSTEM INITS -----\\
+
+        driveSubsystem = new DriveSubsystem(1, 2);
+
+        // ----- DRIVETRAIN COMMAND INITS -----\\
+
+        driveCommand = new DriveCommand(
+                driveSubsystem,
+                reflectiveTapeCameraSubsystem,
+                cargoCameraSubsystem,
+                driverController);
+
+        // ----- DRIVETRAIN SHIFTER SUBSYSTEM INITS -----\\
+
+        shifterSubsystem = new ShifterSubsystem(0);
+
+        // ----- DRIVETRAIN SHIFTER COMMAND INITS -----\\
+
+        toggleShifterCommand = new ToggleShifterCommand(shifterSubsystem);
+
+        // ----- INTAKE SUBSYSTEM INITS -----\\
+
+        // Intake has to be instantiated before drive subsystem because we need to
+        // initialize the gyro
+        intakeMotorSubsystem = new IntakeMotorSubsystem(5);
+        // intakePistonSubsystem = new IntakePistonSubsystem(1);
+
+        // ----- INTAKE COMMAND INITS -----\\
+
+        runIntakeMotorsCommand = new RunIntakeMotorsCommand(intakeMotorSubsystem, false);
+        reverseIntakeMotorsCommand = new RunIntakeMotorsCommand(intakeMotorSubsystem, true);
+        stopIntakeMotorsCommand = new StopIntakeMotorsCommand(intakeMotorSubsystem);
+
+        // ----- CATAPULT SUBSYSTEM INITS -----\\
+
+        // TODO:ADD CATAPULT SENSOR
+        // TODO:ADD SOLENOID ID 7 FOR HARD-STOP
+        catapultSubsystem = new CatapultSubsystem(2, 3, 4, 5, 6);
+
+        // ----- CATAPULT COMMAND INITS -----\\
+
+        catapultCommand = new CatapultCommand(catapultSubsystem);
+
+        // ----- ENDGAME SUBSYSTEM INITS -----\\
+
+        // Endgame Motor Subsystem
         endgameMotorSubsystem = new EndgameMotorSubsystem(3, 4);
 
-        endgameArmCommand = new EndgameArmCommand(endgameMotorSubsystem);
-        endgameArmRevCommand = new EndgameArmRevCommand(endgameMotorSubsystem);
-        verticalCommand = new EndgameRotateVerticalCommand(endgameMotorSubsystem);
-
+        // Endgame Sensors
         left2Sensor = new EndgameSensorSubsystem(1);
         right2Sensor = new EndgameSensorSubsystem(2);
         left4Sensor = new EndgameSensorSubsystem(3);
         right4Sensor = new EndgameSensorSubsystem(4);
 
+        // Endgame Piston Subsystems
         left1piston = new EndgamePistonSubsystem(8);
         left2piston = new EndgamePistonSubsystem(9);
         left3piston = new EndgamePistonSubsystem(10);
@@ -150,61 +254,66 @@ public class RobotContainer {
         right3piston = new EndgamePistonSubsystem(14);
         right4piston = new EndgamePistonSubsystem(15);
 
+        // ----- ENDGAME COMMAND INITS -----\\
+
+        // Endgame Arm Commands
+        endgameArmCommand = new EndgameArmCommand(endgameMotorSubsystem);
+        endgameArmRevCommand = new EndgameArmRevCommand(endgameMotorSubsystem);
+        verticalCommand = new EndgameRotateVerticalCommand(endgameMotorSubsystem);
+
+        // Endgame Sensor Commands
         endgameCloseTouchingLeft3 = new EndgameCloseWhenTouching(left3piston, left4Sensor);
         endgameCloseTouchingRight3 = new EndgameCloseWhenTouching(right3piston, right4Sensor);
         endgameCloseTouchingLeft1 = new EndgameCloseWhenTouching(left1piston, left2Sensor);
         endgameCloseTouchingRight1 = new EndgameCloseWhenTouching(right1piston, right2Sensor);
 
-        //Opens #3 claws
-        endgame2 = new ParallelRaceGroup(new EndgameOpenClawCommand(left3piston),
-                new EndgameOpenClawCommand(right3piston), new WaitCommand(ENDGAME_PISTON_DELAY));
-        //Closes #3 claws independently on both sides when sensors trigger
-        endgame3 = new ParallelCommandGroup(new EndgameCloseWhenTouching(left3piston, left4Sensor),
-                new EndgameCloseWhenTouching(right3piston, right4Sensor));
-        //Opens #1 claws
-        endgame4 = new ParallelRaceGroup(new EndgameOpenClawCommand(left1piston),
-                new EndgameOpenClawCommand(right1piston), new WaitCommand(ENDGAME_PISTON_DELAY));
-        //Rotates arm until one #2 sensor triggers, closing all arms and stops motor
-        endgame5 = new ParallelRaceGroup(new EndgameArmCommand(endgameMotorSubsystem),
-                new EndgameCloseWhenTouching(left1piston, left2Sensor),
-                new EndgameCloseWhenTouching(right1piston, right2Sensor));
-        //Opens #3 and #4 claws
-        endgame6 = new ParallelRaceGroup(new EndgameOpenClawCommand(left3piston),
-                new EndgameOpenClawCommand(right3piston), new EndgameOpenClawCommand(left4piston),
-                new EndgameOpenClawCommand(right4piston), new WaitCommand(ENDGAME_PISTON_DELAY));
-        //Closes #4 claws
-        endgame8 = new ParallelRaceGroup(new EndgameCloseClawCommand(left4piston),
-                new EndgameCloseClawCommand(right4piston), new WaitCommand(ENDGAME_PISTON_DELAY));
-        //Rotates arm until one #4 sensor triggers, closing all arms and stops motor
-        endgame9 = new ParallelRaceGroup(new EndgameArmCommand(endgameMotorSubsystem),
+        // ----- ENDGAME COMMAND GROUP INITS -----\\
+
+        // Opens #3 claws
+        endgame2 = new ParallelRaceGroup(
+                new EndgameOpenClawCommand(left3piston),
+                new EndgameOpenClawCommand(right3piston),
+                new WaitCommand(ENDGAME_PISTON_DELAY));
+        // Closes #3 claws independently on both sides when sensors trigger
+        endgame3 = new ParallelCommandGroup(
                 new EndgameCloseWhenTouching(left3piston, left4Sensor),
                 new EndgameCloseWhenTouching(right3piston, right4Sensor));
-        //Opens #2 claws-NOTE:Claws closed after delay ends due to default command
-        endgame10 = new ParallelRaceGroup(new EndgameOpenClawCommand(left2piston),
-                new EndgameOpenClawCommand(right2piston), new WaitCommand(ENDGAME_RELEASE_DELAY));
+        // Opens #1 claws
+        endgame4 = new ParallelRaceGroup(
+                new EndgameOpenClawCommand(left1piston),
+                new EndgameOpenClawCommand(right1piston),
+                new WaitCommand(ENDGAME_PISTON_DELAY));
+        // Rotates arm until one #2 sensor triggers, closing all arms and stops motor
+        endgame5 = new ParallelRaceGroup(
+                new EndgameArmCommand(endgameMotorSubsystem),
+                new EndgameCloseWhenTouching(left1piston, left2Sensor),
+                new EndgameCloseWhenTouching(right1piston, right2Sensor));
+        // Opens #3 and #4 claws
+        endgame6 = new ParallelRaceGroup(
+                new EndgameOpenClawCommand(left3piston),
+                new EndgameOpenClawCommand(right3piston),
+                new EndgameOpenClawCommand(left4piston),
+                new EndgameOpenClawCommand(right4piston),
+                new WaitCommand(ENDGAME_PISTON_DELAY));
+        // Closes #4 claws
+        endgame8 = new ParallelRaceGroup(
+                new EndgameCloseClawCommand(left4piston),
+                new EndgameCloseClawCommand(right4piston),
+                new WaitCommand(ENDGAME_PISTON_DELAY));
+        // Rotates arm until one #4 sensor triggers, closing all arms and stops motor
+        endgame9 = new ParallelRaceGroup(
+                new EndgameArmCommand(endgameMotorSubsystem),
+                new EndgameCloseWhenTouching(left3piston, left4Sensor),
+                new EndgameCloseWhenTouching(right3piston, right4Sensor));
+        // Opens #2 claws-NOTE:Claws closed after delay ends due to default command
+        endgame10 = new ParallelRaceGroup(
+                new EndgameOpenClawCommand(left2piston),
+                new EndgameOpenClawCommand(right2piston),
+                new WaitCommand(ENDGAME_RELEASE_DELAY));
 
-        VisionCameraSubsystem reflectiveTapeSubsystem = new VisionCameraSubsystem(
-                VisionCameraSubsystem.CameraType.REFLECTIVE_TAPE);
-        VisionCameraSubsystem ballSubsystem = new VisionCameraSubsystem(VisionCameraSubsystem.CameraType.BALL_DETECTOR);
+        // ----- SHUFFLEBOARD AUTONOMOUS OPTIONS -----\\
 
-        // Intake has to be instantiated before drive subsystem because we need to
-        // initialize the gyro
-        intakeMotorSubsystem = new IntakeMotorSubsystem(5);
-        //intakePistonSubsystem = new IntakePistonSubsystem(1);
-
-        driveSubsystem = new DriveSubsystem(1, 2);
-        driveCommand = new DriveCommand(driveSubsystem, endgameMotorSubsystem, reflectiveTapeSubsystem, ballSubsystem,
-                driverController);
-
-        //TODO:ADD CATAPULT SENSOR
-        //TODO:ADD SOLENOID ID 7 FOR HARD-STOP
-        catapultSubsystem = new CatapultSubsystem(2, 3, 4, 5, 6);
-        catapultCommand = new CatapultCommand(catapultSubsystem);
-
-        shifterSubsystem = new ShifterSubsystem(0);
-        toggleShifterCommand = new ToggleShifterCommand(shifterSubsystem);
-
-        // This is where the Autonomous commands are being added to shuffleboard 
+        // This is where the Autonomous commands are being added to shuffleboard
         ShuffleboardUtility.getInstance().setDefaultAutonOptions("Default (None)", null);
         defaultAutoPathCommand = new DefaultAutoPathCommand(driveSubsystem);
         ShuffleboardUtility.getInstance().addAutonOptions("defaultAutoPathCommand", defaultAutoPathCommand);
@@ -213,9 +322,7 @@ public class RobotContainer {
         bottomBackSideShootCommand = new BottomBackSideShootCommand(driveSubsystem);
         ShuffleboardUtility.getInstance().addAutonOptions("bottomBackSideShootCommand", bottomBackSideShootCommand);
 
-        runIntakeMotorsCommand = new RunIntakeMotorsCommand(intakeMotorSubsystem, false);
-        reverseIntakeMotorsCommand = new RunIntakeMotorsCommand(intakeMotorSubsystem, true);
-        stopIntakeMotorsCommand = new StopIntakeMotorsCommand(intakeMotorSubsystem);
+        // ----- SETTING BALL COLOR -----\\
 
         if (DriverStation.getAlliance() == Alliance.Blue) {
             DriveCameraUtility.getInstance().setBallColor(BallColor.BLUE);
@@ -243,13 +350,11 @@ public class RobotContainer {
         launchButton.whileActiveOnce(catapultCommand);
 
         // Checks if LB and B is pressed, then it will reverse the intake
-        new JoystickButton(codriverController, XB_LB).
-            and(new JoystickButton(codriverController, XB_B)).
-            whileActiveOnce(reverseIntakeMotorsCommand);
+        new JoystickButton(codriverController, XB_LB).and(new JoystickButton(codriverController, XB_B))
+                .whileActiveOnce(reverseIntakeMotorsCommand);
         // Checks if LB is pressed and B isn't pressed, then it will run intake
-        new JoystickButton(codriverController, XB_LB).
-            and(new JoystickButton(codriverController, XB_B).negate()).
-            whileActiveOnce(runIntakeMotorsCommand);
+        new JoystickButton(codriverController, XB_LB).and(new JoystickButton(codriverController, XB_B).negate())
+                .whileActiveOnce(runIntakeMotorsCommand);
 
         JoystickButton rotateArmButton = new JoystickButton(driverController, XB_Y);
         rotateArmButton.whileActiveOnce(endgameArmCommand);
@@ -262,8 +367,8 @@ public class RobotContainer {
         endgameSensorCloseButton.whileActiveOnce(new EndgameCloseWhenTouching(left1piston, left2Sensor));
         JoystickButton rotateUntilTouchingButton = new JoystickButton(driverController, XB_B);
         rotateUntilTouchingButton.whileActiveOnce(new SequentialCommandGroup(
-                new ParallelRaceGroup(new EndgameArmCommand(endgameMotorSubsystem), 
-                new EndgameCloseWhenTouching(left1piston, left2Sensor), endgameCloseTouchingRight1),
+                new ParallelRaceGroup(new EndgameArmCommand(endgameMotorSubsystem),
+                        new EndgameCloseWhenTouching(left1piston, left2Sensor), endgameCloseTouchingRight1),
                 new WaitCommand(10)));
 
         JoystickButton endgameComplete = new JoystickButton(driverController, XB_START);
@@ -291,7 +396,7 @@ public class RobotContainer {
         scheduler.setDefaultCommand(right2piston, new EndgameCloseClawCommand(right2piston));
         scheduler.setDefaultCommand(right3piston, new EndgameCloseClawCommand(right3piston));
         scheduler.setDefaultCommand(right4piston, new EndgameCloseClawCommand(right4piston));
-        
+
         scheduler.setDefaultCommand(intakeMotorSubsystem, stopIntakeMotorsCommand);
 
         scheduler.setDefaultCommand(driveSubsystem, driveCommand);
