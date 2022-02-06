@@ -45,12 +45,12 @@ public class DriveSubsystem extends SubsystemBase {
     // private final SpeedController m_leftFollower = new WPI_TalonFX(2);
     private final WPI_TalonFX m_rightLeader;
     // private final SpeedController m_rightFollower = new WPI_TalonFX(4);
-    private final double m_rightKV = 0.62728;
-    private final double m_rightKS = 0.68254;
-    private final double m_rightKA = 0.021885;
-    private final double m_leftKV = 0.61037;
-    private final double m_leftKS = 0.68157;
-    private final double m_leftKA = 0.023755;
+    private final double m_rightKS = 0.65994;
+    private final double m_rightKV = 0.10928;
+    private final double m_rightKA = 0.0098056;
+    private final double m_leftKS = 0.68826;
+    private final double m_leftKV = 0.10925;
+    private final double m_leftKA = 0.0081036;
     /*
      * private final SpeedControllerGroup m_leftGroup = new
      * SpeedControllerGroup(m_leftLeader, m_leftFollower); private final
@@ -61,8 +61,8 @@ public class DriveSubsystem extends SubsystemBase {
     private final DifferentialDriveKinematics m_kinematics = new DifferentialDriveKinematics(kTrackWidth);
 
     // Gains are for example purposes only - must be determined for your own robot!
-    private final SimpleMotorFeedforward leftMotorFeedforward = new SimpleMotorFeedforward(m_leftKV, m_leftKS, m_leftKA);
-    private final SimpleMotorFeedforward rightMotorFeedforward = new SimpleMotorFeedforward(m_rightKV, m_rightKS, m_rightKA);
+    private final SimpleMotorFeedforward leftMotorFeedforward = new SimpleMotorFeedforward(m_leftKS, m_leftKV, m_leftKA);
+    private final SimpleMotorFeedforward rightMotorFeedforward = new SimpleMotorFeedforward(m_rightKS, m_rightKV, m_rightKA);
     private final SimpleMotorFeedforward constraintFeedforward = new SimpleMotorFeedforward(m_leftKS + m_rightKS / 2,
             m_leftKV + m_rightKV / 2, m_leftKA + m_rightKA / 2);
 
