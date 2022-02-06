@@ -165,14 +165,14 @@ public class RobotContainer {
 
     // Endgame Traversal Command [Groups]
     private final EndgameRotateVerticalCommand verticalCommand;
-    private final ParallelRaceGroup endgame2;
-    private final ParallelCommandGroup endgame3;
-    private final ParallelRaceGroup endgame4;
-    private final ParallelRaceGroup endgame5;
-    private final ParallelRaceGroup endgame6;
-    private final ParallelRaceGroup endgame8;
-    private final ParallelRaceGroup endgame9;
-    private final ParallelRaceGroup endgame10;
+    private ParallelRaceGroup endgame2;
+    private ParallelCommandGroup endgame3;
+    private ParallelRaceGroup endgame4;
+    private ParallelRaceGroup endgame5;
+    private ParallelRaceGroup endgame6;
+    private ParallelRaceGroup endgame8;
+    private ParallelRaceGroup endgame9;
+    private ParallelRaceGroup endgame10;
 
     // ----- AUTONOMOUS -----\\
 
@@ -305,50 +305,6 @@ public class RobotContainer {
         endgameCloseTouchingLeft1 = new EndgameCloseWhenTouching(left1piston, left2Sensor);
         endgameCloseTouchingRight1 = new EndgameCloseWhenTouching(right1piston, right2Sensor);
 
-        // ----- ENDGAME COMMAND GROUP INITS -----\\
-
-        // Opens #3 claws
-        endgame2 = new ParallelRaceGroup(
-                new EndgameOpenClawCommand(left3piston),
-                new EndgameOpenClawCommand(right3piston),
-                new WaitCommand(ENDGAME_PISTON_DELAY));
-        // Closes #3 claws independently on both sides when sensors trigger
-        endgame3 = new ParallelCommandGroup(
-                new EndgameCloseWhenTouching(left3piston, left4Sensor),
-                new EndgameCloseWhenTouching(right3piston, right4Sensor));
-        // Opens #1 claws
-        endgame4 = new ParallelRaceGroup(
-                new EndgameOpenClawCommand(left1piston),
-                new EndgameOpenClawCommand(right1piston),
-                new WaitCommand(ENDGAME_PISTON_DELAY));
-        // Rotates arm until one #2 sensor triggers, closing all arms and stops motor
-        endgame5 = new ParallelRaceGroup(
-                new EndgameArmCommand(endgameMotorSubsystem),
-                new EndgameCloseWhenTouching(left1piston, left2Sensor),
-                new EndgameCloseWhenTouching(right1piston, right2Sensor));
-        // Opens #3 and #4 claws
-        endgame6 = new ParallelRaceGroup(
-                new EndgameOpenClawCommand(left3piston),
-                new EndgameOpenClawCommand(right3piston),
-                new EndgameOpenClawCommand(left4piston),
-                new EndgameOpenClawCommand(right4piston),
-                new WaitCommand(ENDGAME_PISTON_DELAY));
-        // Closes #4 claws
-        endgame8 = new ParallelRaceGroup(
-                new EndgameCloseClawCommand(left4piston),
-                new EndgameCloseClawCommand(right4piston),
-                new WaitCommand(ENDGAME_PISTON_DELAY));
-        // Rotates arm until one #4 sensor triggers, closing all arms and stops motor
-        endgame9 = new ParallelRaceGroup(
-                new EndgameArmCommand(endgameMotorSubsystem),
-                new EndgameCloseWhenTouching(left3piston, left4Sensor),
-                new EndgameCloseWhenTouching(right3piston, right4Sensor));
-        // Opens #2 claws-NOTE:Claws closed after delay ends due to default command
-        endgame10 = new ParallelRaceGroup(
-                new EndgameOpenClawCommand(left2piston),
-                new EndgameOpenClawCommand(right2piston),
-                new WaitCommand(ENDGAME_RELEASE_DELAY));
-
         // ----- SETTING BALL COLOR -----\\
 
         if (DriverStation.getAlliance() == Alliance.Blue) {
@@ -405,6 +361,50 @@ public class RobotContainer {
         // Manually rotates the endgame arms in reverse while pressed
         rotateArmRevButton.whileActiveOnce(endgameArmRevCommand);
 
+        // ----- ENDGAME COMMAND GROUP INITS -----\\
+
+        // Opens #3 claws
+        endgame2 = new ParallelRaceGroup(
+                new EndgameOpenClawCommand(left3piston),
+                new EndgameOpenClawCommand(right3piston),
+                new WaitCommand(ENDGAME_PISTON_DELAY));
+        // Closes #3 claws independently on both sides when sensors trigger
+        endgame3 = new ParallelCommandGroup(
+                new EndgameCloseWhenTouching(left3piston, left4Sensor),
+                new EndgameCloseWhenTouching(right3piston, right4Sensor));
+        // Opens #1 claws
+        endgame4 = new ParallelRaceGroup(
+                new EndgameOpenClawCommand(left1piston),
+                new EndgameOpenClawCommand(right1piston),
+                new WaitCommand(ENDGAME_PISTON_DELAY));
+        // Rotates arm until one #2 sensor triggers, closing all arms and stops motor
+        endgame5 = new ParallelRaceGroup(
+                new EndgameArmCommand(endgameMotorSubsystem),
+                new EndgameCloseWhenTouching(left1piston, left2Sensor),
+                new EndgameCloseWhenTouching(right1piston, right2Sensor));
+        // Opens #3 and #4 claws
+        endgame6 = new ParallelRaceGroup(
+                new EndgameOpenClawCommand(left3piston),
+                new EndgameOpenClawCommand(right3piston),
+                new EndgameOpenClawCommand(left4piston),
+                new EndgameOpenClawCommand(right4piston),
+                new WaitCommand(ENDGAME_PISTON_DELAY));
+        // Closes #4 claws
+        endgame8 = new ParallelRaceGroup(
+                new EndgameCloseClawCommand(left4piston),
+                new EndgameCloseClawCommand(right4piston),
+                new WaitCommand(ENDGAME_PISTON_DELAY));
+        // Rotates arm until one #4 sensor triggers, closing all arms and stops motor
+        endgame9 = new ParallelRaceGroup(
+                new EndgameArmCommand(endgameMotorSubsystem),
+                new EndgameCloseWhenTouching(left3piston, left4Sensor),
+                new EndgameCloseWhenTouching(right3piston, right4Sensor));
+        // Opens #2 claws-NOTE:Claws closed after delay ends due to default command
+        endgame10 = new ParallelRaceGroup(
+                new EndgameOpenClawCommand(left2piston),
+                new EndgameOpenClawCommand(right2piston),
+                new WaitCommand(ENDGAME_RELEASE_DELAY));
+
         // Two endgame commands used for testing
         endgameSensorCloseButton.whileActiveOnce(new EndgameCloseWhenTouching(left1piston, left2Sensor));
         rotateUntilTouchingButton.whileActiveOnce(
@@ -412,7 +412,7 @@ public class RobotContainer {
                         new ParallelRaceGroup(
                                 new EndgameArmCommand(endgameMotorSubsystem),
                                 new EndgameCloseWhenTouching(left1piston, left2Sensor), 
-                                endgameCloseTouchingRight1
+                                new EndgameCloseWhenTouching(right1piston, right2Sensor)
                         ),
                         new WaitCommand(10)
                 )

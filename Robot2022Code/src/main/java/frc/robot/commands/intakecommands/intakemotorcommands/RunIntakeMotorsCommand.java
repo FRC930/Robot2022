@@ -21,7 +21,7 @@ public class RunIntakeMotorsCommand extends CommandBase {
 
   // -------- CONSTANTS --------\\
 
-  private final double INTAKE_SPEED = -0.5;
+  private final double INTAKE_SPEED = 0.8;
 
   // -------- VARIABLES --------\\
 

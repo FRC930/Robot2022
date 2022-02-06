@@ -61,8 +61,8 @@ public class DriveSubsystem extends SubsystemBase {
     private final DifferentialDriveKinematics m_kinematics = new DifferentialDriveKinematics(kTrackWidth);
 
     // Gains are for example purposes only - must be determined for your own robot!
-    private final SimpleMotorFeedforward leftMotorFeedforward = new SimpleMotorFeedforward(0.61037, 0.68157, 0.023755);
-    private final SimpleMotorFeedforward rightMotorFeedforward = new SimpleMotorFeedforward(0.62728, 0.68254, 0.021885);
+    private final SimpleMotorFeedforward leftMotorFeedforward = new SimpleMotorFeedforward(m_leftKV, m_leftKS, m_leftKA);
+    private final SimpleMotorFeedforward rightMotorFeedforward = new SimpleMotorFeedforward(m_rightKV, m_rightKS, m_rightKA);
     private final SimpleMotorFeedforward constraintFeedforward = new SimpleMotorFeedforward(m_leftKS + m_rightKS / 2,
             m_leftKV + m_rightKV / 2, m_leftKA + m_rightKA / 2);
 
@@ -96,7 +96,8 @@ public class DriveSubsystem extends SubsystemBase {
         m_leftLeader.getSensorCollection().setIntegratedSensorPosition(0.0, 100);
         m_rightLeader.getSensorCollection().setIntegratedSensorPosition(0.0, 100);
 
-        m_leftLeader.setInverted(true);
+        m_leftLeader.setInverted(false);
+        m_rightLeader.setInverted(true);
     }
 
     /**

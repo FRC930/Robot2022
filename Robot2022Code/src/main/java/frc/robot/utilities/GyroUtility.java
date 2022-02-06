@@ -27,7 +27,11 @@ public class GyroUtility {
         m_gyro = new PigeonIMU(eSubsystem.getIntakeMotor());
     }
     public PigeonIMU getGyro(){
-        //  TO-DO if m_gyro not set return error
+        // if m_gyro not set return error
+        if (m_gyro == null){
+            throw new RuntimeException("Tried to get gyro but not yet initialized. Make sure" +
+            " intake subsystem in insantiated before drive subsystem.");
+        }
         return m_gyro;
     }
     /**

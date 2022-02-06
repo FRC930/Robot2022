@@ -5,7 +5,7 @@ import frc.robot.subsystems.IndexerMotorSubsystem;
 
 public class IndexerForwardCommand extends CommandBase{
     
-    private final double MOTOR_SPEED = 0.2;
+    private final double MOTOR_SPEED = 0.5;
     private final IndexerMotorSubsystem motor;
 
     public IndexerForwardCommand(IndexerMotorSubsystem _motor){
