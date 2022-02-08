@@ -14,54 +14,110 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.utilities.ShuffleboardUtility;
 
 public class Robot extends TimedRobot {
+    private Command m_autonomousCommand;
 
-  private RobotContainer m_robotContainer;
+    private RobotContainer m_robotContainer;
 
-  private CommandScheduler commandScheduler;
+    private CommandScheduler commandScheduler;
 
-  @Override
-  public void robotInit() {
-    m_robotContainer = new RobotContainer();
-    commandScheduler = CommandScheduler.getInstance();
-  }
-
-  @Override
-  public void robotPeriodic() {
-    commandScheduler.run();
-
-    ShuffleboardUtility.getInstance().update();
-  }
-
-  @Override
-  public void autonomousInit() {
-    m_robotContainer.beginAutoRunCommands();
-    Command m_autonomousCommand = m_robotContainer.getAutonomousCommand();
-
-    // schedule the autonomous command (example)
-    if (m_autonomousCommand != null) {
-      m_autonomousCommand.schedule();
+    @Override
+    public void robotInit() {
+        m_robotContainer = new RobotContainer();
+        commandScheduler = CommandScheduler.getInstance();
+        // Runs sim method if robot is simulated
+        if (RobotBase.isSimulation()) {
+            // Flush NetworkTables every loop. This ensures that robot pose and other values
+            // are sent during every iteration.
+            setNetworkTablesFlushEnabled(true);
+            m_robotContainer.robotSimInit();
+        }
     }
-  }
-    
-  @Override
-  public void teleopInit() {
-    m_robotContainer.beginTeleopRunCommands();
-  }
 
-  @Override
-  public void testInit() {
-    m_robotContainer.testInit();
-  }
-  
-  @Override
-  public void testPeriodic() {
-    m_robotContainer.testPeriodic();
-  }
+    @Override
+    public void robotPeriodic() {
+        // Runs the Scheduler. This is responsible for polling buttons, adding
+        // newly-scheduled
+        // commands, running already-scheduled commands, removing finished or
+        // interrupted commands,
+        // and running subsystem periodic() methods. This must be called from the
+        // robot's periodic
+        // block in order for anything in the Command-based framework to work.
+        commandScheduler.run();
+
+        // Runs sim method if robot is simulated
+        if (RobotBase.isSimulation()) {
+            m_robotContainer.robotSimPeriodic();
+        }
+        ShuffleboardUtility.getInstance().update();
+    }
+
+    @Override
+    public void autonomousInit() {
+        // NOTE: If wish to see (drivetraim motors in simulator force following if to
+        // true or it uses simulation drivetrain)
+        if (RobotBase.isReal()) {
+
+            m_robotContainer.beginAutoRunCommands();
+            m_autonomousCommand = m_robotContainer.getAutonomousCommand();
+
+            // schedule the autonomous command (example)
+            if (m_autonomousCommand != null) {
+                m_autonomousCommand.schedule();
+            }
+        } else {
+            // Runs sim method if robot is simulated
+            m_robotContainer.autoSimInit();
+        }
+    }
+
+    /**
+     * This function is called periodically during autonomous.
+     */
+    @Override
+    public void autonomousPeriodic() {
+        // Runs sim method if robot is simulated
+        if (RobotBase.isSimulation()) {
+            m_robotContainer.autoSimPeriodic();
+        }
+    }
+
+    // Needed for robot simulation
+    @Override
+    public void simulationPeriodic() {
+        m_robotContainer.simPeriodic();
+    }
+
+    @Override
+    public void teleopInit() {
+        // This makes sure that the autonomous stops running when
+        // teleop starts running. If you want the autonomous to
+        // continue until interrupted by another command, remove
+        // this line or comment it out.
+        if (m_autonomousCommand != null) {
+            m_autonomousCommand.cancel();
+        }
+
+        m_robotContainer.beginTeleopRunCommands();
+    }
+
+    @Override
+    public void testInit() {
+        // Cancels all running commands at the start of test mode.
+        CommandScheduler.getInstance().cancelAll();
+
+        m_robotContainer.testInit();
+    }
+
+    @Override
+    public void testPeriodic() {
+        m_robotContainer.testPeriodic();
+    }
 
 }

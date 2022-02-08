@@ -13,7 +13,7 @@ import frc.robot.subsystems.DriveSubsystem;
 //  -------- PATH DESCRIPTION -------- \\
 //  Moves forward 60 inches
 
-public class BottomBackShootCommand extends SequentialCommandGroupWithTraj {
+public class AutoTest2 extends SequentialCommandGroupWithTraj {
 
     //  TO-DO comment this section
     private final double KMAXSPEED = 3.5;
@@ -27,7 +27,7 @@ public class BottomBackShootCommand extends SequentialCommandGroupWithTraj {
      * 
      * @param dSubsystem
      */
-    public BottomBackShootCommand(DriveSubsystem dSubsystem) { 
+    public AutoTest2(DriveSubsystem dSubsystem) { 
 
         //  initializing gyro for pose2d
         m_odometry = dSubsystem.getOdometry();
@@ -35,7 +35,7 @@ public class BottomBackShootCommand extends SequentialCommandGroupWithTraj {
         // -------- Trajectories -------- \\
 
         // Generates a trajectory
-        Trajectory trajectory1 = PathPlanner.loadPath("BottomBackShoot", KMAXSPEED, KMAXACCELERATION);
+        Trajectory trajectory1 = PathPlanner.loadPath("AutoTest2", KMAXSPEED, KMAXACCELERATION);
 
         this.addTrajectory(trajectory1);
 

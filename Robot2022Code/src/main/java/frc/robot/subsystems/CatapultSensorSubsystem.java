@@ -8,7 +8,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
  * Controls the sensor for the catapult.
  */
 public class CatapultSensorSubsystem extends SubsystemBase{
-    private DigitalInput catapultSensor;
+    public DigitalInput sensor;
+    
 
     /**
      * <h3>CatapultSensorSubsystem</h3>
@@ -18,8 +19,8 @@ public class CatapultSensorSubsystem extends SubsystemBase{
      * 
      * @param portDio the port of the sensor
      */
-    public CatapultSensorSubsystem(int portDio){
-        catapultSensor = new DigitalInput(portDio);
+    public CatapultSensorSubsystem(int sensorPort){
+        sensor = new DigitalInput(sensorPort);
     }
 
     /**
@@ -28,6 +29,6 @@ public class CatapultSensorSubsystem extends SubsystemBase{
     * @return if the sensor was tripped
     */
     public boolean isTripped() {
-        return !catapultSensor.get();
+        return !sensor.get();
     }
 }

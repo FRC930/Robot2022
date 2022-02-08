@@ -11,15 +11,15 @@ import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.utilities.SequentialCommandGroupWithTraj;
 
 //  -------- PATH DESCRIPTION -------- \\
 //  Moves forward 60 inches
 
-public class DefaultAutoPathCommand extends SequentialCommandGroup {
+public class DefaultAutoPathCommand extends SequentialCommandGroupWithTraj {
 
-    //  TO-DO comment this section
+    // TO-DO comment this section
     private final double KMAXSPEED = 3.5;
     private final double KMAXACCELERATION = 3;
     private final double KRAMSETEB = 2;
@@ -33,9 +33,8 @@ public class DefaultAutoPathCommand extends SequentialCommandGroup {
      */
     public DefaultAutoPathCommand(DriveSubsystem dSubsystem) {
 
-        //  initializing gyro for pose2d
+        // initializing gyro for pose2d
         m_odometry = dSubsystem.getOdometry();
-
 
         // Configurate the values of all trajectories for max velocity and acceleration
         TrajectoryConfig config = new TrajectoryConfig(KMAXSPEED,
@@ -59,6 +58,20 @@ public class DefaultAutoPathCommand extends SequentialCommandGroup {
                 config
 
         );
+        this.addTrajectory(trajectory1);
+
+        Trajectory trajectory2 = TrajectoryGenerator.generateTrajectory(
+                new Pose2d(inchesToMeters(60.0), inchesToMeters(0), new Rotation2d(0)),
+                List.of(
+                // Midpoints
+                ),
+                // End 5 feet infront of initiation line
+                new Pose2d(inchesToMeters(100.0), inchesToMeters(0), new Rotation2d(0)),
+                // Pass config
+                config
+
+        );
+        this.addTrajectory(trajectory2);
 
         // -------- RAMSETE Commands -------- \\
         // Creates a command that can be added to the command scheduler in the

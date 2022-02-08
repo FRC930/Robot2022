@@ -2,9 +2,21 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandBase;
+
+import java.io.IOException;
+import java.nio.file.Path;
+import java.util.List;
+
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.cscore.UsbCamera;
+import edu.wpi.first.math.controller.RamseteController;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.trajectory.Trajectory;
+import edu.wpi.first.math.trajectory.TrajectoryUtil;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Filesystem;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
@@ -43,6 +55,8 @@ import frc.robot.subsystems.ShifterSubsystem;
 import frc.robot.subsystems.VisionCameraSubsystem;
 import frc.robot.triggers.AxisTrigger;
 import frc.robot.utilities.ShuffleboardUtility;
+import frc.robot.utilities.SimulatedDrivetrain;
+import frc.robot.utilities.SequentialCommandGroupWithTraj;
 import frc.robot.utilities.DriveCameraUtility;
 import frc.robot.utilities.DriveCameraUtility.BallColor;
 
@@ -177,7 +191,7 @@ public class RobotContainer {
     // ----- AUTONOMOUS -----\\
 
     private final AutoCommandManager autoManager;
-    // Default 
+    // Default
 
     // ----- CONSTRUCTOR -----\\
 
@@ -189,18 +203,21 @@ public class RobotContainer {
     public RobotContainer() {
 
         /*
-        --------------------------------------------------------------------------------
-        CONSTRUCT COMMAND MANAGER
-        --------------------------------------------------------------------------------
-        */
+         * -----------------------------------------------------------------------------
+         * ---
+         * CONSTRUCT COMMAND MANAGER
+         * -----------------------------------------------------------------------------
+         * ---
+         */
         autoManager = new AutoCommandManager();
 
-        
         /*
-        --------------------------------------------------------------------------------
-        SUBSYSTEM INITIALIZATIONS
-        --------------------------------------------------------------------------------
-        */
+         * -----------------------------------------------------------------------------
+         * ---
+         * SUBSYSTEM INITIALIZATIONS
+         * -----------------------------------------------------------------------------
+         * ---
+         */
 
         // ----- CAMERA SUBSYSTEM INITS -----\\
 
@@ -261,17 +278,19 @@ public class RobotContainer {
         right4piston = new EndgamePistonSubsystem(15);
 
         /*
-        --------------------------------------------------------------------------------
-        COMMAND INITIALIZATIONS
-        --------------------------------------------------------------------------------
-        */
+         * -----------------------------------------------------------------------------
+         * ---
+         * COMMAND INITIALIZATIONS
+         * -----------------------------------------------------------------------------
+         * ---
+         */
 
         // ----- AUTO COMMAND INITS -----\\
-        autoManager.initComands();
+        autoManager.initCommands();
 
         // ----- INTAKE COMMAND INITS -----\\
 
-        // Intake Motor Commands
+        // Intake Motor Commandss
         runIntakeMotorsCommand = new RunIntakeMotorsCommand(intakeMotorSubsystem, false);
         reverseIntakeMotorsCommand = new RunIntakeMotorsCommand(intakeMotorSubsystem, true);
         stopIntakeMotorsCommand = new StopIntakeMotorsCommand(intakeMotorSubsystem);
@@ -411,12 +430,9 @@ public class RobotContainer {
                 new SequentialCommandGroup(
                         new ParallelRaceGroup(
                                 new EndgameArmCommand(endgameMotorSubsystem),
-                                new EndgameCloseWhenTouching(left1piston, left2Sensor), 
-                                new EndgameCloseWhenTouching(right1piston, right2Sensor)
-                        ),
-                        new WaitCommand(10)
-                )
-        );
+                                new EndgameCloseWhenTouching(left1piston, left2Sensor),
+                                new EndgameCloseWhenTouching(right1piston, right2Sensor)),
+                        new WaitCommand(10)));
 
         endgameComplete.whileActiveOnce(new SequentialCommandGroup(
                 // TODO:USE ENCODER AS PROGRESS TOOL
@@ -432,17 +448,16 @@ public class RobotContainer {
         CommandScheduler scheduler = CommandScheduler.getInstance();
 
         /*
-        Unregisters subsystems to prevent hanging resources
-        */
+         * Unregisters subsystems to prevent hanging resources
+         */
         scheduler.unregisterSubsystem(
-                driveSubsystem,                                         // Drivetrain
-                intakeMotorSubsystem, intakePistonSubsystem,            // Intake
-                left1piston, left2piston, left3piston, left4piston,     // Endgame Left Arm
-                right1piston, right2piston, right3piston, right4piston,  // Endgame Right Arm
-                /* , endgameMotorSubsystem */                           // Endgame Motors
-                indexerMotorSubsystem
-        );
-        
+                driveSubsystem, // Drivetrain
+                intakeMotorSubsystem, intakePistonSubsystem, // Intake
+                left1piston, left2piston, left3piston, left4piston, // Endgame Left Arm
+                right1piston, right2piston, right3piston, right4piston, // Endgame Right Arm
+                /* , endgameMotorSubsystem */ // Endgame Motors
+                indexerMotorSubsystem);
+
         // DRIVETRAIN DEFAULTS
         scheduler.setDefaultCommand(driveSubsystem, driveCommand);
 
@@ -451,7 +466,9 @@ public class RobotContainer {
         scheduler.setDefaultCommand(intakePistonSubsystem, disengageIntakePistonsCommand);
 
         // ENDGAME DEFAULTS
-        // scheduler.setDefaultCommand(endgameMotorSubsystem, new EndgameRotateHorizonalCommand(endgameMotorSubsystem)); // -GET ENCODER WORKING
+        // scheduler.setDefaultCommand(endgameMotorSubsystem, new
+        // EndgameRotateHorizonalCommand(endgameMotorSubsystem)); // -GET ENCODER
+        // WORKING
         scheduler.setDefaultCommand(left1piston, new EndgameCloseClawCommand(left1piston));
         scheduler.setDefaultCommand(left2piston, new EndgameCloseClawCommand(left2piston));
         scheduler.setDefaultCommand(left3piston, new EndgameCloseClawCommand(left3piston));
@@ -470,8 +487,10 @@ public class RobotContainer {
             camera.setFPS(CAMERA_FPS);
         }
     }
-
-    public Command getAutonomousCommand(){
+/**
+*
+*/
+    public Command getAutonomousCommand() {
         return autoManager.getAutonomousCommand();
     }
 
@@ -479,7 +498,7 @@ public class RobotContainer {
 
         // --The instance of the scheduler
         CommandScheduler scheduler = CommandScheduler.getInstance();
-        
+
         scheduler.unregisterSubsystem(catapultSubsystem,
                 // catapultSensorSubsystem,
                 driveSubsystem,
@@ -488,8 +507,8 @@ public class RobotContainer {
                 // endgameSensorSubsystem,
                 intakeMotorSubsystem,
                 // intakePistonSubsystem,
-                shifterSubsystem//,
-                // visionCameraSubsystem
+                shifterSubsystem// ,
+        // visionCameraSubsystem
         );
         // TODO set default command for each subsystem
         // scheduler.setDefaultCommand(driveSubsystem, driveCommand);
@@ -513,5 +532,90 @@ public class RobotContainer {
         endgameMotorSubsystem.setMotorSpeed(0.0);
         intakeMotorSubsystem.setMotorSpeed(0.0);
         driveSubsystem.setVoltages(0.0, 0.0);
+    }
+
+    private final RamseteController m_ramsete = new RamseteController();
+    private final SimulatedDrivetrain m_simDrive = new SimulatedDrivetrain();
+
+    private final Timer m_timer = new Timer();
+
+    private Trajectory m_trajectory;
+    private Command m_autocmd = null;
+
+    // This begins the robot sim and sets our a trajectory and paths.
+    public void robotSimInit() {
+        /*
+         * String trajectoryJSON = Filesystem.getDeployDirectory() +
+         * "/Paths/Bounce.wpilib.json";
+         * //Tries to create a trajectory from a JSON file. Logs and throws exception if
+         * fails.
+         * try {
+         * //Path trajectoryPath =
+         * Filesystem.getDeployDirectory().toPath().resolve(trajectoryJSON);
+         * Path trajectoryPath =
+         * Filesystem.getDeployDirectory().toPath().resolve(trajectoryJSON);
+         * m_trajectory = TrajectoryUtil.fromPathweaverJson(trajectoryPath);
+         * } catch (IOException ex) {
+         * DriverStation.reportError("Unable to open trajectory: " + trajectoryJSON,
+         * ex.getStackTrace());
+         * throw new RuntimeException("Unable to open trajectory: " + trajectoryJSON);
+         * }
+         */
+    }
+
+    // Begins autonomous simulation. Resets position and timer.
+    public void autoSimInit() {
+        m_autocmd = autoManager.getAutonomousCommand();
+        if (m_autocmd != null) {
+            if (m_autocmd instanceof SequentialCommandGroupWithTraj) {
+                List<Trajectory> list = ((SequentialCommandGroupWithTraj) m_autocmd).getTrajectories();
+                if (list.size() == 0) {
+                    DriverStation.reportError(
+                            "Missing trajectories in (please add them this.addTrajectory()): " + m_autocmd.toString(),
+                            true);
+                    throw new RuntimeException(
+                            "Missing trajectories in (please add them this.addTrajectory()): " + m_autocmd.toString());
+                }
+                int ii = 0;
+                for (Trajectory traj : list) {
+                    if (ii == 0) {
+                        m_trajectory = traj;
+                    } else {
+                        m_trajectory = m_trajectory.concatenate(traj);
+                    }
+                    ii++;
+                }
+            } else {
+                DriverStation.reportError("Unable to open trajectory: " + m_autocmd.toString(), true);
+                throw new RuntimeException("Unable to open trajectory: " + m_autocmd.toString());
+            }
+            m_timer.reset();
+            m_timer.start();
+            m_simDrive.resetOdometry(m_trajectory.getInitialPose());
+        }
+    }
+
+    // Updates simulated robot periodically.
+    public void robotSimPeriodic() {
+        if (m_autocmd != null) {
+            m_simDrive.periodic();
+        }
+    }
+
+    // Updates the position of the simulated robot autonomous periodically.
+    public void autoSimPeriodic() {
+        if (m_autocmd != null) {
+            double elapsed = m_timer.get();
+            Trajectory.State reference = m_trajectory.sample(elapsed);
+            ChassisSpeeds speeds = m_ramsete.calculate(m_simDrive.getPose(), reference);
+            m_simDrive.drive(speeds.vxMetersPerSecond, speeds.omegaRadiansPerSecond);
+        }
+    }
+
+    // Updates simulation
+    public void simPeriodic() {
+        if (m_autocmd != null) {
+            m_simDrive.simulationPeriodic();
+        }
     }
 }
