@@ -1,25 +1,19 @@
 package frc.robot.commands.autocommands.paths;
 
-import java.util.List;
-
 import com.pathplanner.lib.PathPlanner;
 
 import frc.robot.commands.Ramsete930Command;
 import edu.wpi.first.math.controller.RamseteController;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.trajectory.Trajectory;
-import edu.wpi.first.math.trajectory.TrajectoryConfig;
-import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import frc.robot.utilities.SequentialCommandGroupWithTraj;
 import frc.robot.subsystems.DriveSubsystem;
 
 //  -------- PATH DESCRIPTION -------- \\
 //  Moves forward 60 inches
 
-public class BottomBackSideShootCommand extends SequentialCommandGroup {
+public class BottomBackSideShootCommand extends SequentialCommandGroupWithTraj {
 
     //  TO-DO comment this section
     private final double KMAXSPEED = 3.5;
@@ -42,6 +36,8 @@ public class BottomBackSideShootCommand extends SequentialCommandGroup {
 
         // Generates a trajectory
         Trajectory trajectory1 = PathPlanner.loadPath("BottomBackSideShoot", KMAXSPEED, KMAXACCELERATION);
+
+        this.addTrajectory(trajectory1);
 
         // -------- RAMSETE Commands -------- \\
         // Creates a command that can be added to the command scheduler in the
