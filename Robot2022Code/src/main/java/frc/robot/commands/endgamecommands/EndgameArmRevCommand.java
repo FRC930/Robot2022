@@ -56,6 +56,12 @@ public class EndgameArmRevCommand extends CommandBase {
   }
 
   @Override
+  public void execute(){
+    m_MotorSubsystem.getEncoderPosition();
+  }
+  
+
+  @Override
   public boolean isFinished() { // when true, ends command
     return false;
   }

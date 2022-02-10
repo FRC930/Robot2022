@@ -77,14 +77,16 @@ public class EndgameMotorSubsystem extends SubsystemBase {
      * @return the position of the encoder 
      */
     public double getEncoderPosition() {
+        System.out.print(endgameMotorMaster.getSelectedSensorPosition());
         return endgameMotorMaster.getSelectedSensorPosition();
-        //endgameMotorMaster.getSelectedSensorPosition()
-        //endgameMotorMaster.getSensorCollection().getIntegratedSensorAbsolutePosition();
     }
 
+    /**
+     * resetEncoderPosition </p>
+     * Resets the endcoder back to starting position. Should be set while the bar is horizontal.
+     */
     public void resetEncoderPosition() {
-        //endgameMotorMaster.setSelectedSensorPosition(0.0);
-        //endgameMotorMaster.getSensorCollection().setIntegratedSensorPosition(0.0, 0);
+        endgameMotorMaster.setSelectedSensorPosition(0.0);
     }
     
 }

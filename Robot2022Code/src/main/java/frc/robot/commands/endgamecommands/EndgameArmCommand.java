@@ -54,6 +54,11 @@ public class EndgameArmCommand extends CommandBase {
 
     // logger.log(LOG_LEVEL_FINE, "Starting the arm motor (command)...");
   }
+
+  @Override
+  public void execute(){
+    m_MotorSubsystem.getEncoderPosition();
+  }
   
 
   //isFinished() is left false on purpose. Needs to be interrupted.
