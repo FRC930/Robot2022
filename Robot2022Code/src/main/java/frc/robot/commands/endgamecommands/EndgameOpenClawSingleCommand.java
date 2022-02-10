@@ -6,11 +6,11 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.EndgamePistonSubsystem;
 //-------- COMMAND CLASS --------\\
 /**
- * <h3>EndgameOpenClawCommand</h3>
+ * <h3>EndgameOpenClawSingleCommand</h3>
  * 
  * Opens one of the endgame claws
  */
-public class EndgameOpenClawCommand extends CommandBase {
+public class EndgameOpenClawSingleCommand extends CommandBase {
 
     //-------- DECLARATIONS --------\\
 
@@ -18,11 +18,11 @@ public class EndgameOpenClawCommand extends CommandBase {
 
     //-------- CONSTRUCTOR --------\\
     /**
-     * EndgameOpenClawCommand
+     * EndgameOpenClawSingleCommand
      * 
      * @param pistonSubsystem the piston to be opened
      */ 
-    public EndgameOpenClawCommand(EndgamePistonSubsystem pistonSubsystem) {
+    public EndgameOpenClawSingleCommand(EndgamePistonSubsystem pistonSubsystem) {
         piston = pistonSubsystem;
         addRequirements(pistonSubsystem);
     }

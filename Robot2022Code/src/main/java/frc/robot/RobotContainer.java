@@ -35,10 +35,12 @@ import frc.robot.commands.autocommands.paths.BottomBackSideShootCommand;
 import frc.robot.commands.autocommands.paths.DefaultAutoPathCommand;
 import frc.robot.commands.endgamecommands.EndgameArmCommand;
 import frc.robot.commands.endgamecommands.EndgameArmRevCommand;
-import frc.robot.commands.endgamecommands.EndgameCloseClawCommand;
+import frc.robot.commands.endgamecommands.EndgameCloseClawPairCommand;
+import frc.robot.commands.endgamecommands.EndgameCloseClawSingleCommand;
 import frc.robot.commands.endgamecommands.EndgameCloseWhenAway;
 import frc.robot.commands.endgamecommands.EndgameCloseWhenTouching;
-import frc.robot.commands.endgamecommands.EndgameOpenClawCommand;
+import frc.robot.commands.endgamecommands.EndgameOpenClawPairCommand;
+import frc.robot.commands.endgamecommands.EndgameOpenClawSingleCommand;
 import frc.robot.commands.endgamecommands.EndgameRotateVerticalCommand;
 import frc.robot.commands.intakecommands.intakePistonCommands.*;
 import frc.robot.commands.intakecommands.intakemotorcommands.*;
@@ -47,7 +49,6 @@ import frc.robot.subsystems.CatapultSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.EndgameMotorSubsystem;
 import frc.robot.subsystems.EndgamePistonSubsystem;
-import frc.robot.subsystems.EndgameSensorSubsystem;
 import frc.robot.subsystems.IndexerMotorSubsystem;
 import frc.robot.subsystems.IntakeMotorSubsystem;
 import frc.robot.subsystems.IntakePistonSubsystem;
@@ -146,22 +147,10 @@ public class RobotContainer {
 
     // ----- ENDGAME -----\\
 
-    // Endgame Sensor Commands (Clamps on touch)
-    private final EndgameCloseWhenTouching endgameCloseTouchingLeft3;
-    private final EndgameCloseWhenTouching endgameCloseTouchingRight3;
-    private final EndgameCloseWhenTouching endgameCloseTouchingLeft1;
-    private final EndgameCloseWhenTouching endgameCloseTouchingRight1;
-
     // Endgame Arm Commands
     private final EndgameMotorSubsystem endgameMotorSubsystem;
     private final EndgameArmCommand endgameArmCommand;
     private final EndgameArmRevCommand endgameArmRevCommand;
-
-    // Endgame Sensor Subsystems
-    private final EndgameSensorSubsystem left2Sensor;
-    private final EndgameSensorSubsystem right2Sensor;
-    private final EndgameSensorSubsystem left4Sensor;
-    private final EndgameSensorSubsystem right4Sensor;
 
     // Endgame Piston Subsystems
     private final EndgamePistonSubsystem left1piston;
@@ -261,12 +250,6 @@ public class RobotContainer {
         // Endgame Motor Subsystems
         endgameMotorSubsystem = new EndgameMotorSubsystem(3, 4);
 
-        // Endgame Sensor Subsystems
-        left2Sensor = new EndgameSensorSubsystem(1);
-        right2Sensor = new EndgameSensorSubsystem(2);
-        left4Sensor = new EndgameSensorSubsystem(3);
-        right4Sensor = new EndgameSensorSubsystem(4);
-
         // Endgame Piston Subsystems
         left1piston = new EndgamePistonSubsystem(8);
         left2piston = new EndgamePistonSubsystem(9);
@@ -317,12 +300,6 @@ public class RobotContainer {
         endgameArmCommand = new EndgameArmCommand(endgameMotorSubsystem);
         endgameArmRevCommand = new EndgameArmRevCommand(endgameMotorSubsystem);
         verticalCommand = new EndgameRotateVerticalCommand(endgameMotorSubsystem);
-
-        // Endgame Sensor Commands
-        endgameCloseTouchingLeft3 = new EndgameCloseWhenTouching(left3piston, left4Sensor);
-        endgameCloseTouchingRight3 = new EndgameCloseWhenTouching(right3piston, right4Sensor);
-        endgameCloseTouchingLeft1 = new EndgameCloseWhenTouching(left1piston, left2Sensor);
-        endgameCloseTouchingRight1 = new EndgameCloseWhenTouching(right1piston, right2Sensor);
 
         // ----- SETTING BALL COLOR -----\\
 
@@ -384,56 +361,51 @@ public class RobotContainer {
 
         // Opens #3 claws
         endgame2 = new ParallelRaceGroup(
-                new EndgameOpenClawCommand(left3piston),
-                new EndgameOpenClawCommand(right3piston),
+                new EndgameOpenClawPairCommand(left3piston, right3piston),
                 new WaitCommand(ENDGAME_PISTON_DELAY));
         // Closes #3 claws independently on both sides when sensors trigger
         endgame3 = new ParallelCommandGroup(
-                new EndgameCloseWhenTouching(left3piston, left4Sensor),
-                new EndgameCloseWhenTouching(right3piston, right4Sensor));
+                new EndgameCloseWhenTouching(left3piston, 4),
+                new EndgameCloseWhenTouching(right3piston, 4));
         // Opens #1 claws
         endgame4 = new ParallelRaceGroup(
-                new EndgameOpenClawCommand(left1piston),
-                new EndgameOpenClawCommand(right1piston),
+                new EndgameOpenClawPairCommand(left1piston, right1piston),
                 new WaitCommand(ENDGAME_PISTON_DELAY));
         // Rotates arm until one #2 sensor triggers, closing all arms and stops motor
         endgame5 = new ParallelRaceGroup(
                 new EndgameArmCommand(endgameMotorSubsystem),
-                new EndgameCloseWhenTouching(left1piston, left2Sensor),
-                new EndgameCloseWhenTouching(right1piston, right2Sensor));
+                new EndgameCloseWhenTouching(left1piston, 2),
+                new EndgameCloseWhenTouching(right1piston, 2));
         // Opens #3 and #4 claws
         endgame6 = new ParallelRaceGroup(
-                new EndgameOpenClawCommand(left3piston),
-                new EndgameOpenClawCommand(right3piston),
-                new EndgameOpenClawCommand(left4piston),
-                new EndgameOpenClawCommand(right4piston),
+                new EndgameOpenClawPairCommand(left3piston, right3piston),
+                new EndgameOpenClawPairCommand(left4piston, right4piston),
                 new WaitCommand(ENDGAME_PISTON_DELAY));
         // Closes #4 claws
         endgame8 = new ParallelRaceGroup(
-                new EndgameCloseClawCommand(left4piston),
-                new EndgameCloseClawCommand(right4piston),
+                new EndgameCloseClawPairCommand(left4piston, right4piston),
                 new WaitCommand(ENDGAME_PISTON_DELAY));
         // Rotates arm until one #4 sensor triggers, closing all arms and stops motor
         endgame9 = new ParallelRaceGroup(
                 new EndgameArmCommand(endgameMotorSubsystem),
-                new EndgameCloseWhenTouching(left3piston, left4Sensor),
-                new EndgameCloseWhenTouching(right3piston, right4Sensor));
+                new EndgameCloseWhenTouching(left3piston, 4),
+                new EndgameCloseWhenTouching(right3piston, 4));
         // Opens #2 claws-NOTE:Claws closed after delay ends due to default command
         endgame10 = new ParallelRaceGroup(
-                new EndgameOpenClawCommand(left2piston),
-                new EndgameOpenClawCommand(right2piston),
+                new EndgameOpenClawPairCommand(left2piston, right2piston),
                 new WaitCommand(ENDGAME_RELEASE_DELAY));
 
         // Two endgame commands used for testing
-        endgameSensorCloseButton.whileActiveOnce(new EndgameCloseWhenTouching(left1piston, left2Sensor));
+        /*
+        endgameSensorCloseButton.whileActiveOnce(new EndgameCloseWhenTouching(left1piston));
         rotateUntilTouchingButton.whileActiveOnce(
                 new SequentialCommandGroup(
                         new ParallelRaceGroup(
                                 new EndgameArmCommand(endgameMotorSubsystem),
-                                new EndgameCloseWhenTouching(left1piston, left2Sensor),
-                                new EndgameCloseWhenTouching(right1piston, right2Sensor)),
+                                new EndgameCloseWhenTouching(left1piston),
+                                new EndgameCloseWhenTouching(right1piston)),
                         new WaitCommand(10)));
-
+*/
         endgameComplete.whileActiveOnce(new SequentialCommandGroup(
                 // TODO:USE ENCODER AS PROGRESS TOOL
                 /* verticalCommand-NEED TO GET ENCODER WORKING!!!, */
@@ -469,14 +441,14 @@ public class RobotContainer {
         // scheduler.setDefaultCommand(endgameMotorSubsystem, new
         // EndgameRotateHorizonalCommand(endgameMotorSubsystem)); // -GET ENCODER
         // WORKING
-        scheduler.setDefaultCommand(left1piston, new EndgameCloseClawCommand(left1piston));
-        scheduler.setDefaultCommand(left2piston, new EndgameCloseClawCommand(left2piston));
-        scheduler.setDefaultCommand(left3piston, new EndgameCloseClawCommand(left3piston));
-        scheduler.setDefaultCommand(left4piston, new EndgameCloseClawCommand(left4piston));
-        scheduler.setDefaultCommand(right1piston, new EndgameCloseClawCommand(right1piston));
-        scheduler.setDefaultCommand(right2piston, new EndgameCloseClawCommand(right2piston));
-        scheduler.setDefaultCommand(right3piston, new EndgameCloseClawCommand(right3piston));
-        scheduler.setDefaultCommand(right4piston, new EndgameCloseClawCommand(right4piston));
+        scheduler.setDefaultCommand(left1piston, new EndgameCloseClawSingleCommand(left1piston));
+        scheduler.setDefaultCommand(left2piston, new EndgameCloseClawSingleCommand(left2piston));
+        scheduler.setDefaultCommand(left3piston, new EndgameCloseClawSingleCommand(left3piston));
+        scheduler.setDefaultCommand(left4piston, new EndgameCloseClawSingleCommand(left4piston));
+        scheduler.setDefaultCommand(right1piston, new EndgameCloseClawSingleCommand(right1piston));
+        scheduler.setDefaultCommand(right2piston, new EndgameCloseClawSingleCommand(right2piston));
+        scheduler.setDefaultCommand(right3piston, new EndgameCloseClawSingleCommand(right3piston));
+        scheduler.setDefaultCommand(right4piston, new EndgameCloseClawSingleCommand(right4piston));
         scheduler.setDefaultCommand(indexerMotorSubsystem, new IndexerForwardCommand(indexerMotorSubsystem));
     }
 
