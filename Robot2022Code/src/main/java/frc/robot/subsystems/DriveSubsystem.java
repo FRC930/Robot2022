@@ -3,6 +3,7 @@ package frc.robot.subsystems;
 import java.util.function.BiConsumer;
 
 import com.ctre.phoenix.motorcontrol.InvertType;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.sensors.SensorVelocityMeasPeriod;
@@ -60,8 +61,8 @@ public class DriveSubsystem extends SubsystemBase {
     private final double m_leftKS = 0.75252;
     private final double m_leftKA = 0.28911;
 
-    MotorControllerGroup leftGroup;
-    MotorControllerGroup rightGroup;
+    // MotorControllerGroup leftGroup;
+    // MotorControllerGroup rightGroup;
     /*
      * private final SpeedControllerGroup m_leftGroup = new
      * SpeedControllerGroup(m_leftLeader, m_leftFollower); private final
@@ -101,11 +102,8 @@ public class DriveSubsystem extends SubsystemBase {
         m_rightLeader = new WPI_TalonFX(rightMotorLeaderID);
         m_rightFollower = new WPI_TalonFX(rightMotorFollowerID);
 
-        m_leftFollower.setInverted(InvertType.OpposeMaster);
-        m_rightFollower.setInverted(InvertType.OpposeMaster);
-
-        leftGroup = new MotorControllerGroup(m_leftLeader, m_leftFollower);
-        rightGroup = new MotorControllerGroup(m_rightLeader, m_rightFollower);
+        // leftGroup = new MotorControllerGroup(m_leftLeader, m_leftFollower);
+        // rightGroup = new MotorControllerGroup(m_rightLeader, m_rightFollower);
 
         shifterState = false;
 
@@ -113,13 +111,28 @@ public class DriveSubsystem extends SubsystemBase {
         config.velocityMeasurementPeriod = SensorVelocityMeasPeriod.Period_10Ms;
 
         m_leftLeader.configAllSettings(config);
+        m_leftFollower.configAllSettings(config);
         m_rightLeader.configAllSettings(config);
+        m_rightFollower.configAllSettings(config);
 
         m_leftLeader.getSensorCollection().setIntegratedSensorPosition(0.0, 100);
+        m_leftFollower.getSensorCollection().setIntegratedSensorPosition(0.0, 100);
         m_rightLeader.getSensorCollection().setIntegratedSensorPosition(0.0, 100);
+        m_rightFollower.getSensorCollection().setIntegratedSensorPosition(0.0, 100);
 
-        m_leftLeader.setInverted(false);
-        m_rightLeader.setInverted(true);
+        m_leftLeader.setInverted(InvertType.None);
+        m_rightLeader.setInverted(InvertType.InvertMotorOutput);
+
+        m_leftFollower.follow(m_leftLeader);
+        m_rightFollower.follow(m_rightLeader);
+
+        m_leftLeader.setNeutralMode(NeutralMode.Brake);
+        m_leftFollower.setNeutralMode(NeutralMode.Brake);
+        m_rightLeader.setNeutralMode(NeutralMode.Brake);
+        m_rightFollower.setNeutralMode(NeutralMode.Brake);
+
+        m_leftFollower.setInverted(InvertType.OpposeMaster);
+        m_rightFollower.setInverted(InvertType.OpposeMaster);
     }
 
     /**
@@ -134,8 +147,8 @@ public class DriveSubsystem extends SubsystemBase {
         leftVoltage = MathUtil.clamp(leftVoltage, -11.0, 11.0);
         rightVoltage = MathUtil.clamp(rightVoltage, -11.0, 11.0);
 
-        leftGroup.setVoltage(leftVoltage);
-        rightGroup.setVoltage(rightVoltage);
+        m_leftLeader.setVoltage(leftVoltage);
+        m_rightLeader.setVoltage(rightVoltage);
     }
 
     /**
