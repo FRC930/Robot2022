@@ -2,6 +2,7 @@ package frc.robot.subsystems;
 
 import java.util.function.BiConsumer;
 
+import com.ctre.phoenix.motorcontrol.InvertType;
 import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.sensors.SensorVelocityMeasPeriod;
@@ -15,6 +16,7 @@ import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.math.trajectory.constraint.DifferentialDriveVoltageConstraint;
+import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.utilities.GyroUtility;
@@ -30,8 +32,8 @@ import frc.robot.utilities.ShifterUtility;
  * @version 1.0
  */
 public class DriveSubsystem extends SubsystemBase {
-    public static final double kMaxSpeed = 3; // meters per second
-    public static final double kMaxAngularSpeed = Math.PI / 2; // 1/2 rotation per second
+    public static final double kMaxSpeed = 5.7; // meters per second
+    public static final double kMaxAngularSpeed = Math.PI; // 1 rotation per second
 
     public static final double highGearRatio = 6.3;
     public static final double lowGearRatio = 12.9;
@@ -41,16 +43,25 @@ public class DriveSubsystem extends SubsystemBase {
     public static final int kEncoderResolution = 2048; // 2048 CPR
     public static final double kMaxVolts = 12.0;
 
+    public static final double DRIVETRAIN_MAX_FREE_SPEED_LOW = 6380.0 / 60.0 / lowGearRatio
+            * (kWheelRadius * 2 * Math.PI);
+    public static final double DRIVETRAIN_MAX_FREE_SPEED_HIGH = 6380.0 / 60.0 / highGearRatio
+            * (kWheelRadius * 2 * Math.PI);
+
     private final WPI_TalonFX m_leftLeader;
-    // private final SpeedController m_leftFollower = new WPI_TalonFX(2);
+    private final WPI_TalonFX m_leftFollower;
     private final WPI_TalonFX m_rightLeader;
-    // private final SpeedController m_rightFollower = new WPI_TalonFX(4);
-    private final double m_rightKS = 0.65994;
-    private final double m_rightKV = 0.10928;
-    private final double m_rightKA = 0.0098056;
-    private final double m_leftKS = 0.68826;
-    private final double m_leftKV = 0.10925;
-    private final double m_leftKA = 0.0081036;
+    private final WPI_TalonFX m_rightFollower;
+
+    private final double m_rightKV = 2.2226;
+    private final double m_rightKS = 0.74698;
+    private final double m_rightKA = 0.2985;
+    private final double m_leftKV = 2.2203;
+    private final double m_leftKS = 0.75252;
+    private final double m_leftKA = 0.28911;
+
+    MotorControllerGroup leftGroup;
+    MotorControllerGroup rightGroup;
     /*
      * private final SpeedControllerGroup m_leftGroup = new
      * SpeedControllerGroup(m_leftLeader, m_leftFollower); private final
@@ -61,8 +72,10 @@ public class DriveSubsystem extends SubsystemBase {
     private final DifferentialDriveKinematics m_kinematics = new DifferentialDriveKinematics(kTrackWidth);
 
     // Gains are for example purposes only - must be determined for your own robot!
-    private final SimpleMotorFeedforward leftMotorFeedforward = new SimpleMotorFeedforward(m_leftKS, m_leftKV, m_leftKA);
-    private final SimpleMotorFeedforward rightMotorFeedforward = new SimpleMotorFeedforward(m_rightKS, m_rightKV, m_rightKA);
+    private final SimpleMotorFeedforward leftMotorFeedforward = new SimpleMotorFeedforward(m_leftKS, m_leftKV,
+            m_leftKA);
+    private final SimpleMotorFeedforward rightMotorFeedforward = new SimpleMotorFeedforward(m_rightKS, m_rightKV,
+            m_rightKA);
     private final SimpleMotorFeedforward constraintFeedforward = new SimpleMotorFeedforward(m_leftKS + m_rightKS / 2,
             m_leftKV + m_rightKV / 2, m_leftKA + m_rightKA / 2);
 
@@ -75,15 +88,24 @@ public class DriveSubsystem extends SubsystemBase {
             constraintFeedforward, getKinematics(), 10);
 
     private final DifferentialDriveOdometry m_odometry = new DifferentialDriveOdometry(
-        new Rotation2d(Math.toRadians(GyroUtility.getInstance().getGyro().getFusedHeading())));
-    
+            new Rotation2d(Math.toRadians(GyroUtility.getInstance().getGyro().getFusedHeading())));
+
     /**
      * Constructs a differential drive object. Sets the encoder distance per pulse
      * and resets the gyro.
      */
-    public DriveSubsystem(int leftMotorID, int rightMotorID) {
-        m_leftLeader = new WPI_TalonFX(leftMotorID);
-        m_rightLeader = new WPI_TalonFX(rightMotorID);
+    public DriveSubsystem(int leftMotorLeaderID, int leftMotorFollowerID, int rightMotorLeaderID,
+            int rightMotorFollowerID) {
+        m_leftLeader = new WPI_TalonFX(leftMotorLeaderID);
+        m_leftFollower = new WPI_TalonFX(leftMotorFollowerID);
+        m_rightLeader = new WPI_TalonFX(rightMotorLeaderID);
+        m_rightFollower = new WPI_TalonFX(rightMotorFollowerID);
+
+        m_leftFollower.setInverted(InvertType.OpposeMaster);
+        m_rightFollower.setInverted(InvertType.OpposeMaster);
+
+        leftGroup = new MotorControllerGroup(m_leftLeader, m_leftFollower);
+        rightGroup = new MotorControllerGroup(m_rightLeader, m_rightFollower);
 
         shifterState = false;
 
@@ -112,18 +134,8 @@ public class DriveSubsystem extends SubsystemBase {
         leftVoltage = MathUtil.clamp(leftVoltage, -11.0, 11.0);
         rightVoltage = MathUtil.clamp(rightVoltage, -11.0, 11.0);
 
-        m_leftLeader.setVoltage(leftVoltage);
-        m_rightLeader.setVoltage(rightVoltage);
-    }
-
-    public BiConsumer<Double, Double> setVoltage() {
-        BiConsumer<Double, Double> voltages = new BiConsumer<Double, Double>() {
-            @Override
-            public void accept(Double leftVoltage, Double rightVoltage) {
-                setVoltages(leftVoltage, rightVoltage);
-            }
-        };
-        return voltages;
+        leftGroup.setVoltage(leftVoltage);
+        rightGroup.setVoltage(rightVoltage);
     }
 
     /**
@@ -249,7 +261,9 @@ public class DriveSubsystem extends SubsystemBase {
      * @return the volatage at which to run the motor
      */
     public double speedToVoltage(double speed) {
-        return speed / kMaxSpeed * kMaxVolts;
+        return speed
+                / (ShifterUtility.getShifterState() ? DRIVETRAIN_MAX_FREE_SPEED_HIGH : DRIVETRAIN_MAX_FREE_SPEED_LOW)
+                * kMaxVolts;
     }
 
     /**
@@ -263,14 +277,8 @@ public class DriveSubsystem extends SubsystemBase {
                 DriveSubsystem.kMaxSpeed;
         double rightOutput = speeds.rightMetersPerSecond * kMaxVolts /
                 DriveSubsystem.kMaxSpeed;
-
-        // Ensure that we are not sending rogue values to the motors
-        leftOutput = MathUtil.clamp(leftOutput, -11.0, 11.0);
-        rightOutput = MathUtil.clamp(rightOutput, -11.0, 11.0);
-
-        // Actually set the voltages
-        m_leftLeader.setVoltage(leftOutput);
-        m_rightLeader.setVoltage(rightOutput);
+                
+        setVoltages(leftOutput, rightOutput);
     }
 
     /**

@@ -37,19 +37,19 @@ public class ToggleShifterCommand extends CommandBase {
 
     @Override
     public void initialize() {
-        shifterSubsystem.setShifterState(true);
-        ShifterUtility.setShifterState(true);
-        ShuffleboardUtility.getInstance().putToShuffleboard(ShuffleboardUtility.driverTab,
-                ShuffleboardKeys.DRIVETRAIN_SHIFTED,
-                new ShuffleBoardData<Boolean>(true));
-    }
-
-    @Override
-    public void end(boolean interrupted) {
         shifterSubsystem.setShifterState(false);
         ShifterUtility.setShifterState(false);
         ShuffleboardUtility.getInstance().putToShuffleboard(ShuffleboardUtility.driverTab,
                 ShuffleboardKeys.DRIVETRAIN_SHIFTED,
                 new ShuffleBoardData<Boolean>(false));
+    }
+
+    @Override
+    public void end(boolean interrupted) {
+        shifterSubsystem.setShifterState(true);
+        ShifterUtility.setShifterState(true);
+        ShuffleboardUtility.getInstance().putToShuffleboard(ShuffleboardUtility.driverTab,
+                ShuffleboardKeys.DRIVETRAIN_SHIFTED,
+                new ShuffleBoardData<Boolean>(true));
     }
 }

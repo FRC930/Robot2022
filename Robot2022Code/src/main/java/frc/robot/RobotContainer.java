@@ -14,6 +14,7 @@ import edu.wpi.first.math.controller.RamseteController;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryUtil;
+import edu.wpi.first.util.net.PortForwarder;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.Timer;
@@ -228,6 +229,8 @@ public class RobotContainer {
         cargoCameraSubsystem = new VisionCameraSubsystem(
                 VisionCameraSubsystem.CameraType.BALL_DETECTOR);
 
+        PortForwarder.add(5800, "10.9.30.25", 5800);
+
         // ----- INTAKE SUBSYSTEM INITS -----\\
 
         // Intake has to be instantiated before drive subsystem because we need to
@@ -237,7 +240,7 @@ public class RobotContainer {
 
         // ----- DRIVETRAIN SUBSYSTEM INITS -----\\
 
-        driveSubsystem = new DriveSubsystem(1, 2);
+        driveSubsystem = new DriveSubsystem(1, 7, 2, 8);
         autoManager.addSubsystem(subNames.DriveSubsystem, driveSubsystem);
 
         // ----- DRIVETRAIN SHIFTER SUBSYSTEM INITS -----\\
@@ -375,10 +378,10 @@ public class RobotContainer {
         intakeButton.and(reverseIntakeButton).whileActiveOnce(reverseIntakeMotorsCommand);
 
         // Manually rotates the endgame arms while pressed
-        rotateArmButton.whileActiveOnce(endgameArmCommand);
+        // rotateArmButton.whileActiveOnce(endgameArmCommand);
 
         // Manually rotates the endgame arms in reverse while pressed
-        rotateArmRevButton.whileActiveOnce(endgameArmRevCommand);
+        // rotateArmRevButton.whileActiveOnce(endgameArmRevCommand);
 
         // ----- ENDGAME COMMAND GROUP INITS -----\\
 
@@ -487,9 +490,10 @@ public class RobotContainer {
             camera.setFPS(CAMERA_FPS);
         }
     }
-/**
-*
-*/
+
+    /**
+    *
+    */
     public Command getAutonomousCommand() {
         return autoManager.getAutonomousCommand();
     }
