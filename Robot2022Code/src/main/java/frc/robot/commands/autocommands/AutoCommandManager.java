@@ -11,6 +11,7 @@ import frc.robot.commands.autocommands.paths.AutoTest2;
 import frc.robot.commands.autocommands.paths.AutoTestFull;
 import frc.robot.commands.autocommands.paths.BottomBackShootCommand;
 import frc.robot.commands.autocommands.paths.BottomBackSideShootCommand;
+import frc.robot.commands.autocommands.paths.CompPath1;
 import frc.robot.commands.autocommands.paths.DefaultAutoPathCommand;
 import frc.robot.subsystems.*;
 
@@ -47,6 +48,7 @@ public class AutoCommandManager {
         CommandBase AutoTest1 = new AutoTest1((DriveSubsystem) subsystemMap.get(subNames.DriveSubsystem.toString()));
         CommandBase AutoTest2 = new AutoTest2((DriveSubsystem) subsystemMap.get(subNames.DriveSubsystem.toString()));
         CommandBase AutoTestFull = new AutoTestFull((DriveSubsystem) subsystemMap.get(subNames.DriveSubsystem.toString()));
+        CommandBase CompPath1 = new CompPath1((DriveSubsystem) subsystemMap.get(subNames.DriveSubsystem.toString()));
 
         ShuffleboardUtility.getInstance().setDefaultAutonOptions("Default (None)", null);
         ShuffleboardUtility.getInstance().addAutonOptions("defaultAutoPathCommand", defaultAutoPathCommand);
@@ -55,6 +57,7 @@ public class AutoCommandManager {
         ShuffleboardUtility.getInstance().addAutonOptions("AutoTest1", AutoTest1);
         ShuffleboardUtility.getInstance().addAutonOptions("AutoTest2", AutoTest2);
         ShuffleboardUtility.getInstance().addAutonOptions("AutoTestFull", AutoTestFull);
+        ShuffleboardUtility.getInstance().addAutonOptions("CompPath1", CompPath1);
     }
 
     public Command getAutonomousCommand(){

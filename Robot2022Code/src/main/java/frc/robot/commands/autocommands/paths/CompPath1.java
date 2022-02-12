@@ -1,26 +1,22 @@
 package frc.robot.commands.autocommands.paths;
 
-import java.util.List;
+import com.pathplanner.lib.PathPlanner;
 
 import frc.robot.commands.Ramsete930Command;
 import edu.wpi.first.math.controller.RamseteController;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.trajectory.Trajectory;
-import edu.wpi.first.math.trajectory.TrajectoryConfig;
-import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 
-import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.utilities.PathPlannerSequentialCommandGroupUtility;
+import frc.robot.subsystems.DriveSubsystem;
 
 //  -------- PATH DESCRIPTION -------- \\
 //  Moves forward 60 inches
 
-public class DefaultAutoPathCommand extends PathPlannerSequentialCommandGroupUtility {
+public class CompPath1 extends PathPlannerSequentialCommandGroupUtility {
 
-    // TO-DO comment this section
-    private final double KMAXSPEED = 1.5;
+    //  TO-DO comment this section
+    private final double KMAXSPEED = 3.5;
     private final double KMAXACCELERATION = 3;
     private final double KRAMSETEB = 2;
     private final double KRAMSETEZETA = 0.7;
@@ -31,34 +27,21 @@ public class DefaultAutoPathCommand extends PathPlannerSequentialCommandGroupUti
      * 
      * @param dSubsystem
      */
-    public DefaultAutoPathCommand(DriveSubsystem dSubsystem) {
+    public CompPath1(DriveSubsystem dSubsystem) { 
 
-        // initializing gyro for pose2d
+        //  initializing gyro for pose2d
         m_odometry = dSubsystem.getOdometry();
-
-        // Configurate the values of all trajectories for max velocity and acceleration
-        TrajectoryConfig config = new TrajectoryConfig(KMAXSPEED,
-                KMAXACCELERATION)
-                        // Add kinematics to ensure max speed is actually obeyed
-                        .setKinematics(dSubsystem.getKinematics())
-                        // Apply the voltage constraint
-                        .addConstraint(dSubsystem.getVoltageContraint());
 
         // -------- Trajectories -------- \\
 
         // Generates a trajectory
-        Trajectory trajectory1 = TrajectoryGenerator.generateTrajectory(
-                new Pose2d(inchesToMeters(0), inchesToMeters(0), new Rotation2d(0)),
-                List.of(
-                // Midpoints
-                ),
-                // End 5 feet infront of initiation line
-                new Pose2d(inchesToMeters(30.0), inchesToMeters(0), new Rotation2d(0)),
-                // Pass config
-                config
+        Trajectory trajectory1 = PathPlanner.loadPath("CompPath1pt1", KMAXSPEED, KMAXACCELERATION);
 
-        );
         this.addTrajectory(trajectory1);
+
+        Trajectory trajectory2 = PathPlanner.loadPath("AutoTest2", KMAXSPEED, KMAXACCELERATION);
+
+        this.addTrajectory(trajectory2);
 
         // -------- RAMSETE Commands -------- \\
         // Creates a command that can be added to the command scheduler in the

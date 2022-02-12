@@ -60,7 +60,7 @@ import frc.robot.subsystems.VisionCameraSubsystem;
 import frc.robot.triggers.AxisTrigger;
 import frc.robot.utilities.ShuffleboardUtility;
 import frc.robot.utilities.SimulatedDrivetrain;
-import frc.robot.utilities.SequentialCommandGroupWithTraj;
+import frc.robot.utilities.PathPlannerSequentialCommandGroupUtility;
 import frc.robot.utilities.BallSensorUtility;
 import frc.robot.utilities.DriveCameraUtility;
 import frc.robot.utilities.DriveCameraUtility.BallColor;
@@ -490,8 +490,8 @@ public class RobotContainer {
     public void autoSimInit() {
         m_autocmd = autoManager.getAutonomousCommand();
         if (m_autocmd != null) {
-            if (m_autocmd instanceof SequentialCommandGroupWithTraj) {
-                List<Trajectory> list = ((SequentialCommandGroupWithTraj) m_autocmd).getTrajectories();
+            if (m_autocmd instanceof PathPlannerSequentialCommandGroupUtility) {
+                List<Trajectory> list = ((PathPlannerSequentialCommandGroupUtility) m_autocmd).getTrajectories();
                 if (list.size() == 0) {
                     DriverStation.reportError(
                             "Missing trajectories in (please add them this.addTrajectory()): " + m_autocmd.toString(),

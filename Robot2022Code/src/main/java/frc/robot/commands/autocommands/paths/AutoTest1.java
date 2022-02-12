@@ -7,13 +7,13 @@ import edu.wpi.first.math.controller.RamseteController;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.trajectory.Trajectory;
 
-import frc.robot.utilities.SequentialCommandGroupWithTraj;
+import frc.robot.utilities.PathPlannerSequentialCommandGroupUtility;
 import frc.robot.subsystems.DriveSubsystem;
 
 //  -------- PATH DESCRIPTION -------- \\
 //  Moves forward 60 inches
 
-public class AutoTest1 extends SequentialCommandGroupWithTraj {
+public class AutoTest1 extends PathPlannerSequentialCommandGroupUtility {
 
     //  TO-DO comment this section
     private final double KMAXSPEED = 3.5;
