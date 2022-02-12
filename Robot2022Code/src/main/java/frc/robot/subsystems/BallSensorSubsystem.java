@@ -1,25 +1,24 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 /**
- * <h3>CatapultSensorSubsystem</h3>
- * Controls the sensor for the catapult.
+ * <h3>BallSensorSubsystem</h3>
+ * Controls the sensors used for the balls.
  */
-public class CatapultSensorSubsystem extends SubsystemBase{
+public class BallSensorSubsystem {
     public DigitalInput sensor;
     
 
     /**
-     * <h3>CatapultSensorSubsystem</h3>
+     * <h3>BallSensorSubsystem</h3>
      * 
-     * Initializes a new {@link frc.robot.subsystems.CatapultSensorSubsystem
-     * CatapultSensorSubsystem} with the passed DIO port.
+     * Initializes a new {@link frc.robot.subsystems.BallSensorSubsystem
+     * BallSensorSubsystem} with the passed DIO port.
      * 
      * @param portDio the port of the sensor
      */
-    public CatapultSensorSubsystem(int sensorPort){
+    public BallSensorSubsystem(int sensorPort){
         sensor = new DigitalInput(sensorPort);
     }
 

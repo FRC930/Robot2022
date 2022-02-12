@@ -8,6 +8,7 @@
 //-------- IMPORTS --------\\
 
 package frc.robot.commands.intakecommands.intakemotorcommands;
+import frc.robot.subsystems.BallSensorSubsystem;
 import frc.robot.subsystems.IntakeMotorSubsystem;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
@@ -26,6 +27,7 @@ public class RunIntakeMotorsCommand extends CommandBase {
   // -------- VARIABLES --------\\
 
   private final IntakeMotorSubsystem intakeMotors;
+  private final BallSensorSubsystem ballSensor;
   private boolean reversed = false;
 
   //-------- CONSTRUCTOR --------\\
@@ -36,8 +38,9 @@ public class RunIntakeMotorsCommand extends CommandBase {
    * 
    * @param iMotors - Intake motors subsystem
    */
-  public RunIntakeMotorsCommand(IntakeMotorSubsystem iMotors, boolean isReversed) {
+  public RunIntakeMotorsCommand(IntakeMotorSubsystem iMotors, BallSensorSubsystem bSensor, boolean isReversed) {
     intakeMotors = iMotors;
+    ballSensor = bSensor;
     reversed = isReversed;
 
     addRequirements(iMotors); // Use addRequirements() here to declare subsystem dependencies.
@@ -50,12 +53,13 @@ public class RunIntakeMotorsCommand extends CommandBase {
   */
   @Override  
   public void initialize() {
-    if(!reversed) {
-      intakeMotors.setMotorSpeed(INTAKE_SPEED);
-    } else {
-      intakeMotors.setMotorSpeed(-INTAKE_SPEED);
+    if(!ballSensor.isTripped()){
+      if(!reversed) {
+        intakeMotors.setMotorSpeed(INTAKE_SPEED);
+      } else {
+        intakeMotors.setMotorSpeed(-INTAKE_SPEED);
+      }
     }
-
   }
   
   /**
@@ -63,7 +67,12 @@ public class RunIntakeMotorsCommand extends CommandBase {
    */
   @Override
   public boolean isFinished() {
-    return false;
+    return ballSensor.isTripped();
+  }
+
+  @Override
+  public void end(boolean interrupted){
+    intakeMotors.setMotorSpeed(0.0);
   }
 
 } // End of class RunIntakeMotorsCommand

@@ -48,7 +48,7 @@ import frc.robot.commands.endgamecommands.EndgameRotateHorizonalCommand;
 import frc.robot.commands.endgamecommands.EndgameRotateVerticalCommand;
 import frc.robot.commands.intakecommands.intakePistonCommands.*;
 import frc.robot.commands.intakecommands.intakemotorcommands.*;
-import frc.robot.subsystems.CatapultSensorSubsystem;
+import frc.robot.subsystems.BallSensorSubsystem;
 import frc.robot.subsystems.CatapultSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.EndgameMotorSubsystem;
@@ -145,8 +145,8 @@ public class RobotContainer {
     // Catapult Subsystem
     private final CatapultSubsystem catapultSubsystem;
     private final IndexerMotorSubsystem indexerMotorSubsystem;
-    private final CatapultSensorSubsystem catapultSensor;
-    private final CatapultSensorSubsystem indexerSensor;
+    private final BallSensorSubsystem catapultSensor;
+    private final BallSensorSubsystem indexerSensor;
     // Catapult Launch Command
     private final CatapultCommand catapultCommand;
 
@@ -231,8 +231,8 @@ public class RobotContainer {
         // TODO:ADD SOLENOID ID 7 FOR HARD-STOP
         catapultSubsystem = new CatapultSubsystem(2, 3, 4, 5, 6);
         indexerMotorSubsystem = new IndexerMotorSubsystem(6);
-        catapultSensor = new CatapultSensorSubsystem(0);
-        indexerSensor = new CatapultSensorSubsystem(5);
+        catapultSensor = new BallSensorSubsystem(0);
+        indexerSensor = new BallSensorSubsystem(5);
         // ----- CATAPULT COMMAND INITS -----\\
 
         catapultCommand = new CatapultCommand(catapultSubsystem);
@@ -269,8 +269,8 @@ public class RobotContainer {
         // ----- INTAKE COMMAND INITS -----\\
 
         // Intake Motor Commandss
-        runIntakeMotorsCommand = new RunIntakeMotorsCommand(intakeMotorSubsystem, false);
-        reverseIntakeMotorsCommand = new RunIntakeMotorsCommand(intakeMotorSubsystem, true);
+        runIntakeMotorsCommand = new RunIntakeMotorsCommand(intakeMotorSubsystem, indexerSensor, false);
+        reverseIntakeMotorsCommand = new RunIntakeMotorsCommand(intakeMotorSubsystem, indexerSensor, true);
         stopIntakeMotorsCommand = new StopIntakeMotorsCommand(intakeMotorSubsystem);
 
         // Intake Piston Commands
@@ -327,6 +327,7 @@ public class RobotContainer {
         JoystickButton endgameSensorCloseButton = new JoystickButton(driverController, XB_X);
         JoystickButton rotateUntilTouchingButton = new JoystickButton(driverController, XB_B);
         JoystickButton endgameComplete = new JoystickButton(driverController, XB_START);
+        JoystickButton indexerButton = new JoystickButton(codriverController, XB_RB);
 
         // CODRIVER CONTROLLER BINDS
         JoystickButton intakeButton = new JoystickButton(codriverController, XB_LB);
@@ -345,6 +346,8 @@ public class RobotContainer {
         codriverController.getLeftBumper().and(codriverController.getBButton().negate()).whileActiveOnce(runIntakeMotorsCommand);
         // Checks if LB and B is pressed, then it will reverse the intake
         codriverController.getLeftBumper().and(codriverController.getBButton()).whileActiveOnce(reverseIntakeMotorsCommand);
+
+        codriverController.getRightBumper().whileActiveOnce(new IndexerForwardCommand(indexerMotorSubsystem));
 
         // Manually rotates the endgame arms while pressed
         driverController.getYButton().whileActiveOnce(endgameArmCommand);
@@ -400,7 +403,7 @@ public class RobotContainer {
         scheduler.setDefaultCommand(right2piston, new EndgameCloseClawSingleCommand(right2piston));
         scheduler.setDefaultCommand(right3piston, new EndgameCloseClawSingleCommand(right3piston));
         scheduler.setDefaultCommand(right4piston, new EndgameCloseClawSingleCommand(right4piston));
-        scheduler.setDefaultCommand(indexerMotorSubsystem, new IndexerForwardCommand(indexerMotorSubsystem));
+        //scheduler.setDefaultCommand(indexerMotorSubsystem, new IndexerForwardCommand(indexerMotorSubsystem));
     }
 
     private void startCamera() {
