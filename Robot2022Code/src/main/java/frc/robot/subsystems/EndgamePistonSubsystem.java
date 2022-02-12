@@ -43,13 +43,13 @@ public class EndgamePistonSubsystem extends SubsystemBase{
      * sets piston to open
      */
     public void open() {
-        grabberPiston.set(false);
+        grabberPiston.set(true);
     }
     /**
      * sets piston to closed
      */
     public void closed() {
-        grabberPiston.set(true);
+        grabberPiston.set(false);
     }
 
 }

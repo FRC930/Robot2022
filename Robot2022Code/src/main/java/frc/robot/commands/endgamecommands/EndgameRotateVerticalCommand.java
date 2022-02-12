@@ -30,8 +30,8 @@ public class EndgameRotateVerticalCommand extends CommandBase {
   // TODO: Establish speed for endgame arm
   private final double ARM_SPEED = 0.2;
   // TODO: WORK ON ENCODER VALUES
-  private final double APPROACH_POSITION = 1;
-  private final double DEADBAND = 0.1;
+  private final double APPROACH_POSITION = 0;
+  private final double DEADBAND = 100;
 
   // -------- DECLARATIONS --------\\
 

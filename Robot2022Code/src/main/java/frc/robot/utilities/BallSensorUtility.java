@@ -1,6 +1,8 @@
 package frc.robot.utilities;
 
 import edu.wpi.first.wpilibj.DigitalInput;
+import frc.robot.utilities.ShuffleboardUtility.ShuffleBoardData;
+import frc.robot.utilities.ShuffleboardUtility.ShuffleboardKeys;
 
 /**
  * <h3>BallSensorUtility</h3>
@@ -35,7 +37,8 @@ public class BallSensorUtility {
     * @return if the sensor was tripped
     */
     public boolean catapultIsTripped() {
-        return catapultSensor.get();
+        ShuffleboardUtility.getInstance().putToShuffleboard(ShuffleboardUtility.driverTab, ShuffleboardKeys.CATAPULT_SENSOR, new ShuffleBoardData<Boolean>(!catapultSensor.get()));
+        return !catapultSensor.get();
     }
 
     /**
@@ -44,6 +47,7 @@ public class BallSensorUtility {
     * @return if the sensor was tripped
     */
     public boolean indexerIsTripped() {
-        return indexerSensor.get();
+        ShuffleboardUtility.getInstance().putToShuffleboard(ShuffleboardUtility.driverTab, ShuffleboardKeys.INTAKE_SENSOR, new ShuffleBoardData<Boolean>(!indexerSensor.get()));
+        return !indexerSensor.get();
     }
 }
