@@ -15,6 +15,7 @@ import edu.wpi.first.math.controller.RamseteController;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryUtil;
+import edu.wpi.first.util.net.PortForwarder;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.Timer;
@@ -40,8 +41,10 @@ import frc.robot.commands.endgamecommands.EndgameCloseClawPairCommand;
 import frc.robot.commands.endgamecommands.EndgameCloseClawSingleCommand;
 import frc.robot.commands.endgamecommands.EndgameCloseWhenAway;
 import frc.robot.commands.endgamecommands.EndgameCloseWhenTouching;
+import frc.robot.commands.endgamecommands.EndgameCommandManager;
 import frc.robot.commands.endgamecommands.EndgameOpenClawPairCommand;
 import frc.robot.commands.endgamecommands.EndgameOpenClawSingleCommand;
+import frc.robot.commands.endgamecommands.EndgameRotateHorizonalCommand;
 import frc.robot.commands.endgamecommands.EndgameRotateVerticalCommand;
 import frc.robot.commands.intakecommands.intakePistonCommands.*;
 import frc.robot.commands.intakecommands.intakemotorcommands.*;
@@ -148,7 +151,7 @@ public class RobotContainer {
     private final CatapultCommand catapultCommand;
 
     // ----- ENDGAME -----\\
-
+    private final EndgameCommandManager endgameManager;
     // Endgame Arm Commands
     private final EndgameMotorSubsystem endgameMotorSubsystem;
     private final EndgameArmCommand endgameArmCommand;
@@ -163,21 +166,6 @@ public class RobotContainer {
     private final EndgamePistonSubsystem right2piston;
     private final EndgamePistonSubsystem right3piston;
     private final EndgamePistonSubsystem right4piston;
-
-    // Endgame Miscellaneous Constants
-    private final double ENDGAME_PISTON_DELAY = 0.25;
-    private final double ENDGAME_RELEASE_DELAY = 5;
-
-    // Endgame Traversal Command [Groups]
-    private final EndgameRotateVerticalCommand verticalCommand;
-    private ParallelRaceGroup endgame2;
-    private ParallelCommandGroup endgame3;
-    private ParallelRaceGroup endgame4;
-    private ParallelRaceGroup endgame5;
-    private ParallelRaceGroup endgame6;
-    private ParallelRaceGroup endgame8;
-    private ParallelRaceGroup endgame9;
-    private ParallelRaceGroup endgame10;
 
     // ----- AUTONOMOUS -----\\
 
@@ -201,7 +189,7 @@ public class RobotContainer {
          * ---
          */
         autoManager = new AutoCommandManager();
-
+        
         /*
          * -----------------------------------------------------------------------------
          * ---
@@ -219,6 +207,8 @@ public class RobotContainer {
         cargoCameraSubsystem = new VisionCameraSubsystem(
                 VisionCameraSubsystem.CameraType.BALL_DETECTOR);
 
+        PortForwarder.add(5800, "10.9.30.25", 5800);
+
         // ----- INTAKE SUBSYSTEM INITS -----\\
 
         // Intake has to be instantiated before drive subsystem because we need to
@@ -228,7 +218,7 @@ public class RobotContainer {
 
         // ----- DRIVETRAIN SUBSYSTEM INITS -----\\
 
-        driveSubsystem = new DriveSubsystem(1, 2);
+        driveSubsystem = new DriveSubsystem(1, 7, 2, 8);
         autoManager.addSubsystem(subNames.DriveSubsystem, driveSubsystem);
 
         // ----- DRIVETRAIN SHIFTER SUBSYSTEM INITS -----\\
@@ -262,6 +252,9 @@ public class RobotContainer {
         right3piston = new EndgamePistonSubsystem(14);
         right4piston = new EndgamePistonSubsystem(15);
 
+        endgameManager = new EndgameCommandManager(endgameMotorSubsystem, 
+        left1piston, left2piston, left3piston, left4piston, right1piston, 
+        right2piston, right3piston, right4piston);
         /*
          * -----------------------------------------------------------------------------
          * ---
@@ -301,8 +294,7 @@ public class RobotContainer {
         // Endgame Arm Commands
         endgameArmCommand = new EndgameArmCommand(endgameMotorSubsystem);
         endgameArmRevCommand = new EndgameArmRevCommand(endgameMotorSubsystem);
-        verticalCommand = new EndgameRotateVerticalCommand(endgameMotorSubsystem);
-
+    
         // ----- SETTING BALL COLOR -----\\
 
         if (DriverStation.getAlliance() == Alliance.Blue) {
@@ -360,62 +352,18 @@ public class RobotContainer {
         // Manually rotates the endgame arms in reverse while pressed
         driverController.getAButton().whileActiveOnce(endgameArmRevCommand);
 
-        // ----- ENDGAME COMMAND GROUP INITS -----\\
-
-        // Opens #3 claws
-        endgame2 = new ParallelRaceGroup(
-                new EndgameOpenClawPairCommand(left3piston, right3piston),
-                new WaitCommand(ENDGAME_PISTON_DELAY));
-        // Closes #3 claws independently on both sides when sensors trigger
-        endgame3 = new ParallelCommandGroup(
-                new EndgameCloseWhenTouching(left3piston, 4),
-                new EndgameCloseWhenTouching(right3piston, 4));
-        // Opens #1 claws
-        endgame4 = new ParallelRaceGroup(
-                new EndgameOpenClawPairCommand(left1piston, right1piston),
-                new WaitCommand(ENDGAME_PISTON_DELAY));
-        // Rotates arm until one #2 sensor triggers, closing all arms and stops motor
-        endgame5 = new ParallelRaceGroup(
-                new EndgameArmCommand(endgameMotorSubsystem),
-                new EndgameCloseWhenTouching(left1piston, 2),
-                new EndgameCloseWhenTouching(right1piston, 2));
-        // Opens #3 and #4 claws
-        endgame6 = new ParallelRaceGroup(
-                new EndgameOpenClawPairCommand(left3piston, right3piston),
-                new EndgameOpenClawPairCommand(left4piston, right4piston),
-                new WaitCommand(ENDGAME_PISTON_DELAY));
-        // Closes #4 claws
-        endgame8 = new ParallelRaceGroup(
-                new EndgameCloseClawPairCommand(left4piston, right4piston),
-                new WaitCommand(ENDGAME_PISTON_DELAY));
-        // Rotates arm until one #4 sensor triggers, closing all arms and stops motor
-        endgame9 = new ParallelRaceGroup(
-                new EndgameArmCommand(endgameMotorSubsystem),
-                new EndgameCloseWhenTouching(left3piston, 4),
-                new EndgameCloseWhenTouching(right3piston, 4));
-        // Opens #2 claws-NOTE:Claws closed after delay ends due to default command
-        endgame10 = new ParallelRaceGroup(
-                new EndgameOpenClawPairCommand(left2piston, right2piston),
-                new WaitCommand(ENDGAME_RELEASE_DELAY));
-
-        // Two endgame commands used for testing
         /*
-        endgameSensorCloseButton.whileActiveOnce(new EndgameCloseWhenTouching(left1piston));
-        rotateUntilTouchingButton.whileActiveOnce(
-                new SequentialCommandGroup(
-                        new ParallelRaceGroup(
-                                new EndgameArmCommand(endgameMotorSubsystem),
-                                new EndgameCloseWhenTouching(left1piston),
-                                new EndgameCloseWhenTouching(right1piston)),
-                        new WaitCommand(10)));
-*/
         driverController.getStartButton().whileActiveOnce(new SequentialCommandGroup(
+            */
                 // TODO:USE ENCODER AS PROGRESS TOOL
                 /* verticalCommand-NEED TO GET ENCODER WORKING!!!, */
+                
+                /*
                 endgame2, endgame3, endgame4, endgame5, endgame6, new WaitCommand(ENDGAME_RELEASE_DELAY), endgame8,
                 endgame9, endgame10
+                */
         /* new verticalCommand-NEED TO GET ENDCODER WORKING!! */
-        ));
+        //));
 
         // startCamera();
 
@@ -462,9 +410,10 @@ public class RobotContainer {
             camera.setFPS(CAMERA_FPS);
         }
     }
-/**
-*
-*/
+
+    /**
+    *
+    */
     public Command getAutonomousCommand() {
         return autoManager.getAutonomousCommand();
     }
@@ -495,9 +444,9 @@ public class RobotContainer {
 
     public void testPeriodic() {
         if (driverController.getYButton().get()) {
-            endgameMotorSubsystem.setMotorSpeed(0.3);
+            endgameMotorSubsystem.setMotorSpeed(0.2);
         } else if (driverController.getAButton().get()) {
-            endgameMotorSubsystem.setMotorSpeed(-0.3);
+            endgameMotorSubsystem.setMotorSpeed(-0.2);
         } else {
             endgameMotorSubsystem.setMotorSpeed(0.0);
         }
