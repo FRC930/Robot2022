@@ -48,7 +48,6 @@ import frc.robot.commands.endgamecommands.EndgameRotateHorizonalCommand;
 import frc.robot.commands.endgamecommands.EndgameRotateVerticalCommand;
 import frc.robot.commands.intakecommands.intakePistonCommands.*;
 import frc.robot.commands.intakecommands.intakemotorcommands.*;
-import frc.robot.subsystems.BallSensorSubsystem;
 import frc.robot.subsystems.CatapultSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.EndgameMotorSubsystem;
@@ -62,6 +61,7 @@ import frc.robot.triggers.AxisTrigger;
 import frc.robot.utilities.ShuffleboardUtility;
 import frc.robot.utilities.SimulatedDrivetrain;
 import frc.robot.utilities.SequentialCommandGroupWithTraj;
+import frc.robot.utilities.BallSensorUtility;
 import frc.robot.utilities.DriveCameraUtility;
 import frc.robot.utilities.DriveCameraUtility.BallColor;
 
@@ -145,8 +145,6 @@ public class RobotContainer {
     // Catapult Subsystem
     private final CatapultSubsystem catapultSubsystem;
     private final IndexerMotorSubsystem indexerMotorSubsystem;
-    private final BallSensorSubsystem catapultSensor;
-    private final BallSensorSubsystem indexerSensor;
     // Catapult Launch Command
     private final CatapultCommand catapultCommand;
 
@@ -189,7 +187,7 @@ public class RobotContainer {
          * ---
          */
         autoManager = new AutoCommandManager();
-        
+        BallSensorUtility.getInstance();
         /*
          * -----------------------------------------------------------------------------
          * ---
@@ -231,8 +229,6 @@ public class RobotContainer {
         // TODO:ADD SOLENOID ID 7 FOR HARD-STOP
         catapultSubsystem = new CatapultSubsystem(2, 3, 4, 5, 6);
         indexerMotorSubsystem = new IndexerMotorSubsystem(6);
-        catapultSensor = new BallSensorSubsystem(0);
-        indexerSensor = new BallSensorSubsystem(5);
         // ----- CATAPULT COMMAND INITS -----\\
 
         catapultCommand = new CatapultCommand(catapultSubsystem);
@@ -269,8 +265,8 @@ public class RobotContainer {
         // ----- INTAKE COMMAND INITS -----\\
 
         // Intake Motor Commandss
-        runIntakeMotorsCommand = new RunIntakeMotorsCommand(intakeMotorSubsystem, indexerSensor, false);
-        reverseIntakeMotorsCommand = new RunIntakeMotorsCommand(intakeMotorSubsystem, indexerSensor, true);
+        runIntakeMotorsCommand = new RunIntakeMotorsCommand(intakeMotorSubsystem, false);
+        reverseIntakeMotorsCommand = new RunIntakeMotorsCommand(intakeMotorSubsystem, true);
         stopIntakeMotorsCommand = new StopIntakeMotorsCommand(intakeMotorSubsystem);
 
         // Intake Piston Commands

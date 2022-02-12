@@ -11,7 +11,7 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.BallSensorSubsystem;
+import frc.robot.RobotContainer;
 
 //----- CLASS -----\\
 /**
@@ -26,7 +26,7 @@ import frc.robot.subsystems.BallSensorSubsystem;
 public class ShuffleboardUtility {
 
     // ----- VARIABLES -----\\
-
+    
     private static ShuffleboardUtility instance;
 
     private Map<ShuffleboardKeys, MapData> shuffleboardMap;
@@ -35,8 +35,8 @@ public class ShuffleboardUtility {
 
     private final boolean IS_DEBUGGING = false;
     
-    private boolean ballDetectedInCatapult = false;
-    private boolean ballDetectedInIndexer = false;
+    private boolean ballDetectedInCatapult;
+    private boolean ballDetectedInIndexer;
     
 
     // ----- TABS -----\\
@@ -104,8 +104,8 @@ public class ShuffleboardUtility {
      * Gets called in robotPeriodic
      */
     public void update() {
-        //ballDetectedInCatapult = catapultSensor.isTripped();
-        //ballDetectedInIndexer = indexerSensor.isTripped();
+        ballDetectedInCatapult = BallSensorUtility.getInstance().catapultIsTripped();
+        ballDetectedInIndexer = BallSensorUtility.getInstance().indexerIsTripped();
 
         MapData data;
         for (ShuffleboardKeys currentKey : shuffleboardMap.keySet()) {
