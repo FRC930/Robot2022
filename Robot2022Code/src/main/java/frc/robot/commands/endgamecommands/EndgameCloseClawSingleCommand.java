@@ -4,11 +4,11 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.EndgamePistonSubsystem;
 //-------- COMMAND CLASS --------\\
 /**
- * <h3> EndgameCloseClawCommand</h3>
+ * <h3> EndgameCloseClawSingleCommand</h3>
  * 
  * Closes one of the endgame claws
  */
-public class EndgameCloseClawCommand extends CommandBase{
+public class EndgameCloseClawSingleCommand extends CommandBase{
 
     //-------- DECLARATIONS --------\\
 
@@ -16,11 +16,11 @@ public class EndgameCloseClawCommand extends CommandBase{
 
     //-------- CONSTRUCTOR --------\\
     /**
-     * EndgameCloseClawCommand
+     * EndgameCloseClawSingleCommand
      * 
      * @param pistonSubsystem the piston you want to close
      */
-    public EndgameCloseClawCommand(EndgamePistonSubsystem pistonSubsystem) {
+    public EndgameCloseClawSingleCommand(EndgamePistonSubsystem pistonSubsystem) {
         piston = pistonSubsystem;
         addRequirements(pistonSubsystem);
     }

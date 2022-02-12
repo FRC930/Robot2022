@@ -4,7 +4,6 @@ package frc.robot.commands.endgamecommands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.EndgameMotorSubsystem;
-import frc.robot.subsystems.EndgameSensorSubsystem;
 
 //-------- COMMAND CLASS --------\\
 /**
@@ -22,7 +21,6 @@ public class EndgameRotateUntilTouching extends CommandBase {
     //-------- DECLARATIONS --------\\
      
     EndgameMotorSubsystem m_MotorSubsystem;
-    EndgameSensorSubsystem m_SensorSubsystem;
 
     //-------- CONSTRUCTOR --------\\
     /**
@@ -31,10 +29,9 @@ public class EndgameRotateUntilTouching extends CommandBase {
      * @param motorSubsystem The motor to be set
      * @param sensorSubsystem The sensor whose value is used
      */ 
-    public EndgameRotateUntilTouching(EndgameMotorSubsystem motorSubsystem, EndgameSensorSubsystem sensorSubsystem) {
+    public EndgameRotateUntilTouching(EndgameMotorSubsystem motorSubsystem, String sensor) {
         m_MotorSubsystem = motorSubsystem;
-        m_SensorSubsystem = sensorSubsystem;
-        addRequirements(sensorSubsystem, motorSubsystem);
+        addRequirements(motorSubsystem);
     }
 
     //-----------------------------\\
@@ -47,9 +44,9 @@ public class EndgameRotateUntilTouching extends CommandBase {
     public void end(boolean interupted) { // Stops motor when command ends
         m_MotorSubsystem.setMotorSpeed(0.0);
     }
-    
+    /*
     @Override
     public boolean isFinished() { // Returns true when sensor's value is true
         return m_SensorSubsystem.isTouching();
-    }
+    }*/
 } // End of class EndgameRotateUntilTouching
