@@ -121,18 +121,19 @@ public class DriveSubsystem extends SubsystemBase {
         m_rightFollower.getSensorCollection().setIntegratedSensorPosition(0.0, 100);
 
         m_leftLeader.setInverted(InvertType.None);
-        m_rightLeader.setInverted(InvertType.InvertMotorOutput);
+        // Right side motors are inverted (opposite direction)
+        m_rightLeader.setInverted(true); 
 
         m_leftFollower.follow(m_leftLeader);
         m_rightFollower.follow(m_rightLeader);
+        // Need to set setInverted to Follow Laader Motors (master)
+        m_leftFollower.setInverted(InvertType.FollowMaster);
+        m_rightFollower.setInverted(InvertType.FollowMaster);
 
         m_leftLeader.setNeutralMode(NeutralMode.Brake);
         m_leftFollower.setNeutralMode(NeutralMode.Brake);
         m_rightLeader.setNeutralMode(NeutralMode.Brake);
         m_rightFollower.setNeutralMode(NeutralMode.Brake);
-
-        m_leftFollower.setInverted(InvertType.OpposeMaster);
-        m_rightFollower.setInverted(InvertType.OpposeMaster);
     }
 
     /**
