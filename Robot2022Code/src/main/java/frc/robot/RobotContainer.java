@@ -218,7 +218,7 @@ public class RobotContainer {
 
         // ----- DRIVETRAIN SUBSYSTEM INITS -----\\
 
-        driveSubsystem = new DriveSubsystem(1, 7, 2, 8);
+        driveSubsystem = new DriveSubsystem(1, 8, 2, 7);
         autoManager.addSubsystem(subNames.DriveSubsystem, driveSubsystem);
 
         // ----- DRIVETRAIN SHIFTER SUBSYSTEM INITS -----\\
