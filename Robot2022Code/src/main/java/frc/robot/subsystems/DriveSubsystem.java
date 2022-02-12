@@ -54,12 +54,12 @@ public class DriveSubsystem extends SubsystemBase {
     private final WPI_TalonFX m_rightLeader;
     private final WPI_TalonFX m_rightFollower;
 
-    private final double m_rightKV = 2.2226;
-    private final double m_rightKS = 0.74698;
-    private final double m_rightKA = 0.2985;
-    private final double m_leftKV = 2.2203;
-    private final double m_leftKS = 0.75252;
-    private final double m_leftKA = 0.28911;
+    private final double m_rightKV = 2.2665;
+    private final double m_rightKS = 0.80211;
+    private final double m_rightKA = 0.14975;
+    private final double m_leftKV = 2.1519;
+    private final double m_leftKS = 0.75401;
+    private final double m_leftKA = 0.12932;
 
     // MotorControllerGroup leftGroup;
     // MotorControllerGroup rightGroup;
