@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
@@ -27,6 +28,7 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.CatapultCommand;
 import frc.robot.commands.DriveCommand;
 import frc.robot.commands.IndexerForwardCommand;
+import frc.robot.commands.LEDCommand;
 import frc.robot.commands.ToggleShifterCommand;
 import frc.robot.commands.autocommands.AutoCommandManager;
 import frc.robot.commands.autocommands.AutoCommandManager.subNames;
@@ -52,6 +54,7 @@ import frc.robot.subsystems.EndgamePistonSubsystem;
 import frc.robot.subsystems.IndexerMotorSubsystem;
 import frc.robot.subsystems.IntakeMotorSubsystem;
 import frc.robot.subsystems.IntakePistonSubsystem;
+import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.ShifterSubsystem;
 import frc.robot.subsystems.VisionCameraSubsystem;
 import frc.robot.triggers.AxisTrigger;
@@ -176,7 +179,17 @@ public class RobotContainer {
     private ParallelRaceGroup endgame8;
     private ParallelRaceGroup endgame9;
     private ParallelRaceGroup endgame10;
+    
 
+    private final LEDCommand autonPatternCommand;
+    private final LEDCommand idlePatternCommand;
+    private final LEDCommand intakePatternCommand;
+    private final LEDCommand shooterPatternCommand;
+    private final LEDCommand endgamePatternCommand;
+    private final LEDCommand easyPatternCommand;
+    private final LEDCommand onEveryOtherCommand;
+
+    private final LEDSubsystem ledSubsystem;
     // ----- AUTONOMOUS -----\\
 
     private final AutoCommandManager autoManager;
@@ -190,7 +203,14 @@ public class RobotContainer {
      * Initializes the robot
      */
     public RobotContainer() {
-
+        ledSubsystem = new LEDSubsystem(0);
+        autonPatternCommand = new LEDCommand(ledSubsystem, LEDCommand.LEDPatterns.EveryOther);
+        endgamePatternCommand  = new LEDCommand(ledSubsystem, LEDCommand.LEDPatterns.EveryOther);
+        idlePatternCommand  = new LEDCommand(ledSubsystem, LEDCommand.LEDPatterns.IdlePattern);
+        intakePatternCommand  = new LEDCommand(ledSubsystem, LEDCommand.LEDPatterns.IntakePattern);
+        shooterPatternCommand  = new LEDCommand(ledSubsystem, LEDCommand.LEDPatterns.ShooterPattern);
+        easyPatternCommand  = new LEDCommand(ledSubsystem, LEDCommand.LEDPatterns.Easy);
+        onEveryOtherCommand = new LEDCommand(ledSubsystem,LEDCommand.LEDPatterns.OnEveryOther);
         /*
          * -----------------------------------------------------------------------------
          * ---
@@ -341,10 +361,10 @@ public class RobotContainer {
         shifterTrigger.whileActiveOnce(toggleShifterCommand);
 
         // Launches a cargo ball when the launch button is pressed
-        launchButton.whileActiveOnce(catapultCommand);
+        launchButton.whileActiveOnce(new ParallelCommandGroup(catapultCommand, onEveryOtherCommand));
 
         // Checks if LB is pressed, then it will engage the intake pistons
-        intakeButton.whileActiveOnce(engageIntakePistonsCommand);
+        intakeButton.whileActiveOnce(new ParallelCommandGroup( engageIntakePistonsCommand, intakePatternCommand));
 
         // Checks if LB is pressed and B isn't pressed, then it will run intake
         intakeButton.and(reverseIntakeButton.negate()).whileActiveOnce(runIntakeMotorsCommand);
@@ -406,13 +426,13 @@ public class RobotContainer {
                                 new EndgameCloseWhenTouching(right1piston)),
                         new WaitCommand(10)));
 */
-        endgameComplete.whileActiveOnce(new SequentialCommandGroup(
+        endgameComplete.whileActiveOnce (new ParallelCommandGroup(endgamePatternCommand, new SequentialCommandGroup(
                 // TODO:USE ENCODER AS PROGRESS TOOL
                 /* verticalCommand-NEED TO GET ENCODER WORKING!!!, */
                 endgame2, endgame3, endgame4, endgame5, endgame6, new WaitCommand(ENDGAME_RELEASE_DELAY), endgame8,
                 endgame9, endgame10
         /* new verticalCommand-NEED TO GET ENDCODER WORKING!! */
-        ));
+        )));
 
         // startCamera();
 
@@ -450,6 +470,8 @@ public class RobotContainer {
         scheduler.setDefaultCommand(right3piston, new EndgameCloseClawSingleCommand(right3piston));
         scheduler.setDefaultCommand(right4piston, new EndgameCloseClawSingleCommand(right4piston));
         scheduler.setDefaultCommand(indexerMotorSubsystem, new IndexerForwardCommand(indexerMotorSubsystem));
+        scheduler.setDefaultCommand(ledSubsystem,  idlePatternCommand);
+    
     }
 
     private void startCamera() {
@@ -470,7 +492,6 @@ public class RobotContainer {
 
         // --The instance of the scheduler
         CommandScheduler scheduler = CommandScheduler.getInstance();
-
         scheduler.unregisterSubsystem(catapultSubsystem,
                 // catapultSensorSubsystem,
                 driveSubsystem,
@@ -483,6 +504,7 @@ public class RobotContainer {
         // visionCameraSubsystem
         );
         // TODO set default command for each subsystem
+        scheduler.setDefaultCommand(ledSubsystem,  autonPatternCommand);
         // scheduler.setDefaultCommand(driveSubsystem, driveCommand);
     }
 
