@@ -54,12 +54,12 @@ public class DriveSubsystem extends SubsystemBase {
     private final WPI_TalonFX m_rightLeader;
     private final WPI_TalonFX m_rightFollower;
 
-    private final double m_rightKV = 2.2665;
-    private final double m_rightKS = 0.80211;
-    private final double m_rightKA = 0.14975;
-    private final double m_leftKV = 2.1519;
-    private final double m_leftKS = 0.75401;
-    private final double m_leftKA = 0.12932;
+    private final double m_rightKS = 0.64605;
+    private final double m_rightKV = 2.1535;
+    private final double m_rightKA = 0.10589;
+    private final double m_leftKS = 0.60444;
+    private final double m_leftKV = 2.1098;
+    private final double m_leftKA = 0.33666;
 
     // MotorControllerGroup leftGroup;
     // MotorControllerGroup rightGroup;
@@ -80,8 +80,8 @@ public class DriveSubsystem extends SubsystemBase {
     private final SimpleMotorFeedforward constraintFeedforward = new SimpleMotorFeedforward(m_leftKS + m_rightKS / 2,
             m_leftKV + m_rightKV / 2, m_leftKA + m_rightKA / 2);
 
-    private final PIDController leftPIDController = new PIDController(0.50405, 0, 0);
-    private final PIDController rightPIDController = new PIDController(0.47029, 0, 0);
+    private final PIDController leftPIDController = new PIDController(2.9926, 0, 0);
+    private final PIDController rightPIDController = new PIDController(1.9996, 0, 0);
 
     private boolean shifterState;
 
