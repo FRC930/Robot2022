@@ -39,7 +39,7 @@ public class CompPath1 extends PathPlannerSequentialCommandGroupUtility {
 
         this.addTrajectory(trajectory1);
 
-        Trajectory trajectory2 = PathPlanner.loadPath("AutoTest2", KMAXSPEED, KMAXACCELERATION);
+        Trajectory trajectory2 = PathPlanner.loadPath("CompPath1pt2", KMAXSPEED, KMAXACCELERATION);
 
         this.addTrajectory(trajectory2);
 
