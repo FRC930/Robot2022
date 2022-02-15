@@ -276,7 +276,7 @@ public class DriveSubsystem extends SubsystemBase {
      */
     public double speedToVoltage(double speed) {
         return speed
-                / (ShifterUtility.getShifterState() ? DRIVETRAIN_MAX_FREE_SPEED_HIGH : DRIVETRAIN_MAX_FREE_SPEED_LOW)
+                / (ShifterUtility.getShifterState() ? DRIVETRAIN_MAX_FREE_SPEED_LOW : DRIVETRAIN_MAX_FREE_SPEED_HIGH)
                 * kMaxVolts;
     }
 
@@ -307,7 +307,7 @@ public class DriveSubsystem extends SubsystemBase {
                 // Divide by the number of ticks in a rotation
                 / kEncoderResolution
                 // Multiply by the circumference of the wheel
-                * (2 * Math.PI * kWheelRadius) / (ShifterUtility.getShifterState() ? highGearRatio : lowGearRatio);
+                * (2 * Math.PI * kWheelRadius) / (ShifterUtility.getShifterState() ? lowGearRatio : highGearRatio);
     }
 
     /**
@@ -318,7 +318,7 @@ public class DriveSubsystem extends SubsystemBase {
     public double getRightEncoder() {
         // Multiply by 10 to get encoder units per second
         return m_rightLeader.getSensorCollection().getIntegratedSensorVelocity() * 10 / kEncoderResolution
-                * (2 * Math.PI * kWheelRadius) / (ShifterUtility.getShifterState() ? highGearRatio : lowGearRatio);
+                * (2 * Math.PI * kWheelRadius) / (ShifterUtility.getShifterState() ? lowGearRatio : highGearRatio);
     }
 
     /**
@@ -414,12 +414,12 @@ public class DriveSubsystem extends SubsystemBase {
                 // Convert raw sensor units to meters
                 // TODO: Check if we need to multiply by 2*pi*r because circumference
                 getRawLeftSensorPosition() *
-                        ((1.0 / 2048.0) * kWheelRadius * Math.PI)
+                        ((1.0 / 2048.0) * kWheelRadius * Math.PI * 2)
                         // Divide by the current gear ratio because the motors turn more than the wheels
                         / highGearRatio,
                 // Convert raw sensor units to meters
                 // TODO: Check if we need to multiply by 2*pi*r because circumference
-                getRawRightSensorPosition() * ((1.0 / 2048.0) * kWheelRadius * Math.PI)
+                getRawRightSensorPosition() * ((1.0 / 2048.0) * kWheelRadius * Math.PI * 2)
                 // Divide by the current gear ratio because the motors turn more than the wheels
                         / highGearRatio);
     }

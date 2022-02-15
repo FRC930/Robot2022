@@ -31,7 +31,7 @@ public class ShuffleboardUtility {
 
     private SendableChooser<Command> autonChooser;
 
-    private final boolean IS_DEBUGGING = false;
+    private final boolean IS_DEBUGGING = true;
 
     // ----- TABS -----\\
 

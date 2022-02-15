@@ -13,11 +13,11 @@ import frc.robot.subsystems.DriveSubsystem;
 //  -------- PATH DESCRIPTION -------- \\
 //  Moves forward 60 inches
 
-public class BottomBackShootCommand extends PathPlannerSequentialCommandGroupUtility {
+public class ShootMoveShoot extends PathPlannerSequentialCommandGroupUtility {
 
     //  TO-DO comment this section
-    private final double KMAXSPEED = 3.5;
-    private final double KMAXACCELERATION = 3;
+    private final double KMAXSPEED = 0.5;
+    private final double KMAXACCELERATION = 0.5;
     private final double KRAMSETEB = 2;
     private final double KRAMSETEZETA = 0.7;
     private final DifferentialDriveOdometry m_odometry;
@@ -27,7 +27,7 @@ public class BottomBackShootCommand extends PathPlannerSequentialCommandGroupUti
      * 
      * @param dSubsystem
      */
-    public BottomBackShootCommand(DriveSubsystem dSubsystem) { 
+    public ShootMoveShoot(DriveSubsystem dSubsystem) { 
 
         //  initializing gyro for pose2d
         m_odometry = dSubsystem.getOdometry();
@@ -35,10 +35,9 @@ public class BottomBackShootCommand extends PathPlannerSequentialCommandGroupUti
         // -------- Trajectories -------- \\
 
         // Generates a trajectory
-        Trajectory trajectory1 = PathPlanner.loadPath("BottomBackShoot", KMAXSPEED, KMAXACCELERATION);
+        Trajectory trajectory1 = PathPlanner.loadPath("ShootMoveShoot", KMAXSPEED, KMAXACCELERATION);
 
         this.addTrajectory(trajectory1);
-
         // -------- RAMSETE Commands -------- \\
         // Creates a command that can be added to the command scheduler in the
         // sequential command

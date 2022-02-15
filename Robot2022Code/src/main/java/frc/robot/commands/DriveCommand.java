@@ -65,9 +65,9 @@ public class DriveCommand extends CommandBase {
         ballCameraSubsystem = ballCamera;
         driverController = dController;
 
-        driveStick = () -> -deadbandCube(driverController.getLeftY())
-                * (ShifterUtility.getShifterState() ? DriveSubsystem.DRIVETRAIN_MAX_FREE_SPEED_HIGH
-                        : DriveSubsystem.DRIVETRAIN_MAX_FREE_SPEED_LOW);
+        driveStick = () -> -deadbandCube(driverController.getLeftY()) * DriveSubsystem.DRIVETRAIN_MAX_FREE_SPEED_HIGH;
+                // * (ShifterUtility.getShifterState() ? DriveSubsystem.DRIVETRAIN_MAX_FREE_SPEED_LOW
+                //         : DriveSubsystem.DRIVETRAIN_MAX_FREE_SPEED_HIGH);
         rotationStick = () -> -deadbandCube(driverController.getRightX()) * DriveSubsystem.kMaxAngularSpeed;
 
         // We are not adding endgame motor subsystem as a requirement because we are not
