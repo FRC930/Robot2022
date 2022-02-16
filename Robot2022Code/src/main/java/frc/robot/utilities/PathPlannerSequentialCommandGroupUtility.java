@@ -6,7 +6,7 @@ import java.util.List;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 
-public abstract class SequentialCommandGroupWithTraj extends SequentialCommandGroup {
+public class PathPlannerSequentialCommandGroupUtility extends SequentialCommandGroup {
 
     private List<Trajectory> listofTraj = new ArrayList<Trajectory>();
 

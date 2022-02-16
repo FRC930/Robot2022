@@ -2,6 +2,7 @@
 
 package frc.robot.subsystems;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.utilities.BallSensorUtility;
 import frc.robot.utilities.GyroUtility;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
@@ -66,6 +67,10 @@ public class IntakeMotorSubsystem extends SubsystemBase {
      */
     public WPI_TalonSRX getIntakeMotor() {
         return intakeMotorController;
+    }
+
+    public void periodic(){
+        BallSensorUtility.getInstance().indexerIsTripped();
     }
 
 } // end of class IntakeMotorSubsystem

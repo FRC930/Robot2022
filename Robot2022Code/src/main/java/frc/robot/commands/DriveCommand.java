@@ -14,6 +14,7 @@ import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.EndgameMotorSubsystem;
 import frc.robot.subsystems.VisionCameraSubsystem;
 import frc.robot.utilities.DriveCameraUtility;
+import frc.robot.utilities.ShifterUtility;
 import frc.robot.utilities.ShuffleboardUtility;
 import frc.robot.utilities.DriveCameraUtility.BallColor;
 import frc.robot.utilities.ShuffleboardUtility.ShuffleBoardData;
@@ -43,7 +44,7 @@ public class DriveCommand extends CommandBase {
     private DoubleSupplier driveStick;
     private DoubleSupplier rotationStick;
 
-    private PIDController turnController = new PIDController(1, 0, 0);
+    private PIDController turnController = new PIDController(0.000001, 0, 0);
 
     /**
      * Initializes a new {@link frc.robot.commands.DriveCommand DriveCommand} with
@@ -55,17 +56,18 @@ public class DriveCommand extends CommandBase {
      * @param dController      the driver's controller
      */
     public DriveCommand(
-        DriveSubsystem dSubsystem, 
-        VisionCameraSubsystem reflectSubsystem, 
-        VisionCameraSubsystem ballCamera, 
-        XboxController dController
-    ) {
+            DriveSubsystem dSubsystem,
+            VisionCameraSubsystem reflectSubsystem,
+            VisionCameraSubsystem ballCamera,
+            XboxController dController) {
         driveSubsystem = dSubsystem;
         reflectiveCameraSubsystem = reflectSubsystem;
         ballCameraSubsystem = ballCamera;
         driverController = dController;
 
-        driveStick = () -> -deadbandCube(driverController.getLeftY()) * DriveSubsystem.kMaxSpeed;
+        driveStick = () -> -deadbandCube(driverController.getLeftY()) * DriveSubsystem.DRIVETRAIN_MAX_FREE_SPEED_HIGH;
+                // * (ShifterUtility.getShifterState() ? DriveSubsystem.DRIVETRAIN_MAX_FREE_SPEED_LOW
+                //         : DriveSubsystem.DRIVETRAIN_MAX_FREE_SPEED_HIGH);
         rotationStick = () -> -deadbandCube(driverController.getRightX()) * DriveSubsystem.kMaxAngularSpeed;
 
         // We are not adding endgame motor subsystem as a requirement because we are not
@@ -85,15 +87,22 @@ public class DriveCommand extends CommandBase {
         // If X button is pressed, aim towards reflective tape
         // Else if B button is pressed, aim towards position of ball
         // Else drive with right joystick (manual)
-        if (driverController.getXButtonPressed()) {
+        if (driverController.getXButton()) {
+            reflectiveCameraSubsystem.getVisionCamera().setDriverMode(false);
+            ballCameraSubsystem.getVisionCamera().setDriverMode(true);
 
             // Get latest result from the reflective camera
             result = reflectiveCameraSubsystem.getVisionCamera().getLatestResult();
+            if (result.hasTargets()) {
+                // Gets rotation speed required to face the reflective tape
+                rotationSpeed = rotateTowardsTarget(result);
+            } else {
+                rotationSpeed = 0.0;
+            }
 
-            // Gets rotation speed required to face the reflective tape
-            rotationSpeed = rotateTowardsTarget(result);
-
-        } else if (driverController.getBButtonPressed()) {
+        } else if (driverController.getBButton()) {
+            reflectiveCameraSubsystem.getVisionCamera().setDriverMode(true);
+            ballCameraSubsystem.getVisionCamera().setDriverMode(false);
 
             // If the ball is red, set the pipeline to red and get the latest result
             // Else (the ball is blue), set the pipeline to blue and get the latest result
@@ -119,28 +128,14 @@ public class DriveCommand extends CommandBase {
             rotationSpeed = rotateTowardsTarget(result);
 
         } else {
+            reflectiveCameraSubsystem.getVisionCamera().setDriverMode(true);
+            ballCameraSubsystem.getVisionCamera().setDriverMode(true);
 
             // Just get the right stick horizontal axis
             rotationSpeed = rotationStick.getAsDouble();
 
         }
 
-        // Checking a result exists and X or B is pressed
-        // If true, it will rumble based on a Yaw range
-        // Else, no rumble
-        if(result != null && (driverController.getBButtonPressed() || driverController.getXButtonPressed())) {
-            // Checking if the result is within one degree of the target
-            // If true, rumble. If not within the range, no rumble.
-            if(result.getBestTarget().getYaw() > -1 && result.getBestTarget().getYaw() < 1) {
-                driverController.setRumble(RumbleType.kRightRumble, 1);
-            } else {
-                driverController.setRumble(RumbleType.kRightRumble, 0);
-            }
-        } else {
-            driverController.setRumble(RumbleType.kRightRumble, 0);
-        }
-
-        // Get the wheel speeds from the stick values
         DifferentialDriveWheelSpeeds wheelSpeeds = driveSubsystem.getWheelSpeeds(xStick,
                 rotationSpeed);
 
@@ -151,14 +146,14 @@ public class DriveCommand extends CommandBase {
                 new ShuffleBoardData<Double>(wheelSpeeds.rightMetersPerSecond));
 
         driveSubsystem.setVoltages(
-                // Use the speed to voltage method in the drive subsystem
-                driveSubsystem.speedToVoltage(
-                        // Calculate feedforward with the feedforward controller in drive subsystem
-                        driveSubsystem.calculateLeftFeedforward(wheelSpeeds.leftMetersPerSecond)),
-                // Again, speed to voltage
-                driveSubsystem.speedToVoltage(
-                        // Same deal here, feedforward using the helper method
-                        driveSubsystem.calculateRightFeedforward(wheelSpeeds.rightMetersPerSecond)));
+                // Calculate feedforward with the feedforward controller in drive subsystem
+                driveSubsystem.calculateLeftFeedforward(
+                        // Use the speed to voltage method in the drive subsystem
+                        wheelSpeeds.leftMetersPerSecond),
+                // Same deal here, feedforward using the helper method
+                driveSubsystem.calculateRightFeedforward(
+                        // Again, speed to voltage
+                        wheelSpeeds.rightMetersPerSecond));
         // Update the differential drive odometry
         // Might be possible to remove it from the default teleop command
     }
@@ -188,15 +183,17 @@ public class DriveCommand extends CommandBase {
         // Check if the camera sees any targets
         if (result.hasTargets()) {
 
-            // Use the turnController PID controller to orient the robot toward the goal
-            // May want to use a smoothing function to try and reduce the effects of wayward
-            // vision targets
-            rotationSpeed = -turnController.calculate(result.getBestTarget().getYaw(), 0);
-            // Make sure we are not passing in weird values for the imaginary stick
-            rotationSpeed = MathUtil.clamp(rotationSpeed, -1, 1);
+            double xDegreeOffset = -result.getBestTarget().getYaw();
+            if (xDegreeOffset < -2 || xDegreeOffset > 2) {
+                // Use the turnController PID controller to orient the robot toward the goal
+                // May want to use a smoothing function to try and reduce the effects of wayward
+                // vision targets
+                rotationSpeed = turnController.calculate(result.getBestTarget().getYaw(), 0);
+                // Make sure we are not passing in weird values for the imaginary stick
+                rotationSpeed = MathUtil.clamp(rotationSpeed, -1, 1);
+            }
 
             // if degrees is equal to -1 to 1, vibrate the controller
-            double xDegreeOffset = result.getBestTarget().getYaw();
             if (xDegreeOffset > -1 && xDegreeOffset < 1) {
                 driverController.setRumble(RumbleType.kLeftRumble, 1);
             }

@@ -23,9 +23,9 @@ public class VisionCameraSubsystem extends SubsystemBase {
      */
     public VisionCameraSubsystem(CameraType camera) {
         if (camera == CameraType.REFLECTIVE_TAPE) {
-            visionCamera = new PhotonCamera("REFLECTIVE_TAPE_CAMERA_NAME");
+            visionCamera = new PhotonCamera("PiCamera");
         } else {
-            visionCamera = new PhotonCamera("BALL_DETECTOR_CAMERA_NAME");
+            visionCamera = new PhotonCamera("CargoCamera");
         }
     }
 

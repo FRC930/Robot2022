@@ -3,6 +3,7 @@ package frc.robot.subsystems;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.utilities.BallSensorUtility;
 
 /**
  * <h3>CatapultSubsystem</h3>
@@ -74,5 +75,9 @@ public class CatapultSubsystem extends SubsystemBase {
         launchSolenoid4.set(false);
 
         ballHolderSolenoid.set(true);
+    }
+
+    public void periodic(){
+        BallSensorUtility.getInstance().catapultIsTripped();
     }
 }

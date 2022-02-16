@@ -3,6 +3,10 @@ package frc.robot.subsystems;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.utilities.ShifterUtility;
+import frc.robot.utilities.ShuffleboardUtility;
+import frc.robot.utilities.ShuffleboardUtility.ShuffleBoardData;
+import frc.robot.utilities.ShuffleboardUtility.ShuffleboardKeys;
 
 /**
  * <h3>ShifterSubsystem</h3>
@@ -33,6 +37,10 @@ public class ShifterSubsystem extends SubsystemBase {
      */
     public void setShifterState(boolean state) {
         shifterSolenoid.set(state);
+        ShifterUtility.setShifterState(state);
+        ShuffleboardUtility.getInstance().putToShuffleboard(ShuffleboardUtility.driverTab,
+                ShuffleboardKeys.DRIVETRAIN_SHIFTED,
+                new ShuffleBoardData<Boolean>(state));
     }
 
     /**

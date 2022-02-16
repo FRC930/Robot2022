@@ -9,6 +9,7 @@
 
 package frc.robot.commands.intakecommands.intakemotorcommands;
 import frc.robot.subsystems.IntakeMotorSubsystem;
+import frc.robot.utilities.BallSensorUtility;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 //-------- COMMAND CLASS --------\\
@@ -50,12 +51,13 @@ public class RunIntakeMotorsCommand extends CommandBase {
   */
   @Override  
   public void initialize() {
-    if(!reversed) {
-      intakeMotors.setMotorSpeed(INTAKE_SPEED);
-    } else {
-      intakeMotors.setMotorSpeed(-INTAKE_SPEED);
+    if(!BallSensorUtility.getInstance().indexerIsTripped()){
+      if(!reversed) {
+        intakeMotors.setMotorSpeed(INTAKE_SPEED);
+      } else {
+        intakeMotors.setMotorSpeed(-INTAKE_SPEED);
+      }
     }
-
   }
   
   /**
@@ -63,7 +65,12 @@ public class RunIntakeMotorsCommand extends CommandBase {
    */
   @Override
   public boolean isFinished() {
-    return false;
+    return BallSensorUtility.getInstance().indexerIsTripped();
+  }
+
+  @Override
+  public void end(boolean interrupted){
+    intakeMotors.setMotorSpeed(0.0);
   }
 
 } // End of class RunIntakeMotorsCommand

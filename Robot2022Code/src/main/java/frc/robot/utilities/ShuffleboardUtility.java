@@ -5,13 +5,11 @@ package frc.robot.utilities;
 import java.util.HashMap;
 import java.util.Map;
 import edu.wpi.first.networktables.NetworkTableEntry;
-import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.CatapultSensorSubsystem;
 
 //----- CLASS -----\\
 /**
@@ -26,18 +24,14 @@ import frc.robot.subsystems.CatapultSensorSubsystem;
 public class ShuffleboardUtility {
 
     // ----- VARIABLES -----\\
-
+    
     private static ShuffleboardUtility instance;
 
     private Map<ShuffleboardKeys, MapData> shuffleboardMap;
 
     private SendableChooser<Command> autonChooser;
 
-    private final boolean IS_DEBUGGING = false;
-    
-    private boolean ballDetectedInCatapult = false;
-    private boolean ballDetectedInIndexer = false;
-    
+    private final boolean IS_DEBUGGING = true;
 
     // ----- TABS -----\\
 
@@ -53,8 +47,6 @@ public class ShuffleboardUtility {
         
         
         driverTab.add("Auton Path Selector", autonChooser);
-        driverTab.add("Catapult Ball Detector", ballDetectedInCatapult);
-        driverTab.add("Indexer Ball Detector", ballDetectedInIndexer);   
         }
 
     // ----- METHOD(S) -----\\
@@ -104,9 +96,6 @@ public class ShuffleboardUtility {
      * Gets called in robotPeriodic
      */
     public void update() {
-        //ballDetectedInCatapult = catapultSensor.isTripped();
-        //ballDetectedInIndexer = indexerSensor.isTripped();
-
         MapData data;
         for (ShuffleboardKeys currentKey : shuffleboardMap.keySet()) {
             data = shuffleboardMap.get(currentKey);
@@ -171,7 +160,6 @@ public class ShuffleboardUtility {
         INTAKE_DOWN("Intake down"),
 
         // ENDGAME
-
         ENDGAME_SENSOR1("Endgame Sensor 1"),
         ENDGAME_SENSOR2("Endgame Sensor 2"),
         ENDGAME_SENSOR3("Endgame Sensor 3"),

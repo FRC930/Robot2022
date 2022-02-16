@@ -7,17 +7,17 @@ import edu.wpi.first.math.controller.RamseteController;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.trajectory.Trajectory;
 
-import frc.robot.utilities.SequentialCommandGroupWithTraj;
+import frc.robot.utilities.PathPlannerSequentialCommandGroupUtility;
 import frc.robot.subsystems.DriveSubsystem;
 
 //  -------- PATH DESCRIPTION -------- \\
 //  Moves forward 60 inches
 
-public class BottomBackSideShootCommand extends SequentialCommandGroupWithTraj {
+public class ShootMoveShoot extends PathPlannerSequentialCommandGroupUtility {
 
     //  TO-DO comment this section
-    private final double KMAXSPEED = 3.5;
-    private final double KMAXACCELERATION = 3;
+    private final double KMAXSPEED = 0.5;
+    private final double KMAXACCELERATION = 0.5;
     private final double KRAMSETEB = 2;
     private final double KRAMSETEZETA = 0.7;
     private final DifferentialDriveOdometry m_odometry;
@@ -27,7 +27,7 @@ public class BottomBackSideShootCommand extends SequentialCommandGroupWithTraj {
      * 
      * @param dSubsystem
      */
-    public BottomBackSideShootCommand(DriveSubsystem dSubsystem) {
+    public ShootMoveShoot(DriveSubsystem dSubsystem) { 
 
         //  initializing gyro for pose2d
         m_odometry = dSubsystem.getOdometry();
@@ -35,10 +35,9 @@ public class BottomBackSideShootCommand extends SequentialCommandGroupWithTraj {
         // -------- Trajectories -------- \\
 
         // Generates a trajectory
-        Trajectory trajectory1 = PathPlanner.loadPath("BottomBackSideShoot", KMAXSPEED, KMAXACCELERATION);
+        Trajectory trajectory1 = PathPlanner.loadPath("ShootMoveShoot", KMAXSPEED, KMAXACCELERATION);
 
         this.addTrajectory(trajectory1);
-
         // -------- RAMSETE Commands -------- \\
         // Creates a command that can be added to the command scheduler in the
         // sequential command
