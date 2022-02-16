@@ -17,6 +17,7 @@ import edu.wpi.first.math.trajectory.TrajectoryUtil;
 import edu.wpi.first.util.net.PortForwarder;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
+import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -170,6 +171,7 @@ public class RobotContainer {
     private final LEDCommand endgamePatternCommand;
     private final LEDCommand easyPatternCommand;
     private final LEDCommand onEveryOtherCommand;
+    private final LEDCommand solidLEDsCommand;
 
     private final LEDSubsystem ledSubsystem;
     // ----- AUTONOMOUS -----\\
@@ -191,6 +193,7 @@ public class RobotContainer {
         shooterPatternCommand  = new LEDCommand(ledSubsystem, LEDCommand.LEDPatterns.ShooterPattern);
         easyPatternCommand  = new LEDCommand(ledSubsystem, LEDCommand.LEDPatterns.Easy);
         onEveryOtherCommand = new LEDCommand(ledSubsystem,LEDCommand.LEDPatterns.OnEveryOther);
+        solidLEDsCommand = new LEDCommand(ledSubsystem,LEDCommand.LEDPatterns.SolidLEDs);
 
         /*
          * -----------------------------------------------------------------------------
@@ -331,7 +334,7 @@ public class RobotContainer {
         driverController.getRightTrigger().whileActiveOnce(toggleShifterCommand);
 
         // Launches a cargo ball when the launch button is pressed
-        driverController.getLeftBumper().whileActiveOnce(new ParallelCommandGroup(catapultCommand, onEveryOtherCommand));
+        driverController.getLeftBumper().whileActiveOnce(new ParallelCommandGroup(catapultCommand, solidLEDsCommand));
 
         // Checks if LB is pressed, then it will engage the intake pistons
         codriverController.getLeftBumper().whileActiveOnce(new ParallelCommandGroup( engageIntakePistonsCommand, intakePatternCommand));

@@ -82,9 +82,14 @@ private static final int LIGHT_DELAY_NUM_OF_ITERATIONS = 32;
     else if (m_pattern == LEDPatterns.ShooterPattern){
       shooterPattern();
     }
-    else if(m_pattern == LEDPatterns.OnEveryOther)
+    else if(m_pattern == LEDPatterns.OnEveryOther){
       OnEveryOther();
+    }
+    else if(m_pattern == LEDPatterns.SolidLEDs){
+      SolidLEDs();
+    }
   }
+  
 
   // Called once the command ends or is interrupted.
   @Override
@@ -100,7 +105,7 @@ private static final int LIGHT_DELAY_NUM_OF_ITERATIONS = 32;
 
   // Enum for calculated target size
   public static enum LEDPatterns {
-    Easy, EveryOther, IdlePattern, IntakePattern, ShooterPattern, OnEveryOther;
+    Easy, EveryOther, IdlePattern, IntakePattern, ShooterPattern, OnEveryOther, SolidLEDs;
        // private int type;
 
        private LEDPatterns() {
@@ -462,4 +467,19 @@ private static final int LIGHT_DELAY_NUM_OF_ITERATIONS = 32;
                   counter = 0;
             }
       }
+      public void SolidLEDs(){
+            if (allianceColor == Alliance.Blue) {
+                  for (int i = 0; i < m_LEDSubsystem.getBufferLength(); i++) {
+                        m_buffer.setRGB(i, 0, 0, 225); // blue
+                  }
+                  m_LEDSubsystem.setBuffer(m_buffer);
+            }
+            if (allianceColor == Alliance.Red) {
+                  for (int i = 0; i < m_LEDSubsystem.getBufferLength(); i++) {
+                        m_buffer.setRGB(i, 225, 0, 0); // red
+                  }
+                  m_LEDSubsystem.setBuffer(m_buffer);
+            }
+      }
+      
 }
