@@ -32,8 +32,13 @@ public class EndgameMotorSubsystem extends SubsystemBase {
      * @param motorIDSlave ID for the slave TalonFX
      */
     public EndgameMotorSubsystem(int motorIDMaster, int motorIDSlave) {
+    /*endgameMotorMaster.configSelectedFeedbackSensor(feedbackDevice, pidIdx, timeoutMs);
+    endgameMotorMaster.config_kP(slotIdx, value, timeoutMs);
+    endgameMotorMaster.set(ControlMode.Position, 0);*/
         endgameMotorMaster = new WPI_TalonFX(motorIDMaster);
         endgameMotorSlave = new WPI_TalonFX(motorIDSlave);
+        endgameMotorMaster.configFactoryDefault();
+        endgameMotorSlave.configFactoryDefault();
         endgameMotorMaster.setNeutralMode(NeutralMode.Brake);
         endgameMotorSlave.setNeutralMode(NeutralMode.Brake);
     }

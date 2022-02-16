@@ -1,6 +1,5 @@
 package frc.robot;
 
-import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
@@ -23,10 +22,6 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
-import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.CatapultCommand;
 import frc.robot.commands.DriveCommand;
 import frc.robot.commands.IndexerForwardCommand;
@@ -36,15 +31,8 @@ import frc.robot.commands.autocommands.AutoCommandManager;
 import frc.robot.commands.autocommands.AutoCommandManager.subNames;
 import frc.robot.commands.endgamecommands.EndgameArmCommand;
 import frc.robot.commands.endgamecommands.EndgameArmRevCommand;
-import frc.robot.commands.endgamecommands.EndgameCloseClawPairCommand;
 import frc.robot.commands.endgamecommands.EndgameCloseClawSingleCommand;
-import frc.robot.commands.endgamecommands.EndgameCloseWhenAway;
-import frc.robot.commands.endgamecommands.EndgameCloseWhenTouching;
 import frc.robot.commands.endgamecommands.EndgameManagerCommand;
-import frc.robot.commands.endgamecommands.EndgameOpenClawPairCommand;
-import frc.robot.commands.endgamecommands.EndgameOpenClawSingleCommand;
-import frc.robot.commands.endgamecommands.EndgameRotateHorizonalCommand;
-import frc.robot.commands.endgamecommands.EndgameRotateVerticalCommand;
 import frc.robot.commands.intakecommands.intakePistonCommands.*;
 import frc.robot.commands.intakecommands.intakemotorcommands.*;
 import frc.robot.subsystems.CatapultSubsystem;
@@ -155,14 +143,11 @@ public class RobotContainer {
     private final EndgameArmRevCommand endgameArmRevCommand;
 
     // Endgame Piston Subsystems
-    private final EndgamePistonSubsystem left1piston;
-    private final EndgamePistonSubsystem left2piston;
-    private final EndgamePistonSubsystem left3piston;
-    private final EndgamePistonSubsystem left4piston;
-    private final EndgamePistonSubsystem right1piston;
-    private final EndgamePistonSubsystem right2piston;
-    private final EndgamePistonSubsystem right3piston;
-    private final EndgamePistonSubsystem right4piston;
+    private final EndgamePistonSubsystem endgamePiston1;
+    private final EndgamePistonSubsystem endgamePiston2;
+    private final EndgamePistonSubsystem endgamePistonL3;
+    private final EndgamePistonSubsystem endgamePistonR3;
+    private final EndgamePistonSubsystem endgamePiston4;
 
     private final LEDCommand autonPatternCommand;
     private final LEDCommand idlePatternCommand;
@@ -231,14 +216,11 @@ public class RobotContainer {
         // Endgame Motor Subsystems
         endgameMotorSubsystem = new EndgameMotorSubsystem(3, 4);
         // Endgame Piston Subsystems
-        left1piston = new EndgamePistonSubsystem(8);
-        left2piston = new EndgamePistonSubsystem(9);
-        left3piston = new EndgamePistonSubsystem(10);
-        left4piston = new EndgamePistonSubsystem(11);
-        right1piston = new EndgamePistonSubsystem(12);
-        right2piston = new EndgamePistonSubsystem(13);
-        right3piston = new EndgamePistonSubsystem(14);
-        right4piston = new EndgamePistonSubsystem(15);
+        endgamePiston1 = new EndgamePistonSubsystem(8);
+        endgamePiston2 = new EndgamePistonSubsystem(9);
+        endgamePistonL3 = new EndgamePistonSubsystem(10);
+        endgamePistonR3 = new EndgamePistonSubsystem(14);
+        endgamePiston4 = new EndgamePistonSubsystem(11);
 
         /*
          * -----------------------------------------------------------------------------
@@ -291,8 +273,7 @@ public class RobotContainer {
         endgameArmCommand = new EndgameArmCommand(endgameMotorSubsystem);
         endgameArmRevCommand = new EndgameArmRevCommand(endgameMotorSubsystem);
         endgameManager = new EndgameManagerCommand(endgameMotorSubsystem,
-                left1piston, left2piston, left3piston, left4piston, right1piston,
-                right2piston, right3piston, right4piston);
+                endgamePiston1, endgamePiston2, endgamePistonL3, endgamePistonR3, endgamePiston4);
 
         // ----- SETTING BALL COLOR -----\\
         if (DriverStation.getAlliance() == Alliance.Blue) {
@@ -367,8 +348,8 @@ public class RobotContainer {
         scheduler.unregisterSubsystem(
                 driveSubsystem, // Drivetrain
                 intakeMotorSubsystem, intakePistonSubsystem, // Intake
-                left1piston, left2piston, left3piston, left4piston, // Endgame Left Arm
-                right1piston, right2piston, right3piston, right4piston, // Endgame Right Arm
+                endgamePiston1, endgamePiston2, endgamePistonL3, endgamePistonR3, // Endgame Left Arm
+                endgamePiston4, // Endgame Right Arm
                 /* , endgameMotorSubsystem */ // Endgame Motors
                 indexerMotorSubsystem);
 
@@ -383,17 +364,13 @@ public class RobotContainer {
         // scheduler.setDefaultCommand(endgameMotorSubsystem, new
         // EndgameRotateHorizonalCommand(endgameMotorSubsystem)); // -GET ENCODER
         // WORKING
-        scheduler.setDefaultCommand(left1piston, new EndgameCloseClawSingleCommand(left1piston));
-        scheduler.setDefaultCommand(left2piston, new EndgameCloseClawSingleCommand(left2piston));
-        scheduler.setDefaultCommand(left3piston, new EndgameCloseClawSingleCommand(left3piston));
-        scheduler.setDefaultCommand(left4piston, new EndgameCloseClawSingleCommand(left4piston));
-        scheduler.setDefaultCommand(right1piston, new EndgameCloseClawSingleCommand(right1piston));
-        scheduler.setDefaultCommand(right2piston, new EndgameCloseClawSingleCommand(right2piston));
-        scheduler.setDefaultCommand(right3piston, new EndgameCloseClawSingleCommand(right3piston));
-        scheduler.setDefaultCommand(right4piston, new EndgameCloseClawSingleCommand(right4piston));
-        //scheduler.setDefaultCommand(indexerMotorSubsystem, new IndexerForwardCommand(indexerMotorSubsystem));
+        scheduler.setDefaultCommand(endgamePiston1, new EndgameCloseClawSingleCommand(endgamePiston1));
+        scheduler.setDefaultCommand(endgamePiston2, new EndgameCloseClawSingleCommand(endgamePiston2));
+        scheduler.setDefaultCommand(endgamePistonL3, new EndgameCloseClawSingleCommand(endgamePistonL3));
+        scheduler.setDefaultCommand(endgamePistonR3, new EndgameCloseClawSingleCommand(endgamePistonR3));
+        scheduler.setDefaultCommand(endgamePiston4, new EndgameCloseClawSingleCommand(endgamePiston4));
+        // scheduler.setDefaultCommand(indexerMotorSubsystem, new IndexerForwardCommand(indexerMotorSubsystem));
         scheduler.setDefaultCommand(ledSubsystem,  idlePatternCommand);
-    
     }
 
     private void startCamera() {
@@ -436,12 +413,42 @@ public class RobotContainer {
     }
 
     public void testPeriodic() {
-        if (driverController.getYButton().get()) {
-            endgameMotorSubsystem.setMotorSpeed(0.2);
-        } else if (driverController.getAButton().get()) {
-            endgameMotorSubsystem.setMotorSpeed(-0.2);
-        } else {
+        if (driverController.getLeftBumper().get()) {
             endgameMotorSubsystem.setMotorSpeed(0.0);
+            if (driverController.getYButton().get()) {
+                endgamePiston1.open();
+            } else {
+                endgamePiston1.closed();
+            }
+            if (driverController.getAButton().get()) {
+                endgamePiston2.open();
+            } else {
+                endgamePiston2.closed();
+            }
+            if (driverController.getBButton().get()) {
+                endgamePistonL3.open();
+            } else {
+                endgamePistonL3.closed();
+            }
+            if (driverController.getXButton().get()) {
+                endgamePistonR3.open();
+            } else {
+                endgamePistonR3.closed();
+            }
+            if (driverController.getRightBumper().get()) {
+                endgamePiston4.open();
+            } else {
+                endgamePiston4.closed();
+            }
+        }
+        else{
+            if (driverController.getYButton().get()) {
+                endgameMotorSubsystem.setMotorSpeed(0.2);
+            } else if (driverController.getAButton().get()) {
+                endgameMotorSubsystem.setMotorSpeed(-0.2);
+            } else {
+                endgameMotorSubsystem.setMotorSpeed(0.0);
+            }
         }
     }
 
