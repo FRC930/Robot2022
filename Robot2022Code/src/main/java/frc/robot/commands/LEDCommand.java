@@ -273,10 +273,10 @@ private static final int LIGHT_DELAY_NUM_OF_ITERATIONS = 32;
       }
 
       public void idlePatternInit() {
-            System.out.println("IdlePatternInit:"+counter);
+      
       }
       public void idlePattern() {
-            System.out.println("IdlePattern:"+counter);
+      
 
             counter++;
 
@@ -312,10 +312,9 @@ private static final int LIGHT_DELAY_NUM_OF_ITERATIONS = 32;
       }
 
       public void intakePatternInit() {
-            System.out.println("IntakeInit:"+counter);
+    
       }
       public void intakePattern() {
-            System.out.println("Intake:"+counter);
             counter++;
 
             // If counter is equal or greater to 2 (basically acting as a delay)
@@ -335,13 +334,11 @@ private static final int LIGHT_DELAY_NUM_OF_ITERATIONS = 32;
             }
       }
       public void shooterPatternInit() {
-            System.out.println("ShootPatternInit:"+counter);
             blueIndex = 0;
             greenIndex = 19;
       }
 
       public void shooterPattern() {
-            System.out.println("ShootPattern:"+counter);
             counter++;
             // Keeping track of animation speed.
             if (counter >= LIGHT_DELAY_NUM_OF_ITERATIONS) {

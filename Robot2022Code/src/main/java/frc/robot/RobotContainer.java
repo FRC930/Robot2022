@@ -1,10 +1,6 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.CommandBase;
-
-import java.io.IOException;
-import java.nio.file.Path;
 import java.util.List;
 
 import edu.wpi.first.cameraserver.CameraServer;
@@ -12,14 +8,10 @@ import edu.wpi.first.cscore.UsbCamera;
 import edu.wpi.first.math.controller.RamseteController;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.Trajectory;
-import edu.wpi.first.math.trajectory.TrajectoryUtil;
 import edu.wpi.first.util.net.PortForwarder;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.Filesystem;
-import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import frc.robot.commands.CatapultCommand;
@@ -45,7 +37,6 @@ import frc.robot.subsystems.IntakePistonSubsystem;
 import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.ShifterSubsystem;
 import frc.robot.subsystems.VisionCameraSubsystem;
-import frc.robot.triggers.AxisTrigger;
 import frc.robot.utilities.SimulatedDrivetrain;
 import frc.robot.utilities.PathPlannerSequentialCommandGroupUtility;
 import frc.robot.utilities.BallSensorUtility;
@@ -149,6 +140,7 @@ public class RobotContainer {
     private final EndgamePistonSubsystem endgamePistonR3;
     private final EndgamePistonSubsystem endgamePiston4;
 
+    //LED commands
     private final LEDCommand autonPatternCommand;
     private final LEDCommand idlePatternCommand;
     private final LEDCommand intakePatternCommand;
@@ -170,16 +162,6 @@ public class RobotContainer {
      * Initializes the robot
      */
     public RobotContainer() {
-        ledSubsystem = new LEDSubsystem(0);
-        autonPatternCommand = new LEDCommand(ledSubsystem, LEDCommand.LEDPatterns.EveryOther);
-        endgamePatternCommand  = new LEDCommand(ledSubsystem, LEDCommand.LEDPatterns.EveryOther);
-        idlePatternCommand  = new LEDCommand(ledSubsystem, LEDCommand.LEDPatterns.IdlePattern);
-        intakePatternCommand  = new LEDCommand(ledSubsystem, LEDCommand.LEDPatterns.IntakePattern);
-        shooterPatternCommand  = new LEDCommand(ledSubsystem, LEDCommand.LEDPatterns.ShooterPattern);
-        easyPatternCommand  = new LEDCommand(ledSubsystem, LEDCommand.LEDPatterns.Easy);
-        onEveryOtherCommand = new LEDCommand(ledSubsystem,LEDCommand.LEDPatterns.OnEveryOther);
-        solidLEDsCommand = new LEDCommand(ledSubsystem,LEDCommand.LEDPatterns.SolidLEDs);
-
         /*
          * -----------------------------------------------------------------------------
          * ---
@@ -187,6 +169,9 @@ public class RobotContainer {
          * -----------------------------------------------------------------------------
          * ---
          */
+        
+        // ----- LED SUBSYSTEM INITS -----\\
+        ledSubsystem = new LEDSubsystem(0);
         // ----- CAMERA SUBSYSTEM INITS -----\\
         // Camera subsystem for reflective tape
         reflectiveTapeCameraSubsystem = new VisionCameraSubsystem(
@@ -280,37 +265,52 @@ public class RobotContainer {
             DriveCameraUtility.getInstance().setBallColor(BallColor.BLUE);
         } else {
             DriveCameraUtility.getInstance().setBallColor(BallColor.RED);
+
         }
+
+        // ----- LED COMMAND INITS-----\\
+        autonPatternCommand = new LEDCommand(ledSubsystem, LEDCommand.LEDPatterns.EveryOther);
+        endgamePatternCommand = new LEDCommand(ledSubsystem, LEDCommand.LEDPatterns.EveryOther);
+        idlePatternCommand = new LEDCommand(ledSubsystem, LEDCommand.LEDPatterns.IdlePattern);
+        intakePatternCommand = new LEDCommand(ledSubsystem, LEDCommand.LEDPatterns.IntakePattern);
+        shooterPatternCommand = new LEDCommand(ledSubsystem, LEDCommand.LEDPatterns.ShooterPattern);
+        easyPatternCommand = new LEDCommand(ledSubsystem, LEDCommand.LEDPatterns.Easy);
+        onEveryOtherCommand = new LEDCommand(ledSubsystem, LEDCommand.LEDPatterns.OnEveryOther);
+        solidLEDsCommand = new LEDCommand(ledSubsystem, LEDCommand.LEDPatterns.SolidLEDs);
+        // calls the method that configures the buttons
+        configureButtonBindings();
+
     }
 
     /**
-     * <h3>beginTeleopRunCommands</h3>
+     * configureButtonBindings
+     * contains the controller binds and button Bindings
+     * defines button->command mappings
      * 
-     * <p>
-     * Runs when the robot is enabled in teleop mode.
-     * </p>
-     * <p>
-     * This gets the command scheduler and sets up buttons
-     * </p>
      */
-    public void beginTeleopRunCommands() {
-
+    private void configureButtonBindings() {
         // DRIVER CONTROLLER BINDS
         /*
          * AxisTrigger shifterTrigger = new AxisTrigger(driverController, XB_AXIS_RT);
          * 
          * JoystickButton launchButton = new JoystickButton(driverController, XB_LB);
          * JoystickButton rotateArmButton = new JoystickButton(driverController, XB_Y);
-         * JoystickButton rotateArmRevButton = new JoystickButton(driverController, XB_A);
-         * JoystickButton endgameSensorCloseButton = new JoystickButton(driverController, XB_X);
-         * JoystickButton rotateUntilTouchingButton = new JoystickButton(driverController, XB_B);
-         * JoystickButton endgameComplete = new JoystickButton(driverController, XB_START);
+         * JoystickButton rotateArmRevButton = new JoystickButton(driverController,
+         * XB_A);
+         * JoystickButton endgameSensorCloseButton = new
+         * JoystickButton(driverController, XB_X);
+         * JoystickButton rotateUntilTouchingButton = new
+         * JoystickButton(driverController, XB_B);
+         * JoystickButton endgameComplete = new JoystickButton(driverController,
+         * XB_START);
          * JoystickButton indexerButton = new JoystickButton(codriverController, XB_RB);
          * 
          * // CODRIVER CONTROLLER BINDS
          * JoystickButton intakeButton = new JoystickButton(codriverController, XB_LB);
-         * JoystickButton reverseIntakeButton = new JoystickButton(codriverController, XB_B);
+         * JoystickButton reverseIntakeButton = new JoystickButton(codriverController,
+         * XB_B);
          */
+
         // Shifts the drivetrain when shifter trigger is pulled
         driverController.getRightTrigger().whileActiveOnce(toggleShifterCommand);
 
@@ -318,8 +318,8 @@ public class RobotContainer {
         driverController.getLeftBumper().whileActiveOnce(new ParallelCommandGroup(catapultCommand, solidLEDsCommand));
 
         // Checks if LB is pressed, then it will engage the intake pistons
-        codriverController.getLeftBumper().whileActiveOnce(new ParallelCommandGroup( engageIntakePistonsCommand, intakePatternCommand));
-
+        codriverController.getLeftBumper()
+                .whileActiveOnce(new ParallelCommandGroup(engageIntakePistonsCommand, intakePatternCommand));
         // Checks if LB is pressed and B isn't pressed, then it will run intake
         codriverController.getLeftBumper().and(codriverController.getBButton().negate())
                 .whileActiveOnce(runIntakeMotorsCommand);
@@ -336,6 +336,20 @@ public class RobotContainer {
         driverController.getAButton().whileActiveOnce(endgameArmRevCommand);
 
         driverController.getStartButton().whileActiveOnce(endgameManager);
+
+    }
+
+    /**
+     * <h3>beginTeleopRunCommands</h3>
+     * 
+     * <p>
+     * Runs when the robot is enabled in teleop mode.
+     * </p>
+     * <p>
+     * This gets the command scheduler and sets up buttons
+     * </p>
+     */
+    public void beginTeleopRunCommands() {
 
         // startCamera();
 
@@ -369,8 +383,9 @@ public class RobotContainer {
         scheduler.setDefaultCommand(endgamePistonL3, new EndgameCloseClawSingleCommand(endgamePistonL3));
         scheduler.setDefaultCommand(endgamePistonR3, new EndgameCloseClawSingleCommand(endgamePistonR3));
         scheduler.setDefaultCommand(endgamePiston4, new EndgameCloseClawSingleCommand(endgamePiston4));
-        // scheduler.setDefaultCommand(indexerMotorSubsystem, new IndexerForwardCommand(indexerMotorSubsystem));
-        scheduler.setDefaultCommand(ledSubsystem,  idlePatternCommand);
+        // scheduler.setDefaultCommand(indexerMotorSubsystem, new
+        // IndexerForwardCommand(indexerMotorSubsystem));
+        scheduler.setDefaultCommand(ledSubsystem, idlePatternCommand);
     }
 
     private void startCamera() {
@@ -404,7 +419,7 @@ public class RobotContainer {
         // visionCameraSubsystem
         );
         // TODO set default command for each subsystem
-        scheduler.setDefaultCommand(ledSubsystem,  autonPatternCommand);
+        scheduler.setDefaultCommand(ledSubsystem, autonPatternCommand);
         // scheduler.setDefaultCommand(driveSubsystem, driveCommand);
     }
 
@@ -440,8 +455,7 @@ public class RobotContainer {
             } else {
                 endgamePiston4.closed();
             }
-        }
-        else{
+        } else {
             if (driverController.getYButton().get()) {
                 endgameMotorSubsystem.setMotorSpeed(0.2);
             } else if (driverController.getAButton().get()) {
