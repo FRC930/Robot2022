@@ -13,6 +13,7 @@ import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.DriveSubsystem;
 
@@ -147,12 +148,17 @@ public class Ramsete930Command extends CommandBase {
 
     if (m_usePID) {
       //  Using our feed forward controllers
+      SmartDashboard.putNumber("left setpoint", leftSpeedSetpoint);
+      SmartDashboard.putNumber("right setpoint", rightSpeedSetpoint);
       double leftFeedforward = m_dSubsystem.calculateLeftFeedforward(leftSpeedSetpoint, (leftSpeedSetpoint - m_prevSpeeds.leftMetersPerSecond) / dt);
       double rightFeedforward = m_dSubsystem.calculateRightFeedforward(rightSpeedSetpoint, (rightSpeedSetpoint - m_prevSpeeds.rightMetersPerSecond) / dt);
-
+      double leftPID = m_dSubsystem.calculateLeftPID(m_speeds.get().leftMetersPerSecond, leftFeedforward);
+      SmartDashboard.putNumber("leftPID", leftPID);
+      double rightPID = m_dSubsystem.calculateLeftPID(m_speeds.get().rightMetersPerSecond, rightFeedforward);
+      SmartDashboard.putNumber("rightPID", rightPID);
       //  Using our PID controllers
-      leftOutput = leftFeedforward + m_dSubsystem.calculateLeftPID(m_speeds.get().leftMetersPerSecond, leftSpeedSetpoint);
-      rightOutput = rightFeedforward + m_dSubsystem.calculateLeftPID(m_speeds.get().rightMetersPerSecond, rightSpeedSetpoint);
+      leftOutput = leftFeedforward; //+ m_dSubsystem.calculateLeftPID(m_speeds.get().leftMetersPerSecond, leftSpeedSetpoint);
+      rightOutput = rightFeedforward; //+ m_dSubsystem.calculateRightPID(m_speeds.get().rightMetersPerSecond, rightSpeedSetpoint);
 
     } else {
       leftOutput = leftSpeedSetpoint;
@@ -160,7 +166,7 @@ public class Ramsete930Command extends CommandBase {
     }
 
 
-    //  Sending the new calculated voltages to the motors
+    //  Sending the new calculated voltages to the motorsa
     m_output.accept(leftOutput, rightOutput);
     m_prevSpeeds = targetWheelSpeeds;
     m_prevTime = curTime;

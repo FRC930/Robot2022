@@ -53,7 +53,7 @@ public class EndgameRotateHorizonalCommand extends CommandBase {
 
   @Override // Called when the command is initially scheduled.
   public void initialize() {
-    if(m_MotorSubsystem.getEncoderPosition() < HORIZONTAL_POSITION){
+    if(m_MotorSubsystem.getArmRotation() < HORIZONTAL_POSITION){
       m_MotorSubsystem.setMotorSpeed(ARM_SPEED);
     }
     else {
@@ -65,7 +65,7 @@ public class EndgameRotateHorizonalCommand extends CommandBase {
 
   @Override
   public boolean isFinished(){
-    return Math.abs(m_MotorSubsystem.getEncoderPosition() - HORIZONTAL_POSITION) < DEADBAND;
+    return Math.abs(m_MotorSubsystem.getArmRotation() - HORIZONTAL_POSITION) < DEADBAND;
   }
 
   @Override

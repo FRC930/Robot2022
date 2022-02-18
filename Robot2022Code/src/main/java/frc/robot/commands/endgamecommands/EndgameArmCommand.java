@@ -57,7 +57,7 @@ public class EndgameArmCommand extends CommandBase {
 
   @Override
   public void execute(){
-    m_MotorSubsystem.getEncoderPosition();
+    m_MotorSubsystem.getArmRotation();
   }
   
 

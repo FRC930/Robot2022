@@ -2,6 +2,7 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
 // import java.util.logging.Logger;
@@ -15,8 +16,10 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
  */
 public class EndgameMotorSubsystem extends SubsystemBase {
 
-    // -------- DECLARATIONS --------\\
+    private static final double GEAR_RATIO = 100;
+    private static final double TALON_CPR = 2048;
 
+    // -------- DECLARATIONS --------\\
     /**
      * The motor controller that controls the endgame motor
      */
@@ -32,15 +35,24 @@ public class EndgameMotorSubsystem extends SubsystemBase {
      * @param motorIDSlave ID for the slave TalonFX
      */
     public EndgameMotorSubsystem(int motorIDMaster, int motorIDSlave) {
-    /*endgameMotorMaster.configSelectedFeedbackSensor(feedbackDevice, pidIdx, timeoutMs);
-    endgameMotorMaster.config_kP(slotIdx, value, timeoutMs);
-    endgameMotorMaster.set(ControlMode.Position, 0);*/
         endgameMotorMaster = new WPI_TalonFX(motorIDMaster);
         endgameMotorSlave = new WPI_TalonFX(motorIDSlave);
+        // Sets default for added motors
         endgameMotorMaster.configFactoryDefault();
         endgameMotorSlave.configFactoryDefault();
+        // 
+        endgameMotorMaster.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor, 0, 0);
+        endgameMotorSlave.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor, 0, 0);
+        // 
+        endgameMotorMaster.config_kP(0, 0.25);
+        endgameMotorSlave.config_kP(0, 0.25);
+        // Makes it so it can't be manually moved when neutral
         endgameMotorMaster.setNeutralMode(NeutralMode.Brake);
         endgameMotorSlave.setNeutralMode(NeutralMode.Brake);
+        // Sets slave to follow master and inverts slave
+        endgameMotorSlave.follow(endgameMotorMaster);
+        endgameMotorSlave.setInverted(true);
+        endgameMotorMaster.setInverted(false);
     }
 
     // -------- METHODS --------\\
@@ -53,13 +65,17 @@ public class EndgameMotorSubsystem extends SubsystemBase {
      * @param speed the speed at which to set the motor
      */
     public void setMotorSpeed(double speed) {
+        // ControlMode.PercentOutput makes the value be given to the motor as a percent (Ex. 0.90 is 90%)
         endgameMotorMaster.set(ControlMode.PercentOutput, speed);
-        endgameMotorSlave.set(ControlMode.PercentOutput, -speed);
     }
 
+    /**
+     * <h3>stopMotor</h3>
+     * 
+     * This method makes the endgame motor stop
+     */
     public void stopMotor() {
         endgameMotorMaster.set(ControlMode.PercentOutput, 0.0);
-        endgameMotorSlave.set(ControlMode.PercentOutput, 0.0);
     }
 
     /**
@@ -69,23 +85,34 @@ public class EndgameMotorSubsystem extends SubsystemBase {
      * @return the current motor speed
      */
     public double getMotorSpeed() {
+        // Returns motor speed as a percent 
         return endgameMotorMaster.getMotorOutputPercent();
     }
 
     // TODO: ATTATCH ENCODER AND FINISH GETTER
 
     /**
-     * getEncoderPosition </p>
-     * How far the encoder has rotated from the starting position.
-     * 4096 units per rotation
+     * getArmRotation </p>
+     * How far the arm has rotated from zero.
      * 
      * @return the position of the encoder 
      */
-    public double getEncoderPosition() {
-        System.out.print(endgameMotorMaster.getSelectedSensorPosition());
-        return endgameMotorMaster.getSelectedSensorPosition();
+    public double getArmRotation() {
+        // Converts the value to usable units
+        System.out.print(endgameMotorMaster.getSelectedSensorPosition() / TALON_CPR / GEAR_RATIO);
+        return endgameMotorMaster.getSelectedSensorPosition() / TALON_CPR / GEAR_RATIO;
     }
 
+    /**
+     * setArmPosition </p>
+     * 
+     * @param position the wanted position of the arm as a decimal of a rotation.
+     */
+    public void setArmPosition(double position){
+        // Converts back to decimal
+        endgameMotorMaster.set(ControlMode.Position, position * GEAR_RATIO * TALON_CPR);
+    }
+    
     /**
      * resetEncoderPosition </p>
      * Resets the endcoder back to starting position. Should be set while the bar is horizontal.
@@ -93,5 +120,4 @@ public class EndgameMotorSubsystem extends SubsystemBase {
     public void resetEncoderPosition() {
         endgameMotorMaster.setSelectedSensorPosition(0.0);
     }
-    
 }

@@ -10,7 +10,7 @@ import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
-
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.utilities.PathPlannerSequentialCommandGroupUtility;
 
@@ -20,10 +20,10 @@ import frc.robot.utilities.PathPlannerSequentialCommandGroupUtility;
 public class DefaultAutoPathCommand extends PathPlannerSequentialCommandGroupUtility {
 
     // TO-DO comment this section
-    private final double KMAXSPEED = 1.5;
-    private final double KMAXACCELERATION = 3;
-    private final double KRAMSETEB = 2;
-    private final double KRAMSETEZETA = 0.7;
+    private final double KMAXSPEED = 0.2; //DriveSubsystem.DRIVETRAIN_MAX_FREE_SPEED_HIGH
+    private final double KMAXACCELERATION = 2.5;
+    //private final double KRAMSETEB = 2;
+    //private final double KRAMSETEZETA = 0.7;
     private final DifferentialDriveOdometry m_odometry;
 
     /**
@@ -40,7 +40,8 @@ public class DefaultAutoPathCommand extends PathPlannerSequentialCommandGroupUti
         TrajectoryConfig config = new TrajectoryConfig(KMAXSPEED,
                 KMAXACCELERATION)
                         // Add kinematics to ensure max speed is actually obeyed
-                        .setKinematics(dSubsystem.getKinematics())
+                        // -- setEndVelocity stops the auto path at the end
+                        .setKinematics(dSubsystem.getKinematics()).setEndVelocity(0.0)
                         // Apply the voltage constraint
                         .addConstraint(dSubsystem.getVoltageContraint());
 
@@ -53,7 +54,7 @@ public class DefaultAutoPathCommand extends PathPlannerSequentialCommandGroupUti
                 // Midpoints
                 ),
                 // End 5 feet infront of initiation line
-                new Pose2d(inchesToMeters(30.0), inchesToMeters(0), new Rotation2d(0)),
+                new Pose2d(inchesToMeters(60.0), inchesToMeters(0), new Rotation2d(0)),
                 // Pass config
                 config
 
@@ -68,13 +69,13 @@ public class DefaultAutoPathCommand extends PathPlannerSequentialCommandGroupUti
         Ramsete930Command ramseteCommand1 = new Ramsete930Command(
                 trajectory1,
                 () -> m_odometry.getPoseMeters(),
-                new RamseteController(KRAMSETEB, KRAMSETEZETA),
+                new RamseteController(),//new RamseteController(KRAMSETEB, KRAMSETEZETA)
                 dSubsystem.getKinematics(),
                 dSubsystem::getWheelSpeeds,
                 (Double leftVoltage, Double rightVoltage) -> dSubsystem.setVoltages(leftVoltage, rightVoltage),
                 dSubsystem);
-
-        addCommands(ramseteCommand1);
+        
+        addCommands(new WaitCommand(5), ramseteCommand1);
 
     } // End of Constructor
 

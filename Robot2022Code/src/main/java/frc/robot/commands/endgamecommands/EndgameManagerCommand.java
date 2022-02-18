@@ -20,7 +20,7 @@ import frc.robot.subsystems.EndgamePistonSubsystem;
 public class EndgameManagerCommand extends CommandBase {
     // Endgame Miscellaneous Constants
     private final double ENDGAME_PISTON_DELAY = 0.5;
-    private final double ENDGAME_RELEASE_DELAY = 5;
+    private final double ENDGAME_RELEASE_DELAY = 1;
 
     // Map and states for sequence.
     private HashMap<Integer, CommandBase> commands = new HashMap<Integer, CommandBase>();
@@ -62,7 +62,7 @@ public class EndgameManagerCommand extends CommandBase {
                 new ParallelCommandGroup(
                         new EndgameCloseWhenTouching(endgamePistonL3, 4),
                         new EndgameCloseWhenTouching(endgamePistonR3, 4)),
-                        new WaitCommand(ENDGAME_PISTON_DELAY),
+                new WaitCommand(ENDGAME_PISTON_DELAY),
                 new EndgameIncrementStateCommand(this)));
         // Opens #1 claws
         // Rotates arm until one #2 sensor triggers, closing all arms and stops motor
@@ -72,37 +72,36 @@ public class EndgameManagerCommand extends CommandBase {
                 new ParallelRaceGroup(
                         new EndgameArmCommand(endgameMotorSubsystem),
                         new EndgameCloseWhenTouching(endgamePiston1, 2)),
-                        new WaitCommand(ENDGAME_PISTON_DELAY),
+                new WaitCommand(ENDGAME_PISTON_DELAY),
                 new EndgameIncrementStateCommand(this)));
         // Opens #3 and #4 claws
         // Gives time for robot swing
-        //TODO:Change order so it rotates before letting go
-        //NOTE:Compesating for weight needs to go reverse
+        // Closes #4 claws
+        // TODO:Change order so it rotates before letting go
+        // NOTE:Compesating for weight needs to go reverse
         commands.put(4, new SequentialCommandGroup(new ParallelRaceGroup(
                 new EndgameOpenClawPairCommand(endgamePistonL3, endgamePistonR3),
                 new EndgameOpenClawSingleCommand(endgamePiston4),
-                new WaitCommand(ENDGAME_PISTON_DELAY)), new WaitCommand(ENDGAME_RELEASE_DELAY),
+                new WaitCommand(ENDGAME_PISTON_DELAY)),
+                new WaitCommand(ENDGAME_RELEASE_DELAY),
                 new EndgameIncrementStateCommand(this)));
-        // Closes #4 claws
+        // Rotates arm until one #4 sensor triggers, closing all arms and stops motor
         commands.put(5, new SequentialCommandGroup(new ParallelRaceGroup(
                 new EndgameCloseClawSingleCommand(endgamePiston4),
-                new WaitCommand(ENDGAME_PISTON_DELAY)), new EndgameIncrementStateCommand(this)));
-        // Rotates arm until one #4 sensor triggers, closing all arms and stops motor
-        commands.put(6, new SequentialCommandGroup(new ParallelRaceGroup(
                 new EndgameOpenClawPairCommand(endgamePistonL3, endgamePistonR3),
                 new WaitCommand(ENDGAME_PISTON_DELAY)),
                 new ParallelRaceGroup(
                         new EndgameArmCommand(endgameMotorSubsystem),
                         new EndgameCloseWhenTouching(endgamePistonL3, 4),
                         new EndgameCloseWhenTouching(endgamePistonR3, 4)),
-                        new WaitCommand(ENDGAME_PISTON_DELAY),
+                new WaitCommand(ENDGAME_PISTON_DELAY),
                 new EndgameIncrementStateCommand(this)));
         // Opens #2 claws-NOTE:Claws closed after delay ends due to default command
-        commands.put(7, new SequentialCommandGroup(new ParallelRaceGroup(
+        commands.put(6, new SequentialCommandGroup(new ParallelRaceGroup(
                 new EndgameOpenClawSingleCommand(endgamePiston2),
                 new WaitCommand(ENDGAME_RELEASE_DELAY)), new EndgameIncrementStateCommand(this)));
         // Sets arm to vertical
-        commands.put(8, new SequentialCommandGroup(new EndgameRotateVerticalCommand(endgameMotorSubsystem),
+        commands.put(7, new SequentialCommandGroup(new EndgameRotateVerticalCommand(endgameMotorSubsystem),
                 new EndgameIncrementStateCommand(this)));
     }
 
@@ -122,7 +121,7 @@ public class EndgameManagerCommand extends CommandBase {
     @Override
     public void execute() {
         // Starts next command state if next state is signaled
-        if (currentState != previousState && currentState < 8) {
+        if (currentState != previousState && currentState < 7) {
             CommandScheduler.getInstance().cancel(commands.get(previousState));
             CommandScheduler.getInstance().schedule(commands.get(currentState));
             previousState = currentState;
@@ -131,7 +130,7 @@ public class EndgameManagerCommand extends CommandBase {
 
     @Override
     public boolean isFinished() {
-        return currentState == 8;
+        return currentState == 7;
     }
 
     @Override

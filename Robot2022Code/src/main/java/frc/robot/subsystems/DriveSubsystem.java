@@ -33,7 +33,13 @@ import frc.robot.utilities.ShifterUtility;
  * @version 1.0
  */
 public class DriveSubsystem extends SubsystemBase {
-    public static final double kMaxSpeed = 5.7; // meters per second
+
+// rpm = 6300
+// with a gear ratio of 6.3, divide 6380 by 6.3 which equals 1012.698
+// divide that value by 60 to get rotations per second : 1012.698 / 60 = 16.678
+// wheel circumference times the rotations per second : 0.1016(wheel dimention) * pi * 16.678 = 5.32
+
+    public static final double kMaxSpeed = 5.32; // meters per second
     public static final double kMaxAngularSpeed = Math.PI; // 1 rotation per second
 
     public static final double highGearRatio = 6.3;
@@ -54,13 +60,29 @@ public class DriveSubsystem extends SubsystemBase {
     private final WPI_TalonFX m_rightLeader;
     private final WPI_TalonFX m_rightFollower;
 
-    private final double m_rightKS = 0.64605;
-    private final double m_rightKV = 2.1535;
-    private final double m_rightKA = 0.10589;
-    private final double m_leftKS = 0.60444;
-    private final double m_leftKV = 2.1098;
-    private final double m_leftKA = 0.33666;
+    //Feed Forward Constants
+    private final double m_rightKS = 0.68688;
+    private final double m_rightKV = 2.1412;
+    private final double m_rightKA = 0.28824;
+    private final double m_leftKS = 0.68705;
+    private final double m_leftKV = 2.1383;
+    private final double m_leftKA = 0.22478;
+    private final double m_combinedKS = 0.68951;
+    private final double m_combinedKV = 2.1412;
+    private final double m_combinedKA = 0.41387;
 
+    // PID Constants
+    // Getting I values
+    // 1 divided by loop period in minutes times 2
+    // our loop period is 20 miliseconds which calculated into minutes is : 20(Loop period) / 60000(Miliseconds in one minute) = 0.000333
+    // calculated estimated I = 1/(0.000333 * 2)
+    private final double m_loopPeriodPerMin = 0.000333;
+    private final double m_leftP = 0.82761;
+    private final double m_leftI = 0.0;// 1/(m_loopPeriodPerMin * 2);
+    private final double m_leftD = 0.0;
+    private final double m_rightP = 0.78134;
+    private final double m_rightI = 0.0;// 1/(m_loopPeriodPerMin * 2);
+    private final double m_rightD = 0.0;
     // MotorControllerGroup leftGroup;
     // MotorControllerGroup rightGroup;
     /*
@@ -77,11 +99,11 @@ public class DriveSubsystem extends SubsystemBase {
             m_leftKA);
     private final SimpleMotorFeedforward rightMotorFeedforward = new SimpleMotorFeedforward(m_rightKS, m_rightKV,
             m_rightKA);
-    private final SimpleMotorFeedforward constraintFeedforward = new SimpleMotorFeedforward(m_leftKS + m_rightKS / 2,
-            m_leftKV + m_rightKV / 2, m_leftKA + m_rightKA / 2);
+    private final SimpleMotorFeedforward constraintFeedforward = new SimpleMotorFeedforward(m_combinedKS,
+    m_combinedKV, m_combinedKA);
 
-    private final PIDController leftPIDController = new PIDController(2.9926, 0, 0);
-    private final PIDController rightPIDController = new PIDController(1.9996, 0, 0);
+    private final PIDController leftPIDController = new PIDController(m_leftP, m_leftI, m_leftD);
+    private final PIDController rightPIDController = new PIDController(m_rightP, m_rightI, m_rightD);
 
     private boolean shifterState;
 
@@ -301,7 +323,9 @@ public class DriveSubsystem extends SubsystemBase {
      * @return the encoder speed
      */
     public double getLeftEncoder() {
-        return m_leftLeader.getSensorCollection().getIntegratedSensorVelocity()
+        return 
+        // m_leftLeader.getSensorCollection().getIntegratedSensorVelocity()
+        m_rightLeader.getSelectedSensorVelocity()
                 // Multiply by 10 to get encoder units per second
                 * 10
                 // Divide by the number of ticks in a rotation
@@ -317,7 +341,9 @@ public class DriveSubsystem extends SubsystemBase {
      */
     public double getRightEncoder() {
         // Multiply by 10 to get encoder units per second
-        return m_rightLeader.getSensorCollection().getIntegratedSensorVelocity() * 10 / kEncoderResolution
+        return m_rightLeader.getSelectedSensorVelocity()
+        // m_rightLeader.getSensorCollection().getIntegratedSensorVelocity()
+         * 10 / kEncoderResolution
                 * (2 * Math.PI * kWheelRadius) / (ShifterUtility.getShifterState() ? lowGearRatio : highGearRatio);
     }
 
@@ -331,7 +357,8 @@ public class DriveSubsystem extends SubsystemBase {
      *      getIntegratedSensorPosition()}
      */
     public double getRawLeftSensorPosition() {
-        return m_leftLeader.getSensorCollection().getIntegratedSensorPosition();
+        // return m_leftLeader.getSensorCollection().getIntegratedSensorPosition();
+        return m_leftLeader.getSelectedSensorPosition();
     }
 
     /**
@@ -344,7 +371,8 @@ public class DriveSubsystem extends SubsystemBase {
      *      getIntegratedSensorPosition()}
      */
     public double getRawRightSensorPosition() {
-        return m_rightLeader.getSensorCollection().getIntegratedSensorPosition();
+        // return m_rightLeader.getSensorCollection().getIntegratedSensorPosition();
+        return m_rightLeader.getSelectedSensorPosition();
     }
 
     /**
@@ -421,6 +449,7 @@ public class DriveSubsystem extends SubsystemBase {
                 // TODO: Check if we need to multiply by 2*pi*r because circumference
                 getRawRightSensorPosition() * ((1.0 / 2048.0) * kWheelRadius * Math.PI * 2)
                 // Divide by the current gear ratio because the motors turn more than the wheels
-                        / highGearRatio);
+                        / highGearRatio
+        );
     }
 }
