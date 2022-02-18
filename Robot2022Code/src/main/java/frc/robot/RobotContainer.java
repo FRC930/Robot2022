@@ -14,6 +14,9 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
+import frc.robot.commands.BallHolderCommand;
 import frc.robot.commands.CatapultCommand;
 import frc.robot.commands.DriveCommand;
 import frc.robot.commands.IndexerForwardCommand;
@@ -315,7 +318,11 @@ public class RobotContainer {
         driverController.getRightTrigger().whileActiveOnce(toggleShifterCommand);
 
         // Launches a cargo ball when the launch button is pressed
-        driverController.getLeftBumper().whileActiveOnce(new ParallelCommandGroup(catapultCommand, solidLEDsCommand));
+        // The delay is needed in order to give the ball holder time to open before firing
+        // Catapult command interrupts default and end() opens the ball holder
+        driverController.getLeftBumper().whileActiveOnce(new ParallelCommandGroup(
+            new SequentialCommandGroup(new WaitCommand(CatapultSubsystem.BALL_HOLDER_DELAY), catapultCommand), 
+            solidLEDsCommand));
 
         // Checks if LB is pressed, then it will engage the intake pistons
         codriverController.getLeftBumper()
@@ -383,9 +390,9 @@ public class RobotContainer {
         scheduler.setDefaultCommand(endgamePistonL3, new EndgameCloseClawSingleCommand(endgamePistonL3));
         scheduler.setDefaultCommand(endgamePistonR3, new EndgameCloseClawSingleCommand(endgamePistonR3));
         scheduler.setDefaultCommand(endgamePiston4, new EndgameCloseClawSingleCommand(endgamePiston4));
-        // scheduler.setDefaultCommand(indexerMotorSubsystem, new
-        // IndexerForwardCommand(indexerMotorSubsystem));
-        scheduler.setDefaultCommand(ledSubsystem, idlePatternCommand);
+        scheduler.setDefaultCommand(indexerMotorSubsystem, new IndexerForwardCommand(indexerMotorSubsystem));
+        scheduler.setDefaultCommand(ledSubsystem,  idlePatternCommand);
+        scheduler.setDefaultCommand(catapultSubsystem, new BallHolderCommand(catapultSubsystem));
     }
 
     private void startCamera() {
