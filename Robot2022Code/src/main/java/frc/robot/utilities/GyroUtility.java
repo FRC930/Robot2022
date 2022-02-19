@@ -9,7 +9,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class GyroUtility {
     private static GyroUtility instance;
-    private static PigeonIMU m_gyro;
+    private static PigeonIMU m_gyro; 
 
 
     private GyroUtility() {

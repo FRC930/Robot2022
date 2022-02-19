@@ -136,9 +136,13 @@ public class Ramsete930Command extends CommandBase {
       return;
     }
 
+    Pose2d robotPosition = m_pose.get();
+    SmartDashboard.putNumber("robotPositionX", robotPosition.getX());
+    SmartDashboard.putNumber("robotPositionY", robotPosition.getY());
+
     var targetWheelSpeeds =
         m_kinematics.toWheelSpeeds(
-            m_follower.calculate(m_pose.get(), m_trajectory.sample(curTime)));
+            m_follower.calculate(robotPosition, m_trajectory.sample(curTime)));
 
     var leftSpeedSetpoint = targetWheelSpeeds.leftMetersPerSecond;
     var rightSpeedSetpoint = targetWheelSpeeds.rightMetersPerSecond;
@@ -157,8 +161,8 @@ public class Ramsete930Command extends CommandBase {
       double rightPID = m_dSubsystem.calculateLeftPID(m_speeds.get().rightMetersPerSecond, rightFeedforward);
       SmartDashboard.putNumber("rightPID", rightPID);
       //  Using our PID controllers
-      leftOutput = leftFeedforward; //+ m_dSubsystem.calculateLeftPID(m_speeds.get().leftMetersPerSecond, leftSpeedSetpoint);
-      rightOutput = rightFeedforward; //+ m_dSubsystem.calculateRightPID(m_speeds.get().rightMetersPerSecond, rightSpeedSetpoint);
+      leftOutput = leftPID; //+ m_dSubsystem.calculateLeftPID(m_speeds.get().leftMetersPerSecond, leftSpeedSetpoint);
+      rightOutput = rightPID; //+ m_dSubsystem.calculateRightPID(m_speeds.get().rightMetersPerSecond, rightSpeedSetpoint);
 
     } else {
       leftOutput = leftSpeedSetpoint;

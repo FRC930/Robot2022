@@ -6,22 +6,26 @@ import com.ctre.phoenix.motorcontrol.InvertType;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
+import com.ctre.phoenix.sensors.PigeonIMU;
 import com.ctre.phoenix.sensors.SensorVelocityMeasPeriod;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.math.trajectory.constraint.DifferentialDriveVoltageConstraint;
+import edu.wpi.first.wpilibj.interfaces.Gyro;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.utilities.GyroUtility;
 import frc.robot.utilities.ShifterUtility;
+import frc.robot.utilities.SimulatedDrivetrain;
 
 /**
  * <h3>DriveSubsystem</h3>
@@ -77,10 +81,10 @@ public class DriveSubsystem extends SubsystemBase {
     // our loop period is 20 miliseconds which calculated into minutes is : 20(Loop period) / 60000(Miliseconds in one minute) = 0.000333
     // calculated estimated I = 1/(0.000333 * 2)
     private final double m_loopPeriodPerMin = 0.000333;
-    private final double m_leftP = 0.82761;
+    private final double m_leftP = 2.464;
     private final double m_leftI = 0.0;// 1/(m_loopPeriodPerMin * 2);
     private final double m_leftD = 0.0;
-    private final double m_rightP = 0.78134;
+    private final double m_rightP = 2.4833;
     private final double m_rightI = 0.0;// 1/(m_loopPeriodPerMin * 2);
     private final double m_rightD = 0.0;
     // MotorControllerGroup leftGroup;
@@ -112,6 +116,8 @@ public class DriveSubsystem extends SubsystemBase {
 
     private final DifferentialDriveOdometry m_odometry = new DifferentialDriveOdometry(
             new Rotation2d(Math.toRadians(GyroUtility.getInstance().getGyro().getFusedHeading())));
+
+    private double yawPitchRollValues[] = new double[3];
 
     /**
      * Constructs a differential drive object. Sets the encoder distance per pulse
@@ -325,7 +331,7 @@ public class DriveSubsystem extends SubsystemBase {
     public double getLeftEncoder() {
         return 
         // m_leftLeader.getSensorCollection().getIntegratedSensorVelocity()
-        m_rightLeader.getSelectedSensorVelocity()
+        m_leftLeader.getSelectedSensorVelocity()
                 // Multiply by 10 to get encoder units per second
                 * 10
                 // Divide by the number of ticks in a rotation
@@ -429,6 +435,15 @@ public class DriveSubsystem extends SubsystemBase {
         var wheelSpeeds = m_kinematics.toWheelSpeeds(new ChassisSpeeds(xSpeed, 0.0, rot));
         setSpeeds(wheelSpeeds);
     }
+    
+    public double getHeading() {
+        GyroUtility.getInstance().getGyro().getYawPitchRoll(yawPitchRollValues);
+        return Math.IEEEremainder(yawPitchRollValues[0], 360);
+    }
+
+    public void resetOdometry(Pose2d pose) {
+        m_odometry.resetPosition(pose, Rotation2d.fromDegrees(getHeading()));
+    }
 
     public DifferentialDriveOdometry getOdometry() {
         return m_odometry;
@@ -451,5 +466,8 @@ public class DriveSubsystem extends SubsystemBase {
                 // Divide by the current gear ratio because the motors turn more than the wheels
                         / highGearRatio
         );
+        Pose2d robotPosition = m_odometry.getPoseMeters();
+        SmartDashboard.putNumber("robotPositionX", robotPosition.getX());
+        SmartDashboard.putNumber("robotPositionY", robotPosition.getY());
     }
 }

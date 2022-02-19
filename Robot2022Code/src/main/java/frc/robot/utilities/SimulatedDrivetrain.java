@@ -120,6 +120,18 @@ public class SimulatedDrivetrain {
         return m_odometry.getPoseMeters();
     }
 
+    public AnalogGyro getGyro(){
+        return m_gyro;
+    }
+
+    public Encoder getLeftEncoder(){
+        return m_leftEncoder;
+    }
+
+    public Encoder getRightEncoder(){
+        return m_rightEncoder;
+    }
+
     public void simulationPeriodic() {
         // To update our simulation, we set motor voltage inputs, update the
         // simulation, and write the simulated positions and velocities to our

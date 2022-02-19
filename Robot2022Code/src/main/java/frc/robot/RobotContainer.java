@@ -432,6 +432,7 @@ public class RobotContainer {
 
     public void testInit() {
         stopSubsystems();
+        driveSubsystem.resetOdometry(m_trajectory.getInitialPose());
     }
 
     public void testPeriodic() {
