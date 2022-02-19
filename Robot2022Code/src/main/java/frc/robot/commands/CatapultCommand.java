@@ -15,6 +15,7 @@ import frc.robot.subsystems.CatapultSubsystem;
  */
 public class CatapultCommand extends CommandBase {
     CatapultSubsystem catapultSubsystem;
+    CatapultPower power;
 
     /**
      * <h3>CatapultCommand</h3>
@@ -23,20 +24,38 @@ public class CatapultCommand extends CommandBase {
      *
      * @param catapult the {@link frc.robot.subsystems.CaptapultSubsystem
      *                 CatapultSubsystem} to use
+     * @param powerLevel enum value for the piston power needed
      */
-    public CatapultCommand(CatapultSubsystem catapult) {
+    public CatapultCommand(CatapultSubsystem catapult, CatapultPower powerLevel) {
         catapultSubsystem = catapult;
+        power = powerLevel;
 
         addRequirements(catapultSubsystem);
     }
 
     @Override
     public void initialize() {
-        catapultSubsystem.extend();
+        if(power == CatapultPower.AllPistons){
+            catapultSubsystem.extendAllPistons();
+        }
+        else if(power == CatapultPower.SmallPistons){
+            catapultSubsystem.extendSmallPistons();
+        }
+        else if(power == CatapultPower.LargePistons){
+            catapultSubsystem.extendLargePistons();
+        }
     }
 
     @Override
     public void end(boolean interrupted) {
         catapultSubsystem.retract();
+    }
+
+    // Enum for piston usage
+    public static enum CatapultPower {
+        SmallPistons, LargePistons, AllPistons;
+
+        private CatapultPower() {
+        }
     }
 }

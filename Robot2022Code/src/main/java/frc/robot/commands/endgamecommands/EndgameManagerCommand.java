@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Robot;
+import frc.robot.commands.endgamecommands.EndgameRotateVerticalCommand.EndgamePosition;
 import frc.robot.subsystems.EndgameMotorSubsystem;
 import frc.robot.subsystems.EndgamePistonSubsystem;
 
@@ -52,8 +53,10 @@ public class EndgameManagerCommand extends CommandBase {
 
         // ----- ENDGAME COMMAND GROUP INITS -----\\
         // Sets arm to vertical
-        commands.put(1, new SequentialCommandGroup(new EndgameRotateVerticalCommand(endgameMotorSubsystem),
-                new EndgameIncrementStateCommand(this)));
+        commands.put(1,
+                new SequentialCommandGroup(
+                        new EndgameRotateVerticalCommand(endgameMotorSubsystem, EndgamePosition.ApproachPosition),
+                        new EndgameIncrementStateCommand(this)));
         // Opens #3 claws
         // Closes #3 claws independently on both sides when sensors trigger
         commands.put(2, new SequentialCommandGroup(new ParallelRaceGroup(
@@ -74,19 +77,24 @@ public class EndgameManagerCommand extends CommandBase {
                         new EndgameCloseWhenTouching(endgamePiston1, 2)),
                 new WaitCommand(ENDGAME_PISTON_DELAY),
                 new EndgameIncrementStateCommand(this)));
+        // Sets arm to vertical
+        commands.put(4,
+                new SequentialCommandGroup(
+                        new EndgameRotateVerticalCommand(endgameMotorSubsystem, EndgamePosition.ApproachPosition),
+                        new EndgameIncrementStateCommand(this)));
         // Opens #3 and #4 claws
         // Gives time for robot swing
         // Closes #4 claws
         // TODO:Change order so it rotates before letting go
         // NOTE:Compesating for weight needs to go reverse
-        commands.put(4, new SequentialCommandGroup(new ParallelRaceGroup(
+        commands.put(5, new SequentialCommandGroup(new ParallelRaceGroup(
                 new EndgameOpenClawPairCommand(endgamePistonL3, endgamePistonR3),
                 new EndgameOpenClawSingleCommand(endgamePiston4),
                 new WaitCommand(ENDGAME_PISTON_DELAY)),
                 new WaitCommand(ENDGAME_RELEASE_DELAY),
                 new EndgameIncrementStateCommand(this)));
         // Rotates arm until one #4 sensor triggers, closing all arms and stops motor
-        commands.put(5, new SequentialCommandGroup(new ParallelRaceGroup(
+        commands.put(6, new SequentialCommandGroup(new ParallelRaceGroup(
                 new EndgameCloseClawSingleCommand(endgamePiston4),
                 new EndgameOpenClawPairCommand(endgamePistonL3, endgamePistonR3),
                 new WaitCommand(ENDGAME_PISTON_DELAY)),
@@ -97,12 +105,14 @@ public class EndgameManagerCommand extends CommandBase {
                 new WaitCommand(ENDGAME_PISTON_DELAY),
                 new EndgameIncrementStateCommand(this)));
         // Opens #2 claws-NOTE:Claws closed after delay ends due to default command
-        commands.put(6, new SequentialCommandGroup(new ParallelRaceGroup(
+        commands.put(7, new SequentialCommandGroup(new ParallelRaceGroup(
                 new EndgameOpenClawSingleCommand(endgamePiston2),
                 new WaitCommand(ENDGAME_RELEASE_DELAY)), new EndgameIncrementStateCommand(this)));
         // Sets arm to vertical
-        commands.put(7, new SequentialCommandGroup(new EndgameRotateVerticalCommand(endgameMotorSubsystem),
-                new EndgameIncrementStateCommand(this)));
+        commands.put(8,
+                new SequentialCommandGroup(
+                        new EndgameRotateVerticalCommand(endgameMotorSubsystem, EndgamePosition.EndPosition),
+                        new EndgameIncrementStateCommand(this)));
     }
 
     /**

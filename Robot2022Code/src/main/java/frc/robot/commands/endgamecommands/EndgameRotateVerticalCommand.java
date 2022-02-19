@@ -28,13 +28,15 @@ public class EndgameRotateVerticalCommand extends CommandBase {
   // private static final Logger logger =
   // Logger.getLogger(EndgameRotateVertical.class.getName());
   private final double APPROACH_POSITION = -0.25;
+  private final double SWING_POSITION = 0.5;
   private final double END_POSITION = 1;
   private final double DEADBAND = 0.1;
 
   // -------- DECLARATIONS --------\\
 
   private final EndgameMotorSubsystem m_MotorSubsystem;
-  private double target;
+  private final double target;
+
 
   // -------- CONSTRUCTOR --------\\
   /**
@@ -42,10 +44,21 @@ public class EndgameRotateVerticalCommand extends CommandBase {
    * 
    * @param motorSubsystem motor subsystem to control
    */
-  public EndgameRotateVerticalCommand(EndgameMotorSubsystem motorSubsystem) {
+  public EndgameRotateVerticalCommand(EndgameMotorSubsystem motorSubsystem, EndgamePosition position) {
     m_MotorSubsystem = motorSubsystem;
     // logger.log(LOG_LEVEL_FINE, "Initializing the EndgameRotateVertical...");
-
+    if(position == EndgamePosition.ApproachPosition){
+      target = APPROACH_POSITION;
+    }
+    else if(position == EndgamePosition.SwingPosition){
+      target = SWING_POSITION;
+    }
+    else if(position == EndgamePosition.EndPosition){
+      target = END_POSITION;
+    }
+    else{
+      target = 0;
+    }
     addRequirements(m_MotorSubsystem); // Use addRequirements() here to declare subsystem dependencies.
   }
 
@@ -53,13 +66,6 @@ public class EndgameRotateVerticalCommand extends CommandBase {
 
   @Override // Called when the command is initially scheduled.
   public void initialize() {
-    if (Math.abs(m_MotorSubsystem.getArmRotation() - APPROACH_POSITION) < Math
-        .abs(m_MotorSubsystem.getArmRotation() - END_POSITION)) {
-          target = APPROACH_POSITION;
-    }
-    else{
-      target = END_POSITION;
-    }
     m_MotorSubsystem.setArmPosition(target);
     // logger.log(LOG_LEVEL_FINE, "Starting the arm motor (command)...");
   }
@@ -73,4 +79,12 @@ public class EndgameRotateVerticalCommand extends CommandBase {
   public void end(boolean interrupted) {
     m_MotorSubsystem.setMotorSpeed(0.0);
   }
+
+  // Enum for endgame positions
+  public static enum EndgamePosition {
+    ApproachPosition, SwingPosition, EndPosition;
+
+    private EndgamePosition() {
+    }
+}
 } // End of class EndgameRotateVertical

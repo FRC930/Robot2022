@@ -6,6 +6,9 @@ import java.util.List;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.cscore.UsbCamera;
 import edu.wpi.first.math.controller.RamseteController;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.util.net.PortForwarder;
@@ -22,6 +25,7 @@ import frc.robot.commands.DriveCommand;
 import frc.robot.commands.IndexerForwardCommand;
 import frc.robot.commands.LEDCommand;
 import frc.robot.commands.ToggleShifterCommand;
+import frc.robot.commands.CatapultCommand.CatapultPower;
 import frc.robot.commands.autocommands.AutoCommandManager;
 import frc.robot.commands.autocommands.AutoCommandManager.subNames;
 import frc.robot.commands.autovisioncommands.HubAimingCommand;
@@ -127,8 +131,6 @@ public class RobotContainer {
     // Catapult Subsystem
     private final CatapultSubsystem catapultSubsystem;
     private final IndexerMotorSubsystem indexerMotorSubsystem;
-    // Catapult Launch Command
-    private final CatapultCommand catapultCommand;
 
     // ----- ENDGAME -----\\
     private final EndgameManagerCommand endgameManager;
@@ -234,8 +236,6 @@ public class RobotContainer {
          * -----------------------------------------------------------------------------
          * ---
          */
-        // ----- CATAPULT COMMAND INITS -----\\
-        catapultCommand = new CatapultCommand(catapultSubsystem);
 
         // ----- AUTO COMMAND INITS -----\\
         autoManager.initCommands();
@@ -326,9 +326,17 @@ public class RobotContainer {
         // The delay is needed in order to give the ball holder time to open before firing
         // Catapult command interrupts default and end() opens the ball holder
         driverController.getLeftBumper().whileActiveOnce(new ParallelCommandGroup(
-            new SequentialCommandGroup(new WaitCommand(CatapultSubsystem.BALL_HOLDER_DELAY), catapultCommand), 
-            solidLEDsCommand));
-
+            new SequentialCommandGroup(new WaitCommand(CatapultSubsystem.CATAPULT_FIRE_DELAY), 
+            new CatapultCommand(catapultSubsystem, CatapultPower.AllPistons)), solidLEDsCommand));
+        driverController.getPOVUpTrigger().whileActiveOnce(new SequentialCommandGroup(
+            new WaitCommand(CatapultSubsystem.CATAPULT_FIRE_DELAY), 
+            new CatapultCommand(catapultSubsystem, CatapultPower.AllPistons)));
+        driverController.getPOVLeftTrigger().whileActiveOnce(new SequentialCommandGroup(
+            new WaitCommand(CatapultSubsystem.CATAPULT_FIRE_DELAY), 
+            new CatapultCommand(catapultSubsystem, CatapultPower.SmallPistons)));
+        driverController.getPOVRightTrigger().whileActiveOnce(new SequentialCommandGroup(
+            new WaitCommand(CatapultSubsystem.CATAPULT_FIRE_DELAY), 
+            new CatapultCommand(catapultSubsystem, CatapultPower.LargePistons)));
         // Checks if LB is pressed, then it will engage the intake pistons
         codriverController.getLeftBumper()
                 .whileActiveOnce(new ParallelCommandGroup(engageIntakePistonsCommand, intakePatternCommand));
@@ -439,9 +447,7 @@ public class RobotContainer {
 
     public void testInit() {
         stopSubsystems();
-        if(driverController.getRightTrigger().get()){
-            driveSubsystem.hardReset(m_trajectory.getInitialPose());
-        }
+        driveSubsystem.hardReset(new Pose2d(new Translation2d(0.0, 0.0), new Rotation2d(0.0)));
     }
 
     public void testPeriodic() {

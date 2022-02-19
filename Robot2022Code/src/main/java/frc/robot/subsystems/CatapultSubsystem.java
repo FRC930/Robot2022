@@ -18,13 +18,15 @@ import frc.robot.utilities.BallSensorUtility;
  * @version 1.0.0
  */
 public class CatapultSubsystem extends SubsystemBase {
-    //This constant is the delay needed between openBallHolder() and extend()
-    public static final double BALL_HOLDER_DELAY = 0.25;
+    // This constant is the delay when firing between openBallHolder() and extend()
+    public static final double CATAPULT_FIRE_DELAY = 0.75;
+    // This constant is the time of pulse for the launch solenoids
+    private final double CATAPULT_PULSE_DURATION = 0.5;
 
-    private Solenoid launchSolenoid1;
-    private Solenoid launchSolenoid2;
-    private Solenoid launchSolenoid3;
-    private Solenoid launchSolenoid4;
+    private Solenoid launchSolenoidLarge1;
+    private Solenoid launchSolenoidLarge2;
+    private Solenoid launchSolenoidSmall1;
+    private Solenoid launchSolenoidSmall2;
 
     private Solenoid ballHolderSolenoid;
 
@@ -33,48 +35,72 @@ public class CatapultSubsystem extends SubsystemBase {
      * 
      * Initializes a new catapult subsystem with the passed solenoid IDs
      * 
-     * @param solenoidID1          ID of the first launch solenoid
-     * @param solenoidID2          ID of the second launch solenoid
-     * @param solenoidID3          ID of the third launch solenoid
-     * @param solenoidID4          ID of the fourth launch solenoid
-     * @param ballHolderSolenoidID ID of the ball holder's solenoid
+     * @param frontLeftID  ID of the first launch solenoid
+     * @param frontRightID ID of the second launch solenoid
+     * @param rearLeftID   ID of the third launch solenoid
+     * @param rearRightID  ID of the fourth launch solenoid
+     * @param ballHolderID ID of the ball holder solenoid
      */
-    public CatapultSubsystem(int solenoidID1, int solenoidID2, int solenoidID3, int solenoidID4,
-            int ballHolderSolenoidID) {
-        launchSolenoid1 = new Solenoid(
-                Robot.isReal() || solenoidID1 > 7 ? PneumaticsModuleType.REVPH : PneumaticsModuleType.CTREPCM,
-                solenoidID1);
-        launchSolenoid2 = new Solenoid(
-                Robot.isReal() || solenoidID2 > 7 ? PneumaticsModuleType.REVPH : PneumaticsModuleType.CTREPCM,
-                solenoidID2);
-        launchSolenoid3 = new Solenoid(
-                Robot.isReal() || solenoidID3 > 7 ? PneumaticsModuleType.REVPH : PneumaticsModuleType.CTREPCM,
-                solenoidID3);
-        launchSolenoid4 = new Solenoid(
-                Robot.isReal() || solenoidID4 > 7 ? PneumaticsModuleType.REVPH : PneumaticsModuleType.CTREPCM,
-                solenoidID4);
+    public CatapultSubsystem(int frontLeftID, int frontRightID, int rearLeftID, int rearRightID,
+            int ballHolderID) {
+        launchSolenoidLarge1 = new Solenoid(
+                Robot.isReal() || frontLeftID > 7 ? PneumaticsModuleType.REVPH : PneumaticsModuleType.CTREPCM,
+                frontLeftID);
+        launchSolenoidSmall1 = new Solenoid(
+                Robot.isReal() || frontRightID > 7 ? PneumaticsModuleType.REVPH : PneumaticsModuleType.CTREPCM,
+                frontRightID);
+        launchSolenoidSmall2 = new Solenoid(
+                Robot.isReal() || rearLeftID > 7 ? PneumaticsModuleType.REVPH : PneumaticsModuleType.CTREPCM,
+                rearLeftID);
+        launchSolenoidLarge2 = new Solenoid(
+                Robot.isReal() || rearRightID > 7 ? PneumaticsModuleType.REVPH : PneumaticsModuleType.CTREPCM,
+                rearRightID);
         ballHolderSolenoid = new Solenoid(
-                Robot.isReal() || ballHolderSolenoidID > 7 ? PneumaticsModuleType.REVPH : PneumaticsModuleType.CTREPCM,
-                ballHolderSolenoidID);
+                Robot.isReal() || ballHolderID > 7 ? PneumaticsModuleType.REVPH : PneumaticsModuleType.CTREPCM,
+                ballHolderID);
 
-        launchSolenoid1.set(false);
-        launchSolenoid2.set(false);
-        launchSolenoid3.set(false);
-        launchSolenoid4.set(false);
-
+        launchSolenoidLarge1.setPulseDuration(CATAPULT_PULSE_DURATION);
+        launchSolenoidLarge2.setPulseDuration(CATAPULT_PULSE_DURATION);
+        launchSolenoidSmall1.setPulseDuration(CATAPULT_PULSE_DURATION);
+        launchSolenoidSmall2.setPulseDuration(CATAPULT_PULSE_DURATION);
+        
+        launchSolenoidLarge1.set(false);
+        launchSolenoidLarge2.set(false);
+        launchSolenoidSmall1.set(false);
+        launchSolenoidSmall2.set(false);
         ballHolderSolenoid.set(false);
     }
 
     /**
-     * <h3>extend</h3>
+     * <h3>extendLargePistons</h3>
      * 
      * Extends the pistons on the catapult
      */
-    public void extend() {
-        launchSolenoid1.set(true);
-        launchSolenoid2.set(true);
-        launchSolenoid3.set(true);
-        launchSolenoid4.set(true);
+    public void extendLargePistons() {
+        launchSolenoidLarge1.startPulse();
+        launchSolenoidLarge2.startPulse();
+    }
+
+    /**
+     * <h3>extendSmallPistons</h3>
+     * 
+     * Extends the pistons on the catapult
+     */
+    public void extendSmallPistons() {
+        launchSolenoidSmall1.startPulse();
+        launchSolenoidSmall2.startPulse();
+    }
+
+    /**
+     * <h3>extendAllPistons</h3>
+     * 
+     * Extends the pistons on the catapult
+     */
+    public void extendAllPistons() {
+        launchSolenoidLarge1.startPulse();
+        launchSolenoidLarge2.startPulse();
+        launchSolenoidSmall1.startPulse();
+        launchSolenoidSmall2.startPulse();
     }
 
     /**
@@ -83,10 +109,10 @@ public class CatapultSubsystem extends SubsystemBase {
      * Retracts the pistons on the catapult
      */
     public void retract() {
-        launchSolenoid1.set(false);
-        launchSolenoid2.set(false);
-        launchSolenoid3.set(false);
-        launchSolenoid4.set(false);
+        launchSolenoidLarge1.set(false);
+        launchSolenoidLarge2.set(false);
+        launchSolenoidSmall1.set(false);
+        launchSolenoidSmall2.set(false);
     }
 
     /**

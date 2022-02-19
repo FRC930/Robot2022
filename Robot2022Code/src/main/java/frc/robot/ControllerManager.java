@@ -3,6 +3,7 @@ package frc.robot;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.triggers.AxisTrigger;
+import frc.robot.triggers.POVTrigger;
 
 /**
 * <h3>ControllerManager</h3>
@@ -10,6 +11,43 @@ import frc.robot.triggers.AxisTrigger;
 * Creates the buttons so we can use them in robot container.
 */
 public class ControllerManager{
+
+    //----- XBOX CONTROLLER IDS -----\\
+
+    // Left Joystick
+    private final int XB_AXIS_LEFT_X = 0;
+    private final int XB_AXIS_LEFT_Y = 1;
+    // Triggers
+    private final int XB_AXIS_LT = 2;
+    private final int XB_AXIS_RT = 3;
+    // Right Joystick
+    private final int XB_AXIS_RIGHT_X = 4;
+    private final int XB_AXIS_RIGHT_Y = 5;
+
+    // Buttons
+    private final int XB_A = 1;
+    private final int XB_B = 2;
+    private final int XB_X = 3;
+    private final int XB_Y = 4;
+
+    // Bumpers
+    private final int XB_LB = 5;
+    private final int XB_RB = 6;
+
+    // Back and Start
+    private final int XB_BACK = 7;
+    private final int XB_START = 8;
+
+    // Joystick Buttons
+    private final int XB_LEFTSTICK_BUTTON = 9;
+    private final int XB_RIGHTSTICK_BUTTON = 10;
+
+    // POV Values
+    public final int XB_POV_ID = 0;
+    public final int XB_POV_UP = 0;
+    public final int XB_POV_DOWN = 180;
+    public final int XB_POV_LEFT = 270;
+    public final int XB_POV_RIGHT = 90;
 
     //----- CONTROLLER -----\\
 
@@ -45,38 +83,13 @@ public class ControllerManager{
     //Joystick buttons
     private JoystickButton leftStickButton;
     private JoystickButton rightStickButton;
+
+    // Joystick POV(D-Pad)
+    private POVTrigger povUpTrigger;
+    private POVTrigger povDownTrigger;
+    private POVTrigger povLeftTrigger;
+    private POVTrigger povRightTrigger;
     
-
-    //----- XBOX CONTROLLER IDS -----\\
-
-    // Left Joystick
-    private final int XB_AXIS_LEFT_X = 0;
-    private final int XB_AXIS_LEFT_Y = 1;
-    // Triggers
-    private final int XB_AXIS_LT = 2;
-    private final int XB_AXIS_RT = 3;
-    // Right Joystick
-    private final int XB_AXIS_RIGHT_X = 4;
-    private final int XB_AXIS_RIGHT_Y = 5;
-
-    // Buttons
-    private final int XB_A = 1;
-    private final int XB_B = 2;
-    private final int XB_X = 3;
-    private final int XB_Y = 4;
-
-    // Bumpers
-    private final int XB_LB = 5;
-    private final int XB_RB = 6;
-
-    // Back and Start
-    private final int XB_BACK = 7;
-    private final int XB_START = 8;
-
-    // Joystick Buttons
-    private final int XB_LEFTSTICK_BUTTON = 9;
-    private final int XB_RIGHTSTICK_BUTTON = 10;
-
     /**
      * <h3>ControllerManager</h3>
      * 
@@ -114,6 +127,11 @@ public class ControllerManager{
         // Joystick Buttons
         leftStickButton = new JoystickButton(controller, XB_LEFTSTICK_BUTTON);
         rightStickButton = new JoystickButton(controller, XB_RIGHTSTICK_BUTTON);
+
+        povUpTrigger = new POVTrigger(controller, XB_POV_ID, XB_POV_UP);
+        povDownTrigger = new POVTrigger(controller, XB_POV_ID, XB_POV_DOWN);
+        povLeftTrigger = new POVTrigger(controller, XB_POV_ID, XB_POV_LEFT);
+        povRightTrigger = new POVTrigger(controller, XB_POV_ID, XB_POV_RIGHT);
     }
 
     //----- METHOD(S) -----\\
@@ -137,6 +155,46 @@ public class ControllerManager{
      */
     public AxisTrigger getRightTrigger(){
         return rightTrigger;
+    }
+    /**
+     * <h3>getPOVUpTrigger</h3>
+     * 
+     * Returns the POV Up Trigger
+     * 
+     * @return povUpTrigger axis
+     */
+    public POVTrigger getPOVUpTrigger(){
+        return povUpTrigger;
+    }
+    /**
+     * <h3>getPOVDownTrigger</h3>
+     * 
+     * Returns the POV Down Trigger
+     * 
+     * @return povDownTrigger axis
+     */
+    public POVTrigger getPOVDownTrigger(){
+        return povDownTrigger;
+    }
+    /**
+     * <h3>getPOVLeftTrigger</h3>
+     * 
+     * Returns the POV Left Trigger
+     * 
+     * @return povLeftTrigger axis
+     */
+    public POVTrigger getPOVLeftTrigger(){
+        return povLeftTrigger;
+    }
+    /**
+     * <h3>getPOVRightTrigger</h3>
+     * 
+     * Returns the POV Right Trigger
+     * 
+     * @return povRightTrigger axis
+     */
+    public POVTrigger getPOVRightTrigger(){
+        return povRightTrigger;
     }
     /**
      * <h3>getLeftYJoystick</h3>

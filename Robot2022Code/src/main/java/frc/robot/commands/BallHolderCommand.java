@@ -10,7 +10,11 @@ import frc.robot.utilities.BallSensorUtility;
  * Manages the ball holder based off of catapult sensor
  */
 public class BallHolderCommand extends CommandBase {
-    CatapultSubsystem catapultSubsystem;
+
+    private final int CLOSE_DELAY = 13;
+
+    private CatapultSubsystem catapultSubsystem;
+    private int counter;
 
     /**
      * <h3>BallHolderCommand</h3>
@@ -22,7 +26,7 @@ public class BallHolderCommand extends CommandBase {
      */
     public BallHolderCommand(CatapultSubsystem catapult) {
         catapultSubsystem = catapult;
-
+        counter = 0;
         addRequirements(catapultSubsystem);
     }
 
@@ -33,9 +37,13 @@ public class BallHolderCommand extends CommandBase {
 
     @Override
     public void execute() {
-        if (BallSensorUtility.getInstance().catapultIsTripped()) {
+        if (BallSensorUtility.getInstance().catapultIsTripped() && counter > CLOSE_DELAY) {
             catapultSubsystem.closeBallHolder();
+            counter = 0;
+        } else if (BallSensorUtility.getInstance().catapultIsTripped()) {
+            counter++;
         } else {
+            counter = 0;
             catapultSubsystem.openBallHolder();
         }
     }
