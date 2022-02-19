@@ -37,27 +37,17 @@ public class DisengageIntakePistonsCommand extends CommandBase{
      */
     @Override
     public void initialize() {
-
-    }
-
-    /**
-     * <h3>execute</h3>
-     * 
-     * Called when the command is run by the scheduler.
-     */
-    @Override
-    public void execute() {
         intakePistonSubsystem.setIntakePistonState(false);
     }
 
     /**
-     * <h3>end</h3>
+     * <h3>isFinished</h3>
      * 
      * Called when the command ends.
      */
     @Override
-    public void end(boolean interrupted) {
-        
+    public boolean isFinished() {
+        return false;
     }
 
 }

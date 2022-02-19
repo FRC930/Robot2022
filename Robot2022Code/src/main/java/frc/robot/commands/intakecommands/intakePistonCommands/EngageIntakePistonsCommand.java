@@ -4,6 +4,7 @@ package frc.robot.commands.intakecommands.intakePistonCommands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.IntakePistonSubsystem;
+import frc.robot.utilities.BallSensorUtility;
 import frc.robot.utilities.DriveCameraUtility;
 import frc.robot.utilities.DriveCameraUtility.CameraStates;
 
@@ -40,16 +41,17 @@ public class EngageIntakePistonsCommand extends CommandBase {
     @Override
     public void initialize() {
         DriveCameraUtility.getInstance().setCameraState(CameraStates.BALL);
+        if (!BallSensorUtility.getInstance().indexerIsTripped()) {
+            intakePistonSubsystem.setIntakePistonState(true);
+        }
     }
 
     /**
-     * <h3>execute</h3>
-     * 
-     * Called when the command is run by the scheduler.
+     * Returns true when the command should end.
      */
     @Override
-    public void execute() {
-        intakePistonSubsystem.setIntakePistonState(true);
+    public boolean isFinished() {
+        return BallSensorUtility.getInstance().indexerIsTripped();
     }
 
     /**
@@ -59,6 +61,7 @@ public class EngageIntakePistonsCommand extends CommandBase {
      */
     @Override
     public void end(boolean interrupted) {
+        intakePistonSubsystem.setIntakePistonState(false);
         DriveCameraUtility.getInstance().setCameraState(CameraStates.REFLECTIVE_TAPE);
     }
 
