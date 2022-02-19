@@ -31,7 +31,7 @@ public class ShuffleboardUtility {
 
     private SendableChooser<Command> autonChooser;
 
-    private final boolean IS_DEBUGGING = true;
+    private final boolean IS_DEBUGGING = false;
 
     // ----- TABS -----\\
 
@@ -174,7 +174,9 @@ public class ShuffleboardUtility {
 
         // MISCELLANEOUS
         CAMERA_STREAM("Camera stream"),
-        DISTANCE_FROM_GOAL("Distance from goal");
+        DISTANCE_FROM_GOAL("Distance from goal"),
+
+        AIMED("Is Aimed?");
 
         final String m_name;
 
