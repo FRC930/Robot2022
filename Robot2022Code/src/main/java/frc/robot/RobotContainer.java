@@ -3,6 +3,8 @@ package frc.robot;
 import edu.wpi.first.wpilibj2.command.Command;
 import java.util.List;
 
+import com.ctre.phoenix.motorcontrol.NeutralMode;
+
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.cscore.UsbCamera;
 import edu.wpi.first.math.controller.RamseteController;
@@ -364,7 +366,9 @@ public class RobotContainer {
      * </p>
      */
     public void beginTeleopRunCommands() {
+        driveSubsystem.setMototBreakMode(NeutralMode.Coast);
         driveSubsystem.softReset();
+        
         // startCamera();
 
         // Manages commands via stacking
@@ -418,7 +422,8 @@ public class RobotContainer {
     }
 
     public void beginAutoRunCommands() {
-
+        driveSubsystem.setMototBreakMode(NeutralMode.Brake);
+        driveSubsystem.softReset();
         // --The instance of the scheduler
         CommandScheduler scheduler = CommandScheduler.getInstance();
         scheduler.unregisterSubsystem(catapultSubsystem,

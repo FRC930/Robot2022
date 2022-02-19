@@ -157,13 +157,13 @@ public class DriveSubsystem extends SubsystemBase {
         // Need to set setInverted to Follow Laader Motors (master)
         m_leftFollower.setInverted(InvertType.FollowMaster);
         m_rightFollower.setInverted(InvertType.FollowMaster);
-
-        m_leftLeader.setNeutralMode(NeutralMode.Brake);
-        m_leftFollower.setNeutralMode(NeutralMode.Brake);
-        m_rightLeader.setNeutralMode(NeutralMode.Brake);
-        m_rightFollower.setNeutralMode(NeutralMode.Brake);
     }
-
+    public void setMototBreakMode(NeutralMode breakMode){
+        m_leftLeader.setNeutralMode(breakMode);
+        m_leftFollower.setNeutralMode(breakMode);
+        m_rightLeader.setNeutralMode(breakMode);
+        m_rightFollower.setNeutralMode(breakMode);
+    }
     /**
      * <h3>setVoltages</h3>
      * 
