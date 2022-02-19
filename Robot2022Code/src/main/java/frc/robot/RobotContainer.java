@@ -24,6 +24,7 @@ import frc.robot.commands.LEDCommand;
 import frc.robot.commands.ToggleShifterCommand;
 import frc.robot.commands.autocommands.AutoCommandManager;
 import frc.robot.commands.autocommands.AutoCommandManager.subNames;
+import frc.robot.commands.autovisioncommands.HubAimingCommand;
 import frc.robot.commands.endgamecommands.EndgameArmCommand;
 import frc.robot.commands.endgamecommands.EndgameArmRevCommand;
 import frc.robot.commands.endgamecommands.EndgameCloseClawSingleCommand;
@@ -142,6 +143,8 @@ public class RobotContainer {
     private final EndgamePistonSubsystem endgamePistonL3;
     private final EndgamePistonSubsystem endgamePistonR3;
     private final EndgamePistonSubsystem endgamePiston4;
+
+    private final HubAimingCommand hubAimingCommand;
 
     //LED commands
     private final LEDCommand autonPatternCommand;
@@ -263,6 +266,8 @@ public class RobotContainer {
         endgameManager = new EndgameManagerCommand(endgameMotorSubsystem,
                 endgamePiston1, endgamePiston2, endgamePistonL3, endgamePistonR3, endgamePiston4);
 
+        hubAimingCommand = new HubAimingCommand(reflectiveTapeCameraSubsystem, driveSubsystem);
+
         // ----- SETTING BALL COLOR -----\\
         if (DriverStation.getAlliance() == Alliance.Blue) {
             DriveCameraUtility.getInstance().setBallColor(BallColor.BLUE);
@@ -343,6 +348,8 @@ public class RobotContainer {
         driverController.getAButton().whileActiveOnce(endgameArmRevCommand);
 
         driverController.getStartButton().whileActiveOnce(endgameManager);
+        
+        driverController.getRightBumper().whileActiveContinuous(hubAimingCommand);
 
     }
 
