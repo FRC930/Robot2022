@@ -357,7 +357,7 @@ public class RobotContainer {
      * </p>
      */
     public void beginTeleopRunCommands() {
-
+        driveSubsystem.softReset();
         // startCamera();
 
         // Manages commands via stacking
@@ -432,7 +432,9 @@ public class RobotContainer {
 
     public void testInit() {
         stopSubsystems();
-        driveSubsystem.resetOdometry(m_trajectory.getInitialPose());
+        if(driverController.getRightTrigger().get()){
+            driveSubsystem.hardReset(m_trajectory.getInitialPose());
+        }
     }
 
     public void testPeriodic() {

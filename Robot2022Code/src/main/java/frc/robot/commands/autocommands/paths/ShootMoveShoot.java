@@ -4,9 +4,8 @@ import com.pathplanner.lib.PathPlanner;
 
 import frc.robot.commands.Ramsete930Command;
 import edu.wpi.first.math.controller.RamseteController;
-import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.trajectory.Trajectory;
-
+import frc.robot.utilities.DifferentialDriveOdometry930;
 import frc.robot.utilities.PathPlannerSequentialCommandGroupUtility;
 import frc.robot.subsystems.DriveSubsystem;
 
@@ -20,7 +19,7 @@ public class ShootMoveShoot extends PathPlannerSequentialCommandGroupUtility {
     private final double KMAXACCELERATION = 0.5;
     private final double KRAMSETEB = 2;
     private final double KRAMSETEZETA = 0.7;
-    private final DifferentialDriveOdometry m_odometry;
+    private final DifferentialDriveOdometry930 m_odometry;
 
     /**
      * Default path constructor

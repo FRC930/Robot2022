@@ -16,7 +16,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
-import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
+import frc.robot.utilities.DifferentialDriveOdometry930;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.math.trajectory.constraint.DifferentialDriveVoltageConstraint;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
@@ -114,7 +114,7 @@ public class DriveSubsystem extends SubsystemBase {
     private final DifferentialDriveVoltageConstraint voltageConstraint = new DifferentialDriveVoltageConstraint(
             constraintFeedforward, getKinematics(), 10);
 
-    private final DifferentialDriveOdometry m_odometry = new DifferentialDriveOdometry(
+    private final DifferentialDriveOdometry930 m_odometry = new DifferentialDriveOdometry930(
             new Rotation2d(Math.toRadians(GyroUtility.getInstance().getGyro().getFusedHeading())));
 
     private double yawPitchRollValues[] = new double[3];
@@ -436,16 +436,40 @@ public class DriveSubsystem extends SubsystemBase {
         setSpeeds(wheelSpeeds);
     }
     
+    /**
+     * Returns the heading of the gyro.
+     *
+     * @return the heading of the gyro.
+     */
     public double getHeading() {
         GyroUtility.getInstance().getGyro().getYawPitchRoll(yawPitchRollValues);
         return Math.IEEEremainder(yawPitchRollValues[0], 360);
     }
 
-    public void resetOdometry(Pose2d pose) {
+    /**
+     * Resets everything on the odometry.
+     *
+     * @param pose position of the robot.
+     */
+    public void hardReset(Pose2d pose) {
         m_odometry.resetPosition(pose, Rotation2d.fromDegrees(getHeading()));
     }
 
-    public DifferentialDriveOdometry getOdometry() {
+    /**
+     * Resets everything on the odometry except the position.
+     *
+     * @param rotation the rotational angle of the robot.
+     */
+    public void softReset(){
+        m_odometry.resetRotation(Rotation2d.fromDegrees(getHeading()));
+    }
+
+    /**
+     * Drives the robot with the given linear velocity and angular velocity.
+     *
+     * @return m_odometry .
+     */
+    public DifferentialDriveOdometry930 getOdometry() {
         return m_odometry;
     }
 

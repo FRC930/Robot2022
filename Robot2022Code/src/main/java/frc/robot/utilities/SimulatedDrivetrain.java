@@ -9,7 +9,6 @@ import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
-import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.math.numbers.N2;
 import edu.wpi.first.math.system.LinearSystem;
@@ -60,7 +59,7 @@ public class SimulatedDrivetrain {
     private final AnalogGyro m_gyro = new AnalogGyro(0);
 
     private final DifferentialDriveKinematics m_kinematics = new DifferentialDriveKinematics(kTrackWidth);
-    private final DifferentialDriveOdometry m_odometry = new DifferentialDriveOdometry(m_gyro.getRotation2d());
+    private final DifferentialDriveOdometry930 m_odometry = new DifferentialDriveOdometry930(m_gyro.getRotation2d());
 
     // Gains are for example purposes only - must be determined for your own
     // robot!
