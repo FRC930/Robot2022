@@ -65,15 +65,15 @@ public class DriveSubsystem extends SubsystemBase {
     private final WPI_TalonFX m_rightFollower;
 
     //Feed Forward Constants
-    private final double m_rightKS = 0.68688;
-    private final double m_rightKV = 2.1412;
-    private final double m_rightKA = 0.28824;
-    private final double m_leftKS = 0.68705;
-    private final double m_leftKV = 2.1383;
-    private final double m_leftKA = 0.22478;
-    private final double m_combinedKS = 0.68951;
-    private final double m_combinedKV = 2.1412;
-    private final double m_combinedKA = 0.41387;
+    private final double m_rightKS = 0.63653;
+    private final double m_rightKV = 2.1123;
+    private final double m_rightKA = 0.16967;
+    private final double m_leftKS = 0.64209;
+    private final double m_leftKV = 2.117;
+    private final double m_leftKA = 0.16648;
+    private final double m_combinedKS = 0.64289;
+    private final double m_combinedKV = 2.1143;
+    private final double m_combinedKA = 0.31544;
 
     // PID Constants
     // Getting I values
