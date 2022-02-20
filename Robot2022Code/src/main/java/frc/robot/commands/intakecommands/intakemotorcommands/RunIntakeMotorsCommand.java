@@ -8,6 +8,7 @@
 //-------- IMPORTS --------\\
 
 package frc.robot.commands.intakecommands.intakemotorcommands;
+
 import frc.robot.subsystems.IntakeMotorSubsystem;
 import frc.robot.utilities.BallSensorUtility;
 import edu.wpi.first.wpilibj2.command.CommandBase;
@@ -22,7 +23,7 @@ public class RunIntakeMotorsCommand extends CommandBase {
 
   // -------- CONSTANTS --------\\
 
-  private final double INTAKE_SPEED = 0.8;
+  private final double INTAKE_SPEED = 0.5;
 
   // -------- VARIABLES --------\\
 
@@ -30,7 +31,7 @@ public class RunIntakeMotorsCommand extends CommandBase {
   private boolean reversed = false;
 
   //-------- CONSTRUCTOR --------\\
-   /**
+  /**
    * <h3>CounterclockwiseIntakeMotorsCommand</h3>
    * 
    * This class contols the counter-clockwise intake motors
@@ -47,29 +48,28 @@ public class RunIntakeMotorsCommand extends CommandBase {
   // -------- COMMANDBASE METHODS --------\\
 
   /**
-  * Called when the command is initially scheduled. 
-  */
-  @Override  
+   * Called when the command is initially scheduled.
+   */
+  @Override
   public void initialize() {
-    if(!BallSensorUtility.getInstance().indexerIsTripped()){
-      if(!reversed) {
-        intakeMotors.setMotorSpeed(INTAKE_SPEED);
-      } else {
-        intakeMotors.setMotorSpeed(-INTAKE_SPEED);
-      }
+    if (!reversed) {
+      intakeMotors.setMotorSpeed(INTAKE_SPEED);
+    } else {
+      intakeMotors.setMotorSpeed(-INTAKE_SPEED);
     }
+
   }
-  
+
   /**
    * Returns true when the command should end.
    */
   @Override
   public boolean isFinished() {
-    return BallSensorUtility.getInstance().indexerIsTripped();
+    return false;
   }
 
   @Override
-  public void end(boolean interrupted){
+  public void end(boolean interrupted) {
     intakeMotors.setMotorSpeed(0.0);
   }
 

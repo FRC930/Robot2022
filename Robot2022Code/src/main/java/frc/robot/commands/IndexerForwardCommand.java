@@ -21,7 +21,7 @@ public class IndexerForwardCommand extends CommandBase{
      * If it does detect a ball it sets the motor speed to 0
      */
     public void execute() {
-        if (!BallSensorUtility.getInstance().catapultIsTripped()) {
+        if (!BallSensorUtility.getInstance().catapultIsTripped() || !BallSensorUtility.getInstance().indexerIsTripped()) {
             motor.setMotorSpeed(MOTOR_SPEED);
         } else { 
             motor.setMotorSpeed(0.0);

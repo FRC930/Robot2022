@@ -3,6 +3,8 @@ package frc.robot;
 import edu.wpi.first.wpilibj2.command.Command;
 import java.util.List;
 
+import com.ctre.phoenix.motorcontrol.NeutralMode;
+
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.cscore.UsbCamera;
 import edu.wpi.first.math.controller.RamseteController;
@@ -372,7 +374,10 @@ public class RobotContainer {
      * </p>
      */
     public void beginTeleopRunCommands() {
+        // Sets the brake mode to coast
+        driveSubsystem.setMotorBrakeMode(NeutralMode.Brake);
         driveSubsystem.softReset();
+        
         // startCamera();
 
         // Manages commands via stacking
@@ -426,12 +431,14 @@ public class RobotContainer {
     }
 
     public void beginAutoRunCommands() {
-
+        // Sets the brake mode to brake
+        driveSubsystem.setMotorBrakeMode(NeutralMode.Brake);
+        driveSubsystem.softReset();
         // --The instance of the scheduler
         CommandScheduler scheduler = CommandScheduler.getInstance();
+        // cannot unregister subsystems you cannot expect to run during auto
         scheduler.unregisterSubsystem(catapultSubsystem,
                 // catapultSensorSubsystem,
-                driveSubsystem,
                 endgameMotorSubsystem,
                 // endgamePistonSubsystem,
                 // endgameSensorSubsystem,
@@ -452,7 +459,6 @@ public class RobotContainer {
 
     public void testPeriodic() {
         if (driverController.getLeftBumper().get()) {
-            endgameMotorSubsystem.setMotorSpeed(0.0);
             if (driverController.getYButton().get()) {
                 endgamePiston1.open();
             } else {
@@ -478,19 +484,10 @@ public class RobotContainer {
             } else {
                 endgamePiston4.closed();
             }
-        } else {
-            if (driverController.getYButton().get()) {
-                endgameMotorSubsystem.setMotorSpeed(0.2);
-            } else if (driverController.getAButton().get()) {
-                endgameMotorSubsystem.setMotorSpeed(-0.2);
-            } else {
-                endgameMotorSubsystem.setMotorSpeed(0.0);
-            }
-        }
+        } else {}
     }
 
     public void stopSubsystems() {
-        endgameMotorSubsystem.setMotorSpeed(0.0);
         intakeMotorSubsystem.setMotorSpeed(0.0);
         driveSubsystem.setVoltages(0.0, 0.0);
     }

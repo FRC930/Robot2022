@@ -20,7 +20,7 @@ import frc.robot.utilities.PathPlannerSequentialCommandGroupUtility;
 public class DefaultAutoPathCommand extends PathPlannerSequentialCommandGroupUtility {
 
     // TO-DO comment this section
-    private final double KMAXSPEED = 0.2; //DriveSubsystem.DRIVETRAIN_MAX_FREE_SPEED_HIGH
+    private final double KMAXSPEED = 0.5; //DriveSubsystem.DRIVETRAIN_MAX_FREE_SPEED_HIGH
     private final double KMAXACCELERATION = 2.5;
     //private final double KRAMSETEB = 2;
     //private final double KRAMSETEZETA = 0.7;
@@ -54,7 +54,7 @@ public class DefaultAutoPathCommand extends PathPlannerSequentialCommandGroupUti
                 // Midpoints
                 ),
                 // End 5 feet infront of initiation line
-                new Pose2d(inchesToMeters(60.0), inchesToMeters(0), new Rotation2d(0)),
+                new Pose2d(inchesToMeters(120.0), inchesToMeters(0), new Rotation2d(0)),
                 // Pass config
                 config
 
