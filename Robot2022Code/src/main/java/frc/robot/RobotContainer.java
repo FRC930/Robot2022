@@ -374,6 +374,7 @@ public class RobotContainer {
      * </p>
      */
     public void beginTeleopRunCommands() {
+        // Sets the brake mode to coast
         driveSubsystem.setMototBreakMode(NeutralMode.Coast);
         driveSubsystem.softReset();
         
@@ -430,13 +431,14 @@ public class RobotContainer {
     }
 
     public void beginAutoRunCommands() {
+        // Sets the brake mode to brake
         driveSubsystem.setMototBreakMode(NeutralMode.Brake);
         driveSubsystem.softReset();
         // --The instance of the scheduler
         CommandScheduler scheduler = CommandScheduler.getInstance();
+        // cannot unregister subsystems you cannot expect to run during auto
         scheduler.unregisterSubsystem(catapultSubsystem,
                 // catapultSensorSubsystem,
-                driveSubsystem,
                 endgameMotorSubsystem,
                 // endgamePistonSubsystem,
                 // endgameSensorSubsystem,

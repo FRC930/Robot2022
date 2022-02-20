@@ -8,6 +8,7 @@ import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.sensors.PigeonIMU;
 import com.ctre.phoenix.sensors.SensorVelocityMeasPeriod;
+import com.ctre.phoenix.sensors.PigeonIMU.CalibrationMode;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
@@ -38,10 +39,11 @@ import frc.robot.utilities.SimulatedDrivetrain;
  */
 public class DriveSubsystem extends SubsystemBase {
 
-// rpm = 6300
-// with a gear ratio of 6.3, divide 6380 by 6.3 which equals 1012.698
-// divide that value by 60 to get rotations per second : 1012.698 / 60 = 16.678
-// wheel circumference times the rotations per second : 0.1016(wheel dimention) * pi * 16.678 = 5.32
+    // rpm = 6300
+    // with a gear ratio of 6.3, divide 6380 by 6.3 which equals 1012.698
+    // divide that value by 60 to get rotations per second : 1012.698 / 60 = 16.678
+    // wheel circumference times the rotations per second : 0.1016(wheel dimention)
+    // * pi * 16.678 = 5.32
 
     public static final double kMaxSpeed = 5.32; // meters per second
     public static final double kMaxAngularSpeed = Math.PI; // 1 rotation per second
@@ -64,7 +66,7 @@ public class DriveSubsystem extends SubsystemBase {
     private final WPI_TalonFX m_rightLeader;
     private final WPI_TalonFX m_rightFollower;
 
-    //Feed Forward Constants
+    // Feed Forward Constants
     private final double m_rightKS = 0.63653;
     private final double m_rightKV = 2.1123;
     private final double m_rightKA = 0.16967;
@@ -78,7 +80,8 @@ public class DriveSubsystem extends SubsystemBase {
     // PID Constants
     // Getting I values
     // 1 divided by loop period in minutes times 2
-    // our loop period is 20 miliseconds which calculated into minutes is : 20(Loop period) / 60000(Miliseconds in one minute) = 0.000333
+    // our loop period is 20 miliseconds which calculated into minutes is : 20(Loop
+    // period) / 60000(Miliseconds in one minute) = 0.000333
     // calculated estimated I = 1/(0.000333 * 2)
     private final double m_loopPeriodPerMin = 0.000333;
     private final double m_leftP = 2.464;
@@ -104,7 +107,7 @@ public class DriveSubsystem extends SubsystemBase {
     private final SimpleMotorFeedforward rightMotorFeedforward = new SimpleMotorFeedforward(m_rightKS, m_rightKV,
             m_rightKA);
     private final SimpleMotorFeedforward constraintFeedforward = new SimpleMotorFeedforward(m_combinedKS,
-    m_combinedKV, m_combinedKA);
+            m_combinedKV, m_combinedKA);
 
     private final PIDController leftPIDController = new PIDController(m_leftP, m_leftI, m_leftD);
     private final PIDController rightPIDController = new PIDController(m_rightP, m_rightI, m_rightD);
@@ -150,7 +153,7 @@ public class DriveSubsystem extends SubsystemBase {
 
         m_leftLeader.setInverted(InvertType.None);
         // Right side motors are inverted (opposite direction)
-        m_rightLeader.setInverted(true); 
+        m_rightLeader.setInverted(true);
 
         m_leftFollower.follow(m_leftLeader);
         m_rightFollower.follow(m_rightLeader);
@@ -163,12 +166,19 @@ public class DriveSubsystem extends SubsystemBase {
         m_rightLeader.setNeutralMode(NeutralMode.Coast);
         m_rightFollower.setNeutralMode(NeutralMode.Coast);
     }
-    public void setMototBreakMode(NeutralMode breakMode){
+/**
+ * <h3>setMototBreakMode</h3>
+ * 
+ * Sets left and right motors to a certain breakmode: auto is brake; teleop is coast
+ * @param breakMode
+ */
+    public void setMototBreakMode(NeutralMode breakMode) {
         m_leftLeader.setNeutralMode(breakMode);
         m_leftFollower.setNeutralMode(breakMode);
         m_rightLeader.setNeutralMode(breakMode);
         m_rightFollower.setNeutralMode(breakMode);
     }
+
     /**
      * <h3>setVoltages</h3>
      * 
@@ -308,9 +318,7 @@ public class DriveSubsystem extends SubsystemBase {
      * @return the volatage at which to run the motor
      */
     public double speedToVoltage(double speed) {
-        return speed
-                / (ShifterUtility.getShifterState() ? DRIVETRAIN_MAX_FREE_SPEED_LOW : DRIVETRAIN_MAX_FREE_SPEED_HIGH)
-                * kMaxVolts;
+        return speed / DRIVETRAIN_MAX_FREE_SPEED_HIGH * kMaxVolts;
     }
 
     /**
@@ -324,7 +332,7 @@ public class DriveSubsystem extends SubsystemBase {
                 DriveSubsystem.kMaxSpeed;
         double rightOutput = speeds.rightMetersPerSecond * kMaxVolts /
                 DriveSubsystem.kMaxSpeed;
-                
+
         setVoltages(leftOutput, rightOutput);
     }
 
@@ -334,7 +342,7 @@ public class DriveSubsystem extends SubsystemBase {
      * @return the encoder speed
      */
     public double getLeftEncoder() {
-        return 
+        return
         // m_leftLeader.getSensorCollection().getIntegratedSensorVelocity()
         m_leftLeader.getSelectedSensorVelocity()
                 // Multiply by 10 to get encoder units per second
@@ -353,8 +361,8 @@ public class DriveSubsystem extends SubsystemBase {
     public double getRightEncoder() {
         // Multiply by 10 to get encoder units per second
         return m_rightLeader.getSelectedSensorVelocity()
-        // m_rightLeader.getSensorCollection().getIntegratedSensorVelocity()
-         * 10 / kEncoderResolution
+                // m_rightLeader.getSensorCollection().getIntegratedSensorVelocity()
+                * 10 / kEncoderResolution
                 * (2 * Math.PI * kWheelRadius) / (ShifterUtility.getShifterState() ? lowGearRatio : highGearRatio);
     }
 
@@ -440,7 +448,7 @@ public class DriveSubsystem extends SubsystemBase {
         var wheelSpeeds = m_kinematics.toWheelSpeeds(new ChassisSpeeds(xSpeed, 0.0, rot));
         setSpeeds(wheelSpeeds);
     }
-    
+
     /**
      * Returns the heading of the gyro.
      *
@@ -458,6 +466,7 @@ public class DriveSubsystem extends SubsystemBase {
      */
     public void hardReset(Pose2d pose) {
         m_odometry.resetPosition(pose, Rotation2d.fromDegrees(getHeading()));
+        GyroUtility.getInstance().getGyro().enterCalibrationMode(CalibrationMode.BootTareGyroAccel);
     }
 
     /**
@@ -465,7 +474,7 @@ public class DriveSubsystem extends SubsystemBase {
      *
      * @param rotation the rotational angle of the robot.
      */
-    public void softReset(){
+    public void softReset() {
         m_odometry.resetRotation(Rotation2d.fromDegrees(getHeading()));
     }
 
@@ -480,6 +489,8 @@ public class DriveSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
+        //SmartDashboard.putNumber("left encoder", getRawLeftSensorPosition());
+        //SmartDashboard.putNumber("right encoder", getRawRightSensorPosition());
         m_odometry.update(
                 // Create a new Rotation2d object with the reading from the pigeon
                 new Rotation2d(Math.toRadians(GyroUtility.getInstance().getGyro().getFusedHeading())),
@@ -493,10 +504,9 @@ public class DriveSubsystem extends SubsystemBase {
                 // TODO: Check if we need to multiply by 2*pi*r because circumference
                 getRawRightSensorPosition() * ((1.0 / 2048.0) * kWheelRadius * Math.PI * 2)
                 // Divide by the current gear ratio because the motors turn more than the wheels
-                        / highGearRatio
-        );
+                        / highGearRatio);
         Pose2d robotPosition = m_odometry.getPoseMeters();
-        SmartDashboard.putNumber("robotPositionX", robotPosition.getX());
-        SmartDashboard.putNumber("robotPositionY", robotPosition.getY());
+        //SmartDashboard.putNumber("robotPositionX", robotPosition.getX());
+        //SmartDashboard.putNumber("robotPositionY", robotPosition.getY());
     }
 }

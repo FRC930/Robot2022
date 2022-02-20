@@ -8,6 +8,7 @@ import static edu.wpi.first.wpilibj.util.ErrorMessages.requireNonNullParam;
 
 import edu.wpi.first.math.controller.RamseteController;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
@@ -15,7 +16,9 @@ import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.RamseteCommand;
 import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.utilities.GyroUtility;
 
 import java.util.function.BiConsumer;
 import java.util.function.Supplier;
@@ -124,6 +127,7 @@ public class Ramsete930Command extends CommandBase {
 
   @Override
   public void execute() {
+
     //  Tracking current time
     double curTime = m_timer.get();
   
@@ -137,8 +141,6 @@ public class Ramsete930Command extends CommandBase {
     }
 
     Pose2d robotPosition = m_pose.get();
-    SmartDashboard.putNumber("robotPositionX", robotPosition.getX());
-    SmartDashboard.putNumber("robotPositionY", robotPosition.getY());
 
     var targetWheelSpeeds =
         m_kinematics.toWheelSpeeds(
@@ -151,18 +153,20 @@ public class Ramsete930Command extends CommandBase {
     double rightOutput;
 
     if (m_usePID) {
-      //  Using our feed forward controllers
-      SmartDashboard.putNumber("left setpoint", leftSpeedSetpoint);
-      SmartDashboard.putNumber("right setpoint", rightSpeedSetpoint);
+      // Using our feed forward controllers
+      // Every input is in terms of velocity
+      // -- Feed forward takes desired setpoint from autonomous and then calculates acceleration baased on set point
       double leftFeedforward = m_dSubsystem.calculateLeftFeedforward(leftSpeedSetpoint, (leftSpeedSetpoint - m_prevSpeeds.leftMetersPerSecond) / dt);
       double rightFeedforward = m_dSubsystem.calculateRightFeedforward(rightSpeedSetpoint, (rightSpeedSetpoint - m_prevSpeeds.rightMetersPerSecond) / dt);
-      double leftPID = m_dSubsystem.calculateLeftPID(m_speeds.get().leftMetersPerSecond, leftFeedforward);
-      SmartDashboard.putNumber("leftPID", leftPID);
-      double rightPID = m_dSubsystem.calculateLeftPID(m_speeds.get().rightMetersPerSecond, rightFeedforward);
-      SmartDashboard.putNumber("rightPID", rightPID);
-      //  Using our PID controllers
-      leftOutput = leftPID; //+ m_dSubsystem.calculateLeftPID(m_speeds.get().leftMetersPerSecond, leftSpeedSetpoint);
-      rightOutput = rightPID; //+ m_dSubsystem.calculateRightPID(m_speeds.get().rightMetersPerSecond, rightSpeedSetpoint);
+      
+      //PID take state of motors and tries to set them to desired set speed
+      double leftPID = m_dSubsystem.calculateLeftPID(m_speeds.get().leftMetersPerSecond, leftSpeedSetpoint);
+      double rightPID = m_dSubsystem.calculateLeftPID(m_speeds.get().rightMetersPerSecond, rightSpeedSetpoint);
+      
+      // Using our PID controllers
+      // -- To combine both the PID and Feed forward you add them together
+      leftOutput = leftFeedforward + leftPID;//m_dSubsystem.calculateLeftPID(m_speeds.get().leftMetersPerSecond, leftSpeedSetpoint);
+      rightOutput = rightFeedforward + rightPID;//m_dSubsystem.calculateRightPID(m_speeds.get().rightMetersPerSecond, rightSpeedSetpoint);
 
     } else {
       leftOutput = leftSpeedSetpoint;
