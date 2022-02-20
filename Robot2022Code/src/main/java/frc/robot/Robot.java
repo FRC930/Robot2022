@@ -120,4 +120,9 @@ public class Robot extends TimedRobot {
         m_robotContainer.testPeriodic();
     }
 
+    @Override
+    public void testExit(){
+        m_robotContainer.testExit();
+    }
+
 }

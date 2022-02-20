@@ -50,6 +50,10 @@ public class EndgameMotorSubsystem extends SubsystemBase {
         // Makes it so it can't be manually moved when neutral
         endgameMotorMaster.setNeutralMode(NeutralMode.Brake);
         endgameMotorSlave.setNeutralMode(NeutralMode.Brake);
+        refollowEndgameMotors();
+    }
+
+    public void refollowEndgameMotors() {
         // Sets slave to follow master and inverts slave
         endgameMotorMaster.setInverted(InvertType.None);
         endgameMotorSlave.follow(endgameMotorMaster, FollowerType.PercentOutput);

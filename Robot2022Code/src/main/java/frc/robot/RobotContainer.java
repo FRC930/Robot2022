@@ -454,10 +454,15 @@ public class RobotContainer {
 
     public void testInit() {
         stopSubsystems();
-        driveSubsystem.hardReset(new Pose2d(new Translation2d(0.0, 0.0), new Rotation2d(0.0)));
+        endgameMotorSubsystem.refollowEndgameMotors();
     }
 
     public void testPeriodic() {
+        // TODO: figure out why we need this-need to repair
+        endgameMotorSubsystem.refollowEndgameMotors();
+        if(driverController.getStartButton().get()){
+            driveSubsystem.hardReset(new Pose2d(new Translation2d(0.0, 0.0), new Rotation2d(0.0)));
+        }
         if (driverController.getLeftBumper().get()) {
             if (driverController.getYButton().get()) {
                 endgamePiston1.open();
@@ -484,7 +489,21 @@ public class RobotContainer {
             } else {
                 endgamePiston4.closed();
             }
-        } else {}
+        } else {
+            if(driverController.getYButton().get()){
+                endgameMotorSubsystem.setMotorSpeed(0.2);
+            } 
+            else if(driverController.getAButton().get()){
+                endgameMotorSubsystem.setMotorSpeed(-0.2);
+            }
+            else {
+                endgameMotorSubsystem.setMotorSpeed(0.0);
+            }
+        }
+    }
+
+    public void testExit(){
+        endgameMotorSubsystem.refollowEndgameMotors();
     }
 
     public void stopSubsystems() {
