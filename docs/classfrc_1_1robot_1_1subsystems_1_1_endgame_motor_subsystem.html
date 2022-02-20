@@ -118,13 +118,16 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a818b96747132986438ff1ba58753ee7a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a96003cbd850f05cc2416af699e2c87e6"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfrc_1_1robot_1_1subsystems_1_1_endgame_motor_subsystem.html#a96003cbd850f05cc2416af699e2c87e6">setMotorSpeed</a> (double speed)</td></tr>
 <tr class="separator:a96003cbd850f05cc2416af699e2c87e6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a34b97c598961a2a6637ec4f6a5d57da2"><td class="memItemLeft" align="right" valign="top"><a id="a34b97c598961a2a6637ec4f6a5d57da2" name="a34b97c598961a2a6637ec4f6a5d57da2"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>stopMotor</b> ()</td></tr>
+<tr class="memitem:a34b97c598961a2a6637ec4f6a5d57da2"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfrc_1_1robot_1_1subsystems_1_1_endgame_motor_subsystem.html#a34b97c598961a2a6637ec4f6a5d57da2">stopMotor</a> ()</td></tr>
 <tr class="separator:a34b97c598961a2a6637ec4f6a5d57da2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0ca88b7107c3829e995059157af8e240"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfrc_1_1robot_1_1subsystems_1_1_endgame_motor_subsystem.html#a0ca88b7107c3829e995059157af8e240">getMotorSpeed</a> ()</td></tr>
 <tr class="separator:a0ca88b7107c3829e995059157af8e240"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7ff81cc70835dad1f807537544676f69"><td class="memItemLeft" align="right" valign="top">WPI_TalonSRX&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfrc_1_1robot_1_1subsystems_1_1_endgame_motor_subsystem.html#a7ff81cc70835dad1f807537544676f69">getEndgameMotorSlave</a> ()</td></tr>
-<tr class="separator:a7ff81cc70835dad1f807537544676f69"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5771fef921802fbfeb64ec1e7fe56920"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfrc_1_1robot_1_1subsystems_1_1_endgame_motor_subsystem.html#a5771fef921802fbfeb64ec1e7fe56920">getArmRotation</a> ()</td></tr>
+<tr class="separator:a5771fef921802fbfeb64ec1e7fe56920"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5b54d25aafb65bf4a4117fecc86d90fe"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfrc_1_1robot_1_1subsystems_1_1_endgame_motor_subsystem.html#a5b54d25aafb65bf4a4117fecc86d90fe">setArmPosition</a> (double position)</td></tr>
+<tr class="separator:a5b54d25aafb65bf4a4117fecc86d90fe"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0e5c152c4541f74984fc5d517c9f0c37"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfrc_1_1robot_1_1subsystems_1_1_endgame_motor_subsystem.html#a0e5c152c4541f74984fc5d517c9f0c37">resetEncoderPosition</a> ()</td></tr>
+<tr class="separator:a0e5c152c4541f74984fc5d517c9f0c37"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><h3><a class="el" href="classfrc_1_1robot_1_1subsystems_1_1_endgame_motor_subsystem.html">EndgameMotorSubsystem</a> </h3>
@@ -158,8 +161,8 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>stopMotor</b> ()</td>
 <p >This constructor initializes the endgame motors to the proper hardware</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">motorIDMaster</td><td>ID for the master TalonSRX-has endgame encoder attached </td></tr>
-    <tr><td class="paramname">motorIDSlave</td><td>ID for the slave TalonSRX-has pigeon attached </td></tr>
+    <tr><td class="paramname">motorIDMaster</td><td>ID for the master TalonFX </td></tr>
+    <tr><td class="paramname">motorIDSlave</td><td>ID for the slave TalonFX </td></tr>
   </table>
   </dd>
 </dl>
@@ -167,25 +170,23 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>stopMotor</b> ()</td>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="a7ff81cc70835dad1f807537544676f69" name="a7ff81cc70835dad1f807537544676f69"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7ff81cc70835dad1f807537544676f69">&#9670;&nbsp;</a></span>getEndgameMotorSlave()</h2>
+<a id="a5771fef921802fbfeb64ec1e7fe56920" name="a5771fef921802fbfeb64ec1e7fe56920"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5771fef921802fbfeb64ec1e7fe56920">&#9670;&nbsp;</a></span>getArmRotation()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">WPI_TalonSRX frc.robot.subsystems.EndgameMotorSubsystem.getEndgameMotorSlave </td>
+          <td class="memname">double frc.robot.subsystems.EndgameMotorSubsystem.getArmRotation </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
         </tr>
       </table>
 </div><div class="memdoc">
-<p >Returns slave TalonSRX controller </p>
-<p ><code><a class="el" href="classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem.html">DriveSubsystem</a></code> needs the slave talon for the Pigeon onboard.</p>
-<dl class="section return"><dt>Returns</dt><dd>endgameSlaveMotor </dd></dl>
-
-<p class="reference">Referenced by <a class="el" href="classfrc_1_1robot_1_1commands_1_1_drive_command.html#a6f76dde81a07bb9b120de8d7d43899d1">frc.robot.commands.DriveCommand.DriveCommand()</a>.</p>
+<p >getArmRotation </p>
+<p >How far the arm has rotated from zero.</p>
+<dl class="section return"><dt>Returns</dt><dd>the position of the encoder </dd></dl>
 
 </div>
 </div>
@@ -206,6 +207,50 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>stopMotor</b> ()</td>
 <h3>getMotorSpeed</h3>
 <p >This method returns the endgame motor speed</p>
 <dl class="section return"><dt>Returns</dt><dd>the current motor speed </dd></dl>
+
+</div>
+</div>
+<a id="a0e5c152c4541f74984fc5d517c9f0c37" name="a0e5c152c4541f74984fc5d517c9f0c37"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0e5c152c4541f74984fc5d517c9f0c37">&#9670;&nbsp;</a></span>resetEncoderPosition()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void frc.robot.subsystems.EndgameMotorSubsystem.resetEncoderPosition </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p >resetEncoderPosition </p>
+<p >Resets the endcoder back to starting position. Should be set while the bar is horizontal. </p>
+
+</div>
+</div>
+<a id="a5b54d25aafb65bf4a4117fecc86d90fe" name="a5b54d25aafb65bf4a4117fecc86d90fe"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5b54d25aafb65bf4a4117fecc86d90fe">&#9670;&nbsp;</a></span>setArmPosition()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void frc.robot.subsystems.EndgameMotorSubsystem.setArmPosition </td>
+          <td>(</td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>position</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p >setArmPosition </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">position</td><td>the wanted position of the arm as a decimal of a rotation. </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
@@ -235,6 +280,25 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>stopMotor</b> ()</td>
 
 </div>
 </div>
+<a id="a34b97c598961a2a6637ec4f6a5d57da2" name="a34b97c598961a2a6637ec4f6a5d57da2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a34b97c598961a2a6637ec4f6a5d57da2">&#9670;&nbsp;</a></span>stopMotor()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void frc.robot.subsystems.EndgameMotorSubsystem.stopMotor </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<h3>stopMotor</h3>
+<p >This method makes the endgame motor stop </p>
+
+</div>
+</div>
 <hr/>The documentation for this class was generated from the following file:<ul>
 <li>src/main/java/frc/robot/subsystems/EndgameMotorSubsystem.java</li>
 </ul>
@@ -244,7 +308,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>stopMotor</b> ()</td>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><b>frc</b></li><li class="navelem"><b>robot</b></li><li class="navelem"><b>subsystems</b></li><li class="navelem"><a class="el" href="classfrc_1_1robot_1_1subsystems_1_1_endgame_motor_subsystem.html">EndgameMotorSubsystem</a></li>
-    <li class="footer">Generated on Wed Jan 26 2022 20:11:31 for Robot2022 by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.3 </li>
+    <li class="footer">Generated on Sat Feb 19 2022 21:11:39 for Robot2022 by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.3 </li>
   </ul>
 </div>
 </body>

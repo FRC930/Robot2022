@@ -1,7 +1,8 @@
 <map id="src/main/java/frc/robot/commands" name="src/main/java/frc/robot/commands">
-<area shape="rect" id="node2" href="dir_996a6c9fbf43ea62aa02a7b6c1666ece.html" title="autocommands" alt="" coords="347,63,458,111"/>
-<area shape="rect" id="node3" href="dir_6324971980559bb9ade661655f34ede9.html" title="endgamecommands" alt="" coords="184,63,323,111"/>
-<area shape="rect" id="node4" href="dir_9869f7a1e4c0a25b2247fa500f87a15d.html" title="intakecommands" alt="" coords="38,63,159,111"/>
-<area shape="rect" id="clust2" href="dir_4e218576955152b3c4d959fa06d6da7a.html" alt="" coords="27,52,580,121"/>
-<area shape="rect" id="clust1" href="dir_7e2b9a5cfa086c8901c53a15b78652e4.html" title="robot" alt="" coords="16,16,591,132"/>
+<area shape="rect" id="node2" href="dir_996a6c9fbf43ea62aa02a7b6c1666ece.html" title="autocommands" alt="" coords="514,63,625,111"/>
+<area shape="rect" id="node3" href="dir_337e3bb10a0d28ce59399e046d7870e9.html" title="autovisioncommands" alt="" coords="347,63,490,111"/>
+<area shape="rect" id="node4" href="dir_6324971980559bb9ade661655f34ede9.html" title="endgamecommands" alt="" coords="184,63,323,111"/>
+<area shape="rect" id="node5" href="dir_9869f7a1e4c0a25b2247fa500f87a15d.html" title="intakecommands" alt="" coords="38,63,159,111"/>
+<area shape="rect" id="clust2" href="dir_4e218576955152b3c4d959fa06d6da7a.html" alt="" coords="27,52,747,121"/>
+<area shape="rect" id="clust1" href="dir_7e2b9a5cfa086c8901c53a15b78652e4.html" title="robot" alt="" coords="16,16,757,132"/>
 </map>

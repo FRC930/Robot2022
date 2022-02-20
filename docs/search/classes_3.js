@@ -1,11 +1,9 @@
 var searchData=
 [
-  ['endgamearmcommand_0',['EndgameArmCommand',['../classfrc_1_1robot_1_1commands_1_1endgamecommands_1_1_endgame_arm_command.html',1,'frc::robot::commands::endgamecommands']]],
-  ['endgamearmrevcommand_1',['EndgameArmRevCommand',['../classfrc_1_1robot_1_1commands_1_1endgamecommands_1_1_endgame_arm_rev_command.html',1,'frc::robot::commands::endgamecommands']]],
-  ['endgamecloseclawcommand_2',['EndgameCloseClawCommand',['../classfrc_1_1robot_1_1commands_1_1endgamecommands_1_1_endgame_close_claw_command.html',1,'frc::robot::commands::endgamecommands']]],
-  ['endgamemotorsubsystem_3',['EndgameMotorSubsystem',['../classfrc_1_1robot_1_1subsystems_1_1_endgame_motor_subsystem.html',1,'frc::robot::subsystems']]],
-  ['endgameopenclawcommand_4',['EndgameOpenClawCommand',['../classfrc_1_1robot_1_1commands_1_1endgamecommands_1_1_endgame_open_claw_command.html',1,'frc::robot::commands::endgamecommands']]],
-  ['endgamepistonsubsystem_5',['EndgamePistonSubsystem',['../classfrc_1_1robot_1_1subsystems_1_1_endgame_piston_subsystem.html',1,'frc::robot::subsystems']]],
-  ['endgamesensorsubsystem_6',['EndgameSensorSubsystem',['../classfrc_1_1robot_1_1subsystems_1_1_endgame_sensor_subsystem.html',1,'frc::robot::subsystems']]],
-  ['engageintakepistonscommand_7',['EngageIntakePistonsCommand',['../classfrc_1_1robot_1_1commands_1_1intakecommands_1_1intake_piston_commands_1_1_engage_intake_pistons_command.html',1,'frc::robot::commands::intakecommands::intakePistonCommands']]]
+  ['defaultautopathcommand_0',['DefaultAutoPathCommand',['../classfrc_1_1robot_1_1commands_1_1autocommands_1_1paths_1_1_default_auto_path_command.html',1,'frc::robot::commands::autocommands::paths']]],
+  ['differentialdriveodometry930_1',['DifferentialDriveOdometry930',['../classfrc_1_1robot_1_1utilities_1_1_differential_drive_odometry930.html',1,'frc::robot::utilities']]],
+  ['disengageintakepistonscommand_2',['DisengageIntakePistonsCommand',['../classfrc_1_1robot_1_1commands_1_1intakecommands_1_1intake_piston_commands_1_1_disengage_intake_pistons_command.html',1,'frc::robot::commands::intakecommands::intakePistonCommands']]],
+  ['drivecamerautility_3',['DriveCameraUtility',['../classfrc_1_1robot_1_1utilities_1_1_drive_camera_utility.html',1,'frc::robot::utilities']]],
+  ['drivecommand_4',['DriveCommand',['../classfrc_1_1robot_1_1commands_1_1_drive_command.html',1,'frc::robot::commands']]],
+  ['drivesubsystem_5',['DriveSubsystem',['../classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem.html',1,'frc::robot::subsystems']]]
 ];

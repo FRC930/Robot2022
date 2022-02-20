@@ -1,8 +1,6 @@
 var searchData=
 [
-  ['catapultcommand_0',['CatapultCommand',['../classfrc_1_1robot_1_1commands_1_1_catapult_command.html',1,'frc::robot::commands']]],
-  ['catapultsensorsubsystem_1',['CatapultSensorSubsystem',['../classfrc_1_1robot_1_1subsystems_1_1_catapult_sensor_subsystem.html',1,'frc::robot::subsystems']]],
-  ['catapultsubsystem_2',['CatapultSubsystem',['../classfrc_1_1robot_1_1subsystems_1_1_catapult_subsystem.html',1,'frc::robot::subsystems']]],
-  ['clockwiseintakemotorscommand_3',['ClockwiseIntakeMotorsCommand',['../classfrc_1_1robot_1_1commands_1_1intakecommands_1_1intakemotorcommands_1_1_clockwise_intake_motors_command.html',1,'frc::robot::commands::intakecommands::intakemotorcommands']]],
-  ['counterclockwiseintakemotorscommand_4',['CounterclockwiseIntakeMotorsCommand',['../classfrc_1_1robot_1_1commands_1_1intakecommands_1_1intakemotorcommands_1_1_counterclockwise_intake_motors_command.html',1,'frc::robot::commands::intakecommands::intakemotorcommands']]]
+  ['ballfollowcommand_0',['BallFollowCommand',['../classfrc_1_1robot_1_1commands_1_1autovisioncommands_1_1_ball_follow_command.html',1,'frc::robot::commands::autovisioncommands']]],
+  ['ballholdercommand_1',['BallHolderCommand',['../classfrc_1_1robot_1_1commands_1_1_ball_holder_command.html',1,'frc::robot::commands']]],
+  ['ballsensorutility_2',['BallSensorUtility',['../classfrc_1_1robot_1_1utilities_1_1_ball_sensor_utility.html',1,'frc::robot::utilities']]]
 ];

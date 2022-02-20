@@ -1,4 +1,23 @@
 var searchData=
 [
-  ['visioncamerasubsystem_0',['VisionCameraSubsystem',['../classfrc_1_1robot_1_1subsystems_1_1_vision_camera_subsystem.html',1,'frc.robot.subsystems.VisionCameraSubsystem'],['../classfrc_1_1robot_1_1subsystems_1_1_vision_camera_subsystem.html#a1d2dfd24aa866c3dc127282eb685911a',1,'frc.robot.subsystems.VisionCameraSubsystem.VisionCameraSubsystem()']]]
+  ['setarmposition_0',['setArmPosition',['../classfrc_1_1robot_1_1subsystems_1_1_endgame_motor_subsystem.html#a5b54d25aafb65bf4a4117fecc86d90fe',1,'frc::robot::subsystems::EndgameMotorSubsystem']]],
+  ['setcamerastate_1',['setCameraState',['../classfrc_1_1robot_1_1utilities_1_1_drive_camera_utility.html#acbb5b13bc948ebde740ef8c9ead17151',1,'frc::robot::utilities::DriveCameraUtility']]],
+  ['setdefaultautonoptions_2',['setDefaultAutonOptions',['../classfrc_1_1robot_1_1utilities_1_1_shuffleboard_utility.html#a96c72b888d44ef10bb2c2e8437c99ca1',1,'frc::robot::utilities::ShuffleboardUtility']]],
+  ['setgyro_3',['setGyro',['../classfrc_1_1robot_1_1utilities_1_1_gyro_utility.html#a2d82d409bf1be9a84eca3b1f890efe9f',1,'frc::robot::utilities::GyroUtility']]],
+  ['setintakepistonstate_4',['setIntakePistonState',['../classfrc_1_1robot_1_1subsystems_1_1_intake_piston_subsystem.html#a6a8ef1b2a00942e66d7fb7325ab895c5',1,'frc::robot::subsystems::IntakePistonSubsystem']]],
+  ['setmotorbrakemode_5',['setMotorBrakeMode',['../classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem.html#a3c2aa7783d8c0f858d2da80180ad336a',1,'frc::robot::subsystems::DriveSubsystem']]],
+  ['setmotorspeed_6',['setMotorSpeed',['../classfrc_1_1robot_1_1subsystems_1_1_endgame_motor_subsystem.html#a96003cbd850f05cc2416af699e2c87e6',1,'frc.robot.subsystems.EndgameMotorSubsystem.setMotorSpeed()'],['../classfrc_1_1robot_1_1subsystems_1_1_indexer_motor_subsystem.html#a52da04fd8b7be3489c00870b2d04dfee',1,'frc.robot.subsystems.IndexerMotorSubsystem.setMotorSpeed()'],['../classfrc_1_1robot_1_1subsystems_1_1_intake_motor_subsystem.html#af6ac3c8ce7994e36e576bc9ed18e8956',1,'frc.robot.subsystems.IntakeMotorSubsystem.setMotorSpeed()']]],
+  ['setpistonstate_7',['setPistonState',['../classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem.html#a3756a0deffc832e0d7fbd0d2db877afa',1,'frc::robot::subsystems::DriveSubsystem']]],
+  ['setshifterstate_8',['setShifterState',['../classfrc_1_1robot_1_1subsystems_1_1_shifter_subsystem.html#ad750a3ea0b381aa1d54365f536b877cf',1,'frc::robot::subsystems::ShifterSubsystem']]],
+  ['setspeeds_9',['setSpeeds',['../classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem.html#a18ee6a49a45138ef34f0770b25b420ff',1,'frc::robot::subsystems::DriveSubsystem']]],
+  ['setvoltages_10',['setVoltages',['../classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem.html#ad55ff101390932755974b445c1b58c02',1,'frc::robot::subsystems::DriveSubsystem']]],
+  ['shiftersubsystem_11',['ShifterSubsystem',['../classfrc_1_1robot_1_1subsystems_1_1_shifter_subsystem.html',1,'frc.robot.subsystems.ShifterSubsystem'],['../classfrc_1_1robot_1_1subsystems_1_1_shifter_subsystem.html#aa396e6375b288b058f6f25987f8f2855',1,'frc.robot.subsystems.ShifterSubsystem.ShifterSubsystem()']]],
+  ['shifterutility_12',['ShifterUtility',['../classfrc_1_1robot_1_1utilities_1_1_shifter_utility.html',1,'frc::robot::utilities']]],
+  ['shootmoveshoot_13',['ShootMoveShoot',['../classfrc_1_1robot_1_1commands_1_1autocommands_1_1paths_1_1_shoot_move_shoot.html',1,'frc.robot.commands.autocommands.paths.ShootMoveShoot'],['../classfrc_1_1robot_1_1commands_1_1autocommands_1_1paths_1_1_shoot_move_shoot.html#a56187508c62febe26059e7a8ab557f9e',1,'frc.robot.commands.autocommands.paths.ShootMoveShoot.ShootMoveShoot()']]],
+  ['shuffleboardutility_14',['ShuffleboardUtility',['../classfrc_1_1robot_1_1utilities_1_1_shuffleboard_utility.html',1,'frc::robot::utilities']]],
+  ['simulateddrivetrain_15',['SimulatedDrivetrain',['../classfrc_1_1robot_1_1utilities_1_1_simulated_drivetrain.html',1,'frc::robot::utilities']]],
+  ['softreset_16',['softReset',['../classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem.html#a26a6c9968485adb03f2b4a7efca0f5d8',1,'frc::robot::subsystems::DriveSubsystem']]],
+  ['speedtovoltage_17',['speedToVoltage',['../classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem.html#a3bb2b79d822e0313a3934d29cefa333a',1,'frc::robot::subsystems::DriveSubsystem']]],
+  ['stopintakemotorscommand_18',['StopIntakeMotorsCommand',['../classfrc_1_1robot_1_1commands_1_1intakecommands_1_1intakemotorcommands_1_1_stop_intake_motors_command.html',1,'frc::robot::commands::intakecommands::intakemotorcommands']]],
+  ['stopmotor_19',['stopMotor',['../classfrc_1_1robot_1_1subsystems_1_1_endgame_motor_subsystem.html#a34b97c598961a2a6637ec4f6a5d57da2',1,'frc::robot::subsystems::EndgameMotorSubsystem']]]
 ];

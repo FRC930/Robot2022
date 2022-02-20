@@ -1,0 +1,4 @@
+<map id="frc.robot.commands.LEDCommand.idlePattern" name="frc.robot.commands.LEDCommand.idlePattern">
+<area shape="rect" id="node1" title=" " alt="" coords="5,5,255,47"/>
+<area shape="rect" id="node2" href="$classfrc_1_1robot_1_1subsystems_1_1_l_e_d_subsystem.html#a08c88e70b38198cf0a10479ebd6789b5" title=" " alt="" coords="303,5,564,47"/>
+</map>

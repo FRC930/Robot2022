@@ -1,0 +1,6 @@
+<map id="frc.robot.commands.endgamecommands.EndgameRotateUntilTouching" name="frc.robot.commands.endgamecommands.EndgameRotateUntilTouching">
+<area shape="rect" id="node1" title=" " alt="" coords="5,185,268,227"/>
+<area shape="rect" id="node2" title=" " alt="" coords="60,89,171,115"/>
+<area shape="rect" id="node3" href="$classfrc_1_1robot_1_1subsystems_1_1_endgame_motor_subsystem.html" title=" " alt="" coords="195,81,398,123"/>
+<area shape="rect" id="node4" title=" " alt="" coords="237,5,356,32"/>
+</map>

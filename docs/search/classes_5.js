@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['main_0',['Main',['../classfrc_1_1robot_1_1_main.html',1,'frc::robot']]]
+  ['gyroutility_0',['GyroUtility',['../classfrc_1_1robot_1_1utilities_1_1_gyro_utility.html',1,'frc::robot::utilities']]]
 ];

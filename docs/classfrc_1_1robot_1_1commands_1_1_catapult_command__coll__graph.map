@@ -1,6 +1,7 @@
 <map id="frc.robot.commands.CatapultCommand" name="frc.robot.commands.CatapultCommand">
-<area shape="rect" id="node1" title=" " alt="" coords="21,185,210,227"/>
-<area shape="rect" id="node2" title=" " alt="" coords="5,89,116,115"/>
-<area shape="rect" id="node3" href="$classfrc_1_1robot_1_1subsystems_1_1_catapult_subsystem.html" title=" " alt="" coords="140,81,336,123"/>
-<area shape="rect" id="node4" title=" " alt="" coords="179,5,297,32"/>
+<area shape="rect" id="node1" title=" " alt="" coords="535,57,724,98"/>
+<area shape="rect" id="node2" title=" " alt="" coords="216,5,327,32"/>
+<area shape="rect" id="node3" href="$classfrc_1_1robot_1_1subsystems_1_1_catapult_subsystem.html" title=" " alt="" coords="173,57,369,98"/>
+<area shape="rect" id="node4" title=" " alt="" coords="5,64,124,91"/>
+<area shape="rect" id="node5" title=" " alt="" coords="177,122,366,163"/>
 </map>

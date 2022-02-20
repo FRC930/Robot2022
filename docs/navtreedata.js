@@ -26,6 +26,9 @@ var NAVTREE =
 [
   [ "Robot2022", "index.html", [
     [ "FRC 930 Robot Code 2022", "index.html", null ],
+    [ "Packages", "namespaces.html", [
+      [ "Packages", "namespaces.html", "namespaces_dup" ]
+    ] ],
     [ "Classes", "annotated.html", [
       [ "Class List", "annotated.html", "annotated_dup" ],
       [ "Class Index", "classes.html", null ],
@@ -40,7 +43,8 @@ var NAVTREE =
 
 var NAVTREEINDEX =
 [
-"annotated.html"
+"annotated.html",
+"classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem.html#a76b2911ec5557caa3cfc6fce74ba0621"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

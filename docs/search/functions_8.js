@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['open_0',['open',['../classfrc_1_1robot_1_1subsystems_1_1_endgame_piston_subsystem.html#a502f8207acaa0b30c4b9e1a9195c1a8c',1,'frc::robot::subsystems::EndgamePistonSubsystem']]]
+  ['left4istouching_0',['left4IsTouching',['../classfrc_1_1robot_1_1utilities_1_1_endgame_sensor_utility.html#a2610fe3c6443333932d9a94f00f16dca',1,'frc::robot::utilities::EndgameSensorUtility']]]
 ];

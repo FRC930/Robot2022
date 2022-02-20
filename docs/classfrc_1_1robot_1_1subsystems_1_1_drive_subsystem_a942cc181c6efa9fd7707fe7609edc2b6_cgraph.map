@@ -1,0 +1,6 @@
+<map id="frc.robot.subsystems.DriveSubsystem.hardReset" name="frc.robot.subsystems.DriveSubsystem.hardReset">
+<area shape="rect" id="node1" title=" " alt="" coords="5,64,181,105"/>
+<area shape="rect" id="node2" href="$classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem.html#acec37fb31fc920ee2f00f162f11cfe69" title=" " alt="" coords="245,5,421,47"/>
+<area shape="rect" id="node3" href="$classfrc_1_1robot_1_1utilities_1_1_gyro_utility.html#add2e30e9701767a6a0a9ac072eaf3755" title=" " alt="" coords="485,35,632,76"/>
+<area shape="rect" id="node4" href="$classfrc_1_1robot_1_1utilities_1_1_differential_drive_odometry930.html#aa1b7032316144cf796ffd5a13fa174a9" title=" " alt="" coords="229,123,437,164"/>
+</map>

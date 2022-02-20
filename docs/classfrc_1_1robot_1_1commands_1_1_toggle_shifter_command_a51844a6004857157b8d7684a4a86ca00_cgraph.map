@@ -1,4 +1,6 @@
 <map id="frc.robot.commands.ToggleShifterCommand.ToggleShifterCommand" name="frc.robot.commands.ToggleShifterCommand.ToggleShifterCommand">
-<area shape="rect" id="node1" title=" " alt="" coords="5,5,261,47"/>
-<area shape="rect" id="node2" href="$classfrc_1_1robot_1_1subsystems_1_1_shifter_subsystem.html#ad750a3ea0b381aa1d54365f536b877cf" title=" " alt="" coords="309,5,495,47"/>
+<area shape="rect" id="node1" title=" " alt="" coords="5,39,261,80"/>
+<area shape="rect" id="node2" href="$classfrc_1_1robot_1_1subsystems_1_1_shifter_subsystem.html#ad750a3ea0b381aa1d54365f536b877cf" title=" " alt="" coords="309,39,495,80"/>
+<area shape="rect" id="node3" href="$classfrc_1_1robot_1_1utilities_1_1_shuffleboard_utility.html#a0fbc22ec0554d158dc76531a2e592e3f" title=" " alt="" coords="543,5,732,47"/>
+<area shape="rect" id="node4" href="$classfrc_1_1robot_1_1utilities_1_1_shuffleboard_utility.html#a62e1e7e6b06231a83eac8b83fa882362" title=" " alt="" coords="543,71,732,112"/>
 </map>
