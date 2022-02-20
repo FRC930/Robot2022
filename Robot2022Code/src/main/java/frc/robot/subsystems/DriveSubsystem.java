@@ -54,6 +54,7 @@ public class DriveSubsystem extends SubsystemBase {
     public static final int kEncoderResolution = 2048; // 2048 CPR
     public static final double kMaxVolts = 12.0;
 
+    // 6380 is the max free speed (in rpms) of a Falcon 500
     public static final double DRIVETRAIN_MAX_FREE_SPEED_LOW = 6380.0 / 60.0 / lowGearRatio
             * (kWheelRadius * 2 * Math.PI);
     public static final double DRIVETRAIN_MAX_FREE_SPEED_HIGH = 6380.0 / 60.0 / highGearRatio
