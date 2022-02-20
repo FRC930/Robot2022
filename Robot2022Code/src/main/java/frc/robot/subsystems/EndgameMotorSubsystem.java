@@ -1,6 +1,8 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.FollowerType;
+import com.ctre.phoenix.motorcontrol.InvertType;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
@@ -18,6 +20,7 @@ public class EndgameMotorSubsystem extends SubsystemBase {
 
     private static final double GEAR_RATIO = 100;
     private static final double TALON_CPR = 2048;
+    private static final double MOTOR_KP = 0.03;
 
     // -------- DECLARATIONS --------\\
     /**
@@ -42,17 +45,15 @@ public class EndgameMotorSubsystem extends SubsystemBase {
         endgameMotorSlave.configFactoryDefault();
         // 
         endgameMotorMaster.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor, 0, 0);
-        endgameMotorSlave.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor, 0, 0);
         // 
-        endgameMotorMaster.config_kP(0, 0.25);
-        endgameMotorSlave.config_kP(0, 0.25);
+        endgameMotorMaster.config_kP(0, MOTOR_KP);
         // Makes it so it can't be manually moved when neutral
         endgameMotorMaster.setNeutralMode(NeutralMode.Brake);
         endgameMotorSlave.setNeutralMode(NeutralMode.Brake);
         // Sets slave to follow master and inverts slave
-        endgameMotorSlave.follow(endgameMotorMaster);
-        endgameMotorSlave.setInverted(true);
-        endgameMotorMaster.setInverted(false);
+        endgameMotorMaster.setInverted(InvertType.None);
+        endgameMotorSlave.follow(endgameMotorMaster, FollowerType.PercentOutput);
+        endgameMotorSlave.setInverted(InvertType.OpposeMaster);
     }
 
     // -------- METHODS --------\\

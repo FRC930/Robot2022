@@ -44,11 +44,11 @@ public class EndgameManagerCommand extends CommandBase {
             EndgamePistonSubsystem endgamePiston2, EndgamePistonSubsystem endgamePistonL3,
             EndgamePistonSubsystem endgamePistonR3, EndgamePistonSubsystem endgamePiston4) {
         if (Robot.isReal()) {
-            previousState = 2;
-            currentState = 2;
+            previousState = 1;
+            currentState = 1;
         } else {
-            previousState = 2;
-            currentState = 2;
+            previousState = 1;
+            currentState = 1;
         }
 
         // ----- ENDGAME COMMAND GROUP INITS -----\\
@@ -80,7 +80,7 @@ public class EndgameManagerCommand extends CommandBase {
         // Sets arm to vertical
         commands.put(4,
                 new SequentialCommandGroup(
-                        new EndgameRotateVerticalCommand(endgameMotorSubsystem, EndgamePosition.ApproachPosition),
+                        new EndgameRotateVerticalCommand(endgameMotorSubsystem, EndgamePosition.SwingPosition),
                         new EndgameIncrementStateCommand(this)));
         // Opens #3 and #4 claws
         // Gives time for robot swing
@@ -108,11 +108,6 @@ public class EndgameManagerCommand extends CommandBase {
         commands.put(7, new SequentialCommandGroup(new ParallelRaceGroup(
                 new EndgameOpenClawSingleCommand(endgamePiston2),
                 new WaitCommand(ENDGAME_RELEASE_DELAY)), new EndgameIncrementStateCommand(this)));
-        // Sets arm to vertical
-        commands.put(8,
-                new SequentialCommandGroup(
-                        new EndgameRotateVerticalCommand(endgameMotorSubsystem, EndgamePosition.EndPosition),
-                        new EndgameIncrementStateCommand(this)));
     }
 
     /**
@@ -131,7 +126,7 @@ public class EndgameManagerCommand extends CommandBase {
     @Override
     public void execute() {
         // Starts next command state if next state is signaled
-        if (currentState != previousState && currentState < 7) {
+        if (currentState != previousState && currentState < 8) {
             CommandScheduler.getInstance().cancel(commands.get(previousState));
             CommandScheduler.getInstance().schedule(commands.get(currentState));
             previousState = currentState;
@@ -140,7 +135,7 @@ public class EndgameManagerCommand extends CommandBase {
 
     @Override
     public boolean isFinished() {
-        return currentState == 7;
+        return currentState == 8;
     }
 
     @Override

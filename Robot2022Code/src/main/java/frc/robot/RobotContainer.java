@@ -459,7 +459,6 @@ public class RobotContainer {
 
     public void testPeriodic() {
         if (driverController.getLeftBumper().get()) {
-            endgameMotorSubsystem.setMotorSpeed(0.0);
             if (driverController.getYButton().get()) {
                 endgamePiston1.open();
             } else {
@@ -485,19 +484,10 @@ public class RobotContainer {
             } else {
                 endgamePiston4.closed();
             }
-        } else {
-            if (driverController.getYButton().get()) {
-                endgameMotorSubsystem.setMotorSpeed(0.2);
-            } else if (driverController.getAButton().get()) {
-                endgameMotorSubsystem.setMotorSpeed(-0.2);
-            } else {
-                endgameMotorSubsystem.setMotorSpeed(0.0);
-            }
-        }
+        } else {}
     }
 
     public void stopSubsystems() {
-        endgameMotorSubsystem.setMotorSpeed(0.0);
         intakeMotorSubsystem.setMotorSpeed(0.0);
         driveSubsystem.setVoltages(0.0, 0.0);
     }

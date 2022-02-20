@@ -27,10 +27,9 @@ public class EndgameRotateVerticalCommand extends CommandBase {
 
   // private static final Logger logger =
   // Logger.getLogger(EndgameRotateVertical.class.getName());
-  private final double APPROACH_POSITION = -0.25;
-  private final double SWING_POSITION = 0.5;
-  private final double END_POSITION = 1;
-  private final double DEADBAND = 0.1;
+  private final double APPROACH_POSITION = -0.26;
+  private final double SWING_POSITION = 0;
+  private final double DEADBAND = 0.025;
 
   // -------- DECLARATIONS --------\\
 
@@ -52,9 +51,6 @@ public class EndgameRotateVerticalCommand extends CommandBase {
     }
     else if(position == EndgamePosition.SwingPosition){
       target = SWING_POSITION;
-    }
-    else if(position == EndgamePosition.EndPosition){
-      target = END_POSITION;
     }
     else{
       target = 0;
@@ -82,7 +78,7 @@ public class EndgameRotateVerticalCommand extends CommandBase {
 
   // Enum for endgame positions
   public static enum EndgamePosition {
-    ApproachPosition, SwingPosition, EndPosition;
+    ApproachPosition, SwingPosition;
 
     private EndgamePosition() {
     }
