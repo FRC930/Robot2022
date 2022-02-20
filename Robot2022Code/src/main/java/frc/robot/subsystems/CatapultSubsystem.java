@@ -77,8 +77,8 @@ public class CatapultSubsystem extends SubsystemBase {
      * Extends the pistons on the catapult
      */
     public void extendLargePistons() {
-        launchSolenoidLarge1.startPulse();
-        launchSolenoidLarge2.startPulse();
+        launchSolenoidLarge1.set(true);
+        launchSolenoidLarge2.set(true);
     }
 
     /**
@@ -87,8 +87,8 @@ public class CatapultSubsystem extends SubsystemBase {
      * Extends the pistons on the catapult
      */
     public void extendSmallPistons() {
-        launchSolenoidSmall1.startPulse();
-        launchSolenoidSmall2.startPulse();
+        launchSolenoidSmall1.set(true);
+        launchSolenoidSmall2.set(true);
     }
 
     /**
@@ -97,10 +97,10 @@ public class CatapultSubsystem extends SubsystemBase {
      * Extends the pistons on the catapult
      */
     public void extendAllPistons() {
-        launchSolenoidLarge1.startPulse();
-        launchSolenoidLarge2.startPulse();
-        launchSolenoidSmall1.startPulse();
-        launchSolenoidSmall2.startPulse();
+        launchSolenoidLarge1.set(true);
+        launchSolenoidLarge2.set(true);
+        launchSolenoidSmall1.set(true);
+        launchSolenoidSmall2.set(true);
     }
 
     /**

@@ -41,9 +41,7 @@ public class EngageIntakePistonsCommand extends CommandBase {
     @Override
     public void initialize() {
         DriveCameraUtility.getInstance().setCameraState(CameraStates.BALL);
-        if (!BallSensorUtility.getInstance().indexerIsTripped()) {
-            intakePistonSubsystem.setIntakePistonState(true);
-        }
+        intakePistonSubsystem.setIntakePistonState(true);
     }
 
     /**
@@ -51,7 +49,7 @@ public class EngageIntakePistonsCommand extends CommandBase {
      */
     @Override
     public boolean isFinished() {
-        return BallSensorUtility.getInstance().indexerIsTripped();
+        return false;
     }
 
     /**
