@@ -375,7 +375,7 @@ public class RobotContainer {
      */
     public void beginTeleopRunCommands() {
         // Sets the brake mode to coast
-        driveSubsystem.setMototBreakMode(NeutralMode.Coast);
+        driveSubsystem.setMotorBrakeMode(NeutralMode.Brake);
         driveSubsystem.softReset();
         
         // startCamera();
@@ -432,7 +432,7 @@ public class RobotContainer {
 
     public void beginAutoRunCommands() {
         // Sets the brake mode to brake
-        driveSubsystem.setMototBreakMode(NeutralMode.Brake);
+        driveSubsystem.setMotorBrakeMode(NeutralMode.Brake);
         driveSubsystem.softReset();
         // --The instance of the scheduler
         CommandScheduler scheduler = CommandScheduler.getInstance();

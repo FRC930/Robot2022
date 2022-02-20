@@ -161,22 +161,22 @@ public class DriveSubsystem extends SubsystemBase {
         m_leftFollower.setInverted(InvertType.FollowMaster);
         m_rightFollower.setInverted(InvertType.FollowMaster);
 
-        m_leftLeader.setNeutralMode(NeutralMode.Coast);
-        m_leftFollower.setNeutralMode(NeutralMode.Coast);
-        m_rightLeader.setNeutralMode(NeutralMode.Coast);
-        m_rightFollower.setNeutralMode(NeutralMode.Coast);
+        m_leftLeader.setNeutralMode(NeutralMode.Brake);
+        m_leftFollower.setNeutralMode(NeutralMode.Brake);
+        m_rightLeader.setNeutralMode(NeutralMode.Brake);
+        m_rightFollower.setNeutralMode(NeutralMode.Brake);
     }
 /**
  * <h3>setMototBreakMode</h3>
  * 
  * Sets left and right motors to a certain breakmode: auto is brake; teleop is coast
- * @param breakMode
+ * @param brakeMode
  */
-    public void setMototBreakMode(NeutralMode breakMode) {
-        m_leftLeader.setNeutralMode(breakMode);
-        m_leftFollower.setNeutralMode(breakMode);
-        m_rightLeader.setNeutralMode(breakMode);
-        m_rightFollower.setNeutralMode(breakMode);
+    public void setMotorBrakeMode(NeutralMode brakeMode) {
+        m_leftLeader.setNeutralMode(brakeMode);
+        m_leftFollower.setNeutralMode(brakeMode);
+        m_rightLeader.setNeutralMode(brakeMode);
+        m_rightFollower.setNeutralMode(brakeMode);
     }
 
     /**
