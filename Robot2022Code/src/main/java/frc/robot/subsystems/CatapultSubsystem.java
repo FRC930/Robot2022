@@ -29,20 +29,22 @@ public class CatapultSubsystem extends SubsystemBase {
     private Solenoid launchSolenoidSmall2;
 
     private Solenoid ballHolderSolenoid;
+    private Solenoid shotControlSolenoid;
 
     /**
      * <h3>CatapultSubsystem</h3>
      * 
      * Initializes a new catapult subsystem with the passed solenoid IDs
      * 
-     * @param frontLeftID  ID of the first launch solenoid
-     * @param frontRightID ID of the second launch solenoid
-     * @param rearLeftID   ID of the third launch solenoid
-     * @param rearRightID  ID of the fourth launch solenoid
-     * @param ballHolderID ID of the ball holder solenoid
+     * @param frontLeftID   ID of the first launch solenoid
+     * @param frontRightID  ID of the second launch solenoid
+     * @param rearLeftID    ID of the third launch solenoid
+     * @param rearRightID   ID of the fourth launch solenoid
+     * @param ballHolderID  ID of the ball holder solenoid
+     * @param shotControlID ID of the shot control solenoid
      */
     public CatapultSubsystem(int frontLeftID, int frontRightID, int rearLeftID, int rearRightID,
-            int ballHolderID) {
+            int ballHolderID, int shotControlID) {
         launchSolenoidLarge1 = new Solenoid(
                 Robot.isReal() || frontLeftID > 7 ? PneumaticsModuleType.REVPH : PneumaticsModuleType.CTREPCM,
                 frontLeftID);
@@ -58,16 +60,20 @@ public class CatapultSubsystem extends SubsystemBase {
         ballHolderSolenoid = new Solenoid(
                 Robot.isReal() || ballHolderID > 7 ? PneumaticsModuleType.REVPH : PneumaticsModuleType.CTREPCM,
                 ballHolderID);
+        shotControlSolenoid = new Solenoid(
+                Robot.isReal() || shotControlID > 7 ? PneumaticsModuleType.REVPH : PneumaticsModuleType.CTREPCM,
+                shotControlID);
 
         launchSolenoidLarge1.setPulseDuration(CATAPULT_PULSE_DURATION);
         launchSolenoidLarge2.setPulseDuration(CATAPULT_PULSE_DURATION);
         launchSolenoidSmall1.setPulseDuration(CATAPULT_PULSE_DURATION);
         launchSolenoidSmall2.setPulseDuration(CATAPULT_PULSE_DURATION);
-        
+
         launchSolenoidLarge1.set(false);
         launchSolenoidLarge2.set(false);
         launchSolenoidSmall1.set(false);
         launchSolenoidSmall2.set(false);
+        shotControlSolenoid.set(false);
         ballHolderSolenoid.set(false);
     }
 
@@ -113,6 +119,14 @@ public class CatapultSubsystem extends SubsystemBase {
         launchSolenoidLarge2.set(false);
         launchSolenoidSmall1.set(false);
         launchSolenoidSmall2.set(false);
+    }
+
+    public void setLongShot(){
+        shotControlSolenoid.set(true);
+    }
+
+    public void setShortShot(){
+        shotControlSolenoid.set(false);
     }
 
     /**

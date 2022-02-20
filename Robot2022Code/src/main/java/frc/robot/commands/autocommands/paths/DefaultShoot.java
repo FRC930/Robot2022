@@ -2,7 +2,9 @@ package frc.robot.commands.autocommands.paths;
 
 import java.util.List;
 
+import frc.robot.commands.CatapultCommand;
 import frc.robot.commands.Ramsete930Command;
+import frc.robot.commands.CatapultCommand.CatapultPower;
 import edu.wpi.first.math.controller.RamseteController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -10,6 +12,7 @@ import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import frc.robot.subsystems.CatapultSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.utilities.DifferentialDriveOdometry930;
 import frc.robot.utilities.PathPlannerSequentialCommandGroupUtility;
@@ -17,7 +20,7 @@ import frc.robot.utilities.PathPlannerSequentialCommandGroupUtility;
 //  -------- PATH DESCRIPTION -------- \\
 //  Moves forward 60 inches
 
-public class DefaultAutoPathCommand extends PathPlannerSequentialCommandGroupUtility {
+public class DefaultShoot extends PathPlannerSequentialCommandGroupUtility {
 
     // TO-DO comment this section
     private final double KMAXSPEED = 0.5; //DriveSubsystem.DRIVETRAIN_MAX_FREE_SPEED_HIGH
@@ -31,7 +34,7 @@ public class DefaultAutoPathCommand extends PathPlannerSequentialCommandGroupUti
      * 
      * @param dSubsystem
      */
-    public DefaultAutoPathCommand(DriveSubsystem dSubsystem) {
+    public DefaultShoot(DriveSubsystem dSubsystem, CatapultSubsystem catapultSubsystem) {
 
         // initializing gyro for pose2d
         m_odometry = dSubsystem.getOdometry();
@@ -75,7 +78,7 @@ public class DefaultAutoPathCommand extends PathPlannerSequentialCommandGroupUti
                 (Double leftVoltage, Double rightVoltage) -> dSubsystem.setVoltages(leftVoltage, rightVoltage),
                 dSubsystem);
         
-        addCommands(ramseteCommand1);
+        addCommands(ramseteCommand1, new CatapultCommand(catapultSubsystem, CatapultPower.AllPistons));
 
     } // End of Constructor
 

@@ -37,6 +37,7 @@ public class AutoCommandManager {
 
     public void initCommands(){
         CommandBase defaultAutoPathCommand = new DefaultAutoPathCommand((DriveSubsystem) subsystemMap.get(subNames.DriveSubsystem.toString()));
+        CommandBase defaultShoot = new DefaultShoot((DriveSubsystem) subsystemMap.get(subNames.DriveSubsystem.toString()), (CatapultSubsystem) subsystemMap.get(subNames.CatapultSubsystem.toString()));
         CommandBase AutoTest1 = new AutoTest1((DriveSubsystem) subsystemMap.get(subNames.DriveSubsystem.toString()));
         CommandBase AutoTest2 = new AutoTest2((DriveSubsystem) subsystemMap.get(subNames.DriveSubsystem.toString()));
         CommandBase AutoTestFull = new AutoTestFull((DriveSubsystem) subsystemMap.get(subNames.DriveSubsystem.toString()));
@@ -44,8 +45,9 @@ public class AutoCommandManager {
         CommandBase ShootMoveShoot = new ShootMoveShoot((DriveSubsystem) subsystemMap.get(subNames.DriveSubsystem.toString()));
         CommandBase TerminalPickup = new TerminalPickup((DriveSubsystem) subsystemMap.get(subNames.DriveSubsystem.toString()));
 
-        ShuffleboardUtility.getInstance().setDefaultAutonOptions("Default (None)", null);
+        ShuffleboardUtility.getInstance().setDefaultAutonOptions("(None)", null);
         ShuffleboardUtility.getInstance().addAutonOptions("defaultAutoPathCommand", defaultAutoPathCommand);
+        ShuffleboardUtility.getInstance().addAutonOptions("defaultShootingCommand", defaultShoot);
         ShuffleboardUtility.getInstance().addAutonOptions("AutoTest1", AutoTest1);
         ShuffleboardUtility.getInstance().addAutonOptions("AutoTest2", AutoTest2);
         ShuffleboardUtility.getInstance().addAutonOptions("AutoTestFull", AutoTestFull);

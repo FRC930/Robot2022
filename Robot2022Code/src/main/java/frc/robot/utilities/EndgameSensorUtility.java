@@ -1,13 +1,15 @@
 package frc.robot.utilities;
 
 import edu.wpi.first.wpilibj.DigitalInput;
+import frc.robot.utilities.ShuffleboardUtility.ShuffleBoardData;
+import frc.robot.utilities.ShuffleboardUtility.ShuffleboardKeys;
 
 public class EndgameSensorUtility {
 
     private static EndgameSensorUtility instance = null;
 
-    public static EndgameSensorUtility getInstance(){
-        if(instance == null){
+    public static EndgameSensorUtility getInstance() {
+        if (instance == null) {
             instance = new EndgameSensorUtility();
         }
         return instance;
@@ -23,7 +25,7 @@ public class EndgameSensorUtility {
     private final DigitalInput sensorL4;
     private final DigitalInput sensorR4;
 
-    private EndgameSensorUtility(){
+    private EndgameSensorUtility() {
         sensorL2 = new DigitalInput(LEFT2ID);
         sensorR2 = new DigitalInput(RIGHT2ID);
         sensorL4 = new DigitalInput(LEFT4ID);
@@ -31,9 +33,10 @@ public class EndgameSensorUtility {
     }
 
     // -------- METHODS --------\\
-    /*NOTE: DIO is opposite of sensor contact
-    *DIO is 0 when sensor is activated(touching metal)
-    */
+    /*
+     * NOTE: DIO is opposite of sensor contact
+     * DIO is 0 when sensor is activated(touching metal)
+     */
 
     /**
      * <h3>left2IsTouching</h3>
@@ -42,9 +45,13 @@ public class EndgameSensorUtility {
      * @return the value of the sensor
      */
     public boolean left2IsTouching() {
-        return !sensorL2.get();
+        boolean sensorValue = !sensorL2.get();
+        ShuffleboardUtility.getInstance().putToShuffleboard(ShuffleboardUtility.driverTab,
+                ShuffleboardKeys.ENDGAME_SENSOR1, new ShuffleBoardData<Boolean>(sensorValue));
+        return sensorValue;
+        // return !sensorL2.get();
     }
-    
+
     /**
      * <h3>right2IsTouching</h3>
      * This method returns the right 2 sensor's value
@@ -52,9 +59,13 @@ public class EndgameSensorUtility {
      * @return the value of the sensor
      */
     public boolean right2IsTouching() {
-        return !sensorR2.get();
+        boolean sensorValue = !sensorR2.get();
+        ShuffleboardUtility.getInstance().putToShuffleboard(ShuffleboardUtility.driverTab,
+                ShuffleboardKeys.ENDGAME_SENSOR2, new ShuffleBoardData<Boolean>(sensorValue));
+        return sensorValue;
+        // return !sensorR2.get();
     }
-    
+
     /**
      * <h3>left4IsTouching</h3>
      * This method returns the left 4 sensor's value
@@ -62,7 +73,11 @@ public class EndgameSensorUtility {
      * @return the value of the sensor
      */
     public boolean left4IsTouching() {
-        return !sensorL4.get();
+        boolean sensorValue = !sensorL4.get();
+        ShuffleboardUtility.getInstance().putToShuffleboard(ShuffleboardUtility.driverTab,
+                ShuffleboardKeys.ENDGAME_SENSOR3, new ShuffleBoardData<Boolean>(sensorValue));
+        return sensorValue;
+        // return !sensorL4.get();
     }
 
     /**
@@ -72,6 +87,10 @@ public class EndgameSensorUtility {
      * @return the value of the sensor
      */
     public boolean right4IsTouching() {
-        return !sensorR4.get();
+        boolean sensorValue = !sensorR4.get();
+        ShuffleboardUtility.getInstance().putToShuffleboard(ShuffleboardUtility.driverTab,
+                ShuffleboardKeys.ENDGAME_SENSOR4, new ShuffleBoardData<Boolean>(sensorValue));
+        return sensorValue;
+        // return !sensorR4.get();
     }
 }

@@ -22,6 +22,7 @@ import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.commands.BallHolderCommand;
+import frc.robot.commands.BallHolderCommand;
 import frc.robot.commands.CatapultCommand;
 import frc.robot.commands.DriveCommand;
 import frc.robot.commands.IndexerForwardCommand;
@@ -204,7 +205,7 @@ public class RobotContainer {
 
         // ----- CATAPULT SUBSYSTEM INITS -----\\
         // TODO:ADD SOLENOID ID 7 FOR HARD-STOP
-        catapultSubsystem = new CatapultSubsystem(2, 3, 4, 5, 6);
+        catapultSubsystem = new CatapultSubsystem(2, 3, 4, 5, 6, 7);
         indexerMotorSubsystem = new IndexerMotorSubsystem(6);
 
         // ----- ENDGAME SUBSYSTEM INITS -----\\
@@ -226,6 +227,7 @@ public class RobotContainer {
          */
         autoManager = new AutoCommandManager();
         autoManager.addSubsystem(subNames.DriveSubsystem, driveSubsystem);
+        autoManager.addSubsystem(subNames.CatapultSubsystem, catapultSubsystem);
 
         // Create instance for sensor singletons-needed for simulation to work properly.
         BallSensorUtility.getInstance();
@@ -330,15 +332,10 @@ public class RobotContainer {
         driverController.getLeftBumper().whileActiveOnce(new ParallelCommandGroup(
             new SequentialCommandGroup(new WaitCommand(CatapultSubsystem.CATAPULT_FIRE_DELAY), 
             new CatapultCommand(catapultSubsystem, CatapultPower.AllPistons)), solidLEDsCommand));
-        driverController.getPOVUpTrigger().whileActiveOnce(new SequentialCommandGroup(
-            new WaitCommand(CatapultSubsystem.CATAPULT_FIRE_DELAY), 
-            new CatapultCommand(catapultSubsystem, CatapultPower.AllPistons)));
-        driverController.getPOVLeftTrigger().whileActiveOnce(new SequentialCommandGroup(
-            new WaitCommand(CatapultSubsystem.CATAPULT_FIRE_DELAY), 
-            new CatapultCommand(catapultSubsystem, CatapultPower.SmallPistons)));
-        driverController.getPOVRightTrigger().whileActiveOnce(new SequentialCommandGroup(
-            new WaitCommand(CatapultSubsystem.CATAPULT_FIRE_DELAY), 
-            new CatapultCommand(catapultSubsystem, CatapultPower.LargePistons)));
+        driverController.getPOVUpTrigger().whileActiveOnce(new CatapultCommand(catapultSubsystem, 
+            CatapultPower.SetLongShot));
+        driverController.getPOVDownTrigger().whileActiveOnce(new CatapultCommand(catapultSubsystem, 
+            CatapultPower.SetShortShot));
         // Checks if LB is pressed, then it will engage the intake pistons
         codriverController.getLeftBumper()
                 .whileActiveOnce(new ParallelCommandGroup(engageIntakePistonsCommand, intakePatternCommand));

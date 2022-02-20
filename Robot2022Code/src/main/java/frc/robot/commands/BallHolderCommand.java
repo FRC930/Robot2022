@@ -11,7 +11,7 @@ import frc.robot.utilities.BallSensorUtility;
  */
 public class BallHolderCommand extends CommandBase {
 
-    private final int CLOSE_DELAY = 13;
+    private final int CLOSE_DELAY = 25;
 
     private CatapultSubsystem catapultSubsystem;
     private int counter;

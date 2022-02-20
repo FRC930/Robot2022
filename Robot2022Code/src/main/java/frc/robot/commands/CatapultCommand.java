@@ -44,6 +44,12 @@ public class CatapultCommand extends CommandBase {
         else if(power == CatapultPower.LargePistons){
             catapultSubsystem.extendLargePistons();
         }
+        else if(power == CatapultPower.SetLongShot){
+            catapultSubsystem.setLongShot();
+        }
+        else if(power == CatapultPower.SetShortShot){
+            catapultSubsystem.setShortShot();
+        }
     }
 
     @Override
@@ -53,7 +59,7 @@ public class CatapultCommand extends CommandBase {
 
     // Enum for piston usage
     public static enum CatapultPower {
-        SmallPistons, LargePistons, AllPistons;
+        SmallPistons, LargePistons, AllPistons, SetLongShot, SetShortShot;
 
         private CatapultPower() {
         }

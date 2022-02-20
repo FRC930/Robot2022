@@ -27,7 +27,7 @@ public class EndgameRotateVerticalCommand extends CommandBase {
 
   // private static final Logger logger =
   // Logger.getLogger(EndgameRotateVertical.class.getName());
-  private final double APPROACH_POSITION = -0.26;
+  private final double APPROACH_POSITION = -0.24;
   private final double SWING_POSITION = 0;
   private final double DEADBAND = 0.025;
 
