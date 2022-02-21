@@ -4,6 +4,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import java.util.List;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.sensors.PigeonIMU.CalibrationMode;
 
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.cscore.UsbCamera;
@@ -53,6 +54,7 @@ import frc.robot.utilities.PathPlannerSequentialCommandGroupUtility;
 import frc.robot.utilities.BallSensorUtility;
 import frc.robot.utilities.DriveCameraUtility;
 import frc.robot.utilities.EndgameSensorUtility;
+import frc.robot.utilities.GyroUtility;
 import frc.robot.utilities.DriveCameraUtility.BallColor;
 
 public class RobotContainer {
@@ -228,6 +230,8 @@ public class RobotContainer {
         autoManager = new AutoCommandManager();
         autoManager.addSubsystem(subNames.DriveSubsystem, driveSubsystem);
         autoManager.addSubsystem(subNames.CatapultSubsystem, catapultSubsystem);
+        
+        driveSubsystem.softReset();
 
         // Create instance for sensor singletons-needed for simulation to work properly.
         BallSensorUtility.getInstance();
@@ -373,7 +377,6 @@ public class RobotContainer {
     public void beginTeleopRunCommands() {
         // Sets the brake mode to coast
         driveSubsystem.setMotorBrakeMode(NeutralMode.Brake);
-        driveSubsystem.softReset();
         
         // startCamera();
 
@@ -430,7 +433,6 @@ public class RobotContainer {
     public void beginAutoRunCommands() {
         // Sets the brake mode to brake
         driveSubsystem.setMotorBrakeMode(NeutralMode.Brake);
-        driveSubsystem.softReset();
         // --The instance of the scheduler
         CommandScheduler scheduler = CommandScheduler.getInstance();
         // cannot unregister subsystems you cannot expect to run during auto

@@ -68,7 +68,7 @@ public class DriveCommand extends CommandBase {
         driveStick = () -> -deadbandCube(driverController.getLeftY() * 0.85) * DriveSubsystem.DRIVETRAIN_MAX_FREE_SPEED_HIGH;
                 // * (ShifterUtility.getShifterState() ? DriveSubsystem.DRIVETRAIN_MAX_FREE_SPEED_LOW
                 //         : DriveSubsystem.DRIVETRAIN_MAX_FREE_SPEED_HIGH);
-        rotationStick = () -> -deadbandCube(driverController.getRightX() * 0.9) * DriveSubsystem.kMaxAngularSpeed;
+        rotationStick = () -> -deadbandCube(driverController.getRightX()) * DriveSubsystem.kMaxAngularSpeed;
 
         // We are not adding endgame motor subsystem as a requirement because we are not
         // using the subsystem in the command at all
