@@ -230,6 +230,8 @@ public class RobotContainer {
         autoManager = new AutoCommandManager();
         autoManager.addSubsystem(subNames.DriveSubsystem, driveSubsystem);
         autoManager.addSubsystem(subNames.CatapultSubsystem, catapultSubsystem);
+        autoManager.addSubsystem(subNames.IntakeMotorSubsystem, intakeMotorSubsystem);
+        autoManager.addSubsystem(subNames.IntakePistonSubsystem, intakePistonSubsystem);
         
         driveSubsystem.softReset();
 

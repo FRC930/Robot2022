@@ -16,8 +16,8 @@ import frc.robot.subsystems.DriveSubsystem;
 public class AutoTestFull extends PathPlannerSequentialCommandGroupUtility {
 
     //  TO-DO comment this section
-    private final double KMAXSPEED = 3.5;
-    private final double KMAXACCELERATION = 3;
+    private final double KMAXSPEED = 1.5;
+    private final double KMAXACCELERATION = 2;
     private final double KRAMSETEB = 2;
     private final double KRAMSETEZETA = 0.7;
     private final DifferentialDriveOdometry930 m_odometry;
@@ -53,7 +53,7 @@ public class AutoTestFull extends PathPlannerSequentialCommandGroupUtility {
                 (Double leftVoltage, Double rightVoltage) -> dSubsystem.setVoltages(leftVoltage, rightVoltage),
                 dSubsystem);
 
-        addCommands(ramseteCommand1);
+                addCommands(new ResetOdometryCommand(trajectory1.getInitialPose(), dSubsystem),/*new EngageIntakePistonsCommand(intakePistonSubsystem), new RunIntakeMotorsCommand(intakeMotorSubsystem, false),*/ ramseteCommand1, new StopDrive(dSubsystem));
 
     } // End of Constructor
 

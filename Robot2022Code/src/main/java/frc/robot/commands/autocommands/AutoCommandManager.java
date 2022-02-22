@@ -41,7 +41,7 @@ public class AutoCommandManager {
         CommandBase AutoTest1 = new AutoTest1((DriveSubsystem) subsystemMap.get(subNames.DriveSubsystem.toString()));
         CommandBase AutoTest2 = new AutoTest2((DriveSubsystem) subsystemMap.get(subNames.DriveSubsystem.toString()));
         CommandBase AutoTestFull = new AutoTestFull((DriveSubsystem) subsystemMap.get(subNames.DriveSubsystem.toString()));
-        CommandBase CompPath1 = new CompPath1((DriveSubsystem) subsystemMap.get(subNames.DriveSubsystem.toString()));
+        CommandBase CompPath1 = new CompPath1((DriveSubsystem) subsystemMap.get(subNames.DriveSubsystem.toString()),(IntakePistonSubsystem) subsystemMap.get(subNames.IntakePistonSubsystem.toString()),(IntakeMotorSubsystem) subsystemMap.get(subNames.IntakeMotorSubsystem.toString()));
         CommandBase ShootMoveShoot = new ShootMoveShoot((DriveSubsystem) subsystemMap.get(subNames.DriveSubsystem.toString()));
         CommandBase TerminalPickup = new TerminalPickup((DriveSubsystem) subsystemMap.get(subNames.DriveSubsystem.toString()));
 

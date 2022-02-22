@@ -2,13 +2,19 @@ package frc.robot.commands.autocommands.paths;
 
 import com.pathplanner.lib.PathPlanner;
 
+import frc.robot.commands.DriveCommand;
 import frc.robot.commands.Ramsete930Command;
+import frc.robot.commands.intakecommands.intakePistonCommands.EngageIntakePistonsCommand;
+import frc.robot.commands.intakecommands.intakemotorcommands.RunIntakeMotorsCommand;
 import edu.wpi.first.math.controller.RamseteController;
 import frc.robot.utilities.DifferentialDriveOdometry930;
 import edu.wpi.first.math.trajectory.Trajectory;
-
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.utilities.PathPlannerSequentialCommandGroupUtility;
 import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.IntakeMotorSubsystem;
+import frc.robot.subsystems.IntakePistonSubsystem;
 
 //  -------- PATH DESCRIPTION -------- \\
 //  Moves forward 60 inches
@@ -27,7 +33,7 @@ public class CompPath1 extends PathPlannerSequentialCommandGroupUtility {
      * 
      * @param dSubsystem
      */
-    public CompPath1(DriveSubsystem dSubsystem) { 
+    public CompPath1(DriveSubsystem dSubsystem, IntakePistonSubsystem intakePistonSubsystem, IntakeMotorSubsystem intakeMotorSubsystem) { 
 
         //  initializing gyro for pose2d
         m_odometry = dSubsystem.getOdometry();
@@ -35,13 +41,15 @@ public class CompPath1 extends PathPlannerSequentialCommandGroupUtility {
         // -------- Trajectories -------- \\
 
         // Generates a trajectory
-        Trajectory trajectory1 = PathPlanner.loadPath("CompPath1pt1", KMAXSPEED, KMAXACCELERATION);
+        Trajectory trajectory1 = PathPlanner.loadPath("CompPath1pt1", 1.5, 2.5);
 
         this.addTrajectory(trajectory1);
 
-        Trajectory trajectory2 = PathPlanner.loadPath("CompPath1pt2", KMAXSPEED, KMAXACCELERATION);
+        SmartDashboard.putString("Pos1",trajectory1.getInitialPose().toString());
 
-        this.addTrajectory(trajectory2);
+        //Trajectory trajectory2 = PathPlanner.loadPath("CompPath1pt2", KMAXSPEED, KMAXACCELERATION);
+
+        //this.addTrajectory(trajectory2);
 
         // -------- RAMSETE Commands -------- \\
         // Creates a command that can be added to the command scheduler in the
@@ -57,7 +65,7 @@ public class CompPath1 extends PathPlannerSequentialCommandGroupUtility {
                 (Double leftVoltage, Double rightVoltage) -> dSubsystem.setVoltages(leftVoltage, rightVoltage),
                 dSubsystem);
 
-        addCommands(ramseteCommand1);
+        addCommands(new ResetOdometryCommand(trajectory1.getInitialPose(), dSubsystem),/*new EngageIntakePistonsCommand(intakePistonSubsystem), new RunIntakeMotorsCommand(intakeMotorSubsystem, false),*/ ramseteCommand1, new StopDrive(dSubsystem));
 
     } // End of Constructor
 
