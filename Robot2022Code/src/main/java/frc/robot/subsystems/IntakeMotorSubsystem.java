@@ -6,6 +6,7 @@ import frc.robot.utilities.BallSensorUtility;
 import frc.robot.utilities.GyroUtility;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 //-------- SUBSYSTEM CLASS --------\\
@@ -22,6 +23,8 @@ public class IntakeMotorSubsystem extends SubsystemBase {
      * The motor controller that controls the intake motor
      */
     private WPI_TalonSRX intakeMotorController;
+    // private WPI_TalonFX intakeMotorController;
+    // private WPI_TalonSRX gyroController;
 
     // -------- CONSTRUCTOR --------\
 
@@ -31,6 +34,8 @@ public class IntakeMotorSubsystem extends SubsystemBase {
      */
     public IntakeMotorSubsystem(int intakeID) {
         intakeMotorController = new WPI_TalonSRX(intakeID);
+        // intakeMotorController = new WPI_TalonFX(intakeID);
+        // gyroController = new WPI_TalonSRX(intakeID);
         GyroUtility.getInstance().setGyro(this);
     }
 
@@ -67,6 +72,7 @@ public class IntakeMotorSubsystem extends SubsystemBase {
      */
     public WPI_TalonSRX getIntakeMotor() {
         return intakeMotorController;
+        // return gyroController;
     }
 
     public void periodic(){

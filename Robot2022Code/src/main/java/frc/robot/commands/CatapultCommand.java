@@ -1,8 +1,11 @@
+//-------- IMPORTS --------\\
+
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.CatapultSubsystem;
 
+//-------- COMMAND CLASS --------\\
 /**
  * <h3>CatapultCommand</h3>
  * 
@@ -14,9 +17,13 @@ import frc.robot.subsystems.CatapultSubsystem;
  * @version 1.0.0
  */
 public class CatapultCommand extends CommandBase {
+
+    //-------- VARIABLES --------\\
+
     CatapultSubsystem catapultSubsystem;
     CatapultPower power;
 
+    //-------- CONSTRUCTOR --------\\
     /**
      * <h3>CatapultCommand</h3>
      * 
@@ -32,6 +39,8 @@ public class CatapultCommand extends CommandBase {
 
         addRequirements(catapultSubsystem);
     }
+
+    //-------- METHODS --------\\
 
     @Override
     public void initialize() {

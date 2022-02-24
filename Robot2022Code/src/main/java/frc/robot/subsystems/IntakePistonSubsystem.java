@@ -20,6 +20,7 @@ public class IntakePistonSubsystem extends SubsystemBase {
     // ----- SOLENOID(S) -----\\
 
     private Solenoid solenoidOne;
+    private Solenoid solenoidTwo;
 
     // ----- CONSTRUCTOR -----\\
     /**
@@ -27,10 +28,13 @@ public class IntakePistonSubsystem extends SubsystemBase {
      * 
      * Handles the pistons that raise and lower the intake.
      * 
-     * @param solenoidOneID ID for the first intake solenoid.
+     * @param solenoidOneID ID for the first intake solenoid that retracts
+     * @param solenoidTwoID ID for the second intake solenoid that always stays open
      */
-    public IntakePistonSubsystem(int solenoidOneID) {
+    public IntakePistonSubsystem(int solenoidOneID/*, solenoidTwoID*/) {
         solenoidOne = new Solenoid(PneumaticsModuleType.REVPH, solenoidOneID);
+        //solenoidTwo = new Solenoid(PneumaticsModuleType.REVPH, solenoidTwoID);
+        //solenoidTwo.set(true);
     }
 
     /**

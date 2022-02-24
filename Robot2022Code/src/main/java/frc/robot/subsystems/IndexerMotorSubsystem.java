@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -7,9 +8,11 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class IndexerMotorSubsystem extends SubsystemBase {
 
     private final WPI_VictorSPX indexerMotor;
+    // private final WPI_TalonFX indexerMotor;
 
     public IndexerMotorSubsystem(int id){
         indexerMotor = new WPI_VictorSPX(id);
+        // indexerMotor = new WPI_TalonFX(id);
         indexerMotor.stopMotor();
     }
 

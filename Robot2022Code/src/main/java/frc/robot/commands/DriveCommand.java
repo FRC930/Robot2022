@@ -1,3 +1,5 @@
+//-------- IMPORTS --------\\
+
 package frc.robot.commands;
 
 import java.util.function.DoubleSupplier;
@@ -34,18 +36,24 @@ import static frc.robot.utilities.DriveCameraUtility.CameraStates;
  * @version 1.0
  */
 public class DriveCommand extends CommandBase {
+
+    //-------- CONSTANTS --------\\
+
+    private final double JOYSTICK_DEADBAND = 0.15;
+
+    //-------- VARIABLES --------\\
+
     private DriveSubsystem driveSubsystem;
     private VisionCameraSubsystem reflectiveCameraSubsystem;
     private VisionCameraSubsystem ballCameraSubsystem;
     private XboxController driverController;
-
-    private final double JOYSTICK_DEADBAND = 0.15;
 
     private DoubleSupplier driveStick;
     private DoubleSupplier rotationStick;
 
     private PIDController turnController = new PIDController(0.000001, 0, 0);
 
+    //-------- CONSTRUCTOR --------\\
     /**
      * Initializes a new {@link frc.robot.commands.DriveCommand DriveCommand} with
      * the passed variables
@@ -74,6 +82,7 @@ public class DriveCommand extends CommandBase {
         // using the subsystem in the command at all
         addRequirements(driveSubsystem, reflectiveCameraSubsystem);
     }
+    //-------- METHODS --------\\
 
     @Override
     public void execute() {
