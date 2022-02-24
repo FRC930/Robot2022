@@ -1,4 +1,4 @@
-package frc.robot.commands.autocommands.paths;
+package frc.robot.commands.autocommands;
 
 import com.pathplanner.lib.PathPlanner;
 
@@ -6,7 +6,7 @@ import frc.robot.commands.Ramsete930Command;
 import edu.wpi.first.math.controller.RamseteController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import frc.robot.utilities.DifferentialDriveOdometry930;
+import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import frc.robot.utilities.GyroUtility;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -18,10 +18,10 @@ import frc.robot.subsystems.DriveSubsystem;
 //  -------- PATH DESCRIPTION -------- \\
 //  Moves forward 60 inches
 
-public class ResetOdometryCommand extends CommandBase {
+public class ResetAutonomousCommand extends CommandBase {
 
     //  TO-DO comment this section
-    private final DifferentialDriveOdometry930 m_odometry;
+    private final DifferentialDriveOdometry m_odometry;
     private final DriveSubsystem m_dSubsystem;
     private final Pose2d m_startingPose;
 
@@ -30,7 +30,7 @@ public class ResetOdometryCommand extends CommandBase {
      * 
      * @param dSubsystem
      */
-    public ResetOdometryCommand(Pose2d startingPose, DriveSubsystem dSubsystem) { 
+    public ResetAutonomousCommand(Pose2d startingPose, DriveSubsystem dSubsystem) { 
 
         //  initializing gyro for pose2d
         m_dSubsystem = dSubsystem;
@@ -48,7 +48,7 @@ public class ResetOdometryCommand extends CommandBase {
   @Override
   public void initialize() {
     m_odometry.resetPosition(m_startingPose, new Rotation2d(Math.toRadians(GyroUtility.getInstance().getGyro().getFusedHeading())));
-
+    m_dSubsystem.resetEncoders();
     //System.out.printf("Current Position x", m_startingPose.toString());
     
   }

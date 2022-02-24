@@ -33,7 +33,7 @@ public class HubAimingCommand extends CommandBase {
     final double ANGULAR_D = 0.03;
     PIDController turnController = new PIDController(ANGULAR_P, 0, ANGULAR_D);
 
-    private VisionCameraSubsystem reflectiveTapeCamera;
+    protected VisionCameraSubsystem reflectiveTapeCamera;
     private DriveSubsystem driveSubsystem;
 
     private VisionSmoothingStack smoothingStack = new VisionSmoothingStack(5);

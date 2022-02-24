@@ -2,12 +2,22 @@ package frc.robot.commands.autocommands.paths;
 
 import com.pathplanner.lib.PathPlanner;
 
+import frc.robot.commands.CatapultCommand;
 import frc.robot.commands.Ramsete930Command;
+import frc.robot.commands.CatapultCommand.CatapultPower;
+import frc.robot.commands.autocommands.ResetAutonomousCommand;
+import frc.robot.commands.intakecommands.intakePistonCommands.EngageIntakePistonsCommand;
+import frc.robot.commands.intakecommands.intakemotorcommands.RunIntakeMotorsCommand;
 import edu.wpi.first.math.controller.RamseteController;
+import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.trajectory.Trajectory;
-import frc.robot.utilities.DifferentialDriveOdometry930;
+import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.utilities.PathPlannerSequentialCommandGroupUtility;
+import frc.robot.subsystems.CatapultSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.IntakeMotorSubsystem;
+import frc.robot.subsystems.IntakePistonSubsystem;
 
 //  -------- PATH DESCRIPTION -------- \\
 //  Moves forward 60 inches
@@ -19,14 +29,14 @@ public class ShootMoveShoot extends PathPlannerSequentialCommandGroupUtility {
     private final double KMAXACCELERATION = 0.5;
     private final double KRAMSETEB = 2;
     private final double KRAMSETEZETA = 0.7;
-    private final DifferentialDriveOdometry930 m_odometry;
+    private final DifferentialDriveOdometry m_odometry;
 
     /**
      * Default path constructor
      * 
      * @param dSubsystem
      */
-    public ShootMoveShoot(DriveSubsystem dSubsystem) { 
+    public ShootMoveShoot(DriveSubsystem dSubsystem, CatapultSubsystem catapultSubsystem, IntakePistonSubsystem intakePistonSubsystem, IntakeMotorSubsystem intakeMotorSubsystem) { 
 
         //  initializing gyro for pose2d
         m_odometry = dSubsystem.getOdometry();
@@ -51,19 +61,11 @@ public class ShootMoveShoot extends PathPlannerSequentialCommandGroupUtility {
                 (Double leftVoltage, Double rightVoltage) -> dSubsystem.setVoltages(leftVoltage, rightVoltage),
                 dSubsystem);
 
-        addCommands(ramseteCommand1);
+        addCommands(new ParallelRaceGroup(new CatapultCommand(catapultSubsystem, CatapultPower.SetShortShot), new WaitCommand(0.5)),
+        new ResetAutonomousCommand(trajectory1.getInitialPose(), dSubsystem),
+        new ParallelRaceGroup(new CatapultCommand(catapultSubsystem, CatapultPower.AllPistons), new WaitCommand(1)),
+        new ParallelRaceGroup(new EngageIntakePistonsCommand(intakePistonSubsystem), new RunIntakeMotorsCommand(intakeMotorSubsystem, false), ramseteCommand1),
+        new ParallelRaceGroup(new CatapultCommand(catapultSubsystem, CatapultPower.AllPistons), new WaitCommand(1)));
 
     } // End of Constructor
-
-    /**
-     * Converts Inches into meters
-     * 
-     * @param inches
-     * @return meters
-     */
-    public double inchesToMeters(double inches) {
-        double meters = inches / 39.37;
-        return meters;
-    }
-
 } // End of Class

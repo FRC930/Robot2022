@@ -36,13 +36,42 @@ public class AutoCommandManager {
     }
 
     public void initCommands(){
-        CommandBase defaultAutoPathCommand = new DefaultAutoPathCommand((DriveSubsystem) subsystemMap.get(subNames.DriveSubsystem.toString()));
-        CommandBase defaultShoot = new DefaultShoot((DriveSubsystem) subsystemMap.get(subNames.DriveSubsystem.toString()), (CatapultSubsystem) subsystemMap.get(subNames.CatapultSubsystem.toString()));
-        CommandBase AutoTest1 = new AutoTest1((DriveSubsystem) subsystemMap.get(subNames.DriveSubsystem.toString()));
-        CommandBase AutoTest2 = new AutoTest2((DriveSubsystem) subsystemMap.get(subNames.DriveSubsystem.toString()));
-        CommandBase AutoTestFull = new AutoTestFull((DriveSubsystem) subsystemMap.get(subNames.DriveSubsystem.toString()));
-        CommandBase CompPath1 = new CompPath1((DriveSubsystem) subsystemMap.get(subNames.DriveSubsystem.toString()),(IntakePistonSubsystem) subsystemMap.get(subNames.IntakePistonSubsystem.toString()),(IntakeMotorSubsystem) subsystemMap.get(subNames.IntakeMotorSubsystem.toString()));
-        CommandBase ShootMoveShoot = new ShootMoveShoot((DriveSubsystem) subsystemMap.get(subNames.DriveSubsystem.toString()));
+
+        CommandBase defaultAutoPathCommand = new DefaultAutoPathCommand(
+            (DriveSubsystem) subsystemMap.get(subNames.DriveSubsystem.toString())
+        );
+
+        CommandBase defaultShoot = new DefaultShoot(
+            (DriveSubsystem) subsystemMap.get(subNames.DriveSubsystem.toString()), 
+            (CatapultSubsystem) subsystemMap.get(subNames.CatapultSubsystem.toString())
+        );
+
+        CommandBase AutoTest1 = new AutoTest1(
+            (DriveSubsystem) subsystemMap.get(subNames.DriveSubsystem.toString()));
+
+        CommandBase AutoTest2 = new AutoTest2(
+            (DriveSubsystem) subsystemMap.get(subNames.DriveSubsystem.toString())
+        );
+
+        CommandBase AutoTestFull = new AutoTestFull(
+            (DriveSubsystem) subsystemMap.get(subNames.DriveSubsystem.toString())
+        );
+
+        CommandBase CompPath1 = new CompPath1(
+            (DriveSubsystem) subsystemMap.get(subNames.DriveSubsystem.toString()),
+            (IntakePistonSubsystem) subsystemMap.get(subNames.IntakePistonSubsystem.toString()),
+            (IntakeMotorSubsystem) subsystemMap.get(subNames.IntakeMotorSubsystem.toString()),
+            (VisionCameraSubsystem) subsystemMap.get(subNames.VisionCameraSubsystem.toString()),
+            (CatapultSubsystem) subsystemMap.get(subNames.CatapultSubsystem.toString())
+        );
+
+        CommandBase ShootMoveShoot = new ShootMoveShoot(
+            (DriveSubsystem) subsystemMap.get(subNames.DriveSubsystem.toString()),
+            (CatapultSubsystem) subsystemMap.get(subNames.CatapultSubsystem.toString()),
+            (IntakePistonSubsystem) subsystemMap.get(subNames.IntakePistonSubsystem.toString()),
+            (IntakeMotorSubsystem) subsystemMap.get(subNames.IntakeMotorSubsystem.toString())
+        );
+        
         CommandBase TerminalPickup = new TerminalPickup((DriveSubsystem) subsystemMap.get(subNames.DriveSubsystem.toString()));
 
         ShuffleboardUtility.getInstance().setDefaultAutonOptions("(None)", null);

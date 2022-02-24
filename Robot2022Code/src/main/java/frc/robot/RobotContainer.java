@@ -232,8 +232,8 @@ public class RobotContainer {
         autoManager.addSubsystem(subNames.CatapultSubsystem, catapultSubsystem);
         autoManager.addSubsystem(subNames.IntakeMotorSubsystem, intakeMotorSubsystem);
         autoManager.addSubsystem(subNames.IntakePistonSubsystem, intakePistonSubsystem);
-        
-        driveSubsystem.softReset();
+        autoManager.addSubsystem(subNames.VisionCameraSubsystem, reflectiveTapeCameraSubsystem);
+        autoManager.addSubsystem(subNames.CatapultSubsystem, catapultSubsystem);
 
         // Create instance for sensor singletons-needed for simulation to work properly.
         BallSensorUtility.getInstance();
@@ -389,12 +389,13 @@ public class RobotContainer {
          * Unregisters subsystems to prevent hanging resources
          */
         scheduler.unregisterSubsystem(
-                driveSubsystem, // Drivetrain
-                intakeMotorSubsystem, intakePistonSubsystem, // Intake
-                endgamePiston1, endgamePiston2, endgamePistonL3, endgamePistonR3, // Endgame Left Arm
-                endgamePiston4, // Endgame Right Arm
-                /* , endgameMotorSubsystem */ // Endgame Motors
-                indexerMotorSubsystem);
+            driveSubsystem, // Drivetrain
+            //intakeMotorSubsystem, intakePistonSubsystem, // Intake // Commented on Purpose
+            endgamePiston1, endgamePiston2, endgamePistonL3, endgamePistonR3, // Endgame Left Arm
+            endgamePiston4//, Endgame Right Arm
+            /* , endgameMotorSubsystem */ // Endgame Motors
+            //indexerMotorSubsystem
+        );
 
         // DRIVETRAIN DEFAULTS
         scheduler.setDefaultCommand(driveSubsystem, driveCommand);
@@ -461,9 +462,6 @@ public class RobotContainer {
     public void testPeriodic() {
         // TODO: figure out why we need this-need to repair
         endgameMotorSubsystem.refollowEndgameMotors();
-        if(driverController.getStartButton().get()){
-            driveSubsystem.hardReset(new Pose2d(new Translation2d(0.0, 0.0), new Rotation2d(0.0)));
-        }
         if (driverController.getLeftBumper().get()) {
             if (driverController.getYButton().get()) {
                 endgamePiston1.open();

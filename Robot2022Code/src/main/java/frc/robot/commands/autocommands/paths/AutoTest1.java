@@ -4,7 +4,7 @@ import com.pathplanner.lib.PathPlanner;
 
 import frc.robot.commands.Ramsete930Command;
 import edu.wpi.first.math.controller.RamseteController;
-import frc.robot.utilities.DifferentialDriveOdometry930;
+import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.trajectory.Trajectory;
 
 import frc.robot.utilities.PathPlannerSequentialCommandGroupUtility;
@@ -20,7 +20,7 @@ public class AutoTest1 extends PathPlannerSequentialCommandGroupUtility {
     private final double KMAXACCELERATION = 3;
     private final double KRAMSETEB = 2;
     private final double KRAMSETEZETA = 0.7;
-    private final DifferentialDriveOdometry930 m_odometry;
+    private final DifferentialDriveOdometry m_odometry;
 
     /**
      * Default path constructor
@@ -56,16 +56,4 @@ public class AutoTest1 extends PathPlannerSequentialCommandGroupUtility {
         addCommands(ramseteCommand1);
 
     } // End of Constructor
-
-    /**
-     * Converts Inches into meters
-     * 
-     * @param inches
-     * @return meters
-     */
-    public double inchesToMeters(double inches) {
-        double meters = inches / 39.37;
-        return meters;
-    }
-
 } // End of Class
