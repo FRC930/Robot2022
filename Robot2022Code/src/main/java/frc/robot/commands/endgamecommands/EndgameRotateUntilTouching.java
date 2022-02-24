@@ -1,3 +1,10 @@
+/*----------------------------------------------------------------------------*/
+/* Copyright (c) 2019-2020 FIRST. All Rights Reserved.                        */
+/* Open Source Software - may be modified and shared by FRC teams. The code   */
+/* must be accompanied by the FIRST BSD license file in the root directory of */
+/* the project.                                                               */
+/*----------------------------------------------------------------------------*/
+
 //-------- IMPORTS --------\\
 
 package frc.robot.commands.endgamecommands;
@@ -18,13 +25,15 @@ public class EndgameRotateUntilTouching extends CommandBase {
     // TODO: Establish speed for endgame arm
     private final double ARM_SPEED = 0.2;
 
-    //-------- DECLARATIONS --------\\
+    //-------- VARIABLES --------\\
      
     EndgameMotorSubsystem m_MotorSubsystem;
 
     //-------- CONSTRUCTOR --------\\
     /**
-     * EndgameRotateUntilTouching
+     * <h3>EndgameRotateUntilTouching</h3>
+     * 
+     * Upon being run, rotates the arm until sensor is touching.
      * 
      * @param motorSubsystem The motor to be set
      * @param sensorSubsystem The sensor whose value is used
@@ -34,7 +43,8 @@ public class EndgameRotateUntilTouching extends CommandBase {
         addRequirements(motorSubsystem);
     }
 
-    //-----------------------------\\
+    //-------- COMMANDBASE METHODS --------\\
+
     @Override
     public void initialize() { // Starts motor when command is initialized
         m_MotorSubsystem.setMotorSpeed(ARM_SPEED);
@@ -49,4 +59,5 @@ public class EndgameRotateUntilTouching extends CommandBase {
     public boolean isFinished() { // Returns true when sensor's value is true
         return m_SensorSubsystem.isTouching();
     }*/
+
 } // End of class EndgameRotateUntilTouching

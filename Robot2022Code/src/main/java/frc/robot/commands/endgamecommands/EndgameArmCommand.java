@@ -19,24 +19,27 @@ import frc.robot.subsystems.EndgameMotorSubsystem;
 /**
  * <h3> EndgameArmCommand </h3>
  * 
- * Rotates the endgame arm forward to climb the hangar.
+ * Rotates the endgame arm forward to climb the hangar
  */
 public class EndgameArmCommand extends CommandBase {
 
-  // -------- CONSTANTS --------\\
+  //-------- CONSTANTS --------\\
 
   // private static final Logger logger =
   // Logger.getLogger(EndgameArmCommand.class.getName());
   // TODO: Establish speed for endgame arm
   private final double ARM_SPEED = 0.5;
 
-  // -------- DECLARATIONS --------\\
+  //-------- VARIABLES --------\\
 
   private final EndgameMotorSubsystem m_MotorSubsystem;
 
-  // -------- CONSTRUCTOR --------\\
+  //-------- CONSTRUCTOR --------\\
   /**
-   * Creates command
+   * <h3>EndgameArmCommand</h3>
+   * 
+   * Rotates the endgame arm forward to climb the hangar
+   * 
    * @param motorSubsystem motor subsystem to control
    */
   public EndgameArmCommand(EndgameMotorSubsystem motorSubsystem) {
@@ -46,7 +49,7 @@ public class EndgameArmCommand extends CommandBase {
     addRequirements(m_MotorSubsystem); // Use addRequirements() here to declare subsystem dependencies.
   }
 
-  // -------- COMMANDBASE METHODS --------\\
+  //-------- COMMANDBASE METHODS --------\\
 
   @Override // Called when the command is initially scheduled.
   public void initialize() {
@@ -71,4 +74,5 @@ public class EndgameArmCommand extends CommandBase {
   public void end(boolean interrupted) {
     m_MotorSubsystem.setMotorSpeed(0.0);
   }
+
 } // End of class EndgameArmCommand

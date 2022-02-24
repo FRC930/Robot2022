@@ -23,7 +23,7 @@ import frc.robot.subsystems.EndgameMotorSubsystem;
  */
 public class EndgameRotateVerticalCommand extends CommandBase {
 
-  // -------- CONSTANTS --------\\
+  //-------- CONSTANTS --------\\
 
   // private static final Logger logger =
   // Logger.getLogger(EndgameRotateVertical.class.getName());
@@ -31,15 +31,17 @@ public class EndgameRotateVerticalCommand extends CommandBase {
   private final double SWING_POSITION = 0;
   private final double DEADBAND = 0.025;
 
-  // -------- DECLARATIONS --------\\
+  //-------- VARIABLES --------\\
 
   private final EndgameMotorSubsystem m_MotorSubsystem;
   private final double target;
 
 
-  // -------- CONSTRUCTOR --------\\
+  //-------- CONSTRUCTOR --------\\
   /**
-   * Creates command
+   * <h3>EndgameRotateVerticalCommand</h3>
+   * 
+   * Rotates the endgame arm to engage the Mid bar.
    * 
    * @param motorSubsystem motor subsystem to control
    */
@@ -58,7 +60,7 @@ public class EndgameRotateVerticalCommand extends CommandBase {
     addRequirements(m_MotorSubsystem); // Use addRequirements() here to declare subsystem dependencies.
   }
 
-  // -------- COMMANDBASE METHODS --------\\
+  //-------- COMMANDBASE METHODS --------\\
 
   @Override // Called when the command is initially scheduled.
   public void initialize() {
@@ -67,7 +69,7 @@ public class EndgameRotateVerticalCommand extends CommandBase {
   }
 
   @Override
-  public boolean isFinished() {
+  public boolean isFinished() { // when true, ends command
     return Math.abs(m_MotorSubsystem.getArmRotation() - target) < DEADBAND;
   }
 
@@ -82,5 +84,6 @@ public class EndgameRotateVerticalCommand extends CommandBase {
 
     private EndgamePosition() {
     }
-}
-} // End of class EndgameRotateVertical
+  }
+
+} // End of class EndgameRotateVerticalCommand

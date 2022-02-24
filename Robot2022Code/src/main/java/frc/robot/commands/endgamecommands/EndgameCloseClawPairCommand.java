@@ -1,7 +1,17 @@
+/*----------------------------------------------------------------------------*/
+/* Copyright (c) 2019-2020 FIRST. All Rights Reserved.                        */
+/* Open Source Software - may be modified and shared by FRC teams. The code   */
+/* must be accompanied by the FIRST BSD license file in the root directory of */
+/* the project.                                                               */
+/*----------------------------------------------------------------------------*/
+
+//-------- IMPORTS --------\\
+
 package frc.robot.commands.endgamecommands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.EndgamePistonSubsystem;
+
 //-------- COMMAND CLASS --------\\
 /**
  * <h3> EndgameCloseClawPairCommand</h3>
@@ -10,14 +20,16 @@ import frc.robot.subsystems.EndgamePistonSubsystem;
  */
 public class EndgameCloseClawPairCommand extends CommandBase{
 
-    //-------- DECLARATIONS --------\\
+    //-------- VARIABLES --------\\
 
     private final EndgamePistonSubsystem pistonLeft;
     private final EndgamePistonSubsystem pistonRight;
 
     //-------- CONSTRUCTOR --------\\
     /**
-     * EndgameCloseClawPairCommand
+     * <h3>EndgameCloseClawPairCommand</h3>
+     * 
+     * Closes one mirror set of the endgame claws
      * 
      * @param pistonLeft the piston on the left to close
      * @param pistonRight the mirror piston on the right to close
@@ -40,4 +52,4 @@ public class EndgameCloseClawPairCommand extends CommandBase{
     public boolean isFinished() { // when true, ends command
        return false;
     }
-} // End of class EndgameCloseClawCommand
+} // End of class EndgameCloseClawPairCommand

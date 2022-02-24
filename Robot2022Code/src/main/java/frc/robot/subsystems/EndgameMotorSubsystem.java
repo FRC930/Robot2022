@@ -1,3 +1,12 @@
+/*----------------------------------------------------------------------------*/
+/* Copyright (c) 2019-2020 FIRST. All Rights Reserved.                        */
+/* Open Source Software - may be modified and shared by FRC teams. The code   */
+/* must be accompanied by the FIRST BSD license file in the root directory of */
+/* the project.                                                               */
+/*----------------------------------------------------------------------------*/
+
+//-------- IMPORTS --------\\
+
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
@@ -11,6 +20,7 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
+//-------- SUBSYSTEM CLASS --------\\
 /**
  * <h3> EndgameMotorSubsystem </h3>
  * 
@@ -22,17 +32,19 @@ public class EndgameMotorSubsystem extends SubsystemBase {
     private static final double TALON_CPR = 2048;
     private static final double MOTOR_KP = 0.03;
 
-    // -------- DECLARATIONS --------\\
+    //-------- VARIABLES --------\\
     /**
      * The motor controller that controls the endgame motor
      */
     private final WPI_TalonFX endgameMotorMaster;
     private final WPI_TalonFX endgameMotorSlave;
 
-    // -------- CONSTRUCTOR --------\
+    //-------- CONSTRUCTOR --------\\
 
     /**
-     * This constructor initializes the endgame motors to the proper hardware
+     * <h3>EndgameMotorSubsystem</h3>
+     * 
+     * Initializes and controls the two endgame arm motors.
      * 
      * @param motorIDMaster ID for the master TalonFX
      * @param motorIDSlave ID for the slave TalonFX
@@ -43,9 +55,7 @@ public class EndgameMotorSubsystem extends SubsystemBase {
         // Sets default for added motors
         endgameMotorMaster.configFactoryDefault();
         endgameMotorSlave.configFactoryDefault();
-        // 
         endgameMotorMaster.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor, 0, 0);
-        // 
         endgameMotorMaster.config_kP(0, MOTOR_KP);
         // Makes it so it can't be manually moved when neutral
         endgameMotorMaster.setNeutralMode(NeutralMode.Brake);
@@ -60,7 +70,7 @@ public class EndgameMotorSubsystem extends SubsystemBase {
         endgameMotorSlave.setInverted(InvertType.OpposeMaster);
     }
 
-    // -------- METHODS --------\\
+    //-------- METHODS --------\\
 
     /**
      * <h3>setMotorSpeed</h3>
@@ -87,17 +97,16 @@ public class EndgameMotorSubsystem extends SubsystemBase {
      * <h3>getMotorSpeed</h3>
      * This method returns the endgame motor speed
      * 
-     * @return the current motor speed
+     * @return the current motor speed asa percent
      */
     public double getMotorSpeed() {
-        // Returns motor speed as a percent 
         return endgameMotorMaster.getMotorOutputPercent();
     }
 
     // TODO: ATTATCH ENCODER AND FINISH GETTER
 
     /**
-     * getArmRotation </p>
+     * <h3>getArmRotation</h3>
      * How far the arm has rotated from zero.
      * 
      * @return the position of the encoder 
@@ -109,7 +118,7 @@ public class EndgameMotorSubsystem extends SubsystemBase {
     }
 
     /**
-     * setArmPosition </p>
+     * <h3>setArmPosition</h3>
      * 
      * @param position the wanted position of the arm as a decimal of a rotation.
      */
@@ -119,10 +128,12 @@ public class EndgameMotorSubsystem extends SubsystemBase {
     }
     
     /**
-     * resetEncoderPosition </p>
+     * <h3>resetEncoderPosition</h3>
+     * 
      * Resets the endcoder back to starting position. Should be set while the bar is horizontal.
      */
     public void resetEncoderPosition() {
         endgameMotorMaster.setSelectedSensorPosition(0.0);
     }
-}
+
+} // End of class EndgameMotorSubsystem

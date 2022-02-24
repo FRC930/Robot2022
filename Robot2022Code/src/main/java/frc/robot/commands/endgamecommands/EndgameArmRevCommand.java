@@ -19,11 +19,11 @@ import frc.robot.subsystems.EndgameMotorSubsystem;
 /**
  * <h3> EndgameArmRevCommand </h3>
  * 
- * Rotates the endgame arm backwards to reset the rotation.
+ * Rotates the endgame arm backwards to reset the rotation
  */
 public class EndgameArmRevCommand extends CommandBase {
 
-  // -------- CONSTANTS --------\\
+  //-------- CONSTANTS --------\\
 
   // private static final Logger logger =
   // Logger.getLogger(EndgameArmRevCommand.class.getName());
@@ -34,9 +34,12 @@ public class EndgameArmRevCommand extends CommandBase {
 
   private final EndgameMotorSubsystem m_MotorSubsystem;
 
-  // -------- CONSTRUCTOR --------\\
+  //-------- CONSTRUCTOR --------\\
   /**
-   * Creates command
+   * <h3>EndgameArmRevCommand</h3>
+   * 
+   * Rotates the endgame arm backwards to reset the rotation
+   * 
    * @param motorSubsystem motor subsystem to control
    */
   public EndgameArmRevCommand(EndgameMotorSubsystem motorSubsystem) {
@@ -46,7 +49,7 @@ public class EndgameArmRevCommand extends CommandBase {
     addRequirements(m_MotorSubsystem); // Use addRequirements() here to declare subsystem dependencies.
   }
 
-  // -------- COMMANDBASE METHODS --------\\
+  //-------- COMMANDBASE METHODS --------\\
 
   @Override // Called when the command is initially scheduled.
   public void initialize() {
@@ -70,4 +73,5 @@ public class EndgameArmRevCommand extends CommandBase {
   public void end(boolean interrupted) {
     m_MotorSubsystem.setMotorSpeed(0.0);
   }
+
 } // End of class EndgameArmRevCommand

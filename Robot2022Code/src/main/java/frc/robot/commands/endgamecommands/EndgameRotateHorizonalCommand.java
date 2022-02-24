@@ -33,13 +33,16 @@ public class EndgameRotateHorizonalCommand extends CommandBase {
   private final double HORIZONTAL_POSITION = 0;
   private final double DEADBAND = 0.1;
 
-  // -------- DECLARATIONS --------\\
+  //-------- VARIABLES --------\\
 
   private final EndgameMotorSubsystem m_MotorSubsystem;
 
   // -------- CONSTRUCTOR --------\\
   /**
-   * Creates command
+   * <h3>EndgameRotateHorizontalCommand</h3>
+   * 
+   * Rotates the endgame arm to be horizontal.
+   * 
    * @param motorSubsystem motor subsystem to control
    */
   public EndgameRotateHorizonalCommand(EndgameMotorSubsystem motorSubsystem) {
@@ -49,7 +52,7 @@ public class EndgameRotateHorizonalCommand extends CommandBase {
     addRequirements(m_MotorSubsystem); // Use addRequirements() here to declare subsystem dependencies.
   }
 
-  // -------- COMMANDBASE METHODS --------\\
+  //-------- COMMANDBASE METHODS --------\\
 
   @Override // Called when the command is initially scheduled.
   public void initialize() {
@@ -64,7 +67,7 @@ public class EndgameRotateHorizonalCommand extends CommandBase {
   }
 
   @Override
-  public boolean isFinished(){
+  public boolean isFinished(){ // when true, ends command
     return Math.abs(m_MotorSubsystem.getArmRotation() - HORIZONTAL_POSITION) < DEADBAND;
   }
 
@@ -72,4 +75,5 @@ public class EndgameRotateHorizonalCommand extends CommandBase {
   public void end(boolean interrupted) {
     m_MotorSubsystem.setMotorSpeed(0.0);
   }
-} // End of class EndgameArmCommand
+
+} // End of class EndgameRotateHorizontalCommandCommand

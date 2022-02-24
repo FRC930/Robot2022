@@ -1,3 +1,12 @@
+/*----------------------------------------------------------------------------*/
+/* Copyright (c) 2019-2020 FIRST. All Rights Reserved.                        */
+/* Open Source Software - may be modified and shared by FRC teams. The code   */
+/* must be accompanied by the FIRST BSD license file in the root directory of */
+/* the project.                                                               */
+/*----------------------------------------------------------------------------*/
+
+//-------- IMPORTS --------\\
+
 package frc.robot.commands.endgamecommands;
 
 import java.util.HashMap;
@@ -8,29 +17,37 @@ import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+
 import frc.robot.Robot;
 import frc.robot.commands.endgamecommands.EndgameRotateVerticalCommand.EndgamePosition;
 import frc.robot.subsystems.EndgameMotorSubsystem;
 import frc.robot.subsystems.EndgamePistonSubsystem;
 
+//-------- COMMAND CLASS --------\\
 /**
  * <h3>EndgameManagerCommand</h3>
  * 
  * Manages an interruptible endgame sequence.
  */
 public class EndgameManagerCommand extends CommandBase {
+    
+    //-------- CONSTANTS --------\\
+
     // Endgame Miscellaneous Constants
     private final double ENDGAME_PISTON_DELAY = 0.5;
     private final double ENDGAME_RELEASE_DELAY = 1;
+
+    //-------- VARIABLES --------\\
 
     // Map and states for sequence.
     private HashMap<Integer, CommandBase> commands = new HashMap<Integer, CommandBase>();
     private int previousState;
     private int currentState;
 
+     //-------- CONSTRUCTOR --------\\
     /**
-     * EndgameManagerCommand
-     * <p>
+     * <h3>EndgameManagerCommand</h3>
+     * 
      * Creates new manager for endgame.
      * 
      * @param endgameMotorSubsystem
@@ -51,7 +68,7 @@ public class EndgameManagerCommand extends CommandBase {
             currentState = 1;
         }
 
-        // ----- ENDGAME COMMAND GROUP INITS -----\\
+        //----- ENDGAME COMMAND GROUP INITS -----\\
         // Sets arm to vertical
         commands.put(1,
                 new SequentialCommandGroup(
@@ -118,7 +135,7 @@ public class EndgameManagerCommand extends CommandBase {
     }
 
     // Starts the first command
-    @Override
+    @Override // Called when the command is initially scheduled.
     public void initialize() {
         CommandScheduler.getInstance().schedule(commands.get(currentState));
     }
@@ -134,7 +151,7 @@ public class EndgameManagerCommand extends CommandBase {
     }
 
     @Override
-    public boolean isFinished() {
+    public boolean isFinished() { // when true, ends command
         return currentState == 8;
     }
 
@@ -146,4 +163,5 @@ public class EndgameManagerCommand extends CommandBase {
         }
         CommandScheduler.getInstance().cancel(commands.get(previousState));
     }
-}
+
+} // End of class EndgameManagerCommand
