@@ -32,6 +32,7 @@ public class IndexerForwardCommand extends CommandBase{
 
     private final IndexerMotorSubsystem motor;
     private int counter;
+    private final BallSensorUtility sensorUtility = BallSensorUtility.getInstance();
 
     //-------- CONSTRUCTOR --------\\
     /**
@@ -56,12 +57,12 @@ public class IndexerForwardCommand extends CommandBase{
      * If it does detect a ball it sets the motor speed to 0
      */
     public void execute() {
-        if ((!BallSensorUtility.getInstance().catapultIsTripped() 
-            || !BallSensorUtility.getInstance().indexerIsTripped()) && counter > RESTART_DELAY) {
+        if ((!sensorUtility.catapultIsTripped() 
+            || !sensorUtility.indexerIsTripped()) && counter > RESTART_DELAY) {
             motor.setMotorSpeed(MOTOR_SPEED);
             counter = 0;
-        } else if (!BallSensorUtility.getInstance().catapultIsTripped() 
-            || !BallSensorUtility.getInstance().indexerIsTripped()){
+        } else if (!sensorUtility.catapultIsTripped() 
+            || !sensorUtility.indexerIsTripped()){
             counter++;
         } else { 
             counter = 0;

@@ -23,6 +23,7 @@ public class BallHolderCommand extends CommandBase {
 
     private CatapultSubsystem catapultSubsystem;
     private int counter;
+    private final BallSensorUtility sensorUtility = BallSensorUtility.getInstance();
 
     //-------- CONSTRUCTOR --------\\
 
@@ -49,10 +50,10 @@ public class BallHolderCommand extends CommandBase {
 
     @Override
     public void execute() {
-        if (BallSensorUtility.getInstance().catapultIsTripped() && counter > CLOSE_DELAY) {
+        if (sensorUtility.catapultIsTripped() && counter > CLOSE_DELAY) {
             catapultSubsystem.closeBallHolder();
             counter = 0;
-        } else if (BallSensorUtility.getInstance().catapultIsTripped()) {
+        } else if (sensorUtility.catapultIsTripped()) {
             counter++;
         } else {
             counter = 0;

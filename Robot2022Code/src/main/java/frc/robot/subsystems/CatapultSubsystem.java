@@ -146,9 +146,4 @@ public class CatapultSubsystem extends SubsystemBase {
     public void openBallHolder() {
         ballHolderSolenoid.set(false);
     }
-
-    // Needs to be run for the shuffleboard
-    public void periodic() {
-        BallSensorUtility.getInstance().catapultIsTripped();
-    }
 }
