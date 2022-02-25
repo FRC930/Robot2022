@@ -38,9 +38,6 @@ public class ShifterSubsystem extends SubsystemBase {
     public void setShifterState(boolean state) {
         shifterSolenoid.set(state);
         ShifterUtility.setShifterState(state);
-        ShuffleboardUtility.getInstance().putToShuffleboard(ShuffleboardUtility.driverTab,
-                ShuffleboardKeys.DRIVETRAIN_SHIFTED,
-                new ShuffleBoardData<Boolean>(state));
     }
 
     /**
