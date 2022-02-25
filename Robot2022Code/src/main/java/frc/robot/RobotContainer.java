@@ -19,6 +19,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
@@ -32,6 +33,7 @@ import frc.robot.commands.ToggleShifterCommand;
 import frc.robot.commands.CatapultCommand.CatapultPower;
 import frc.robot.commands.autocommands.AutoCommandManager;
 import frc.robot.commands.autocommands.AutoCommandManager.subNames;
+import frc.robot.commands.autovisioncommands.BallFollowCommand;
 import frc.robot.commands.autovisioncommands.HubAimingCommand;
 import frc.robot.commands.endgamecommands.EndgameArmCommand;
 import frc.robot.commands.endgamecommands.EndgameArmRevCommand;
@@ -193,6 +195,11 @@ public class RobotContainer {
         cargoCameraSubsystem = new VisionCameraSubsystem(
                 VisionCameraSubsystem.CameraType.BALL_DETECTOR);
         PortForwarder.add(5800, "10.9.30.25", 5800);
+        PortForwarder.add(1181, "10.9.30.25", 1181);
+        PortForwarder.add(1182, "10.9.30.25", 1182);
+        PortForwarder.add(1183, "10.9.30.25", 1183);
+        PortForwarder.add(1184, "10.9.30.25", 1184);
+        
 
         // ----- INTAKE SUBSYSTEM INITS -----\\
         // Intake has to be instantiated before drive subsystem because we need to
@@ -364,6 +371,7 @@ public class RobotContainer {
         
         driverController.getRightBumper().whileActiveContinuous(hubAimingCommand);
 
+        driverController.getXButton().whileActiveOnce(new BallFollowCommand(cargoCameraSubsystem, driveSubsystem));
     }
 
     /**

@@ -97,53 +97,55 @@ public class DriveCommand extends CommandBase {
         // Else if B button is pressed, aim towards position of ball
         // Else drive with right joystick (manual)
         if (driverController.getXButton()) {
-            reflectiveCameraSubsystem.getVisionCamera().setDriverMode(false);
-            ballCameraSubsystem.getVisionCamera().setDriverMode(true);
+            // reflectiveCameraSubsystem.getVisionCamera().setDriverMode(false);
+            // ballCameraSubsystem.getVisionCamera().setDriverMode(true);
 
-            // Get latest result from the reflective camera
-            result = reflectiveCameraSubsystem.getVisionCamera().getLatestResult();
-            if (result.hasTargets()) {
-                // Gets rotation speed required to face the reflective tape
-                rotationSpeed = rotateTowardsTarget(result);
-            } else {
-                rotationSpeed = 0.0;
-            }
+            // // Get latest result from the reflective camera
+            // result = reflectiveCameraSubsystem.getVisionCamera().getLatestResult();
+            // if (result.hasTargets()) {
+            //     // Gets rotation speed required to face the reflective tape
+            //     rotationSpeed = rotateTowardsTarget(result);
+            // } else {
+            //     rotationSpeed = 0.0;
+            // }
 
         } else if (driverController.getBButton()) {
-            reflectiveCameraSubsystem.getVisionCamera().setDriverMode(true);
-            ballCameraSubsystem.getVisionCamera().setDriverMode(false);
+            // reflectiveCameraSubsystem.getVisionCamera().setDriverMode(true);
+            // ballCameraSubsystem.getVisionCamera().setDriverMode(false);
 
-            // If the ball is red, set the pipeline to red and get the latest result
-            // Else (the ball is blue), set the pipeline to blue and get the latest result
-            if (DriveCameraUtility.getInstance().getBallColor() == BallColor.RED) {
+            // // If the ball is red, set the pipeline to red and get the latest result
+            // // Else (the ball is blue), set the pipeline to blue and get the latest result
+            // if (DriveCameraUtility.getInstance().getBallColor() == BallColor.RED) {
 
-                // Sets the pipeline to red
-                ballCameraSubsystem.getVisionCamera().setPipelineIndex(0);
+            //     // Sets the pipeline to red
+            //     ballCameraSubsystem.getVisionCamera().setPipelineIndex(0);
 
-                // Gets latest result from the ball camera
-                result = ballCameraSubsystem.getVisionCamera().getLatestResult();
+            //     // Gets latest result from the ball camera
+            //     result = ballCameraSubsystem.getVisionCamera().getLatestResult();
 
-            } else {
+            // } else {
 
-                // Sets the pipeline to blue
-                ballCameraSubsystem.getVisionCamera().setPipelineIndex(1);
+            //     // Sets the pipeline to blue
+            //     ballCameraSubsystem.getVisionCamera().setPipelineIndex(1);
 
-                // Gets latest result from the ball camera
-                result = ballCameraSubsystem.getVisionCamera().getLatestResult();
+            //     // Gets latest result from the ball camera
+            //     result = ballCameraSubsystem.getVisionCamera().getLatestResult();
 
-            }
+            // }
 
-            // Gets rotation speed required to face towards the targetted ball
-            rotationSpeed = rotateTowardsTarget(result);
+            // // Gets rotation speed required to face towards the targetted ball
+            // rotationSpeed = rotateTowardsTarget(result);
 
         } else {
             reflectiveCameraSubsystem.getVisionCamera().setDriverMode(true);
             ballCameraSubsystem.getVisionCamera().setDriverMode(true);
 
             // Just get the right stick horizontal axis
-            rotationSpeed = rotationStick.getAsDouble();
+            // rotationSpeed = rotationStick.getAsDouble();
 
         }
+
+        rotationSpeed = rotationStick.getAsDouble();
 
         DifferentialDriveWheelSpeeds wheelSpeeds = driveSubsystem.getWheelSpeeds(xStick,
                 rotationSpeed);
