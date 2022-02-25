@@ -584,6 +584,13 @@
                   "_type": "PID Controller",
                   "_source0": "network_table:///LiveWindow/Ungrouped/PIDController[9]",
                   "_title": "PIDController[9]"
+                },
+                {
+                  "_type": "Boolean Box",
+                  "_source0": "network_table:///LiveWindow/Ungrouped/Solenoid[1,12]/Value",
+                  "_title": "LiveWindow/Ungrouped/Solenoid[1,12]/Value",
+                  "Colors/Color when true": "#7CFC00FF",
+                  "Colors/Color when false": "#8B0000FF"
                 }
               ]
             }
@@ -685,7 +692,7 @@
             ],
             "content": {
               "_type": "Boolean Box",
-              "_source0": "network_table:///Shuffleboard/Driver Tab/Catapult Sensor",
+              "_source0": "network_table:///LiveWindow/Ungrouped/DigitalInput[0]/Value",
               "_title": "Catapult Sensor",
               "Colors/Color when true": "#7CFC00FF",
               "Colors/Color when false": "#8B0000FF"
@@ -698,7 +705,7 @@
             ],
             "content": {
               "_type": "Boolean Box",
-              "_source0": "network_table:///Shuffleboard/Driver Tab/Drivetrain shifted",
+              "_source0": "network_table:///LiveWindow/Ungrouped/Solenoid[1,0]/Value",
               "_title": "Drivetrain shifted",
               "Colors/Color when true": "#7CFC00FF",
               "Colors/Color when false": "#8B0000FF"
@@ -711,7 +718,7 @@
             ],
             "content": {
               "_type": "Boolean Box",
-              "_source0": "network_table:///Shuffleboard/Driver Tab/Intake Sensor",
+              "_source0": "network_table:///LiveWindow/Ungrouped/DigitalInput[5]/Value",
               "_title": "Intake Sensor",
               "Colors/Color when true": "#7CFC00FF",
               "Colors/Color when false": "#8B0000FF"
@@ -724,7 +731,7 @@
             ],
             "content": {
               "_type": "Boolean Box",
-              "_source0": "network_table:///Shuffleboard/Driver Tab/Intake down",
+              "_source0": "network_table:///LiveWindow/Ungrouped/Solenoid[1,1]/Value",
               "_title": "Intake down",
               "Colors/Color when true": "#7CFC00FF",
               "Colors/Color when false": "#8B0000FF"
@@ -737,7 +744,7 @@
             ],
             "content": {
               "_type": "Boolean Box",
-              "_source0": "network_table:///Shuffleboard/Driver Tab/Endgame Sensor 1",
+              "_source0": "network_table:///LiveWindow/Ungrouped/DigitalInput[1]/Value",
               "_title": "Endgame Sensor 1",
               "Colors/Color when true": "#7CFC00FF",
               "Colors/Color when false": "#8B0000FF"
@@ -750,7 +757,7 @@
             ],
             "content": {
               "_type": "Boolean Box",
-              "_source0": "network_table:///Shuffleboard/Driver Tab/Endgame Sensor 2",
+              "_source0": "network_table:///LiveWindow/Ungrouped/DigitalInput[2]/Value",
               "_title": "Endgame Sensor 2",
               "Colors/Color when true": "#7CFC00FF",
               "Colors/Color when false": "#8B0000FF"
@@ -763,7 +770,7 @@
             ],
             "content": {
               "_type": "Boolean Box",
-              "_source0": "network_table:///Shuffleboard/Driver Tab/Endgame Sensor 3",
+              "_source0": "network_table:///LiveWindow/Ungrouped/DigitalInput[3]/Value",
               "_title": "Endgame Sensor 3",
               "Colors/Color when true": "#7CFC00FF",
               "Colors/Color when false": "#8B0000FF"
@@ -776,7 +783,7 @@
             ],
             "content": {
               "_type": "Boolean Box",
-              "_source0": "network_table:///Shuffleboard/Driver Tab/Endgame Sensor 4",
+              "_source0": "network_table:///LiveWindow/Ungrouped/DigitalInput[4]/Value",
               "_title": "Endgame Sensor 4",
               "Colors/Color when true": "#7CFC00FF",
               "Colors/Color when false": "#8B0000FF"
@@ -802,7 +809,7 @@
   "windowGeometry": {
     "x": 0.0,
     "y": 0.0,
-    "width": 1386.0,
+    "width": 1386.4000244140625,
     "height": 788.0
   }
 }
