@@ -15,9 +15,10 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 
 //-------- COMMAND CLASS --------\\
 /**
- * <h3>CounterclockwiseIntakeMotorsCommand</h3>
+ * <h3>RunIntakeMotorsCommand</h3>
  * 
- * This class contols the counter-clockwise intake motors
+ * This class contols the intake motors
+ * @author Caden DeGlopper
  */
 public class RunIntakeMotorsCommand extends CommandBase {
 

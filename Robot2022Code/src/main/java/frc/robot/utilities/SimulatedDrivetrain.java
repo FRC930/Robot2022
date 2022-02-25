@@ -113,7 +113,8 @@ public class SimulatedDrivetrain {
         m_leftEncoder.reset();
         m_rightEncoder.reset();
         m_drivetrainSimulator.setPose(pose);
-        m_odometry.resetPosition(pose, m_gyro.getRotation2d());
+        m_gyroSim.setAngle(-m_drivetrainSimulator.getHeading().getDegrees());
+        m_odometry.resetPosition(pose, pose.getRotation());
     }
 
     public Pose2d getPose() {

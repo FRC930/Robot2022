@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
  * <h3>StopIntakeMotorsCommand</h3>
  * 
  * This class contols when the intake motors will stop
+ * @author Caden DeGlopper
  */
 public class StopIntakeMotorsCommand extends CommandBase {
 

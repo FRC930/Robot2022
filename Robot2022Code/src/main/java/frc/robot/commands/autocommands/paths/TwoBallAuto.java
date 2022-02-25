@@ -28,7 +28,7 @@ import frc.robot.subsystems.VisionCameraSubsystem;
 //  -------- PATH DESCRIPTION -------- \\
 //  Moves forward 60 inches
 
-public class CompPath1 extends PathPlannerSequentialCommandGroupUtility {
+public class TwoBallAuto extends PathPlannerSequentialCommandGroupUtility {
 
     //  TO-DO comment this section
     private final double KMAXSPEED = 1.5;
@@ -42,7 +42,12 @@ public class CompPath1 extends PathPlannerSequentialCommandGroupUtility {
      * 
      * @param dSubsystem
      */
-    public CompPath1(DriveSubsystem dSubsystem, IntakePistonSubsystem intakePistonSubsystem, IntakeMotorSubsystem intakeMotorSubsystem, VisionCameraSubsystem visionCameraSubsystem, CatapultSubsystem catapultSubsystem) { 
+    public TwoBallAuto
+    (DriveSubsystem dSubsystem,
+    IntakePistonSubsystem intakePistonSubsystem,
+    IntakeMotorSubsystem intakeMotorSubsystem,
+    VisionCameraSubsystem visionCameraSubsystem,
+    CatapultSubsystem catapultSubsystem) { 
 
         //  initializing gyro for pose2d
         m_odometry = dSubsystem.getOdometry();
@@ -50,7 +55,7 @@ public class CompPath1 extends PathPlannerSequentialCommandGroupUtility {
         // -------- Trajectories -------- \\
 
         // Generates a trajectory
-        Trajectory trajectory1 = PathPlanner.loadPath("CompPath1pt1", KMAXSPEED, KMAXACCELERATION);
+        Trajectory trajectory1 = PathPlanner.loadPath("TwoBallAuto", KMAXSPEED, KMAXACCELERATION);
 
         this.addTrajectory(trajectory1);
 
