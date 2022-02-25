@@ -35,9 +35,9 @@ public class EndgameManagerCommand extends CommandBase {
 
     // TODO: TUNE VALUES FOR FASTER CLIMB
     // Time delay for claw commands to take effect
-    private final double ENDGAME_PISTON_DELAY = 0.5;
+    private final double ENDGAME_PISTON_DELAY = 0.4;
     // Time delay for letting go of Mid while hangning from High
-    private final double ENDGAME_RELEASE_DELAY = 1;
+    private final double ENDGAME_RELEASE_DELAY = 0.75;
 
     // -------- VARIABLES --------\\
     // Map of states for the sequence
@@ -102,8 +102,8 @@ public class EndgameManagerCommand extends CommandBase {
         // Sets arm to vertical
         commands.put(4,
                 new SequentialCommandGroup(
-                        new EndgameRotateVerticalCommand(endgameMotorSubsystem,
-                                EndgamePosition.SwingPosition),
+                        new EndgameRotateVerticalCommand(endgameMotorSubsystem, 
+                            EndgamePosition.SwingPosition),
                         new EndgameIncrementStateCommand(this)));
         // Opens #3 and #4 claws
         // Gives time for robot swing
@@ -111,19 +111,16 @@ public class EndgameManagerCommand extends CommandBase {
         commands.put(5,
                 new SequentialCommandGroup(
                         new ParallelRaceGroup(
-                                new EndgameOpenClawPairCommand(endgamePistonL3,
-                                        endgamePistonR3),
+                                new EndgameOpenClawPairCommand(endgamePistonL3, endgamePistonR3),
                                 new EndgameOpenClawSingleCommand(endgamePiston4),
-                                new WaitCommand(ENDGAME_PISTON_DELAY)),
-                        new WaitCommand(ENDGAME_RELEASE_DELAY),
+                                new WaitCommand(ENDGAME_RELEASE_DELAY)),
                         new EndgameIncrementStateCommand(this)));
         // Rotates arm until one #4 sensor triggers, closing all arms and stops motor
         commands.put(6,
                 new SequentialCommandGroup(
                         new ParallelRaceGroup(
                                 new EndgameCloseClawSingleCommand(endgamePiston4),
-                                new EndgameOpenClawPairCommand(endgamePistonL3,
-                                        endgamePistonR3),
+                                new EndgameOpenClawPairCommand(endgamePistonL3, endgamePistonR3),
                                 new WaitCommand(ENDGAME_PISTON_DELAY)),
                         new ParallelRaceGroup(
                                 new EndgameArmCommand(endgameMotorSubsystem),
@@ -150,13 +147,13 @@ public class EndgameManagerCommand extends CommandBase {
     // Starts the first command
     @Override // Called when the command is initially scheduled.
     public void initialize() {
-        CommandScheduler.getInstance().schedule(commands.get(newState));
+        CommandScheduler.getInstance().schedule(commands.get(currentState));
     }
 
     @Override
     public void execute() {
         // Starts next command state if next state is signaled
-        if (newState != currentState && newState < 8) {
+        if (newState > currentState && newState <= commands.size()) {
             CommandScheduler.getInstance().cancel(commands.get(currentState));
             CommandScheduler.getInstance().schedule(commands.get(newState));
             currentState = newState;
@@ -165,15 +162,11 @@ public class EndgameManagerCommand extends CommandBase {
 
     @Override
     public boolean isFinished() { // when true, ends command
-        return newState == 8;
+        return newState == commands.size() + 1;
     }
 
     @Override
     public void end(boolean interrupted) {
-        // Logic to prevent calling null map value
-        if (interrupted) {
-            CommandScheduler.getInstance().cancel(commands.get(newState));
-        }
         CommandScheduler.getInstance().cancel(commands.get(currentState));
     }
 

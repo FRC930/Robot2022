@@ -33,7 +33,6 @@ import frc.robot.commands.ToggleShifterCommand;
 import frc.robot.commands.CatapultCommand.CatapultPower;
 import frc.robot.commands.autocommands.AutoCommandManager;
 import frc.robot.commands.autocommands.AutoCommandManager.subNames;
-import frc.robot.commands.autovisioncommands.BallFollowCommand;
 import frc.robot.commands.autovisioncommands.HubAimingCommand;
 import frc.robot.commands.endgamecommands.EndgameArmCommand;
 import frc.robot.commands.endgamecommands.EndgameArmRevCommand;
@@ -205,7 +204,7 @@ public class RobotContainer {
         // Intake has to be instantiated before drive subsystem because we need to
         // initialize the gyro
         intakeMotorSubsystem = new IntakeMotorSubsystem(5);
-        intakePistonSubsystem = new IntakePistonSubsystem(1);
+        intakePistonSubsystem = new IntakePistonSubsystem(1, 12);
 
         // ----- DRIVETRAIN SUBSYSTEM INITS -----\\
 
@@ -370,8 +369,6 @@ public class RobotContainer {
         driverController.getStartButton().whileActiveOnce(endgameManager);
         
         driverController.getRightBumper().whileActiveContinuous(hubAimingCommand);
-
-        driverController.getXButton().whileActiveOnce(new BallFollowCommand(cargoCameraSubsystem, driveSubsystem));
     }
 
     /**

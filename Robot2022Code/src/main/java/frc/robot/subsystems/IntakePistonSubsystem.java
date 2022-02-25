@@ -31,10 +31,10 @@ public class IntakePistonSubsystem extends SubsystemBase {
      * @param solenoidOneID ID for the first intake solenoid that retracts
      * @param solenoidTwoID ID for the second intake solenoid that always stays open
      */
-    public IntakePistonSubsystem(int solenoidOneID/*, solenoidTwoID*/) {
+    public IntakePistonSubsystem(int solenoidOneID, int solenoidTwoID) {
         solenoidOne = new Solenoid(PneumaticsModuleType.REVPH, solenoidOneID);
-        //solenoidTwo = new Solenoid(PneumaticsModuleType.REVPH, solenoidTwoID);
-        //solenoidTwo.set(true);
+        solenoidTwo = new Solenoid(PneumaticsModuleType.REVPH, solenoidTwoID);
+        solenoidTwo.set(true);
     }
 
     /**

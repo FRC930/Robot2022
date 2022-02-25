@@ -63,6 +63,8 @@ public class EndgameMotorSubsystem extends SubsystemBase {
         refollowEndgameMotors();
     }
 
+    // Needed to overcome stopMotor() calls by CTRE's WPI motor controls
+    // See https://github.com/CrossTheRoadElec/Phoenix-Releases/issues/28
     public void refollowEndgameMotors() {
         // Sets slave to follow master and inverts slave
         endgameMotorMaster.setInverted(InvertType.None);
@@ -113,7 +115,6 @@ public class EndgameMotorSubsystem extends SubsystemBase {
      */
     public double getArmRotation() {
         // Converts the value to usable units
-        System.out.print(endgameMotorMaster.getSelectedSensorPosition() / TALON_CPR / GEAR_RATIO);
         return endgameMotorMaster.getSelectedSensorPosition() / TALON_CPR / GEAR_RATIO;
     }
 
