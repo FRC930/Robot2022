@@ -46,9 +46,6 @@ public class IntakePistonSubsystem extends SubsystemBase {
      */
     public void setIntakePistonState(boolean state) {
         solenoidOne.set(state);
-
-        ShuffleboardUtility.getInstance().putToShuffleboard(ShuffleboardUtility.driverTab, ShuffleboardKeys.INTAKE_DOWN,
-                new ShuffleboardUtility.ShuffleBoardData<Boolean>(state));
     }
 
     /**

@@ -25,6 +25,7 @@ public class EndgameCloseWhenTouching extends CommandBase {
     
     private final EndgamePistonSubsystem endgamePiston;
     private final int sensor;
+    private final EndgameSensorUtility sensorUtility = EndgameSensorUtility.getInstance();
 
     //-------- CONSTRUCTOR --------\\
     /**
@@ -46,12 +47,12 @@ public class EndgameCloseWhenTouching extends CommandBase {
     @Override
     public boolean isFinished() { // returns true when the sensor is active
         if(sensor == 2){
-            return EndgameSensorUtility.getInstance().left2IsTouching() && 
-            EndgameSensorUtility.getInstance().right2IsTouching();
+            return sensorUtility.left2IsTouching() && 
+            sensorUtility.right2IsTouching();
         }
         else if(sensor == 4){
-            return EndgameSensorUtility.getInstance().left4IsTouching() && 
-            EndgameSensorUtility.getInstance().right4IsTouching();
+            return sensorUtility.left4IsTouching() && 
+            sensorUtility.right4IsTouching();
         }
         else{
             return true;

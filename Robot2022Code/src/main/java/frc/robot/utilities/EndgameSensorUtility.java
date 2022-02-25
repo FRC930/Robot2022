@@ -70,11 +70,7 @@ public class EndgameSensorUtility {
      * @return the value of the sensor
      */
     public boolean left2IsTouching() {
-        boolean sensorValue = !sensorL2.get();
-        ShuffleboardUtility.getInstance().putToShuffleboard(ShuffleboardUtility.driverTab,
-                ShuffleboardKeys.ENDGAME_SENSOR1, new ShuffleBoardData<Boolean>(sensorValue));
-        return sensorValue;
-        // return !sensorL2.get();
+        return !sensorL2.get();
     }
 
     /**
@@ -85,11 +81,7 @@ public class EndgameSensorUtility {
      * @return the value of the sensor
      */
     public boolean right2IsTouching() {
-        boolean sensorValue = !sensorR2.get();
-        ShuffleboardUtility.getInstance().putToShuffleboard(ShuffleboardUtility.driverTab,
-                ShuffleboardKeys.ENDGAME_SENSOR2, new ShuffleBoardData<Boolean>(sensorValue));
-        return sensorValue;
-        // return !sensorR2.get();
+        return !sensorR2.get();
     }
 
     /**
@@ -100,11 +92,7 @@ public class EndgameSensorUtility {
      * @return the value of the sensor
      */
     public boolean left4IsTouching() {
-        boolean sensorValue = !sensorL4.get();
-        ShuffleboardUtility.getInstance().putToShuffleboard(ShuffleboardUtility.driverTab,
-                ShuffleboardKeys.ENDGAME_SENSOR3, new ShuffleBoardData<Boolean>(sensorValue));
-        return sensorValue;
-        // return !sensorL4.get();
+        return !sensorL4.get();
     }
 
     /**
@@ -115,11 +103,7 @@ public class EndgameSensorUtility {
      * @return the value of the sensor
      */
     public boolean right4IsTouching() {
-        boolean sensorValue = !sensorR4.get();
-        ShuffleboardUtility.getInstance().putToShuffleboard(ShuffleboardUtility.driverTab,
-                ShuffleboardKeys.ENDGAME_SENSOR4, new ShuffleBoardData<Boolean>(sensorValue));
-        return sensorValue;
-        // return !sensorR4.get();
+        return !sensorR4.get();
     }
 
 } // End of class EndgameSensorUtility

@@ -37,7 +37,6 @@ public class BallSensorUtility {
     * @return if the sensor was tripped
     */
     public boolean catapultIsTripped() {
-        ShuffleboardUtility.getInstance().putToShuffleboard(ShuffleboardUtility.driverTab, ShuffleboardKeys.CATAPULT_SENSOR, new ShuffleBoardData<Boolean>(!catapultSensor.get()));
         return !catapultSensor.get();
     }
 
@@ -47,7 +46,6 @@ public class BallSensorUtility {
     * @return if the sensor was tripped
     */
     public boolean indexerIsTripped() {
-        ShuffleboardUtility.getInstance().putToShuffleboard(ShuffleboardUtility.driverTab, ShuffleboardKeys.INTAKE_SENSOR, new ShuffleBoardData<Boolean>(!indexerSensor.get()));
         return !indexerSensor.get();
     }
 }

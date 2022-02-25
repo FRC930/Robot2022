@@ -74,9 +74,4 @@ public class IntakeMotorSubsystem extends SubsystemBase {
         return intakeMotorController;
         // return gyroController;
     }
-
-    public void periodic(){
-        BallSensorUtility.getInstance().indexerIsTripped();
-    }
-
 } // end of class IntakeMotorSubsystem
