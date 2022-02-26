@@ -15,7 +15,6 @@ public class AutonomousAimCommand extends HubAimingCommand {
 
     @Override
     public boolean isFinished() {
-        boolean isAimed = false;
         double xDegreeOffset = 1;
         //
         PhotonPipelineResult result = this.reflectiveTapeCamera.getVisionCamera().getLatestResult();
@@ -25,9 +24,9 @@ public class AutonomousAimCommand extends HubAimingCommand {
         }
         //
         if(xDegreeOffset > -1 && xDegreeOffset < 1){
-            isAimed = true;
+            return true;
         }
 
-        return isAimed;
+        return false;
     }
 }

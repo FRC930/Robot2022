@@ -115,7 +115,7 @@ public class TerminalPickup extends PathPlannerSequentialCommandGroupUtility {
         // waits 2.5 seconds, 
         // runs the intake pistons 
         // moves to position 3
-        new ParallelRaceGroup(new HubAimingCommand(visionCameraSubsystem, dSubsystem), new WaitCommand(1)), 
+        new ParallelRaceGroup(new AutonomousAimCommand(visionCameraSubsystem, dSubsystem), new WaitCommand(3)), 
         new ParallelRaceGroup(new CatapultCommand(catapultSubsystem, CatapultPower.AllPistons), new WaitCommand(1)),
         new WaitCommand(1),
         new ParallelRaceGroup(new CatapultCommand(catapultSubsystem, CatapultPower.AllPistons), new WaitCommand(1)),
@@ -125,7 +125,7 @@ public class TerminalPickup extends PathPlannerSequentialCommandGroupUtility {
         new StopDrive(dSubsystem),
         // This segment of the path aims 
         //shoots the catapult
-        new ParallelRaceGroup(new HubAimingCommand(visionCameraSubsystem, dSubsystem), new WaitCommand(1)),
+        new ParallelRaceGroup(new AutonomousAimCommand(visionCameraSubsystem, dSubsystem), new WaitCommand(3)),
         new ParallelRaceGroup(new CatapultCommand(catapultSubsystem, CatapultPower.AllPistons), new WaitCommand(1)),
         new WaitCommand(1),
         new ParallelRaceGroup(new CatapultCommand(catapultSubsystem, CatapultPower.AllPistons), new WaitCommand(1))

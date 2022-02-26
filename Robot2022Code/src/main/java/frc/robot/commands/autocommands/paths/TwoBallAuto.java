@@ -6,6 +6,7 @@ import frc.robot.commands.CatapultCommand;
 import frc.robot.commands.DriveCommand;
 import frc.robot.commands.Ramsete930Command;
 import frc.robot.commands.CatapultCommand.CatapultPower;
+import frc.robot.commands.autocommands.AutonomousAimCommand;
 import frc.robot.commands.autocommands.ResetAutonomousCommand;
 import frc.robot.commands.autovisioncommands.HubAimingCommand;
 import frc.robot.commands.intakecommands.intakePistonCommands.DisengageIntakePistonsCommand;
@@ -80,7 +81,7 @@ public class TwoBallAuto extends PathPlannerSequentialCommandGroupUtility {
         new ResetAutonomousCommand(trajectory1.getInitialPose(), dSubsystem),
         new ParallelRaceGroup(new EngageIntakePistonsCommand(intakePistonSubsystem), new RunIntakeMotorsCommand(intakeMotorSubsystem, false), ramseteCommand1),
         new StopDrive(dSubsystem),
-        new ParallelRaceGroup(new HubAimingCommand(visionCameraSubsystem, dSubsystem), new WaitCommand(1)),
+        new ParallelRaceGroup(new AutonomousAimCommand(visionCameraSubsystem, dSubsystem), new WaitCommand(1)),
         new ParallelRaceGroup(new CatapultCommand(catapultSubsystem, CatapultPower.AllPistons), new WaitCommand(1)),
         new WaitCommand(1),
         new ParallelRaceGroup(new CatapultCommand(catapultSubsystem, CatapultPower.AllPistons), new WaitCommand(1)));
