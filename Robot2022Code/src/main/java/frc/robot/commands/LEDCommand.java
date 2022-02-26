@@ -80,8 +80,7 @@ public class LEDCommand extends CommandBase {
 
     @Override
     public boolean isFinished() {
-        // AutonPattern only need to be run once
-        return m_pattern == LEDPatterns.AutonPattern;
+        return false;
     }
 
     /**

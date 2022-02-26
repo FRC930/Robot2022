@@ -73,6 +73,7 @@ public class CatapultSubsystem extends SubsystemBase {
         launchSolenoidLarge2.setPulseDuration(CATAPULT_PULSE_DURATION);
         launchSolenoidSmall1.setPulseDuration(CATAPULT_PULSE_DURATION);
         launchSolenoidSmall2.setPulseDuration(CATAPULT_PULSE_DURATION);
+        retractor.setPulseDuration(0.5);
 
         launchSolenoidLarge1.set(false);
         launchSolenoidLarge2.set(false);
@@ -80,7 +81,7 @@ public class CatapultSubsystem extends SubsystemBase {
         launchSolenoidSmall2.set(false);
         shotControlSolenoid.set(false);
         ballHolderSolenoid.set(false);
-        retractor.set(true);
+        retractor.set(false);
     }
 
     /**
@@ -91,7 +92,6 @@ public class CatapultSubsystem extends SubsystemBase {
     public void extendLargePistons() {
         launchSolenoidLarge1.set(true);
         launchSolenoidLarge2.set(true);
-        retractor.set(false);
     }
 
     /**
@@ -102,7 +102,6 @@ public class CatapultSubsystem extends SubsystemBase {
     public void extendSmallPistons() {
         launchSolenoidSmall1.set(true);
         launchSolenoidSmall2.set(true);
-        retractor.set(false);
     }
 
     /**
@@ -115,7 +114,6 @@ public class CatapultSubsystem extends SubsystemBase {
         launchSolenoidLarge2.set(true);
         launchSolenoidSmall1.set(true);
         launchSolenoidSmall2.set(true);
-        retractor.set(false);
     }
 
     /**
@@ -128,7 +126,7 @@ public class CatapultSubsystem extends SubsystemBase {
         launchSolenoidLarge2.set(false);
         launchSolenoidSmall1.set(false);
         launchSolenoidSmall2.set(false);
-        retractor.set(true);
+        retractor.startPulse();
     }
 
     public void setLongShot() {
