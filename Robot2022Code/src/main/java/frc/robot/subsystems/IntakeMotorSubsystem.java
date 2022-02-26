@@ -22,9 +22,8 @@ public class IntakeMotorSubsystem extends SubsystemBase {
     /**
      * The motor controller that controls the intake motor
      */
-    private WPI_TalonSRX intakeMotorController;
-    // private WPI_TalonFX intakeMotorController;
-    // private WPI_TalonSRX gyroController;
+    private WPI_TalonFX intakeMotorController;
+    private WPI_TalonSRX gyroController;
 
     // -------- CONSTRUCTOR --------\
 
@@ -33,9 +32,8 @@ public class IntakeMotorSubsystem extends SubsystemBase {
      * hardware
      */
     public IntakeMotorSubsystem(int intakeID) {
-        intakeMotorController = new WPI_TalonSRX(intakeID);
-        // intakeMotorController = new WPI_TalonFX(intakeID);
-        // gyroController = new WPI_TalonSRX(intakeID);
+        intakeMotorController = new WPI_TalonFX(intakeID);
+        gyroController = new WPI_TalonSRX(intakeID);
         GyroUtility.getInstance().setGyro(this);
     }
 
@@ -71,7 +69,6 @@ public class IntakeMotorSubsystem extends SubsystemBase {
      * @return intakeMotor
      */
     public WPI_TalonSRX getIntakeMotor() {
-        return intakeMotorController;
-        // return gyroController;
+        return gyroController;
     }
 } // end of class IntakeMotorSubsystem

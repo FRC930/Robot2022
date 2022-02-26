@@ -18,7 +18,6 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
  * <h3>RunIntakeMotorsCommand</h3>
  * 
  * This class contols the intake motors
- * @author Caden DeGlopper
  */
 public class RunIntakeMotorsCommand extends CommandBase {
 

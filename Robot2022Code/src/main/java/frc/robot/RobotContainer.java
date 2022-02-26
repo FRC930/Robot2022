@@ -444,19 +444,20 @@ public class RobotContainer {
         // --The instance of the scheduler
         CommandScheduler scheduler = CommandScheduler.getInstance();
         // cannot unregister subsystems you cannot expect to run during auto
-        scheduler.unregisterSubsystem(catapultSubsystem,
+        scheduler.unregisterSubsystem(
+                //catapultSubsystem,
                 // catapultSensorSubsystem,
                 endgameMotorSubsystem,
                 // endgamePistonSubsystem,
                 // endgameSensorSubsystem,
                 intakeMotorSubsystem,
                 // intakePistonSubsystem,
+                // driveSubsystem,
                 shifterSubsystem// ,
         // visionCameraSubsystem
         );
         // TODO set default command for each subsystem
         scheduler.setDefaultCommand(ledSubsystem, autonPatternCommand);
-        // scheduler.setDefaultCommand(driveSubsystem, driveCommand);
     }
 
     public void testInit() {

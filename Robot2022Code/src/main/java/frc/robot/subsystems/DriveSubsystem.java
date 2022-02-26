@@ -20,6 +20,7 @@ import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.math.trajectory.constraint.DifferentialDriveVoltageConstraint;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -39,20 +40,11 @@ import frc.robot.utilities.SimulatedDrivetrain;
  */
 public class DriveSubsystem extends SubsystemBase {
 
-    // rpm = 6300
-    // with a gear ratio of 6.3, divide 6380 by 6.3 which equals 1012.698
-    // divide that value by 60 to get rotations per second : 1012.698 / 60 = 16.678
-    // wheel circumference times the rotations per second : 0.1016(wheel dimention)
-    // * pi * 16.678 = 5.32
-
-    public static final double kMaxSpeed = 5.32; // meters per second
-    public static final double kMaxAngularSpeed = Math.PI; // 1 rotation per second
-
     public static final double highGearRatio = 6.3;
     public static final double lowGearRatio = 12.9;
 
     public static final double kTrackWidth = 0.381 * 2; // meters // 26.5 inch
-    public static final double kWheelRadius = 0.0508; // meters // 2 inch
+    public static final double kWheelRadius = Units.inchesToMeters(3.875 / 2); // meters // 3 7/8 inch
     public static final int kEncoderResolution = 2048; // 2048 CPR
     public static final double kMaxVolts = 12.0;
 
@@ -61,6 +53,13 @@ public class DriveSubsystem extends SubsystemBase {
             * (kWheelRadius * 2 * Math.PI);
     public static final double DRIVETRAIN_MAX_FREE_SPEED_HIGH = 6380.0 / 60.0 / highGearRatio
             * (kWheelRadius * 2 * Math.PI);
+
+    // rpm = 6300
+    // with a gear ratio of 6.3, divide 6380 by 6.3 which equals 1012.698
+    // divide that value by 60 to get rotations per second : 1012.698 / 60 = 16.678
+    // wheel circumference times the rotations per second : 0.098425(wheel dimension) * pi * 16.678 = 5.157
+    public static final double kMaxSpeed = DRIVETRAIN_MAX_FREE_SPEED_HIGH; // meters per second
+    public static final double kMaxAngularSpeed = Math.PI; // 1 rotation per second
 
     private final WPI_TalonFX m_leftLeader;
     private final WPI_TalonFX m_leftFollower;
