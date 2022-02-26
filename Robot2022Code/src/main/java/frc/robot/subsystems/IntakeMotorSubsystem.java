@@ -31,9 +31,9 @@ public class IntakeMotorSubsystem extends SubsystemBase {
      * This constructor initializes the {@link #intakeMotorController} to the proper
      * hardware
      */
-    public IntakeMotorSubsystem(int intakeID) {
+    public IntakeMotorSubsystem(int intakeID, int gyroID) {
         intakeMotorController = new WPI_TalonFX(intakeID);
-        gyroController = new WPI_TalonSRX(intakeID);
+        gyroController = new WPI_TalonSRX(gyroID);
         GyroUtility.getInstance().setGyro(this);
     }
 
@@ -47,7 +47,7 @@ public class IntakeMotorSubsystem extends SubsystemBase {
      * @param speed the speed at which to set the motor
      */
     public void setMotorSpeed(double speed) {
-        intakeMotorController.set(ControlMode.PercentOutput, -speed);
+        intakeMotorController.set(ControlMode.PercentOutput, speed);
     }
 
     /**

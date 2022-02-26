@@ -203,7 +203,7 @@ public class RobotContainer {
         // ----- INTAKE SUBSYSTEM INITS -----\\
         // Intake has to be instantiated before drive subsystem because we need to
         // initialize the gyro
-        intakeMotorSubsystem = new IntakeMotorSubsystem(5);
+        intakeMotorSubsystem = new IntakeMotorSubsystem(5,9);
         intakePistonSubsystem = new IntakePistonSubsystem(1, 12);
 
         // ----- DRIVETRAIN SUBSYSTEM INITS -----\\

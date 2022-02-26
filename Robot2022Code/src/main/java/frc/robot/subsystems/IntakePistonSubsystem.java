@@ -46,6 +46,7 @@ public class IntakePistonSubsystem extends SubsystemBase {
      */
     public void setIntakePistonState(boolean state) {
         solenoidOne.set(state);
+        solenoidTwo.set(!state);
     }
 
     /**
