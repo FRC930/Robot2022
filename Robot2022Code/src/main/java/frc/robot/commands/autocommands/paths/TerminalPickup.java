@@ -30,7 +30,7 @@ import frc.robot.subsystems.VisionCameraSubsystem;
 public class TerminalPickup extends PathPlannerSequentialCommandGroupUtility {
 
     //  TO-DO comment this section
-    private final double KMAXSPEED = 1.5;
+    private final double KMAXSPEED = 1;//1.5;
     private final double KMAXACCELERATION = 3;
     private final double KRAMSETEB = 2;
     private final double KRAMSETEZETA = 0.7;
@@ -62,7 +62,7 @@ public class TerminalPickup extends PathPlannerSequentialCommandGroupUtility {
 
         this.addTrajectory(trajectory2);
 
-        Trajectory trajectory3 = PathPlanner.loadPath("TerminalPickup3", KMAXSPEED, KMAXACCELERATION);
+        Trajectory trajectory3 = PathPlanner.loadPath("TerminalPickup3", KMAXSPEED, KMAXACCELERATION, true);
 
         this.addTrajectory(trajectory3);
         // -------- RAMSETE Commands -------- \\
@@ -115,15 +115,19 @@ public class TerminalPickup extends PathPlannerSequentialCommandGroupUtility {
         // waits 2.5 seconds, 
         // runs the intake pistons 
         // moves to position 3
-        new AutonomousAimCommand(visionCameraSubsystem, dSubsystem),
+        new ParallelRaceGroup(new HubAimingCommand(visionCameraSubsystem, dSubsystem), new WaitCommand(1)), 
+        new ParallelRaceGroup(new CatapultCommand(catapultSubsystem, CatapultPower.AllPistons), new WaitCommand(1)),
+        new WaitCommand(1),
         new ParallelRaceGroup(new CatapultCommand(catapultSubsystem, CatapultPower.AllPistons), new WaitCommand(1)),
 
         new ParallelRaceGroup(new ParallelCommandGroup(new EngageIntakePistonsCommand(intakePistonSubsystem), new RunIntakeMotorsCommand(intakeMotorSubsystem, false)), 
-                              new SequentialCommandGroup(ramseteCommand2, new WaitCommand(2.5), ramseteCommand3)),
+                              new SequentialCommandGroup(ramseteCommand2, new StopDrive(dSubsystem), new WaitCommand(2.5), ramseteCommand3)),
         new StopDrive(dSubsystem),
         // This segment of the path aims 
         //shoots the catapult
         new ParallelRaceGroup(new HubAimingCommand(visionCameraSubsystem, dSubsystem), new WaitCommand(1)),
+        new ParallelRaceGroup(new CatapultCommand(catapultSubsystem, CatapultPower.AllPistons), new WaitCommand(1)),
+        new WaitCommand(1),
         new ParallelRaceGroup(new CatapultCommand(catapultSubsystem, CatapultPower.AllPistons), new WaitCommand(1))
         );
     } // End of Constructor

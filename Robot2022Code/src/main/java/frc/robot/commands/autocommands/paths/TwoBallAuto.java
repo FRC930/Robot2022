@@ -65,6 +65,7 @@ public class TwoBallAuto extends PathPlannerSequentialCommandGroupUtility {
         // sequential command
 
         // Creates RAMSETE Command for first trajectory
+        SmartDashboard.putString("current Gyro Position", m_odometry.getPoseMeters().toString());
         Ramsete930Command ramseteCommand1 = new Ramsete930Command(
                 trajectory1,
                 () -> m_odometry.getPoseMeters(),
@@ -80,6 +81,8 @@ public class TwoBallAuto extends PathPlannerSequentialCommandGroupUtility {
         new ParallelRaceGroup(new EngageIntakePistonsCommand(intakePistonSubsystem), new RunIntakeMotorsCommand(intakeMotorSubsystem, false), ramseteCommand1),
         new StopDrive(dSubsystem),
         new ParallelRaceGroup(new HubAimingCommand(visionCameraSubsystem, dSubsystem), new WaitCommand(1)),
+        new ParallelRaceGroup(new CatapultCommand(catapultSubsystem, CatapultPower.AllPistons), new WaitCommand(1)),
+        new WaitCommand(1),
         new ParallelRaceGroup(new CatapultCommand(catapultSubsystem, CatapultPower.AllPistons), new WaitCommand(1)));
 
     } // End of Constructor
