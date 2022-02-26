@@ -155,23 +155,32 @@ public class DriveSubsystem extends SubsystemBase {
         // Right side motors are inverted (opposite direction)
         m_rightLeader.setInverted(true);
 
-        m_leftFollower.follow(m_leftLeader);
-        m_rightFollower.follow(m_rightLeader);
-        // Need to set setInverted to Follow Laader Motors (master)
-        m_leftFollower.setInverted(InvertType.FollowMaster);
-        m_rightFollower.setInverted(InvertType.FollowMaster);
+        refollowDriveMotors();
 
         m_leftLeader.setNeutralMode(NeutralMode.Brake);
         m_leftFollower.setNeutralMode(NeutralMode.Brake);
         m_rightLeader.setNeutralMode(NeutralMode.Brake);
         m_rightFollower.setNeutralMode(NeutralMode.Brake);
     }
-/**
- * <h3>setMototBreakMode</h3>
- * 
- * Sets left and right motors to a certain breakmode: auto is brake; teleop is coast
- * @param brakeMode
- */
+
+    // Needed to overcome stopMotor() calls by CTRE's WPI motor controls
+    // See https://github.com/CrossTheRoadElec/Phoenix-Releases/issues/28
+    public void refollowDriveMotors() {
+        m_leftFollower.follow(m_leftLeader);
+        m_rightFollower.follow(m_rightLeader);
+        // Need to set setInverted to Follow Laader Motors (master)
+        m_leftFollower.setInverted(InvertType.FollowMaster);
+        m_rightFollower.setInverted(InvertType.FollowMaster);
+    }
+
+    /**
+     * <h3>setMototBreakMode</h3>
+     * 
+     * Sets left and right motors to a certain breakmode: auto is brake; teleop is
+     * coast
+     * 
+     * @param brakeMode
+     */
     public void setMotorBrakeMode(NeutralMode brakeMode) {
         m_leftLeader.setNeutralMode(brakeMode);
         m_leftFollower.setNeutralMode(brakeMode);
@@ -414,7 +423,7 @@ public class DriveSubsystem extends SubsystemBase {
         rightPIDController.reset();
     }
 
-    public void resetEncoders(){
+    public void resetEncoders() {
         m_leftLeader.setSelectedSensorPosition(0.0);
         m_rightLeader.setSelectedSensorPosition(0.0);
     }
@@ -475,8 +484,8 @@ public class DriveSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-        //SmartDashboard.putNumber("left encoder", getRawLeftSensorPosition());
-        //SmartDashboard.putNumber("right encoder", getRawRightSensorPosition());
+        // SmartDashboard.putNumber("left encoder", getRawLeftSensorPosition());
+        // SmartDashboard.putNumber("right encoder", getRawRightSensorPosition());
         m_odometry.update(
                 // Create a new Rotation2d object with the reading from the pigeon
                 new Rotation2d(Math.toRadians(GyroUtility.getInstance().getGyro().getFusedHeading())),
@@ -492,7 +501,7 @@ public class DriveSubsystem extends SubsystemBase {
                 // Divide by the current gear ratio because the motors turn more than the wheels
                         / highGearRatio);
         Pose2d robotPosition = m_odometry.getPoseMeters();
-        //SmartDashboard.putNumber("robotPositionX", robotPosition.getX());
-        //SmartDashboard.putNumber("robotPositionY", robotPosition.getY());
+        // SmartDashboard.putNumber("robotPositionX", robotPosition.getX());
+        // SmartDashboard.putNumber("robotPositionY", robotPosition.getY());
     }
 }

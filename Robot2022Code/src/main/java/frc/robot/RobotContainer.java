@@ -508,6 +508,7 @@ public class RobotContainer {
     }
 
     public void testExit(){
+        driveSubsystem.refollowDriveMotors();
         endgameMotorSubsystem.refollowEndgameMotors();
     }
 
