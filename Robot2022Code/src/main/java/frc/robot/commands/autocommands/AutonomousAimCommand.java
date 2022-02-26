@@ -15,19 +15,18 @@ public class AutonomousAimCommand extends HubAimingCommand {
 
     @Override
     public boolean isFinished() {
-
+        double xDegreeOffset = 1;
         //
-        PhotonPipelineResult result = super.reflectiveTapeCamera.getVisionCamera().getLatestResult();
+        PhotonPipelineResult result = this.reflectiveTapeCamera.getVisionCamera().getLatestResult();
         //
-        double xDegreeOffset = -result.getBestTarget().getYaw();
-        //
-        boolean isAimed = false;
-        
+        if(result.hasTargets()){
+            xDegreeOffset = -result.getBestTarget().getYaw();
+        }
         //
         if(xDegreeOffset > -1 && xDegreeOffset < 1){
-            isAimed = true;
+            return true;
         }
 
-        return isAimed;
+        return false;
     }
 }

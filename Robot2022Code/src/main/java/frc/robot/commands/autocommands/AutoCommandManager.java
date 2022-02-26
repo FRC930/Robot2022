@@ -46,7 +46,7 @@ public class AutoCommandManager {
             (CatapultSubsystem) subsystemMap.get(subNames.CatapultSubsystem.toString())
         );
 
-        CommandBase CompPath1 = new TwoBallAuto(
+        CommandBase TwoBallAuto = new TwoBallAuto(
             (DriveSubsystem) subsystemMap.get(subNames.DriveSubsystem.toString()),
             (IntakePistonSubsystem) subsystemMap.get(subNames.IntakePistonSubsystem.toString()),
             (IntakeMotorSubsystem) subsystemMap.get(subNames.IntakeMotorSubsystem.toString()),
@@ -73,7 +73,7 @@ public class AutoCommandManager {
         ShuffleboardUtility.getInstance().addAutonOptions("defaultAutoPathCommand", defaultAutoPathCommand);
         ShuffleboardUtility.getInstance().addAutonOptions("defaultShootingCommand", defaultShoot);
 
-        ShuffleboardUtility.getInstance().addAutonOptions("CompPath1", CompPath1);
+        ShuffleboardUtility.getInstance().addAutonOptions("TwoBallAuto", TwoBallAuto);
         ShuffleboardUtility.getInstance().addAutonOptions("ShootMoveShoot", ShootMoveShoot);
         ShuffleboardUtility.getInstance().addAutonOptions("TerminalPickup", TerminalPickup);
     }

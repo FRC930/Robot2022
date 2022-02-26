@@ -441,7 +441,7 @@ public class RobotContainer {
         CommandScheduler scheduler = CommandScheduler.getInstance();
         // cannot unregister subsystems you cannot expect to run during auto
         scheduler.unregisterSubsystem(
-                //catapultSubsystem,
+                catapultSubsystem,
                 // catapultSensorSubsystem,
                 endgameMotorSubsystem,
                 // endgamePistonSubsystem,
@@ -453,7 +453,7 @@ public class RobotContainer {
         // visionCameraSubsystem
         );
         // TODO set default command for each subsystem
-        scheduler.setDefaultCommand(ledSubsystem, autonPatternCommand);
+        scheduler.schedule(autonPatternCommand);
     }
 
     public void testInit() {
