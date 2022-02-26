@@ -20,6 +20,6 @@ public class IndexerMotorSubsystem extends SubsystemBase {
      * @param speed the speed to set the motor
      */
     public void setMotorSpeed(double speed) {
-        indexerMotor.set(speed);
+        indexerMotor.set(-speed);
     }
 }
