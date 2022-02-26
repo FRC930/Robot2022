@@ -125,4 +125,8 @@ public class Robot extends TimedRobot {
         m_robotContainer.testExit();
     }
 
+    @Override
+    public void disabledInit(){
+        m_robotContainer.disabledInit();
+    }
 }

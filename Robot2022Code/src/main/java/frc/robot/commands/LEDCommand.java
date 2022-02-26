@@ -1,482 +1,579 @@
 package frc.robot.commands;
 
+import frc.robot.Robot;
 import frc.robot.subsystems.LEDSubsystem;
-
+import frc.robot.utilities.BallSensorUtility;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
-
-// TODO remove println's, format code, remove dead code, rewiew intake/shoot patterns, clean up warning
 public class LEDCommand extends CommandBase {
 
-private static final int LIGHT_DELAY_NUM_OF_ITERATIONS = 32;
+    // ----- CONSTANT(S) -----\\
+    private static final int SLOW_TIMER = 32;
+    // Used in FlashingLEDPatterm
+    private static final int MED_TIMER = 15;
+    // Used in ShooterPattern
+    private static final int FAST_TIMER = 1;
+    // used in movingSegmentPattern
+    private static final int SEGMENT_LENGTH = 20;
 
-// ----- CONSTANT(S) -----\\
- private int counter = 0;
-      private boolean animCheck = false;
-      private int blueOffIndex = 0;
-      private int blueOnIndex = 19;
-      private int yellowOffIndex = 30;
-      private int yellowOnIndex = 49;
-      private int blueIndex = 0;
-      private int greenIndex = 19;
-      private Alliance allianceColor;
-  // The LED Subsystem (strip) itself
-  private final LEDSubsystem m_LEDSubsystem;
-  private final LEDPatterns m_pattern;
-  // ------CONSTUCTOR(S)--------\\
-  private final AddressableLEDBuffer m_buffer;
+    // Flag to determine time delays
+    // One execute() cycle is 0.020 seconds
+    private int counter = 0;
+    // Flag to determine State change
+    private boolean animCheck = false;
+    private boolean hadTwoBalls = false;
+    private boolean hadOneBall = false;
+    // current Alliance color
+    private Alliance allianceColor;
+    // The LED Subsystem (strip) itself
+    private final LEDSubsystem m_LEDSubsystem;
+    // Selected LED pattern from enum
+    private final LEDPatterns m_pattern;
+    // Virtual placeholder for the LED strip
+    // Compile data is sent to the LED strip through the subsystem
+    private final AddressableLEDBuffer m_fullBuffer;
+    private final AddressableLEDBuffer m_singleStrandBuffer;
 
-  public LEDCommand(LEDSubsystem subsystem, LEDPatterns pattern) {
-    m_pattern = pattern;
-    m_LEDSubsystem = subsystem;
-    m_buffer  = m_LEDSubsystem.getBuffer();
-    allianceColor = DriverStation.getAlliance();
-    addRequirements(m_LEDSubsystem);
-  }
-
-  @Override 
-  public void initialize() {
-      // force intialize in state to publish lights (at delay counter)
-      counter = LIGHT_DELAY_NUM_OF_ITERATIONS;
-      // Alliance can change during simulation
-      allianceColor = DriverStation.getAlliance();
-      // TODO convert to switch
-          if(m_pattern == LEDPatterns.Easy){
-            easyInit();
-          }
-          else if(m_pattern == LEDPatterns.EveryOther){
-            everyOtherInit();
-          }
-          else if(m_pattern == LEDPatterns.IdlePattern){
-           idlePatternInit();
-          }
-          else if (m_pattern == LEDPatterns.IntakePattern){
-            intakePatternInit();
-          }
-          else if (m_pattern == LEDPatterns.ShooterPattern){
-            shooterPatternInit();      
-          }
-          else if (m_pattern == LEDPatterns.OnEveryOther){
-            onEveryOtherInit();      
-          }
-  }
-  
-  @Override
-  public void execute() {
-      // TODO convert to switch
-      if(m_pattern == LEDPatterns.Easy){
-            easy();
+    // ------CONSTUCTOR(S)--------\\
+    public LEDCommand(LEDSubsystem subsystem, LEDPatterns pattern) {
+        m_pattern = pattern;
+        m_LEDSubsystem = subsystem;
+        m_fullBuffer = m_LEDSubsystem.getBuffer();
+        m_singleStrandBuffer = new AddressableLEDBuffer(m_fullBuffer.getLength() / 4);
+        addRequirements(m_LEDSubsystem);
+        solidYellowLEDs();
     }
-    else if(m_pattern == LEDPatterns.EveryOther){
-            everyOther();
+
+    @Override
+    public void initialize() {
+        // Wait to determine alliance for FMS signal
+        // Alliance can change during simulation
+        allianceColor = DriverStation.getAlliance();
+        counter = 0;
+        animCheck = false;
+        hadTwoBalls = false;
+        hadOneBall = false;
+        switch (m_pattern) {
+            case AutonPattern:
+                solidAllianceLEDs();
+                break;
+            default:
+                clearStrip();
+                break;
+        }
     }
-    else if(m_pattern == LEDPatterns.IdlePattern){
-     idlePattern();
+
+    @Override
+    public void execute() {
+        switch (m_pattern) {
+            case EndgamePatten:
+                movingSegmentPattern();
+                break;
+            case TeleopIdle:
+                ballStatus();
+                break;
+        }
     }
-    else if (m_pattern == LEDPatterns.IntakePattern){
-      intakePattern();
+
+    @Override
+    public boolean isFinished() {
+        // AutonPattern only need to be run once
+        return m_pattern == LEDPatterns.AutonPattern;
     }
-    else if (m_pattern == LEDPatterns.ShooterPattern){
-      shooterPattern();
+
+    /**
+     * <h3>applyBuffer</h3>
+     * applys the single Buffer to the full Buffer 4 times
+     */
+    private void applyBuffer() {
+        for (int i = 0; i < m_fullBuffer.getLength(); i++) {
+            if (i % (m_fullBuffer.getLength() / 2) < m_singleStrandBuffer.getLength()) {
+                m_fullBuffer.setLED(i, m_singleStrandBuffer.getLED8Bit(i % m_singleStrandBuffer.getLength()));
+            } else {
+                m_fullBuffer.setLED((i), m_singleStrandBuffer.getLED8Bit(i % m_singleStrandBuffer.getLength()));
+            }
+        }
+        m_LEDSubsystem.setBuffer(m_fullBuffer);
     }
-    else if(m_pattern == LEDPatterns.OnEveryOther){
-      OnEveryOther();
+
+    /**
+     * <h3>clearStrip</h3>
+     * Turns off all LEDs.
+     */
+    private void clearStrip() {
+        for (int i = 0; i < m_LEDSubsystem.getBufferLength(); i++) {
+            m_fullBuffer.setRGB(i, 0, 0, 0); // off
+        }
+        m_LEDSubsystem.setBuffer(m_fullBuffer);
     }
-    else if(m_pattern == LEDPatterns.SolidLEDs){
-      SolidLEDs();
+
+    /**
+     * <h3>solidYellowLEDs</h3>
+     * Sets all LEDs to yellow.
+     * Pattern for disabled robot.
+     */
+    public void solidYellowLEDs() {
+        for (int i = 0; i < m_LEDSubsystem.getBufferLength(); i++) {
+            m_fullBuffer.setRGB(i, 150, 150, 0); // yellow
+        }
+        m_LEDSubsystem.setBuffer(m_fullBuffer);
     }
-  }
-  
 
-  // Called once the command ends or is interrupted.
-  @Override
-  public void end(boolean interrupted) {
-    ledsOff();
-  } // End of end()
-
-  // Returns true when the command should end.
-  @Override
-  public boolean isFinished() {
-    return false;
-  } // End of isFinished()
-
-  // Enum for calculated target size
-  public static enum LEDPatterns {
-    Easy, EveryOther, IdlePattern, IntakePattern, ShooterPattern, OnEveryOther, SolidLEDs;
-       // private int type;
-
-       private LEDPatterns() {
-    }
-  }
-   private void moveLEDs() {
-            // Increments all index positions
-            blueOffIndex++;
-            blueOnIndex++;
-            yellowOffIndex++;
-            yellowOnIndex++;
-
-            // If said index variable is greater than or equal to m_LEDSubsystem.getBufferLength(), set it to 0
-            if (blueOnIndex >= m_LEDSubsystem.getBufferLength()) {
-                  blueOnIndex = 0;
-            }
-            if (blueOffIndex >= m_LEDSubsystem.getBufferLength()) {
-                  blueOffIndex = 0;
-            }
-            if (yellowOffIndex >= m_LEDSubsystem.getBufferLength()) {
-                  yellowOffIndex = 0;
-            }
-            if (yellowOnIndex >= m_LEDSubsystem.getBufferLength()) {
-                  yellowOnIndex = 0;
-            }
-      } // End of moveLEDs()
-
-      private void moveBGLEDs() {
-            // Increments all index positions
-            blueIndex++;
-            greenIndex++;
-
-            // If said index variable is greater than or equal to m_LEDSubsystem.getBufferLength(), set it to 0
-            if (blueIndex >= m_LEDSubsystem.getBufferLength()) {
-                  blueIndex = 0;
-            }
-            if (greenIndex >= m_LEDSubsystem.getBufferLength()) {
-                  greenIndex = 0;
-            }
-      } // End of ()
-
-      public void easyInit(){
-            //RGB values for blue and red
-            int r[] = { 0, 150 };
-            int g[] = { 0, 0 };
-            int b[] = { 150, 0 };
-            int index = (allianceColor == Alliance.Blue)?0:1;
-            for (int i = 0; i < m_LEDSubsystem.getBufferLength(); i+=2) {
-                        m_buffer.setRGB(i, r[index], g[index], b[index]);
-            }
-            m_LEDSubsystem.setBuffer(m_buffer);
-      
-      }
-      public void easy(){
-      }
-
-      public void everyOtherInit() {
-      }
-      public void onEveryOtherInit(){
-
-      }
-      public void everyOther() {
-            counter ++; 
-            if (counter >= LIGHT_DELAY_NUM_OF_ITERATIONS) {
-
-                  // BLUE ALLIANCE
-                  if (allianceColor == Alliance.Blue) {
-
-                        if (animCheck == true) {
-
-                              /**
-                               * sets the LED pattern to:
-                               * 10101010101010......
-                               * 
-                               * (0 being off, 1 being blue)
-                               */
-                              for (int i = 0; i < m_LEDSubsystem.getBufferLength(); i++) {
-                                    if (i % 2 == 0) { // Sets every other LED to bright blue
-                                          m_buffer.setRGB(i, 0, 0, 255);
-                                    } else {
-                                          m_buffer.setRGB(i, 0, 0, 0);
-                                    }
-                              }
-
-                              // Sets animCheck to false for pattern switch next time the delay is finished
-                              animCheck = false;
-
-                        } else {
-
-                              /**
-                               * Clears the LED strip and sets all LED's to off
-                               */
-                              for (int i = 0; i < m_LEDSubsystem.getBufferLength(); i++) {
-                                    m_buffer.setRGB(i, 0, 0, 0);
-                              }
-
-                              /**
-                               * Sets the LED pattern to:
-                               * 01010101010101......
-                               * 
-                               * (0 being off, 1 being blue)
-                               */
-                              for (int i = 1; i < m_LEDSubsystem.getBufferLength(); i += 2) { // Sets every other LED to bright blue
-                                   m_buffer.setRGB(i, 0, 0, 255);
-                              }
-
-                              // Sets animCheck to true for pattern switch next time the delay is finished
-                              animCheck = true;
-
-                        }
-
-                  }
-
-                  // RED ALLIANCE
-                  if (allianceColor == Alliance.Red) {
-
-                        if (animCheck == true) {
-
-                              /**
-                               * sets the LED pattern to:
-                               * 10101010101010......
-                               * 
-                               * (0 being off, 1 being red)
-                               */
-                              for (int i = 0; i < m_LEDSubsystem.getBufferLength(); i++) {
-                                    if (i % 2 == 0) { // Sets every other LED to bright red
-                                          m_buffer.setRGB(i, 255, 0, 0);
-                                    } else {
-                                          m_buffer.setRGB(i, 0, 0, 0);
-                                    }
-                              }
-
-                              // Sets animCheck to false for pattern switch next time the delay is finished
-                              animCheck = false;
-
-                        } else {
-
-                              /**
-                               * clears the LED strip and sets all LED's to off
-                               */
-                              for (int i = 0; i < m_LEDSubsystem.getBufferLength(); i++) {
-                                    m_buffer.setRGB(i, 0, 0, 0);
-                              }
-
-                              /**
-                               * Sets the LED pattern to:
-                               * 01010101010101......
-                               * 
-                               * (0 being off, 1 being red)
-                               */
-                              for (int i = 1; i < m_LEDSubsystem.getBufferLength(); i += 2) { // Sets every other LED to bright red
-                                    m_buffer.setRGB(i, 255, 0, 0);
-                              }
-
-                              // Sets animCheck to true for pattern switch next time the delay is finished
-                              animCheck = true;
-
-                        }
-
-                  }
-                  m_LEDSubsystem.setBuffer(m_buffer);
-                  // Resets the counter to 0 once the pattern is set
-                  counter = 0;
-            }
-      }
-
-      public void idlePatternInit() {
-      
-      }
-      public void idlePattern() {
-      
-
-            counter++;
-
-            // If counter is equal or greater to LIGHT_DELAY_NUM_OF_ITERATIONS (basically acting as a delay)
-            if (counter >= LIGHT_DELAY_NUM_OF_ITERATIONS) {
-                  animCheck = !animCheck;
-                  counter = 0;
-            }
-                  if (animCheck == true) {
-                        /**
-                         * sets the LED pattern to:
-                         * 10101010101010......
-                         * 
-                         * (0 being off, 1 being yellow)
-                         */
-                        for (int i = 0; i < m_LEDSubsystem.getBufferLength(); i += 2) {
-                              m_buffer.setRGB(i, 150, 150, 0); // Yellow
-                              m_buffer.setRGB(i+1, 0, 0, 150); // Blue
-                        }
-                  } else {
-                        /**
-                         * sets the LED pattern to:
-                         * 01010101010101......
-                         * 
-                         * (0 being off, 1 being yellow)
-                         */
-                        for (int i = 1; i < m_LEDSubsystem.getBufferLength(); i += 2) {
-                              m_buffer.setRGB(i, 150, 150, 0); // Yellow
-                              m_buffer.setRGB(i-1, 0, 0, 150); // Blue
-                        }
-                  }
-                  m_LEDSubsystem.setBuffer(m_buffer);
-      }
-
-      public void intakePatternInit() {
-    
-      }
-      public void intakePattern() {
-            counter++;
-
-            // If counter is equal or greater to 2 (basically acting as a delay)
-            if (counter >= LIGHT_DELAY_NUM_OF_ITERATIONS ) {
-            for(int ii=0;ii<m_LEDSubsystem.getBufferLength() + 3;ii++){
-
-                  m_buffer.setRGB(blueOffIndex, 0, 0, 0);
-                  m_buffer.setRGB(yellowOffIndex, 0, 0, 0);
-                  moveLEDs(); // Moves the LEDs
-                  m_buffer.setRGB(blueOnIndex, 0, 0, 255); // Blue
-                  m_buffer.setRGB(yellowOnIndex, 255, 255, 0); // Yellow
-            }
-
-                  // Resets the counter to 0 once the pattern is set
-                  counter = 0;
-                  m_LEDSubsystem.setBuffer(m_buffer);
-            }
-      }
-      public void shooterPatternInit() {
-            blueIndex = 0;
-            greenIndex = 19;
-      }
-
-      public void shooterPattern() {
-            counter++;
-            // Keeping track of animation speed.
-            if (counter >= LIGHT_DELAY_NUM_OF_ITERATIONS) {
-            for(int ii=0;ii<m_LEDSubsystem.getBufferLength() + 3;ii++){
-                  m_buffer.setRGB(blueIndex, 0, 0, 255); // Sets LED at blueIndex to blue
-                  moveBGLEDs(); // Moves the LEDs
-                  m_buffer.setRGB(greenIndex, 0, 255, 0); // Sets LED at greenIndex to green
-            }
-
-                  counter = 0;
-                  m_LEDSubsystem.setBuffer(m_buffer);
-            }
-
-      }
-      public void ledsOff(){
-
+    /**
+     * <h3>solidAllianceLEDs</h3>
+     * Sets the LED strip to robot's alliance color.
+     * pattern for Autonomous
+     */
+    private void solidAllianceLEDs() {
+        if (allianceColor == Alliance.Blue) {
             for (int i = 0; i < m_LEDSubsystem.getBufferLength(); i++) {
-                  m_buffer.setRGB(i, 0, 0, 0); // off
+                m_fullBuffer.setRGB(i, 0, 0, 225); // blue
             }
-            m_LEDSubsystem.setBuffer(m_buffer);
-      }
-      public void OnEveryOther() {
-            counter ++; 
-            if (counter >= LIGHT_DELAY_NUM_OF_ITERATIONS) {
-
-                  // BLUE ALLIANCE
-                  if (allianceColor == Alliance.Blue) {
-
-                        if (animCheck == true) {
-
-                              /**
-                               * sets the LED pattern to:
-                               * 10101010101010......
-                               * 
-                               * (0 being off, 1 being blue)
-                               */
-                              for (int i = 0; i < m_LEDSubsystem.getBufferLength(); i++) {
-                                    if (i % 2 == 0) { // Sets every other LED to bright blue
-                                          m_buffer.setRGB(i, 0, 0, 255);
-                                    } else {
-                                          m_buffer.setRGB(i, 150, 150, 150);
-                                    }
-                              }
-
-                              // Sets animCheck to false for pattern switch next time the delay is finished
-                              animCheck = false;
-
-                        } else {
-
-                              /**
-                               * Clears the LED strip and sets all LED's to off
-                               */
-                              for (int i = 0; i < m_LEDSubsystem.getBufferLength(); i++) {
-                                    m_buffer.setRGB(i, 150, 150, 150);
-                              }
-
-                              /**
-                               * Sets the LED pattern to:
-                               * 01010101010101......
-                               * 
-                               * (0 being off, 1 being blue)
-                               */
-                              for (int i = 1; i < m_LEDSubsystem.getBufferLength(); i += 2) { // Sets every other LED to bright blue
-                                   m_buffer.setRGB(i, 0, 0, 255);
-                              }
-
-                              // Sets animCheck to true for pattern switch next time the delay is finished
-                              animCheck = true;
-
-                        }
-
-                  }
-
-                  // RED ALLIANCE
-                  if (allianceColor == Alliance.Red) {
-
-                        if (animCheck == true) {
-
-                              /**
-                               * sets the LED pattern to:
-                               * 10101010101010......
-                               * 
-                               * (0 being off, 1 being red)
-                               */
-                              for (int i = 0; i < m_LEDSubsystem.getBufferLength(); i++) {
-                                    if (i % 2 == 0) { // Sets every other LED to bright red
-                                          m_buffer.setRGB(i, 255, 0, 0);
-                                    } else {
-                                          m_buffer.setRGB(i, 150, 150, 150);
-                                    }
-                              }
-
-                              // Sets animCheck to false for pattern switch next time the delay is finished
-                              animCheck = false;
-
-                        } else {
-
-                              /**
-                               * clears the LED strip and sets all LED's to off
-                               */
-                              for (int i = 0; i < m_LEDSubsystem.getBufferLength(); i++) {
-                                    m_buffer.setRGB(i, 150, 150, 150);
-                              }
-
-                              /**
-                               * Sets the LED pattern to:
-                               * 01010101010101......
-                               * 
-                               * (0 being off, 1 being red)
-                               */
-                              for (int i = 1; i < m_LEDSubsystem.getBufferLength(); i += 2) { // Sets every other LED to bright red
-                                    m_buffer.setRGB(i, 255, 0, 0);
-                              }
-
-                              // Sets animCheck to true for pattern switch next time the delay is finished
-                              animCheck = true;
-
-                        }
-
-                  }
-                  m_LEDSubsystem.setBuffer(m_buffer);
-                  // Resets the counter to 0 once the pattern is set
-                  counter = 0;
+        }
+        if (allianceColor == Alliance.Red) {
+            for (int i = 0; i < m_LEDSubsystem.getBufferLength(); i++) {
+                m_fullBuffer.setRGB(i, 225, 0, 0); // red
             }
-      }
-      public void SolidLEDs(){
+        }
+        m_LEDSubsystem.setBuffer(m_fullBuffer);
+    }
+
+    /**
+     * <h3>movingSegmentPattern</h3>
+     * Shifts a segment of LEDs along the strip.
+     * pattern for Endgame
+     */
+    public void movingSegmentPattern() {
+        counter++;
+        // Keeping track of animation speed.
+        if (counter >= FAST_TIMER) {
+            for (int i = 0; i <= m_singleStrandBuffer.getLength(); i++) {
+                // Writes the length of the strip
+                for (int j = 0; j < SEGMENT_LENGTH; j++) {
+                    // Places overflow to the beginning
+                    if (j + i < m_singleStrandBuffer.getLength()) {
+                        m_singleStrandBuffer.setRGB(j + i, 150, 150, 150);// white
+
+                    } else {
+                        m_singleStrandBuffer.setRGB(j + i - m_singleStrandBuffer.getLength(), 150, 150, 150);// white
+                    }
+                }
+                // sets the led behind the segment back to off
+                if (i > 0) {
+                    m_singleStrandBuffer.setRGB(i - 1, 0, 0, 0);// off
+                }
+            }
+            counter = 0;
+            applyBuffer();
+        }
+    }
+
+    /**
+     * <h3>ballStatus</h3>
+     * manages active pattern based off ball sensors
+     */
+    private void ballStatus() {
+        if (BallSensorUtility.getInstance().catapultIsTripped() && BallSensorUtility.getInstance().indexerIsTripped()
+                && !hadTwoBalls) {
+            flashLEDHighPattern();
+        } else if (BallSensorUtility.getInstance().catapultIsTripped()
+                || BallSensorUtility.getInstance().indexerIsTripped() && !hadOneBall) {
+            flashLEDLowPattern();
+        } else if (BallSensorUtility.getInstance().catapultIsTripped()
+                || BallSensorUtility.getInstance().indexerIsTripped() && hadTwoBalls) {
+            retractTopLEDs();
+
+        } else if (!BallSensorUtility.getInstance().catapultIsTripped()
+                && !BallSensorUtility.getInstance().indexerIsTripped() && hadOneBall) {
+            retractBottomLEDs();
+        } else {
+            clearStrip();
+        }
+    }
+
+    /**
+     * <h3>flashLEDHighPattern</h3>
+     * Flashes alliance color on the top half three times then remains on
+     */
+    private void flashLEDHighPattern() {
+        if (counter == MED_TIMER * 6) {
+            hadTwoBalls = true;
+            hadOneBall = true;
+            for (int i = m_singleStrandBuffer.getLength() / 2; i < m_singleStrandBuffer.getLength(); i++) {
+                if (allianceColor == Alliance.Blue) {
+                    m_singleStrandBuffer.setRGB(i, 0, 0, 255); // Blue
+                }
+                if (allianceColor == Alliance.Red) {
+                    m_singleStrandBuffer.setRGB(i, 255, 0, 0); // red
+                }
+            }
+            counter++;
+        } else if (counter < MED_TIMER * 6) {
+            if (counter % (MED_TIMER * 2) < MED_TIMER) {
+                for (int i = m_singleStrandBuffer.getLength() / 2; i < m_singleStrandBuffer.getLength(); i++) {
+                    m_singleStrandBuffer.setRGB(i, 0, 0, 0); // off
+                }
+            } else {
+                for (int i = m_singleStrandBuffer.getLength() / 2; i < m_singleStrandBuffer.getLength(); i++) {
+                    if (allianceColor == Alliance.Blue) {
+                        m_singleStrandBuffer.setRGB(i, 0, 0, 255); // Blue
+                    } else if (allianceColor == Alliance.Red) {
+                        m_singleStrandBuffer.setRGB(i, 255, 0, 0); // red
+                    }
+                }
+            }
+            counter++;
+        }
+        applyBuffer();
+    }
+
+    /**
+     * <h3>flashLEDLowPattern</h3>
+     * Flashes alliance color on the bottom half three times then remains on
+     */
+    private void flashLEDLowPattern() {
+        if (counter == MED_TIMER * 6) {
+            hadOneBall = true;
+            for (int i = 0; i < m_singleStrandBuffer.getLength() / 2; i++) {
+                if (allianceColor == Alliance.Blue) {
+                    m_singleStrandBuffer.setRGB(i, 0, 0, 255); // Blue
+                }
+                if (allianceColor == Alliance.Red) {
+                    m_singleStrandBuffer.setRGB(i, 255, 0, 0); // red
+                }
+            }
+            counter++;
+        } else if (counter < MED_TIMER * 6) {
+            if (counter % (MED_TIMER * 2) < MED_TIMER) {
+                for (int i = 0; i < m_singleStrandBuffer.getLength() / 2; i++) {
+                    m_singleStrandBuffer.setRGB(i, 0, 0, 0); // off
+                }
+            } else {
+                for (int i = 0; i < m_singleStrandBuffer.getLength() / 2; i++) {
+                    if (allianceColor == Alliance.Blue) {
+                        m_singleStrandBuffer.setRGB(i, 0, 0, 255); // Blue
+                    } else if (allianceColor == Alliance.Red) {
+                        m_singleStrandBuffer.setRGB(i, 255, 0, 0); //
+                    }
+                }
+            }
+            counter++;
+        }
+        applyBuffer();
+    }
+
+    /**
+     * <h3>retractTopLEDs</h3>
+     * retracts LEDs one by one from full to half
+     */
+    private void retractTopLEDs() {
+        if (counter < MED_TIMER * m_singleStrandBuffer.getLength() / 2) {
+            if (counter % MED_TIMER == 0) {
+                int i = counter / MED_TIMER;
+                if (allianceColor == Alliance.Blue) {
+                    m_singleStrandBuffer.setRGB(i, 0, 0, 255); // Blue
+                } else if (allianceColor == Alliance.Blue) {
+                    m_singleStrandBuffer.setRGB(i, 255, 0, 0); // red
+                }
+                applyBuffer();
+            }
+            counter++;
+        } else {
+            hadTwoBalls = false;
+            hadOneBall = true;
+        }
+    }
+
+    /**
+     * <h3>retractBottomLEDs</h3>
+     * retracts LEDs one by one from half to empty
+     */
+    private void retractBottomLEDs() {
+        if (counter < MED_TIMER * m_singleStrandBuffer.getLength() / 2) {
+            if (counter % MED_TIMER == 0) {
+                int i = counter / MED_TIMER;
+                if (allianceColor == Alliance.Blue) {
+                    m_singleStrandBuffer.setRGB(i, 0, 0, 255); // Blue
+                } else if (allianceColor == Alliance.Blue) {
+                    m_singleStrandBuffer.setRGB(i, 255, 0, 0); // red
+                }
+                applyBuffer();
+            }
+            counter++;
+        } else {
+            hadTwoBalls = false;
+            hadOneBall = false;
+        }
+    }
+
+    /**
+     * <h3>everyOtherOn</h3>
+     * alternating between alliance color and off
+     */
+    private void everyOtherOff() {
+        counter++;
+        if (counter >= SLOW_TIMER) {
+
+            // BLUE ALLIANCE
             if (allianceColor == Alliance.Blue) {
-                  for (int i = 0; i < m_LEDSubsystem.getBufferLength(); i++) {
-                        m_buffer.setRGB(i, 0, 0, 225); // blue
-                  }
-                  m_LEDSubsystem.setBuffer(m_buffer);
+
+                if (animCheck == true) {
+
+                    /**
+                     * sets the LED pattern to:
+                     * 10101010101010......
+                     * 
+                     * (0 being off, 1 being blue)
+                     */
+                    for (int i = 0; i < m_LEDSubsystem.getBufferLength(); i++) {
+                        if (i % 2 == 0) { // Sets every other LED to bright blue
+                            m_fullBuffer.setRGB(i, 0, 0, 255);
+                        } else {
+                            m_fullBuffer.setRGB(i, 0, 0, 0);
+                        }
+                    }
+
+                    // Sets animCheck to false for pattern switch next time the delay is finished
+                    animCheck = false;
+
+                } else {
+
+                    /**
+                     * Clears the LED strip and sets all LED's to off
+                     */
+                    for (int i = 0; i < m_LEDSubsystem.getBufferLength(); i++) {
+                        m_fullBuffer.setRGB(i, 0, 0, 0);
+                    }
+
+                    /**
+                     * Sets the LED pattern to:
+                     * 01010101010101......
+                     * 
+                     * (0 being off, 1 being blue)
+                     */
+                    for (int i = 1; i < m_LEDSubsystem.getBufferLength(); i += 2) { // Sets every other LED to
+                                                                                    // bright blue
+                        m_fullBuffer.setRGB(i, 0, 0, 255);
+                    }
+
+                    // Sets animCheck to true for pattern switch next time the delay is finished
+                    animCheck = true;
+
+                }
+
             }
+
+            // RED ALLIANCE
             if (allianceColor == Alliance.Red) {
-                  for (int i = 0; i < m_LEDSubsystem.getBufferLength(); i++) {
-                        m_buffer.setRGB(i, 225, 0, 0); // red
-                  }
-                  m_LEDSubsystem.setBuffer(m_buffer);
+
+                if (animCheck == true) {
+
+                    /**
+                     * sets the LED pattern to:
+                     * 10101010101010......
+                     * 
+                     * (0 being off, 1 being red)
+                     */
+                    for (int i = 0; i < m_LEDSubsystem.getBufferLength(); i++) {
+                        if (i % 2 == 0) { // Sets every other LED to bright red
+                            m_fullBuffer.setRGB(i, 255, 0, 0);
+                        } else {
+                            m_fullBuffer.setRGB(i, 0, 0, 0);
+                        }
+                    }
+
+                    // Sets animCheck to false for pattern switch next time the delay is finished
+                    animCheck = false;
+
+                } else {
+
+                    /**
+                     * clears the LED strip and sets all LED's to off
+                     */
+                    for (int i = 0; i < m_LEDSubsystem.getBufferLength(); i++) {
+                        m_fullBuffer.setRGB(i, 0, 0, 0);
+                    }
+
+                    /**
+                     * Sets the LED pattern to:
+                     * 01010101010101......
+                     * 
+                     * (0 being off, 1 being red)
+                     */
+                    for (int i = 1; i < m_LEDSubsystem.getBufferLength(); i += 2) { // Sets every other LED to
+                                                                                    // bright red
+                        m_fullBuffer.setRGB(i, 255, 0, 0);
+                    }
+
+                    // Sets animCheck to true for pattern switch next time the delay is finished
+                    animCheck = true;
+
+                }
+
             }
-      }
-      
-}
+            m_LEDSubsystem.setBuffer(m_fullBuffer);
+            // Resets the counter to 0 once the pattern is set
+            counter = 0;
+        }
+    }
+
+    /**
+     * <h3>everyOtherOff</h3>
+     * alternating between alliance color and white
+     */
+    private void everyOtherOn() {
+        counter++;
+        if (counter >= SLOW_TIMER) {
+
+            // BLUE ALLIANCE
+            if (allianceColor == Alliance.Blue) {
+
+                if (animCheck == true) {
+
+                    /**
+                     * sets the LED pattern to:
+                     * 10101010101010......
+                     * 
+                     * (0 being off, 1 being blue)
+                     */
+                    for (int i = 0; i < m_LEDSubsystem.getBufferLength(); i++) {
+                        if (i % 2 == 0) { // Sets every other LED to bright blue
+                            m_fullBuffer.setRGB(i, 0, 0, 255);
+                        } else {
+                            m_fullBuffer.setRGB(i, 150, 150, 150);
+                        }
+                    }
+
+                    // Sets animCheck to false for pattern switch next time the delay is finished
+                    animCheck = false;
+
+                } else {
+
+                    /**
+                     * Clears the LED strip and sets all LED's to off
+                     */
+                    for (int i = 0; i < m_LEDSubsystem.getBufferLength(); i++) {
+                        m_fullBuffer.setRGB(i, 150, 150, 150);
+                    }
+
+                    /**
+                     * Sets the LED pattern to:
+                     * 01010101010101......
+                     * 
+                     * (0 being off, 1 being blue)
+                     */
+                    for (int i = 1; i < m_LEDSubsystem.getBufferLength(); i += 2) { // Sets every other LED to
+                                                                                    // bright blue
+                        m_fullBuffer.setRGB(i, 0, 0, 255);
+                    }
+
+                    // Sets animCheck to true for pattern switch next time the delay is finished
+                    animCheck = true;
+
+                }
+
+            }
+
+            // RED ALLIANCE
+            if (allianceColor == Alliance.Red) {
+
+                if (animCheck == true) {
+
+                    /**
+                     * sets the LED pattern to:
+                     * 10101010101010......
+                     * 
+                     * (0 being off, 1 being red)
+                     */
+                    for (int i = 0; i < m_LEDSubsystem.getBufferLength(); i++) {
+                        if (i % 2 == 0) { // Sets every other LED to bright red
+                            m_fullBuffer.setRGB(i, 255, 0, 0);
+                        } else {
+                            m_fullBuffer.setRGB(i, 150, 150, 150);
+                        }
+                    }
+
+                    // Sets animCheck to false for pattern switch next time the delay is finished
+                    animCheck = false;
+
+                } else {
+
+                    /**
+                     * clears the LED strip and sets all LED's to off
+                     */
+                    for (int i = 0; i < m_LEDSubsystem.getBufferLength(); i++) {
+                        m_fullBuffer.setRGB(i, 150, 150, 150);
+                    }
+
+                    /**
+                     * Sets the LED pattern to:
+                     * 01010101010101......
+                     * 
+                     * (0 being off, 1 being red)
+                     */
+                    for (int i = 1; i < m_LEDSubsystem.getBufferLength(); i += 2) { // Sets every other LED to
+                        m_fullBuffer.setRGB(i, 255, 0, 0);// bright red
+                    }
+
+                    // Sets animCheck to true for pattern switch next time the delay is finished
+                    animCheck = true;
+
+                }
+
+            }
+            m_LEDSubsystem.setBuffer(m_fullBuffer);
+            // Resets the counter to 0 once the pattern is set
+            counter = 0;
+        }
+    }
+
+    /**
+     * <h3>blueYellowAlt</h3>
+     * alternating between yellow and blue
+     */
+    private void blueYellowAlt() {
+
+        counter++;
+
+        // If counter is equal or greater to LIGHT_DELAY_NUM_OF_ITERATIONS (basically
+        // acting as a delay)
+        if (counter >= SLOW_TIMER) {
+            animCheck = !animCheck;
+            counter = 0;
+        }
+        if (animCheck == true) {
+            /**
+             * sets the LED pattern to:
+             * 10101010101010......
+             * 
+             * (0 being off, 1 being yellow)
+             */
+            for (int i = 0; i < m_LEDSubsystem.getBufferLength(); i += 2) {
+                m_fullBuffer.setRGB(i, 150, 150, 0); // Yellow
+                m_fullBuffer.setRGB(i + 1, 0, 0, 150); // Blue
+            }
+        } else {
+            /*
+             * sets the LED pattern to:
+             * 01010101010101......
+             * 
+             * (0 being off, 1 being yellow)
+             */
+            for (int i = 1; i < m_LEDSubsystem.getBufferLength(); i += 2) {
+                m_fullBuffer.setRGB(i, 150, 150, 0); // Yellow
+                m_fullBuffer.setRGB(i - 1, 0, 0, 150); // Blue
+            }
+        }
+        m_LEDSubsystem.setBuffer(m_fullBuffer);
+    }
+
+    public static enum LEDPatterns {
+        AutonPattern, TeleopIdle, EndgamePatten;
+
+        private LEDPatterns() {
+        }
+    }
+} // End of LEDCommand

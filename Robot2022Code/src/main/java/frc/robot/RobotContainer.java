@@ -31,6 +31,7 @@ import frc.robot.commands.IndexerForwardCommand;
 import frc.robot.commands.LEDCommand;
 import frc.robot.commands.ToggleShifterCommand;
 import frc.robot.commands.CatapultCommand.CatapultPower;
+import frc.robot.commands.LEDCommand.LEDPatterns;
 import frc.robot.commands.autocommands.AutoCommandManager;
 import frc.robot.commands.autocommands.AutoCommandManager.subNames;
 import frc.robot.commands.autovisioncommands.HubAimingCommand;
@@ -154,15 +155,10 @@ public class RobotContainer {
 
     private final HubAimingCommand hubAimingCommand;
 
-    //LED commands
+    // LED commands
     private final LEDCommand autonPatternCommand;
     private final LEDCommand idlePatternCommand;
-    private final LEDCommand intakePatternCommand;
-    private final LEDCommand shooterPatternCommand;
     private final LEDCommand endgamePatternCommand;
-    private final LEDCommand easyPatternCommand;
-    private final LEDCommand onEveryOtherCommand;
-    private final LEDCommand solidLEDsCommand;
 
     private final LEDSubsystem ledSubsystem;
     // ----- AUTONOMOUS -----\\
@@ -183,9 +179,10 @@ public class RobotContainer {
          * -----------------------------------------------------------------------------
          * ---
          */
-        
+
         // ----- LED SUBSYSTEM INITS -----\\
         ledSubsystem = new LEDSubsystem(0);
+
         // ----- CAMERA SUBSYSTEM INITS -----\\
         // Camera subsystem for reflective tape
         reflectiveTapeCameraSubsystem = new VisionCameraSubsystem(
@@ -293,14 +290,10 @@ public class RobotContainer {
         }
 
         // ----- LED COMMAND INITS-----\\
-        autonPatternCommand = new LEDCommand(ledSubsystem, LEDCommand.LEDPatterns.EveryOther);
-        endgamePatternCommand = new LEDCommand(ledSubsystem, LEDCommand.LEDPatterns.EveryOther);
-        idlePatternCommand = new LEDCommand(ledSubsystem, LEDCommand.LEDPatterns.IdlePattern);
-        intakePatternCommand = new LEDCommand(ledSubsystem, LEDCommand.LEDPatterns.IntakePattern);
-        shooterPatternCommand = new LEDCommand(ledSubsystem, LEDCommand.LEDPatterns.ShooterPattern);
-        easyPatternCommand = new LEDCommand(ledSubsystem, LEDCommand.LEDPatterns.Easy);
-        onEveryOtherCommand = new LEDCommand(ledSubsystem, LEDCommand.LEDPatterns.OnEveryOther);
-        solidLEDsCommand = new LEDCommand(ledSubsystem, LEDCommand.LEDPatterns.SolidLEDs);
+        autonPatternCommand = new LEDCommand(ledSubsystem, LEDPatterns.AutonPattern);
+        endgamePatternCommand = new LEDCommand(ledSubsystem, LEDPatterns.EndgamePatten);
+        idlePatternCommand = new LEDCommand(ledSubsystem, LEDPatterns.TeleopIdle);
+
         // calls the method that configures the buttons
         configureButtonBindings();
 
@@ -338,25 +331,28 @@ public class RobotContainer {
         // Shifts the drivetrain when shifter trigger is pulled
         driverController.getRightTrigger().whileActiveOnce(toggleShifterCommand);
 
-        // Launches a cargo ball when the launch button is pressed
-        // The delay is needed in order to give the ball holder time to open before firing
-        // Catapult command interrupts default and end() opens the ball holder
-        driverController.getLeftBumper().whileActiveOnce(new ParallelCommandGroup(
-            new SequentialCommandGroup(new WaitCommand(CatapultSubsystem.CATAPULT_FIRE_DELAY), 
-            new CatapultCommand(catapultSubsystem, CatapultPower.AllPistons)), solidLEDsCommand));
-        driverController.getPOVUpTrigger().whileActiveOnce(new CatapultCommand(catapultSubsystem, 
-            CatapultPower.SetLongShot));
-        driverController.getPOVDownTrigger().whileActiveOnce(new CatapultCommand(catapultSubsystem, 
-            CatapultPower.SetShortShot));
+        /*
+         * Launches a cargo ball when the launch button is pressed. The delay is needed
+         * in order to give the ball holder time to open before firing. Catapult command
+         * interrupts default and end() opens the ball holder.
+         */
+        driverController.getLeftBumper().whileActiveOnce(
+                new SequentialCommandGroup(
+                        new WaitCommand(CatapultSubsystem.CATAPULT_FIRE_DELAY),
+                        new CatapultCommand(catapultSubsystem, CatapultPower.AllPistons)));
+        driverController.getPOVUpTrigger().whileActiveOnce(
+                new CatapultCommand(catapultSubsystem, CatapultPower.SetLongShot));
+        driverController.getPOVDownTrigger().whileActiveOnce(
+                new CatapultCommand(catapultSubsystem, CatapultPower.SetShortShot));
         // Checks if LB is pressed, then it will engage the intake pistons
-        codriverController.getLeftBumper()
-                .whileActiveOnce(new ParallelCommandGroup(engageIntakePistonsCommand, intakePatternCommand));
+        codriverController.getLeftBumper().whileActiveOnce(
+                new ParallelCommandGroup(engageIntakePistonsCommand));
         // Checks if LB is pressed and B isn't pressed, then it will run intake
-        codriverController.getLeftBumper().and(codriverController.getBButton().negate())
-                .whileActiveOnce(runIntakeMotorsCommand);
+        codriverController.getLeftBumper().and(
+                codriverController.getBButton().negate()).whileActiveOnce(runIntakeMotorsCommand);
         // Checks if LB and B is pressed, then it will reverse the intake
-        codriverController.getLeftBumper().and(codriverController.getBButton())
-                .whileActiveOnce(reverseIntakeMotorsCommand);
+        codriverController.getLeftBumper().and(
+                codriverController.getBButton()).whileActiveOnce(reverseIntakeMotorsCommand);
 
         codriverController.getRightBumper().whileActiveOnce(new IndexerForwardCommand(indexerMotorSubsystem));
 
@@ -366,8 +362,8 @@ public class RobotContainer {
         // Manually rotates the endgame arms in reverse while pressed
         driverController.getAButton().whileActiveOnce(endgameArmRevCommand);
 
-        driverController.getStartButton().whileActiveOnce(endgameManager);
-        
+        driverController.getStartButton().whileActiveOnce(new ParallelCommandGroup(endgameManager, endgamePatternCommand));
+
         driverController.getRightBumper().whileActiveContinuous(hubAimingCommand);
     }
 
@@ -384,7 +380,7 @@ public class RobotContainer {
     public void beginTeleopRunCommands() {
         // Sets the brake mode to coast
         driveSubsystem.setMotorBrakeMode(NeutralMode.Brake);
-        
+
         // startCamera();
 
         // Manages commands via stacking
@@ -394,12 +390,12 @@ public class RobotContainer {
          * Unregisters subsystems to prevent hanging resources
          */
         scheduler.unregisterSubsystem(
-            driveSubsystem, // Drivetrain
-            //intakeMotorSubsystem, intakePistonSubsystem, // Intake // Commented on Purpose
-            endgamePiston1, endgamePiston2, endgamePistonL3, endgamePistonR3, // Endgame Left Arm
-            endgamePiston4//, Endgame Right Arm
-            /* , endgameMotorSubsystem */ // Endgame Motors
-            //indexerMotorSubsystem
+                driveSubsystem, // Drivetrain
+                // intakeMotorSubsystem, intakePistonSubsystem, Intake commented out on purpose
+                endgamePiston1, endgamePiston2, endgamePistonL3, endgamePistonR3, // Endgame Left Arm
+                endgamePiston4// , Endgame Right Arm
+        /* , endgameMotorSubsystem */ // Endgame Motors
+        // indexerMotorSubsystem
         );
 
         // DRIVETRAIN DEFAULTS
@@ -419,7 +415,7 @@ public class RobotContainer {
         scheduler.setDefaultCommand(endgamePistonR3, new EndgameCloseClawSingleCommand(endgamePistonR3));
         scheduler.setDefaultCommand(endgamePiston4, new EndgameCloseClawSingleCommand(endgamePiston4));
         scheduler.setDefaultCommand(indexerMotorSubsystem, new IndexerForwardCommand(indexerMotorSubsystem));
-        scheduler.setDefaultCommand(ledSubsystem,  idlePatternCommand);
+        scheduler.setDefaultCommand(ledSubsystem, idlePatternCommand);
         scheduler.setDefaultCommand(catapultSubsystem, new BallHolderCommand(catapultSubsystem));
     }
 
@@ -495,13 +491,11 @@ public class RobotContainer {
                 endgamePiston4.closed();
             }
         } else {
-            if(driverController.getYButton().get()){
+            if (driverController.getYButton().get()) {
                 endgameMotorSubsystem.setMotorSpeed(0.2);
-            } 
-            else if(driverController.getAButton().get()){
+            } else if (driverController.getAButton().get()) {
                 endgameMotorSubsystem.setMotorSpeed(-0.2);
-            }
-            else {
+            } else {
                 endgameMotorSubsystem.setMotorSpeed(0.0);
             }
         }
@@ -601,4 +595,8 @@ public class RobotContainer {
             m_simDrive.simulationPeriodic();
         }
     }
-}
+
+    public void disabledInit() {
+        idlePatternCommand.solidYellowLEDs();
+    }
+} // End of RobotContainer

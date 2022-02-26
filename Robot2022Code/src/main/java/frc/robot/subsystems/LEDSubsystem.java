@@ -6,7 +6,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class LEDSubsystem extends SubsystemBase {
       // ----------CONSTANT(S)--------------\\
-      private final int BUFFER_LENGTH = 304;
+      private final int BUFFER_LENGTH = 300;
       // --------VARIABLE(S)--------\\
       private final AddressableLED leds;
       private final AddressableLEDBuffer buffer;  // Creates a new buffer object
@@ -15,11 +15,11 @@ public class LEDSubsystem extends SubsystemBase {
       // ---------CONSTRUCTOR(S)----------------\
       /**
        * LEDSubsystem
-       * @param PWMPort PWM port on the roboRIO
+       * @param port PWM port on the roboRIO
        */
-      public LEDSubsystem(int PWMPort) {
+      public LEDSubsystem(int port) {
             // TODO maybe pass in buffer length
-            leds = new AddressableLED(PWMPort); // initialization of the AdressableLED
+            leds = new AddressableLED(port); // initialization of the AdressableLED
             leds.setLength(BUFFER_LENGTH); // Sets the LED Strip length once
             buffer = new AddressableLEDBuffer(BUFFER_LENGTH);
             // TODO we start a starting color
