@@ -5,26 +5,23 @@ package frc.robot.subsystems;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.utilities.ShuffleboardUtility;
-
-import static frc.robot.utilities.ShuffleboardUtility.ShuffleboardKeys;
 
 //----- CLASS -----\\
 /**
- * <h3>Intake Piston Subsystem</h3>
+ * <h3>IntakePistonSubsystem</h3>
  * 
  * Handles the pistons that raise and lower the intake.
  */
 public class IntakePistonSubsystem extends SubsystemBase {
 
-    // ----- SOLENOID(S) -----\\
+    // ----- VARIABLES -----\\
 
     private Solenoid solenoidOne;
     private Solenoid solenoidTwo;
 
     // ----- CONSTRUCTOR -----\\
     /**
-     * <h3>Intake Piston Subsystem</h3>
+     * <h3>IntakePistonSubsystem</h3>
      * 
      * Handles the pistons that raise and lower the intake.
      * 
@@ -32,8 +29,10 @@ public class IntakePistonSubsystem extends SubsystemBase {
      * @param solenoidTwoID ID for the second intake solenoid that always stays open
      */
     public IntakePistonSubsystem(int solenoidOneID, int solenoidTwoID) {
+        //REVPH is the device on the robot that controls the compressors
         solenoidOne = new Solenoid(PneumaticsModuleType.REVPH, solenoidOneID);
         solenoidTwo = new Solenoid(PneumaticsModuleType.REVPH, solenoidTwoID);
+        //solenoidTwo is being set to true so that way there is room for another ball
         solenoidTwo.set(true);
     }
 
@@ -45,6 +44,7 @@ public class IntakePistonSubsystem extends SubsystemBase {
      * @param state the state to write to the piston
      */
     public void setIntakePistonState(boolean state) {
+        //Sets the first solenoid to the boolean passed in and sets the second solenoid to the opposite state
         solenoidOne.set(state);
         solenoidTwo.set(!state);
     }

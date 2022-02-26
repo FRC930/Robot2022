@@ -2,14 +2,13 @@
 
 package frc.robot.subsystems;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.utilities.BallSensorUtility;
 import frc.robot.utilities.GyroUtility;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
-//-------- SUBSYSTEM CLASS --------\\
+//-------- CLASS --------\\
 /**
  * <h3>IntakeMotorSubsystem</h3>
  * 
@@ -17,7 +16,7 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
  */
 public class IntakeMotorSubsystem extends SubsystemBase {
 
-    //-------- DECLARATIONS --------\\
+    //-------- VARIABLES --------\\
 
     /**
      * The motor controller that controls the intake motor
@@ -28,12 +27,16 @@ public class IntakeMotorSubsystem extends SubsystemBase {
     // -------- CONSTRUCTOR --------\
 
     /**
+     * <h3>IntakeMotorSubsystem</h3>
+     * 
      * This constructor initializes the {@link #intakeMotorController} to the proper
      * hardware
      */
     public IntakeMotorSubsystem(int intakeID, int gyroID) {
         intakeMotorController = new WPI_TalonFX(intakeID);
         gyroController = new WPI_TalonSRX(gyroID);
+
+        //Sets the subsystem for the gyro to the IntakeMotorSubsystem
         GyroUtility.getInstance().setGyro(this);
     }
 
@@ -47,6 +50,7 @@ public class IntakeMotorSubsystem extends SubsystemBase {
      * @param speed the speed at which to set the motor
      */
     public void setMotorSpeed(double speed) {
+        //PercentOutput is the amount of output that the motor produces between -1 and 1
         intakeMotorController.set(ControlMode.PercentOutput, speed);
     }
 
@@ -61,9 +65,9 @@ public class IntakeMotorSubsystem extends SubsystemBase {
     }
 
     /**
-     * Returns TalonSRX controller
-     * </p>
-     * {@link frc.robot.subsystems.DriveSubsystem DriveSubsystem}
+     * <h3?getIntakeMotor</h3>
+     * 
+     * Returns TalonSRX controller {@link frc.robot.subsystems.DriveSubsystem DriveSubsystem}
      * needs the talon for the Pigeon onboard.
      * 
      * @return intakeMotor

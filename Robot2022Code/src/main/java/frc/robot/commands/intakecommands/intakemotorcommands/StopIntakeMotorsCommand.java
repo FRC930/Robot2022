@@ -11,7 +11,7 @@ package frc.robot.commands.intakecommands.intakemotorcommands;
 import frc.robot.subsystems.IntakeMotorSubsystem;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
-//-------- COMMAND CLASS --------\\
+//-------- CLASS --------\\
 
 /**
  * <h3>StopIntakeMotorsCommand</h3>
@@ -20,9 +20,9 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
  */
 public class StopIntakeMotorsCommand extends CommandBase {
 
-  //-------- DECLARATIONS --------\\
+  // -------- VARIABLES --------\\
 
-  private final IntakeMotorSubsystem intakeMotors;
+  private final IntakeMotorSubsystem intakeMotorSubsystem;
 
   //-------- CONSTRUCTOR --------\\
    /**
@@ -31,24 +31,31 @@ public class StopIntakeMotorsCommand extends CommandBase {
    * This class contols whem the intake motors will stop
    * 
    * @param iMotors - Intake motors subsystem
+
    */
   public StopIntakeMotorsCommand(IntakeMotorSubsystem iMotors) {
-    intakeMotors = iMotors;
+    intakeMotorSubsystem = iMotors;
     addRequirements(iMotors); // Use addRequirements() here to declare subsystem dependencies.
   }
 
-  //-------- COMMANDBASE METHODS --------\\
+  //-------- METHODS --------\\
   
   /**
-  * Called when the command is initially scheduled. 
-  */
+   * <h3>initialize</h3>
+   * 
+   * Called when the command is initially scheduled. 
+   */
   @Override
   public void initialize() {
-    intakeMotors.setMotorSpeed(0.0);
+    intakeMotorSubsystem.setMotorSpeed(0.0);
   }
   
-   /**
+  /**
+   * <h3>isFinished</h3>
+   * 
    * Returns true when the command should end.
+   * 
+   * @return False
    */
   @Override
   public boolean isFinished() {

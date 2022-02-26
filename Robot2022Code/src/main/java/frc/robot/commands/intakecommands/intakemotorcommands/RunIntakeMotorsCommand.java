@@ -10,15 +10,15 @@
 package frc.robot.commands.intakecommands.intakemotorcommands;
 
 import frc.robot.subsystems.IntakeMotorSubsystem;
-import frc.robot.utilities.BallSensorUtility;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
-//-------- COMMAND CLASS --------\\
+//-------- CLASS --------\\
 /**
  * <h3>RunIntakeMotorsCommand</h3>
  * 
  * This class contols the intake motors
  */
+
 public class RunIntakeMotorsCommand extends CommandBase {
 
   // -------- CONSTANTS --------\\
@@ -27,50 +27,67 @@ public class RunIntakeMotorsCommand extends CommandBase {
 
   // -------- VARIABLES --------\\
 
-  private final IntakeMotorSubsystem intakeMotors;
+  private final IntakeMotorSubsystem intakeMotorSubsystem;
+
   private boolean reversed = false;
 
-  //-------- CONSTRUCTOR --------\\
+  // -------- CONSTRUCTOR --------\\
   /**
-   * <h3>CounterclockwiseIntakeMotorsCommand</h3>
+   * <h3>RunIntakeMotorsCommand</h3>
    * 
-   * This class contols the counter-clockwise intake motors
+   * This class contols the intake motors
    * 
-   * @param iMotors - Intake motors subsystem
+   * @param iMotors    - Intake motors subsystem
+   * @param isReversed
    */
   public RunIntakeMotorsCommand(IntakeMotorSubsystem iMotors, boolean isReversed) {
-    intakeMotors = iMotors;
+    intakeMotorSubsystem = iMotors;
     reversed = isReversed;
 
     addRequirements(iMotors); // Use addRequirements() here to declare subsystem dependencies.
   }
 
-  // -------- COMMANDBASE METHODS --------\\
+  // -------- METHODS --------\\
 
   /**
-   * Called when the command is initially scheduled.
+   * <h3>initialize</h3>
+   * 
+   * Called when the command is initially scheduled
+   * 
+   * Sets the motor speed based on if its in reverse mode or not.
    */
   @Override
   public void initialize() {
+    // Changes the direction of the motors based upon whether the driver is clicking
+    // the reverse button or not
     if (!reversed) {
-      intakeMotors.setMotorSpeed(INTAKE_SPEED);
+      intakeMotorSubsystem.setMotorSpeed(INTAKE_SPEED);
     } else {
-      intakeMotors.setMotorSpeed(-INTAKE_SPEED);
+      intakeMotorSubsystem.setMotorSpeed(-INTAKE_SPEED);
     }
 
   }
 
   /**
+   * <h3>isFinished</h3>
+   * 
    * Returns true when the command should end.
+   * 
+   * @return False
    */
   @Override
   public boolean isFinished() {
     return false;
   }
 
+  /**
+   * <h3>end</h3>
+   * 
+   * Sets the motor speed for the intake to zero once the command ends.
+   */
   @Override
   public void end(boolean interrupted) {
-    intakeMotors.setMotorSpeed(0.0);
+    intakeMotorSubsystem.setMotorSpeed(0.0);
   }
 
 } // End of class RunIntakeMotorsCommand
