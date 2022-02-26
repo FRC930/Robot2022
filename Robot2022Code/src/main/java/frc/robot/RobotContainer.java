@@ -213,7 +213,7 @@ public class RobotContainer {
 
         // ----- CATAPULT SUBSYSTEM INITS -----\\
         // TODO:ADD SOLENOID ID 7 FOR HARD-STOP
-        catapultSubsystem = new CatapultSubsystem(2, 3, 4, 5, 6, 7);
+        catapultSubsystem = new CatapultSubsystem(2, 3, 4, 5, 6, 7, 13);
         indexerMotorSubsystem = new IndexerMotorSubsystem(6);
 
         // ----- ENDGAME SUBSYSTEM INITS -----\\
