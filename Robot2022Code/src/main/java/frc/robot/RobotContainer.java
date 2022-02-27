@@ -195,12 +195,11 @@ public class RobotContainer {
         PortForwarder.add(1182, "10.9.30.25", 1182);
         PortForwarder.add(1183, "10.9.30.25", 1183);
         PortForwarder.add(1184, "10.9.30.25", 1184);
-        
 
         // ----- INTAKE SUBSYSTEM INITS -----\\
         // Intake has to be instantiated before drive subsystem because we need to
         // initialize the gyro
-        intakeMotorSubsystem = new IntakeMotorSubsystem(5,9);
+        intakeMotorSubsystem = new IntakeMotorSubsystem(5, 9);
         intakePistonSubsystem = new IntakePistonSubsystem(1, 12);
 
         // ----- DRIVETRAIN SUBSYSTEM INITS -----\\
@@ -351,10 +350,9 @@ public class RobotContainer {
         codriverController.getLeftBumper().and(
                 codriverController.getBButton().negate()).whileActiveOnce(runIntakeMotorsCommand);
         // Checks if LB and B is pressed, then it will reverse the intake
-        codriverController.getLeftBumper().and(
-                codriverController.getBButton()).whileActiveOnce(reverseIntakeMotorsCommand);
-
-        codriverController.getRightBumper().whileActiveOnce(new IndexerForwardCommand(indexerMotorSubsystem));
+        codriverController.getLeftBumper().and(codriverController.getBButton())
+                .whileActiveOnce(new ParallelCommandGroup(reverseIntakeMotorsCommand,
+                        new IndexerForwardCommand(indexerMotorSubsystem, true)));
 
         // Manually rotates the endgame arms while pressed
         driverController.getYButton().whileActiveOnce(endgameArmCommand);
@@ -362,7 +360,8 @@ public class RobotContainer {
         // Manually rotates the endgame arms in reverse while pressed
         driverController.getAButton().whileActiveOnce(endgameArmRevCommand);
 
-        driverController.getStartButton().whileActiveOnce(new ParallelCommandGroup(endgameManager, endgamePatternCommand));
+        driverController.getStartButton()
+                .whileActiveOnce(new ParallelCommandGroup(endgameManager, endgamePatternCommand));
 
         driverController.getRightBumper().whileActiveContinuous(hubAimingCommand);
     }
@@ -414,7 +413,7 @@ public class RobotContainer {
         scheduler.setDefaultCommand(endgamePistonL3, new EndgameCloseClawSingleCommand(endgamePistonL3));
         scheduler.setDefaultCommand(endgamePistonR3, new EndgameCloseClawSingleCommand(endgamePistonR3));
         scheduler.setDefaultCommand(endgamePiston4, new EndgameCloseClawSingleCommand(endgamePiston4));
-        scheduler.setDefaultCommand(indexerMotorSubsystem, new IndexerForwardCommand(indexerMotorSubsystem));
+        scheduler.setDefaultCommand(indexerMotorSubsystem, new IndexerForwardCommand(indexerMotorSubsystem, false));
         scheduler.setDefaultCommand(ledSubsystem, idlePatternCommand);
         scheduler.setDefaultCommand(catapultSubsystem, new BallHolderCommand(catapultSubsystem));
     }
@@ -449,7 +448,7 @@ public class RobotContainer {
                 intakeMotorSubsystem,
                 // intakePistonSubsystem,
                 // driveSubsystem,
-                shifterSubsystem// ,
+                shifterSubsystem
         // visionCameraSubsystem
         );
         // TODO set default command for each subsystem
@@ -501,7 +500,7 @@ public class RobotContainer {
         }
     }
 
-    public void testExit(){
+    public void testExit() {
         driveSubsystem.refollowDriveMotors();
         endgameMotorSubsystem.refollowEndgameMotors();
     }
@@ -542,6 +541,7 @@ public class RobotContainer {
 
     // Begins autonomous simulation. Resets position and timer.
     public void autoSimInit() {
+        CommandScheduler.getInstance().setDefaultCommand(ledSubsystem, autonPatternCommand);
         m_autocmd = autoManager.getAutonomousCommand();
         if (m_autocmd != null) {
             if (m_autocmd instanceof PathPlannerSequentialCommandGroupUtility) {

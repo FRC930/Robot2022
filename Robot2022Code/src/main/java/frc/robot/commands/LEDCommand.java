@@ -1,6 +1,5 @@
 package frc.robot.commands;
 
-import frc.robot.Robot;
 import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.utilities.BallSensorUtility;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
@@ -56,12 +55,15 @@ public class LEDCommand extends CommandBase {
         animCheck = false;
         hadTwoBalls = false;
         hadOneBall = false;
+        clearStrip();
         switch (m_pattern) {
             case AutonPattern:
                 solidAllianceLEDs();
                 break;
+            case TeleopIdle:
+                ballStatusInit();
+                break;
             default:
-                clearStrip();
                 break;
         }
     }
@@ -74,6 +76,8 @@ public class LEDCommand extends CommandBase {
                 break;
             case TeleopIdle:
                 ballStatus();
+                break;
+            default:
                 break;
         }
     }
@@ -89,10 +93,13 @@ public class LEDCommand extends CommandBase {
      */
     private void applyBuffer() {
         for (int i = 0; i < m_fullBuffer.getLength(); i++) {
-            if (i % (m_fullBuffer.getLength() / 2) < m_singleStrandBuffer.getLength()) {
+            if (i % (m_singleStrandBuffer.getLength() * 2) < m_singleStrandBuffer.getLength()) {
                 m_fullBuffer.setLED(i, m_singleStrandBuffer.getLED8Bit(i % m_singleStrandBuffer.getLength()));
             } else {
-                m_fullBuffer.setLED((i), m_singleStrandBuffer.getLED8Bit(i % m_singleStrandBuffer.getLength()));
+                m_fullBuffer.setLED(
+                        ((int)(i / m_singleStrandBuffer.getLength() + 1) * m_singleStrandBuffer.getLength())
+                                - (i % m_singleStrandBuffer.getLength() + 1),
+                        m_singleStrandBuffer.getLED8Bit(i % m_singleStrandBuffer.getLength()));
             }
         }
         m_LEDSubsystem.setBuffer(m_fullBuffer);
@@ -115,10 +122,10 @@ public class LEDCommand extends CommandBase {
      * Pattern for disabled robot.
      */
     public void solidYellowLEDs() {
-        for (int i = 0; i < m_LEDSubsystem.getBufferLength(); i++) {
-            m_fullBuffer.setRGB(i, 150, 150, 0); // yellow
+        for (int i = 0; i < m_singleStrandBuffer.getLength(); i++) {
+            m_singleStrandBuffer.setRGB(i, 50, 40, 0); // yellow
         }
-        m_LEDSubsystem.setBuffer(m_fullBuffer);
+        applyBuffer();
     }
 
     /**
@@ -126,15 +133,12 @@ public class LEDCommand extends CommandBase {
      * Sets the LED strip to robot's alliance color.
      * pattern for Autonomous
      */
-    private void solidAllianceLEDs() {
-        if (allianceColor == Alliance.Blue) {
-            for (int i = 0; i < m_LEDSubsystem.getBufferLength(); i++) {
-                m_fullBuffer.setRGB(i, 0, 0, 225); // blue
-            }
-        }
-        if (allianceColor == Alliance.Red) {
-            for (int i = 0; i < m_LEDSubsystem.getBufferLength(); i++) {
-                m_fullBuffer.setRGB(i, 225, 0, 0); // red
+    public void solidAllianceLEDs() {
+        for (int i = 0; i < m_LEDSubsystem.getBufferLength(); i++) {
+            if (allianceColor == Alliance.Blue) {
+                m_fullBuffer.setRGB(i, 0, 0, 200); // blue
+            } else if (allianceColor == Alliance.Red) {
+                m_fullBuffer.setRGB(i, 200, 0, 0); // red
             }
         }
         m_LEDSubsystem.setBuffer(m_fullBuffer);
@@ -146,7 +150,6 @@ public class LEDCommand extends CommandBase {
      * pattern for Endgame
      */
     public void movingSegmentPattern() {
-        counter++;
         // Keeping track of animation speed.
         if (counter >= FAST_TIMER) {
             for (int i = 0; i <= m_singleStrandBuffer.getLength(); i++) {
@@ -155,9 +158,9 @@ public class LEDCommand extends CommandBase {
                     // Places overflow to the beginning
                     if (j + i < m_singleStrandBuffer.getLength()) {
                         m_singleStrandBuffer.setRGB(j + i, 150, 150, 150);// white
-
                     } else {
-                        m_singleStrandBuffer.setRGB(j + i - m_singleStrandBuffer.getLength(), 150, 150, 150);// white
+                        m_singleStrandBuffer.setRGB((j + i - m_singleStrandBuffer.getLength()),
+                                150, 150, 150);// white
                     }
                 }
                 // sets the led behind the segment back to off
@@ -168,6 +171,15 @@ public class LEDCommand extends CommandBase {
             counter = 0;
             applyBuffer();
         }
+        counter++;
+    }
+
+    /**
+     * <h3>ballStatusInit</h3>
+     * 
+     */
+    public void ballStatusInit() {
+
     }
 
     /**
@@ -175,7 +187,8 @@ public class LEDCommand extends CommandBase {
      * manages active pattern based off ball sensors
      */
     private void ballStatus() {
-        if (BallSensorUtility.getInstance().catapultIsTripped() && BallSensorUtility.getInstance().indexerIsTripped()
+        if (BallSensorUtility.getInstance().catapultIsTripped()
+                && BallSensorUtility.getInstance().indexerIsTripped()
                 && !hadTwoBalls) {
             flashLEDHighPattern();
         } else if (BallSensorUtility.getInstance().catapultIsTripped()
@@ -203,10 +216,10 @@ public class LEDCommand extends CommandBase {
             hadOneBall = true;
             for (int i = m_singleStrandBuffer.getLength() / 2; i < m_singleStrandBuffer.getLength(); i++) {
                 if (allianceColor == Alliance.Blue) {
-                    m_singleStrandBuffer.setRGB(i, 0, 0, 255); // Blue
+                    m_singleStrandBuffer.setRGB(i, 0, 0, 200); // Blue
                 }
                 if (allianceColor == Alliance.Red) {
-                    m_singleStrandBuffer.setRGB(i, 255, 0, 0); // red
+                    m_singleStrandBuffer.setRGB(i, 200, 0, 0); // red
                 }
             }
             counter++;
@@ -218,9 +231,9 @@ public class LEDCommand extends CommandBase {
             } else {
                 for (int i = m_singleStrandBuffer.getLength() / 2; i < m_singleStrandBuffer.getLength(); i++) {
                     if (allianceColor == Alliance.Blue) {
-                        m_singleStrandBuffer.setRGB(i, 0, 0, 255); // Blue
+                        m_singleStrandBuffer.setRGB(i, 0, 0, 200); // Blue
                     } else if (allianceColor == Alliance.Red) {
-                        m_singleStrandBuffer.setRGB(i, 255, 0, 0); // red
+                        m_singleStrandBuffer.setRGB(i, 200, 0, 0); // red
                     }
                 }
             }
@@ -238,10 +251,10 @@ public class LEDCommand extends CommandBase {
             hadOneBall = true;
             for (int i = 0; i < m_singleStrandBuffer.getLength() / 2; i++) {
                 if (allianceColor == Alliance.Blue) {
-                    m_singleStrandBuffer.setRGB(i, 0, 0, 255); // Blue
+                    m_singleStrandBuffer.setRGB(i, 0, 0, 200); // Blue
                 }
                 if (allianceColor == Alliance.Red) {
-                    m_singleStrandBuffer.setRGB(i, 255, 0, 0); // red
+                    m_singleStrandBuffer.setRGB(i, 200, 0, 0); // red
                 }
             }
             counter++;
@@ -253,9 +266,9 @@ public class LEDCommand extends CommandBase {
             } else {
                 for (int i = 0; i < m_singleStrandBuffer.getLength() / 2; i++) {
                     if (allianceColor == Alliance.Blue) {
-                        m_singleStrandBuffer.setRGB(i, 0, 0, 255); // Blue
+                        m_singleStrandBuffer.setRGB(i, 0, 0, 200); // Blue
                     } else if (allianceColor == Alliance.Red) {
-                        m_singleStrandBuffer.setRGB(i, 255, 0, 0); //
+                        m_singleStrandBuffer.setRGB(i, 200, 0, 0); //
                     }
                 }
             }
@@ -273,9 +286,9 @@ public class LEDCommand extends CommandBase {
             if (counter % MED_TIMER == 0) {
                 int i = counter / MED_TIMER;
                 if (allianceColor == Alliance.Blue) {
-                    m_singleStrandBuffer.setRGB(i, 0, 0, 255); // Blue
+                    m_singleStrandBuffer.setRGB(i, 0, 0, 200); // Blue
                 } else if (allianceColor == Alliance.Blue) {
-                    m_singleStrandBuffer.setRGB(i, 255, 0, 0); // red
+                    m_singleStrandBuffer.setRGB(i, 200, 0, 0); // red
                 }
                 applyBuffer();
             }
@@ -295,9 +308,9 @@ public class LEDCommand extends CommandBase {
             if (counter % MED_TIMER == 0) {
                 int i = counter / MED_TIMER;
                 if (allianceColor == Alliance.Blue) {
-                    m_singleStrandBuffer.setRGB(i, 0, 0, 255); // Blue
+                    m_singleStrandBuffer.setRGB(i, 0, 0, 200); // Blue
                 } else if (allianceColor == Alliance.Blue) {
-                    m_singleStrandBuffer.setRGB(i, 255, 0, 0); // red
+                    m_singleStrandBuffer.setRGB(i, 200, 0, 0); // red
                 }
                 applyBuffer();
             }
@@ -329,7 +342,7 @@ public class LEDCommand extends CommandBase {
                      */
                     for (int i = 0; i < m_LEDSubsystem.getBufferLength(); i++) {
                         if (i % 2 == 0) { // Sets every other LED to bright blue
-                            m_fullBuffer.setRGB(i, 0, 0, 255);
+                            m_fullBuffer.setRGB(i, 0, 0, 200);
                         } else {
                             m_fullBuffer.setRGB(i, 0, 0, 0);
                         }
@@ -355,7 +368,7 @@ public class LEDCommand extends CommandBase {
                      */
                     for (int i = 1; i < m_LEDSubsystem.getBufferLength(); i += 2) { // Sets every other LED to
                                                                                     // bright blue
-                        m_fullBuffer.setRGB(i, 0, 0, 255);
+                        m_fullBuffer.setRGB(i, 0, 0, 200);
                     }
 
                     // Sets animCheck to true for pattern switch next time the delay is finished
@@ -378,7 +391,7 @@ public class LEDCommand extends CommandBase {
                      */
                     for (int i = 0; i < m_LEDSubsystem.getBufferLength(); i++) {
                         if (i % 2 == 0) { // Sets every other LED to bright red
-                            m_fullBuffer.setRGB(i, 255, 0, 0);
+                            m_fullBuffer.setRGB(i, 200, 0, 0);
                         } else {
                             m_fullBuffer.setRGB(i, 0, 0, 0);
                         }
@@ -404,7 +417,7 @@ public class LEDCommand extends CommandBase {
                      */
                     for (int i = 1; i < m_LEDSubsystem.getBufferLength(); i += 2) { // Sets every other LED to
                                                                                     // bright red
-                        m_fullBuffer.setRGB(i, 255, 0, 0);
+                        m_fullBuffer.setRGB(i, 200, 0, 0);
                     }
 
                     // Sets animCheck to true for pattern switch next time the delay is finished
@@ -440,7 +453,7 @@ public class LEDCommand extends CommandBase {
                      */
                     for (int i = 0; i < m_LEDSubsystem.getBufferLength(); i++) {
                         if (i % 2 == 0) { // Sets every other LED to bright blue
-                            m_fullBuffer.setRGB(i, 0, 0, 255);
+                            m_fullBuffer.setRGB(i, 0, 0, 200);
                         } else {
                             m_fullBuffer.setRGB(i, 150, 150, 150);
                         }
@@ -466,7 +479,7 @@ public class LEDCommand extends CommandBase {
                      */
                     for (int i = 1; i < m_LEDSubsystem.getBufferLength(); i += 2) { // Sets every other LED to
                                                                                     // bright blue
-                        m_fullBuffer.setRGB(i, 0, 0, 255);
+                        m_fullBuffer.setRGB(i, 0, 0, 200);
                     }
 
                     // Sets animCheck to true for pattern switch next time the delay is finished
@@ -489,7 +502,7 @@ public class LEDCommand extends CommandBase {
                      */
                     for (int i = 0; i < m_LEDSubsystem.getBufferLength(); i++) {
                         if (i % 2 == 0) { // Sets every other LED to bright red
-                            m_fullBuffer.setRGB(i, 255, 0, 0);
+                            m_fullBuffer.setRGB(i, 200, 0, 0);
                         } else {
                             m_fullBuffer.setRGB(i, 150, 150, 150);
                         }
@@ -514,7 +527,7 @@ public class LEDCommand extends CommandBase {
                      * (0 being off, 1 being red)
                      */
                     for (int i = 1; i < m_LEDSubsystem.getBufferLength(); i += 2) { // Sets every other LED to
-                        m_fullBuffer.setRGB(i, 255, 0, 0);// bright red
+                        m_fullBuffer.setRGB(i, 200, 0, 0);// bright red
                     }
 
                     // Sets animCheck to true for pattern switch next time the delay is finished

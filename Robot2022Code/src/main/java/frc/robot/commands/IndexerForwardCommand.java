@@ -8,6 +8,7 @@
 //-------- IMPORTS --------\\
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.MotorSafety;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 import frc.robot.subsystems.IndexerMotorSubsystem;
@@ -19,22 +20,23 @@ import frc.robot.utilities.BallSensorUtility;
  * 
  * Sets the motor speed of the indexer
  */
-public class IndexerForwardCommand extends CommandBase{
-    
-    //-------- CONSTANTS --------\\
-   
+public class IndexerForwardCommand extends CommandBase {
+
+    // -------- CONSTANTS --------\\
+
     private final double MOTOR_SPEED = 0.4;
-    // Delay between the closing of a sensor circuit and 
-    //  re-activating the motor
+    // Delay between the closing of a sensor circuit and
+    // re-activating the motor
     private final double RESTART_DELAY = 50;
 
-    //-------- VARIABLES --------\\
+    // -------- VARIABLES --------\\
 
     private final IndexerMotorSubsystem motor;
     private int counter;
     private final BallSensorUtility sensorUtility = BallSensorUtility.getInstance();
+    private boolean reversed = false;
 
-    //-------- CONSTRUCTOR --------\\
+    // -------- CONSTRUCTOR --------\\
     /**
      * <h3>IndexerForwardCommand</h3>
      *
@@ -42,31 +44,40 @@ public class IndexerForwardCommand extends CommandBase{
      *
      * @param _motor The motor on the indexer
      */
-    public IndexerForwardCommand(IndexerMotorSubsystem _motor){
+    public IndexerForwardCommand(IndexerMotorSubsystem _motor, boolean isReversed) {
         motor = _motor;
+        reversed = isReversed;
         counter = 0;
         addRequirements(motor);
     }
 
-    //-------- COMMANDBASE METHODS --------\\
+    // -------- COMMANDBASE METHODS --------\\
 
+    public void initialize(){
+        if(reversed){
+            motor.setMotorSpeed(-MOTOR_SPEED);
+        }
+    }
     /**
      * <h3>execute</h3>
      *
-     * If the catapult sensor does not detect a ball it sets the motor speed to MOTOR_SPEED.
+     * If the catapult sensor does not detect a ball it sets the motor speed to
+     * MOTOR_SPEED.
      * If it does detect a ball it sets the motor speed to 0
      */
     public void execute() {
-        if ((!sensorUtility.catapultIsTripped() 
-            || !sensorUtility.indexerIsTripped()) && counter > RESTART_DELAY) {
-            motor.setMotorSpeed(MOTOR_SPEED);
-            counter = 0;
-        } else if (!sensorUtility.catapultIsTripped() 
-            || !sensorUtility.indexerIsTripped()){
-            counter++;
-        } else { 
-            counter = 0;
-            motor.setMotorSpeed(0.0);
+        if (!reversed) {
+            if ((!sensorUtility.catapultIsTripped()
+                    || !sensorUtility.indexerIsTripped()) && counter > RESTART_DELAY) {
+                motor.setMotorSpeed(MOTOR_SPEED);
+                counter = 0;
+            } else if (!sensorUtility.catapultIsTripped()
+                    || !sensorUtility.indexerIsTripped()) {
+                counter++;
+            } else {
+                counter = 0;
+                motor.setMotorSpeed(0.0);
+            }
         }
     }
 
@@ -76,12 +87,12 @@ public class IndexerForwardCommand extends CommandBase{
      * called when the method ends
      */
     @Override
-    public void end(boolean interrupted){ // sets the motor speed to 0
-        motor.setMotorSpeed(0.0);  
+    public void end(boolean interrupted) { // sets the motor speed to 0
+        motor.setMotorSpeed(0.0);
     }
 
     @Override
-    public boolean isFinished(){ // when true, ends command
+    public boolean isFinished() { // when true, ends command
         return false;
     }
 
