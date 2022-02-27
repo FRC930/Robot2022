@@ -545,8 +545,8 @@ public class RobotContainer {
     }
 
     private void resheduleAutononmousLEDS(boolean useAutonomousLEDCmd) {
-        Command ledCommand = (useAutonomousLEDCmd)?autonPatternCommand:idlePatternCommand;
-        Command endledCommand = (useAutonomousLEDCmd)?idlePatternCommand:autonPatternCommand;
+        LEDCommand ledCommand = (useAutonomousLEDCmd)?autonPatternCommand:idlePatternCommand;
+        LEDCommand endledCommand = (useAutonomousLEDCmd)?idlePatternCommand:autonPatternCommand;
         CommandScheduler scheduler = CommandScheduler.getInstance();
         scheduler.unregisterSubsystem(ledSubsystem);
         endledCommand.cancel();
