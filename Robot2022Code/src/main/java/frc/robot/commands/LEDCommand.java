@@ -36,14 +36,22 @@ public class LEDCommand extends CommandBase {
     private final AddressableLEDBuffer m_fullBuffer;
     private final AddressableLEDBuffer m_singleStrandBuffer;
 
+    private final AddressableLEDBuffer m_TurnOffBuffer;
+    private final AddressableLEDBuffer m_YellowBuffer;
+    private AddressableLEDBuffer m_AllianceBuffer;
+    private int lastBallStatus=0;
+
     // ------CONSTUCTOR(S)--------\\
     public LEDCommand(LEDSubsystem subsystem, LEDPatterns pattern) {
         m_pattern = pattern;
         m_LEDSubsystem = subsystem;
         m_fullBuffer = m_LEDSubsystem.getBuffer();
         m_singleStrandBuffer = new AddressableLEDBuffer(m_fullBuffer.getLength() / 4);
+        m_TurnOffBuffer = createClearStrip();
+        m_YellowBuffer = createSolidYellowLEDs();
+        //m_AllianceBuffer = createSolidAllianceLEDs(); // Need to in Initialize for right color
         addRequirements(m_LEDSubsystem);
-        solidYellowLEDs();
+        //solidYellowLEDs();
     }
 
     @Override
@@ -51,20 +59,21 @@ public class LEDCommand extends CommandBase {
         // Wait to determine alliance for FMS signal
         // Alliance can change during simulation
         allianceColor = DriverStation.getAlliance();
+        m_AllianceBuffer = createSolidAllianceLEDs(); 
         counter = 0;
         animCheck = false;
         hadTwoBalls = false;
         hadOneBall = false;
         clearStrip();
         switch (m_pattern) {
-            case AutonPattern:
-                solidAllianceLEDs();
+            case AutonPattern:            
+                solidAllianceLEDs();       
                 break;
             case TeleopIdle:
                 ballStatusInit();
                 break;
             default:
-                break;
+            break;
         }
     }
 
@@ -87,6 +96,12 @@ public class LEDCommand extends CommandBase {
         return false;
     }
 
+    @Override
+    public void end(boolean interrupted) {
+        super.end(interrupted);
+    }
+
+
     /**
      * <h3>applyBuffer</h3>
      * applys the single Buffer to the full Buffer 4 times
@@ -108,12 +123,18 @@ public class LEDCommand extends CommandBase {
     /**
      * <h3>clearStrip</h3>
      * Turns off all LEDs.
+     * @return 
      */
-    private void clearStrip() {
+    private AddressableLEDBuffer createClearStrip() {
+        AddressableLEDBuffer buffer = new AddressableLEDBuffer(m_LEDSubsystem.getBufferLength());
+        //buffer = m_LEDSubsystem.getBuffer();
         for (int i = 0; i < m_LEDSubsystem.getBufferLength(); i++) {
-            m_fullBuffer.setRGB(i, 0, 0, 0); // off
+            buffer.setRGB(i, 0, 0, 0); // off
         }
-        m_LEDSubsystem.setBuffer(m_fullBuffer);
+        return buffer;
+    }
+    private void clearStrip() {
+        m_LEDSubsystem.setBuffer(m_TurnOffBuffer);
     }
 
     /**
@@ -121,11 +142,15 @@ public class LEDCommand extends CommandBase {
      * Sets all LEDs to yellow.
      * Pattern for disabled robot.
      */
-    public void solidYellowLEDs() {
-        for (int i = 0; i < m_singleStrandBuffer.getLength(); i++) {
-            m_singleStrandBuffer.setRGB(i, 50, 40, 0); // yellow
+    public AddressableLEDBuffer createSolidYellowLEDs() {
+        AddressableLEDBuffer buffer = new AddressableLEDBuffer(m_LEDSubsystem.getBufferLength());
+        for (int i = 0; i < m_LEDSubsystem.getBufferLength(); i++) {
+            buffer.setRGB(i, 50, 40, 0); // yellow
         }
-        applyBuffer();
+        return buffer;
+    }
+    public void solidYellowLEDs() {
+        m_LEDSubsystem.setBuffer(m_YellowBuffer);
     }
 
     /**
@@ -133,15 +158,19 @@ public class LEDCommand extends CommandBase {
      * Sets the LED strip to robot's alliance color.
      * pattern for Autonomous
      */
-    public void solidAllianceLEDs() {
+    public AddressableLEDBuffer createSolidAllianceLEDs() {
+        AddressableLEDBuffer buffer = new AddressableLEDBuffer(m_LEDSubsystem.getBufferLength());
         for (int i = 0; i < m_LEDSubsystem.getBufferLength(); i++) {
             if (allianceColor == Alliance.Blue) {
-                m_fullBuffer.setRGB(i, 0, 0, 200); // blue
+                buffer.setRGB(i, 0, 0, 200); // blue
             } else if (allianceColor == Alliance.Red) {
-                m_fullBuffer.setRGB(i, 200, 0, 0); // red
+                buffer.setRGB(i, 200, 0, 0); // red
             }
         }
-        m_LEDSubsystem.setBuffer(m_fullBuffer);
+        return buffer;
+    }
+    public void solidAllianceLEDs() {
+        m_LEDSubsystem.setBuffer(m_AllianceBuffer);
     }
 
     /**
@@ -187,22 +216,38 @@ public class LEDCommand extends CommandBase {
      * manages active pattern based off ball sensors
      */
     private void ballStatus() {
+        ;
         if (BallSensorUtility.getInstance().catapultIsTripped()
                 && BallSensorUtility.getInstance().indexerIsTripped()
                 && !hadTwoBalls) {
-            flashLEDHighPattern();
+            if(lastBallStatus !=1) {
+                flashLEDHighPattern();
+                lastBallStatus = 1;    
+            }
         } else if (BallSensorUtility.getInstance().catapultIsTripped()
                 || BallSensorUtility.getInstance().indexerIsTripped() && !hadOneBall) {
-            flashLEDLowPattern();
+            if(lastBallStatus != 2) {
+                flashLEDLowPattern();
+                lastBallStatus = 2;
+            }
         } else if (BallSensorUtility.getInstance().catapultIsTripped()
                 || BallSensorUtility.getInstance().indexerIsTripped() && hadTwoBalls) {
-            retractTopLEDs();
+            if(lastBallStatus != 3) {
+                retractTopLEDs();
+                lastBallStatus = 3;
+            }
 
         } else if (!BallSensorUtility.getInstance().catapultIsTripped()
                 && !BallSensorUtility.getInstance().indexerIsTripped() && hadOneBall) {
-            retractBottomLEDs();
+            if(lastBallStatus != 4) {
+                retractBottomLEDs();
+                lastBallStatus = 4;
+            }
         } else {
-            clearStrip();
+            if(lastBallStatus != 5) {
+                clearStrip();
+                lastBallStatus = 5;
+            }
         }
     }
 

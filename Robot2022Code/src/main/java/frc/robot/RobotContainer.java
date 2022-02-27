@@ -316,7 +316,6 @@ public class RobotContainer {
         scheduler.setDefaultCommand(endgamePistonR3, new EndgameCloseClawSingleCommand(endgamePistonR3));
         scheduler.setDefaultCommand(endgamePiston4, new EndgameCloseClawSingleCommand(endgamePiston4));
         scheduler.setDefaultCommand(indexerMotorSubsystem, new IndexerForwardCommand(indexerMotorSubsystem, false));
-        scheduler.setDefaultCommand(ledSubsystem, idlePatternCommand);
         scheduler.setDefaultCommand(catapultSubsystem, new BallHolderCommand(catapultSubsystem));
     }
 
@@ -377,12 +376,12 @@ public class RobotContainer {
                         new IndexerForwardCommand(indexerMotorSubsystem, true)));
 
         // Manually rotates the endgame arms while pressed
-        driverController.getYButton().whileActiveOnce(endgameArmCommand);
+        codriverController.getYButton().whileActiveOnce(endgameArmCommand);
 
         // Manually rotates the endgame arms in reverse while pressed
-        driverController.getAButton().whileActiveOnce(endgameArmRevCommand);
+        codriverController.getAButton().whileActiveOnce(endgameArmRevCommand);
 
-        driverController.getStartButton()
+        codriverController.getStartButton()
                 .whileActiveOnce(new ParallelCommandGroup(endgameManager, endgamePatternCommand));
 
         driverController.getRightBumper().whileActiveContinuous(hubAimingCommand);
@@ -401,6 +400,7 @@ public class RobotContainer {
     public void beginTeleopRunCommands() {
         // Sets the brake mode to coast
         driveSubsystem.setMotorBrakeMode(NeutralMode.Brake);
+        resheduleAutononmousLEDS(false);
 
         // startCamera();
     }
@@ -423,23 +423,8 @@ public class RobotContainer {
     public void beginAutoRunCommands() {
         // Sets the brake mode to brake
         driveSubsystem.setMotorBrakeMode(NeutralMode.Brake);
-        // --The instance of the scheduler
-        CommandScheduler scheduler = CommandScheduler.getInstance();
-        // // cannot unregister subsystems you cannot expect to run during auto
-        // scheduler.unregisterSubsystem(
-        //         // catapultSubsystem,
-        //         // catapultSensorSubsystem,
-        //         endgameMotorSubsystem,
-        //         // endgamePistonSubsystem,
-        //         // endgameSensorSubsystem,
-        //         intakeMotorSubsystem,
-        //         // intakePistonSubsystem,
-        //         // driveSubsystem,
-        //         shifterSubsystem
-        // // visionCameraSubsystem
-        // );
-        // TODO set default command for each subsystem
-        scheduler.schedule(autonPatternCommand);
+        resheduleAutononmousLEDS(true);
+
     }
 
     public void testInit() {
@@ -528,7 +513,7 @@ public class RobotContainer {
 
     // Begins autonomous simulation. Resets position and timer.
     public void autoSimInit() {
-        CommandScheduler.getInstance().setDefaultCommand(ledSubsystem, autonPatternCommand);
+        resheduleAutononmousLEDS(true);
         m_autocmd = autoManager.getAutonomousCommand();
         if (m_autocmd != null) {
             if (m_autocmd instanceof PathPlannerSequentialCommandGroupUtility) {
@@ -557,6 +542,16 @@ public class RobotContainer {
             m_timer.start();
             m_simDrive.resetOdometry(m_trajectory.getInitialPose());
         }
+    }
+
+    private void resheduleAutononmousLEDS(boolean useAutonomousLEDCmd) {
+        Command ledCommand = (useAutonomousLEDCmd)?autonPatternCommand:idlePatternCommand;
+        Command endledCommand = (useAutonomousLEDCmd)?idlePatternCommand:autonPatternCommand;
+        CommandScheduler scheduler = CommandScheduler.getInstance();
+        scheduler.unregisterSubsystem(ledSubsystem);
+        endledCommand.cancel();
+        scheduler.setDefaultCommand(ledSubsystem, ledCommand);
+
     }
 
     // Updates simulated robot periodically.
