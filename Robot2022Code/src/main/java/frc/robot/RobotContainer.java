@@ -296,6 +296,28 @@ public class RobotContainer {
         // calls the method that configures the buttons
         configureButtonBindings();
 
+        // Manages commands via stacking
+        CommandScheduler scheduler = CommandScheduler.getInstance();
+
+        // DRIVETRAIN DEFAULTS
+        scheduler.setDefaultCommand(driveSubsystem, driveCommand);
+
+        // INTAKE DEFAULTS
+        scheduler.setDefaultCommand(intakeMotorSubsystem, stopIntakeMotorsCommand);
+        scheduler.setDefaultCommand(intakePistonSubsystem, disengageIntakePistonsCommand);
+
+        // ENDGAME DEFAULTS
+        // scheduler.setDefaultCommand(endgameMotorSubsystem, new
+        // EndgameRotateHorizonalCommand(endgameMotorSubsystem)); // -GET ENCODER
+        // WORKING
+        scheduler.setDefaultCommand(endgamePiston1, new EndgameCloseClawSingleCommand(endgamePiston1));
+        scheduler.setDefaultCommand(endgamePiston2, new EndgameCloseClawSingleCommand(endgamePiston2));
+        scheduler.setDefaultCommand(endgamePistonL3, new EndgameCloseClawSingleCommand(endgamePistonL3));
+        scheduler.setDefaultCommand(endgamePistonR3, new EndgameCloseClawSingleCommand(endgamePistonR3));
+        scheduler.setDefaultCommand(endgamePiston4, new EndgameCloseClawSingleCommand(endgamePiston4));
+        scheduler.setDefaultCommand(indexerMotorSubsystem, new IndexerForwardCommand(indexerMotorSubsystem, false));
+        scheduler.setDefaultCommand(ledSubsystem, idlePatternCommand);
+        scheduler.setDefaultCommand(catapultSubsystem, new BallHolderCommand(catapultSubsystem));
     }
 
     /**
@@ -381,41 +403,6 @@ public class RobotContainer {
         driveSubsystem.setMotorBrakeMode(NeutralMode.Brake);
 
         // startCamera();
-
-        // Manages commands via stacking
-        CommandScheduler scheduler = CommandScheduler.getInstance();
-
-        /*
-         * Unregisters subsystems to prevent hanging resources
-         */
-        scheduler.unregisterSubsystem(
-                driveSubsystem, // Drivetrain
-                // intakeMotorSubsystem, intakePistonSubsystem, Intake commented out on purpose
-                endgamePiston1, endgamePiston2, endgamePistonL3, endgamePistonR3, // Endgame Left Arm
-                endgamePiston4// , Endgame Right Arm
-        /* , endgameMotorSubsystem */ // Endgame Motors
-        // indexerMotorSubsystem
-        );
-
-        // DRIVETRAIN DEFAULTS
-        scheduler.setDefaultCommand(driveSubsystem, driveCommand);
-
-        // INTAKE DEFAULTS
-        scheduler.setDefaultCommand(intakeMotorSubsystem, stopIntakeMotorsCommand);
-        scheduler.setDefaultCommand(intakePistonSubsystem, disengageIntakePistonsCommand);
-
-        // ENDGAME DEFAULTS
-        // scheduler.setDefaultCommand(endgameMotorSubsystem, new
-        // EndgameRotateHorizonalCommand(endgameMotorSubsystem)); // -GET ENCODER
-        // WORKING
-        scheduler.setDefaultCommand(endgamePiston1, new EndgameCloseClawSingleCommand(endgamePiston1));
-        scheduler.setDefaultCommand(endgamePiston2, new EndgameCloseClawSingleCommand(endgamePiston2));
-        scheduler.setDefaultCommand(endgamePistonL3, new EndgameCloseClawSingleCommand(endgamePistonL3));
-        scheduler.setDefaultCommand(endgamePistonR3, new EndgameCloseClawSingleCommand(endgamePistonR3));
-        scheduler.setDefaultCommand(endgamePiston4, new EndgameCloseClawSingleCommand(endgamePiston4));
-        scheduler.setDefaultCommand(indexerMotorSubsystem, new IndexerForwardCommand(indexerMotorSubsystem, false));
-        scheduler.setDefaultCommand(ledSubsystem, idlePatternCommand);
-        scheduler.setDefaultCommand(catapultSubsystem, new BallHolderCommand(catapultSubsystem));
     }
 
     private void startCamera() {
@@ -438,19 +425,19 @@ public class RobotContainer {
         driveSubsystem.setMotorBrakeMode(NeutralMode.Brake);
         // --The instance of the scheduler
         CommandScheduler scheduler = CommandScheduler.getInstance();
-        // cannot unregister subsystems you cannot expect to run during auto
-        scheduler.unregisterSubsystem(
-                catapultSubsystem,
-                // catapultSensorSubsystem,
-                endgameMotorSubsystem,
-                // endgamePistonSubsystem,
-                // endgameSensorSubsystem,
-                intakeMotorSubsystem,
-                // intakePistonSubsystem,
-                // driveSubsystem,
-                shifterSubsystem
-        // visionCameraSubsystem
-        );
+        // // cannot unregister subsystems you cannot expect to run during auto
+        // scheduler.unregisterSubsystem(
+        //         // catapultSubsystem,
+        //         // catapultSensorSubsystem,
+        //         endgameMotorSubsystem,
+        //         // endgamePistonSubsystem,
+        //         // endgameSensorSubsystem,
+        //         intakeMotorSubsystem,
+        //         // intakePistonSubsystem,
+        //         // driveSubsystem,
+        //         shifterSubsystem
+        // // visionCameraSubsystem
+        // );
         // TODO set default command for each subsystem
         scheduler.schedule(autonPatternCommand);
     }

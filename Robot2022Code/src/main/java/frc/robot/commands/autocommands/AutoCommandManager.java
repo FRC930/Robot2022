@@ -58,7 +58,8 @@ public class AutoCommandManager {
             (DriveSubsystem) subsystemMap.get(subNames.DriveSubsystem.toString()),
             (CatapultSubsystem) subsystemMap.get(subNames.CatapultSubsystem.toString()),
             (IntakePistonSubsystem) subsystemMap.get(subNames.IntakePistonSubsystem.toString()),
-            (IntakeMotorSubsystem) subsystemMap.get(subNames.IntakeMotorSubsystem.toString())
+            (IntakeMotorSubsystem) subsystemMap.get(subNames.IntakeMotorSubsystem.toString()),
+            (VisionCameraSubsystem) subsystemMap.get(subNames.VisionCameraSubsystem.toString())
         );
         
         CommandBase TerminalPickup = new TerminalPickup(
@@ -74,7 +75,7 @@ public class AutoCommandManager {
         ShuffleboardUtility.getInstance().addAutonOptions("defaultShootingCommand", defaultShoot);
 
         ShuffleboardUtility.getInstance().addAutonOptions("TwoBallAuto", TwoBallAuto);
-        ShuffleboardUtility.getInstance().addAutonOptions("ShootMoveShoot", ShootMoveShoot);
+        //ShuffleboardUtility.getInstance().addAutonOptions("ShootMoveShoot", ShootMoveShoot);
         ShuffleboardUtility.getInstance().addAutonOptions("TerminalPickup", TerminalPickup);
     }
 

@@ -5,6 +5,7 @@ import com.pathplanner.lib.PathPlanner;
 import frc.robot.commands.CatapultCommand;
 import frc.robot.commands.Ramsete930Command;
 import frc.robot.commands.CatapultCommand.CatapultPower;
+import frc.robot.commands.autocommands.AutonomousAimCommand;
 import frc.robot.commands.autocommands.ResetAutonomousCommand;
 import frc.robot.commands.intakecommands.intakePistonCommands.EngageIntakePistonsCommand;
 import frc.robot.commands.intakecommands.intakemotorcommands.RunIntakeMotorsCommand;
@@ -18,6 +19,7 @@ import frc.robot.subsystems.CatapultSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IntakeMotorSubsystem;
 import frc.robot.subsystems.IntakePistonSubsystem;
+import frc.robot.subsystems.VisionCameraSubsystem;
 
 //  -------- PATH DESCRIPTION -------- \\
 //  Moves forward 60 inches
@@ -36,7 +38,7 @@ public class ShootMoveShoot extends PathPlannerSequentialCommandGroupUtility {
      * 
      * @param dSubsystem
      */
-    public ShootMoveShoot(DriveSubsystem dSubsystem, CatapultSubsystem catapultSubsystem, IntakePistonSubsystem intakePistonSubsystem, IntakeMotorSubsystem intakeMotorSubsystem) { 
+    public ShootMoveShoot(DriveSubsystem dSubsystem, CatapultSubsystem catapultSubsystem, IntakePistonSubsystem intakePistonSubsystem, IntakeMotorSubsystem intakeMotorSubsystem, VisionCameraSubsystem visionCameraSubsystem) { 
 
         //  initializing gyro for pose2d
         m_odometry = dSubsystem.getOdometry();
@@ -63,9 +65,12 @@ public class ShootMoveShoot extends PathPlannerSequentialCommandGroupUtility {
 
         addCommands(new ParallelRaceGroup(new CatapultCommand(catapultSubsystem, CatapultPower.SetShortShot), new WaitCommand(0.5)),
         new ResetAutonomousCommand(trajectory1.getInitialPose(), dSubsystem),
-        new ParallelRaceGroup(new CatapultCommand(catapultSubsystem, CatapultPower.AllPistons), new WaitCommand(1)),
+        new ParallelRaceGroup(new AutonomousAimCommand(visionCameraSubsystem, dSubsystem) , new WaitCommand(3)),
+        new ParallelRaceGroup(new CatapultCommand(catapultSubsystem, CatapultPower.AllPistons), new WaitCommand(0.5)),
         new ParallelRaceGroup(new EngageIntakePistonsCommand(intakePistonSubsystem), new RunIntakeMotorsCommand(intakeMotorSubsystem, false), ramseteCommand1),
-        new ParallelRaceGroup(new CatapultCommand(catapultSubsystem, CatapultPower.AllPistons), new WaitCommand(1)));
+        new ParallelRaceGroup(new AutonomousAimCommand(visionCameraSubsystem, dSubsystem) , new WaitCommand(3)),
+        new ParallelRaceGroup(new CatapultCommand(catapultSubsystem, CatapultPower.AllPistons), new WaitCommand(0.5))
+        );
 
     } // End of Constructor
 } // End of Class

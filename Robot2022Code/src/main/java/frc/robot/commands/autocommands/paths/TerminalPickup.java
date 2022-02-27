@@ -30,7 +30,7 @@ import frc.robot.subsystems.VisionCameraSubsystem;
 public class TerminalPickup extends PathPlannerSequentialCommandGroupUtility {
 
     //  TO-DO comment this section
-    private final double KMAXSPEED = 1;//1.5;
+    private final double KMAXSPEED = 4;
     private final double KMAXACCELERATION = 3;
     private final double KRAMSETEB = 2;
     private final double KRAMSETEZETA = 0.7;
@@ -116,19 +116,21 @@ public class TerminalPickup extends PathPlannerSequentialCommandGroupUtility {
         // runs the intake pistons 
         // moves to position 3
         new ParallelRaceGroup(new AutonomousAimCommand(visionCameraSubsystem, dSubsystem), new WaitCommand(3)), 
-        new ParallelRaceGroup(new CatapultCommand(catapultSubsystem, CatapultPower.AllPistons), new WaitCommand(1)),
-        new WaitCommand(1),
-        new ParallelRaceGroup(new CatapultCommand(catapultSubsystem, CatapultPower.AllPistons), new WaitCommand(1)),
+        new WaitCommand(0.5),
+        new ParallelRaceGroup(new CatapultCommand(catapultSubsystem, CatapultPower.AllPistons), new WaitCommand(0.5)),
+        new WaitCommand(1.25),
+        new ParallelRaceGroup(new CatapultCommand(catapultSubsystem, CatapultPower.AllPistons), new WaitCommand(0.5)),
 
         new ParallelRaceGroup(new ParallelCommandGroup(new EngageIntakePistonsCommand(intakePistonSubsystem), new RunIntakeMotorsCommand(intakeMotorSubsystem, false)), 
-                              new SequentialCommandGroup(ramseteCommand2, new StopDrive(dSubsystem), new WaitCommand(2.5), ramseteCommand3)),
+                              new SequentialCommandGroup(ramseteCommand2, new StopDrive(dSubsystem), new WaitCommand(2), ramseteCommand3)),
         new StopDrive(dSubsystem),
         // This segment of the path aims 
         //shoots the catapult
         new ParallelRaceGroup(new AutonomousAimCommand(visionCameraSubsystem, dSubsystem), new WaitCommand(3)),
-        new ParallelRaceGroup(new CatapultCommand(catapultSubsystem, CatapultPower.AllPistons), new WaitCommand(1)),
-        new WaitCommand(1),
-        new ParallelRaceGroup(new CatapultCommand(catapultSubsystem, CatapultPower.AllPistons), new WaitCommand(1))
+        new WaitCommand(0.5),
+        new ParallelRaceGroup(new CatapultCommand(catapultSubsystem, CatapultPower.AllPistons), new WaitCommand(0.5)),
+        new WaitCommand(1.25),
+        new ParallelRaceGroup(new CatapultCommand(catapultSubsystem, CatapultPower.AllPistons), new WaitCommand(0.5))
         );
     } // End of Constructor
 } // End of Class

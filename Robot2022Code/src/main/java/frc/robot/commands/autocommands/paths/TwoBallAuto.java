@@ -81,10 +81,10 @@ public class TwoBallAuto extends PathPlannerSequentialCommandGroupUtility {
         new ResetAutonomousCommand(trajectory1.getInitialPose(), dSubsystem),
         new ParallelRaceGroup(new EngageIntakePistonsCommand(intakePistonSubsystem), new RunIntakeMotorsCommand(intakeMotorSubsystem, false), ramseteCommand1),
         new StopDrive(dSubsystem),
-        new ParallelRaceGroup(new AutonomousAimCommand(visionCameraSubsystem, dSubsystem), new WaitCommand(1)),
-        new ParallelRaceGroup(new CatapultCommand(catapultSubsystem, CatapultPower.AllPistons), new WaitCommand(1)),
-        new WaitCommand(1),
-        new ParallelRaceGroup(new CatapultCommand(catapultSubsystem, CatapultPower.AllPistons), new WaitCommand(1)));
+        new ParallelRaceGroup(new AutonomousAimCommand(visionCameraSubsystem, dSubsystem), new WaitCommand(3)),
+        new ParallelRaceGroup(new CatapultCommand(catapultSubsystem, CatapultPower.AllPistons), new WaitCommand(0.5)),
+        new WaitCommand(1.25),
+        new ParallelRaceGroup(new CatapultCommand(catapultSubsystem, CatapultPower.AllPistons), new WaitCommand(0.5)));
 
     } // End of Constructor
 } // End of Class
