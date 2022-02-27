@@ -26,8 +26,8 @@ public class IndexerForwardCommand extends CommandBase {
 
     private final double MOTOR_SPEED = 0.4;
     // Delay between the closing of a sensor circuit and
-    // re-activating the motor
-    private final double RESTART_DELAY = 50;
+    // re-activating the motor after launching ball
+    private final double RESTART_DELAY = 40; 
 
     // -------- VARIABLES --------\\
 
@@ -35,6 +35,7 @@ public class IndexerForwardCommand extends CommandBase {
     private int counter;
     private final BallSensorUtility sensorUtility = BallSensorUtility.getInstance();
     private boolean reversed = false;
+    private double lastSpeed = -2.0; //set to speed that would have never be set to before
 
     // -------- CONSTRUCTOR --------\\
     /**
@@ -54,8 +55,9 @@ public class IndexerForwardCommand extends CommandBase {
     // -------- COMMANDBASE METHODS --------\\
 
     public void initialize(){
+        lastSpeed=-2.0; //set to speed that would have never be set to before
         if(reversed){
-            motor.setMotorSpeed(-MOTOR_SPEED);
+            setSpeed(-MOTOR_SPEED);
         }
     }
     /**
@@ -68,19 +70,31 @@ public class IndexerForwardCommand extends CommandBase {
     public void execute() {
         if (!reversed) {
             if ((!sensorUtility.catapultIsTripped()
-                    || !sensorUtility.indexerIsTripped()) && counter > RESTART_DELAY) {
-                motor.setMotorSpeed(MOTOR_SPEED);
-                counter = 0;
-            } else if (!sensorUtility.catapultIsTripped()
-                    || !sensorUtility.indexerIsTripped()) {
-                counter++;
+                    || !sensorUtility.indexerIsTripped())) {
+                // If past delay loop or only if catapult tripped (once trying to detect catapult coming back down) 
+                // NOT sure if making a different (is catapultIsTripped)
+                if(counter > RESTART_DELAY || sensorUtility.catapultIsTripped()) {
+                    setSpeed(MOTOR_SPEED);
+                    counter = 0;
+                } else {
+                    counter++;
+                }
             } else {
                 counter = 0;
-                motor.setMotorSpeed(0.0);
+                setSpeed(0.0);
             }
         }
     }
 
+    private void setSpeed(double motorSpeed) {
+        //System.out.println("lastSpeed"+lastSpeed);
+        if(lastSpeed != motorSpeed) {
+            motor.setMotorSpeed(motorSpeed);
+            System.out.println("Speed"+motorSpeed);
+        }
+        lastSpeed = motorSpeed;
+    }
+    
     /**
      * <h3>end</h3>
      *
@@ -88,7 +102,7 @@ public class IndexerForwardCommand extends CommandBase {
      */
     @Override
     public void end(boolean interrupted) { // sets the motor speed to 0
-        motor.setMotorSpeed(0.0);
+        setSpeed(0.0);
     }
 
     @Override

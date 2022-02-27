@@ -19,7 +19,7 @@ import frc.robot.utilities.BallSensorUtility;
  */
 public class CatapultSubsystem extends SubsystemBase {
     // This constant is the delay when firing between openBallHolder() and extend()
-    public static final double CATAPULT_FIRE_DELAY = 0.75;
+    public static final double CATAPULT_FIRE_DELAY = 0.50;
     // This constant is the time of pulse for the launch solenoids
     private final double CATAPULT_PULSE_DURATION = 0.5;
 
