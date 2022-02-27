@@ -23,7 +23,7 @@ public class EndgameIncrementStateCommand extends CommandBase {
     
     private final EndgameManagerCommand managerCommand;
 
-    //-------- COMMANDBASE METHODS --------\\
+    //-------- METHODS --------\\
 
     /**
      * <h3>EndgameIncrementStateCommand</h3>

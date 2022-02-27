@@ -40,7 +40,7 @@ public class EndgameOpenClawPairCommand extends CommandBase {
         addRequirements(this.pistonLeft, this.pistonRight);
     }
     
-    //-------- CLASS METHODS --------\\
+    //-------- METHODS --------\\
 
     public void initialize() { // Runs once when called
         pistonLeft.open();

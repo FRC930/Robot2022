@@ -11,8 +11,6 @@ package frc.robot.commands.endgamecommands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
-// import java.util.logging.Logger;
-
 import frc.robot.subsystems.EndgameMotorSubsystem;
 
 //-------- COMMAND CLASS --------\\
@@ -25,8 +23,6 @@ public class EndgameRotateVerticalCommand extends CommandBase {
 
   //-------- CONSTANTS --------\\
 
-  // private static final Logger logger =
-  // Logger.getLogger(EndgameRotateVertical.class.getName());
   private final double APPROACH_POSITION = -0.25;
   private final double SWING_POSITION = 0;
   private final double DEADBAND = 0.025;
@@ -47,7 +43,6 @@ public class EndgameRotateVerticalCommand extends CommandBase {
    */
   public EndgameRotateVerticalCommand(EndgameMotorSubsystem motorSubsystem, EndgamePosition position) {
     m_MotorSubsystem = motorSubsystem;
-    // logger.log(LOG_LEVEL_FINE, "Initializing the EndgameRotateVertical...");
     if(position == EndgamePosition.ApproachPosition){
       target = APPROACH_POSITION;
     }
@@ -60,12 +55,11 @@ public class EndgameRotateVerticalCommand extends CommandBase {
     addRequirements(m_MotorSubsystem); // Use addRequirements() here to declare subsystem dependencies.
   }
 
-  //-------- COMMANDBASE METHODS --------\\
+  //-------- METHODS --------\\
 
   @Override // Called when the command is initially scheduled.
   public void initialize() {
     m_MotorSubsystem.setArmPosition(target);
-    // logger.log(LOG_LEVEL_FINE, "Starting the arm motor (command)...");
   }
 
   @Override

@@ -37,7 +37,7 @@ public class EndgameOpenClawSingleCommand extends CommandBase {
         addRequirements(pistonSubsystem);
     }
     
-    //-------- CLASS METHODS --------\\
+    //-------- METHODS --------\\
 
     public void initialize() { // Runs once when called
         piston.open();

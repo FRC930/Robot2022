@@ -21,10 +21,11 @@ import frc.robot.Robot;
  * manages individual piston on endgame grabber
  */
 public class EndgamePistonSubsystem extends SubsystemBase{
+
+    //-------- VARIABLES --------\\
     Solenoid grabberPiston;
 
     //-------- CONSTRUCTOR --------\\
-
     /**
      * <h3>EndgamePistonSubsystem</h3>
      *

@@ -14,7 +14,7 @@ import frc.robot.subsystems.EndgamePistonSubsystem;
 
 //-------- COMMAND CLASS --------\\
 /**
- * <h3> EndgameCloseClawPairCommand</h3>
+ * <h3>EndgameCloseClawPairCommand</h3>
  * 
  * Closes one mirror set of the endgame claws
  */
@@ -40,7 +40,7 @@ public class EndgameCloseClawPairCommand extends CommandBase{
         addRequirements(this.pistonLeft, this.pistonRight);
     }
 
-    //-------- CLASS METHODS  --------\\
+    //-------- METHODS  --------\\
     
     public void initialize() { // runs once when called
         pistonLeft.closed();

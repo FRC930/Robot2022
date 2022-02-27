@@ -11,30 +11,25 @@ package frc.robot.commands.endgamecommands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
-// import java.util.logging.Logger;
-
 import frc.robot.subsystems.EndgameMotorSubsystem;
 
 //-------- COMMAND CLASS --------\\
 /**
- * <h3> EndgameArmCommand </h3>
+ * <h3>EndgameArmCommand</h3>
  * 
  * Rotates the endgame arm forward to climb the hangar
  */
 public class EndgameArmCommand extends CommandBase {
 
-  //-------- CONSTANTS --------\\
+  // -------- CONSTANTS --------\\
 
-  // private static final Logger logger =
-  // Logger.getLogger(EndgameArmCommand.class.getName());
-  // TODO: Establish speed for endgame arm
   private final double ARM_SPEED = 0.75;
 
-  //-------- VARIABLES --------\\
+  // -------- VARIABLES --------\\
 
   private final EndgameMotorSubsystem m_MotorSubsystem;
 
-  //-------- CONSTRUCTOR --------\\
+  // -------- CONSTRUCTOR --------\\
   /**
    * <h3>EndgameArmCommand</h3>
    * 
@@ -44,34 +39,30 @@ public class EndgameArmCommand extends CommandBase {
    */
   public EndgameArmCommand(EndgameMotorSubsystem motorSubsystem) {
     m_MotorSubsystem = motorSubsystem;
-    // logger.log(LOG_LEVEL_FINE, "Initializing the EndgameArmCommand...");
 
     addRequirements(m_MotorSubsystem); // Use addRequirements() here to declare subsystem dependencies.
   }
 
-  //-------- COMMANDBASE METHODS --------\\
-
+  // -------- METHODS --------\\
+  /**
+   * Runs when the command is started
+   */
   @Override // Called when the command is initially scheduled.
   public void initialize() {
+    // Sets speed of motor to the constant
     m_MotorSubsystem.setMotorSpeed(ARM_SPEED);
 
-    // logger.log(LOG_LEVEL_FINE, "Starting the arm motor (command)...");
   }
 
-  @Override
-  public void execute(){
-    m_MotorSubsystem.getArmRotation();
-  }
-  
-
-  //isFinished() is left false on purpose. Needs to be interrupted.
+  // isFinished() is left false on purpose. Needs to be interrupted.
   @Override
   public boolean isFinished() { // when true, ends command
     return false;
   }
 
   @Override
-  public void end(boolean interrupted) {
+  public void end(boolean interrupted) { // Interrupted when button is released
+    // Sets the motor speed to 0 to stop the motor because command is done
     m_MotorSubsystem.setMotorSpeed(0.0);
   }
 

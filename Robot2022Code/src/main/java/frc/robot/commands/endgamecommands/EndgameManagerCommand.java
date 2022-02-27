@@ -18,7 +18,6 @@ import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 
-import frc.robot.Robot;
 import frc.robot.commands.endgamecommands.EndgameRotateVerticalCommand.EndgamePosition;
 import frc.robot.subsystems.EndgameMotorSubsystem;
 import frc.robot.subsystems.EndgamePistonSubsystem;
@@ -31,15 +30,15 @@ import frc.robot.subsystems.EndgamePistonSubsystem;
  */
 public class EndgameManagerCommand extends CommandBase {
 
-    // -------- CONSTANTS --------\\
+    //-------- CONSTANTS --------\\
 
-    // TODO: TUNE VALUES FOR FASTER CLIMB
     // Time delay for claw commands to take effect
     private final double ENDGAME_PISTON_DELAY = 0.4;
     // Time delay for letting go of Mid while hangning from High
     private final double ENDGAME_RELEASE_DELAY = 0.75;
 
-    // -------- VARIABLES --------\\
+    //-------- VARIABLES --------\\
+
     // Map of states for the sequence
     private HashMap<Integer, CommandBase> commands = new HashMap<Integer, CommandBase>();
     // State flag for currently used state command
@@ -47,18 +46,18 @@ public class EndgameManagerCommand extends CommandBase {
     // State flag for updatable state
     private int newState;
 
-    // -------- CONSTRUCTOR --------\\
+    //-------- CONSTRUCTOR --------\\
     /**
      * <h3>EndgameManagerCommand</h3>
      * 
      * Creates new manager for endgame.
      * 
-     * @param endgameMotorSubsystem
-     * @param endgamePiston1
-     * @param endgamePiston2
-     * @param endgamePistonL3
-     * @param endgamePistonR3
-     * @param endgamePiston4
+     * @param endgameMotorSubsystem the endgame motor
+     * @param endgamePiston1 the pair of left and right 1 pistons
+     * @param endgamePiston2 the pair of left and right 2 pistons
+     * @param endgamePistonL3 the left 3 piston
+     * @param endgamePistonR3 the right 3 piston
+     * @param endgamePiston4 the pair of left and right 4 pistons
      */
     public EndgameManagerCommand(EndgameMotorSubsystem endgameMotorSubsystem, EndgamePistonSubsystem endgamePiston1,
             EndgamePistonSubsystem endgamePiston2, EndgamePistonSubsystem endgamePistonL3,
@@ -67,7 +66,7 @@ public class EndgameManagerCommand extends CommandBase {
         currentState = 1;
         newState = 1;
 
-        // ----- ENDGAME COMMAND GROUP INITS -----\\
+        //----- ENDGAME COMMAND GROUP INITS -----\\
         // Sets arm to vertical to approach
         commands.put(1,
                 new SequentialCommandGroup(
@@ -160,13 +159,18 @@ public class EndgameManagerCommand extends CommandBase {
         }
     }
 
+    /**
+     * <h3>isFinished</h3>
+     * Determines if the manager is finished
+     * @return if new state is beyond the limits of the map
+     */
     @Override
     public boolean isFinished() { // when true, ends command
-        return newState == commands.size() + 1;
+        return newState > commands.size(); 
     }
 
     @Override
-    public void end(boolean interrupted) {
+    public void end(boolean interrupted) { // Interrupted when button is released
         CommandScheduler.getInstance().cancel(commands.get(currentState));
     }
 

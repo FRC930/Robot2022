@@ -10,8 +10,6 @@
 package frc.robot.utilities;
 
 import edu.wpi.first.wpilibj.DigitalInput;
-import frc.robot.utilities.ShuffleboardUtility.ShuffleBoardData;
-import frc.robot.utilities.ShuffleboardUtility.ShuffleboardKeys;
 
 //----- CLASS -----\\
 /**
@@ -21,22 +19,15 @@ import frc.robot.utilities.ShuffleboardUtility.ShuffleboardKeys;
  */
 public class EndgameSensorUtility {
 
-    private static EndgameSensorUtility instance = null;
+    //-------- CONSTANTS --------\\
 
-    public static EndgameSensorUtility getInstance() {
-        if (instance == null) {
-            instance = new EndgameSensorUtility();
-        }
-        return instance;
-    }
-
+    private static final int LEFT_2_ID = 1;
+    private static final int RIGHT_2_ID = 2;
+    private static final int LEFT_4_ID = 3;
+    private static final int RIGHT_4_ID = 4;
+    
     //-------- VARIABLES --------\\
-
-    private final int LEFT2ID = 1;
-    private final int RIGHT2ID = 2;
-    private final int LEFT4ID = 3;
-    private final int RIGHT4ID = 4;
-
+    private static EndgameSensorUtility instance = null;
     private final DigitalInput sensorL2;
     private final DigitalInput sensorR2;
     private final DigitalInput sensorL4;
@@ -49,18 +40,32 @@ public class EndgameSensorUtility {
      * Creates and returns sensor values the endgame sensors
      */
     private EndgameSensorUtility() {
-        sensorL2 = new DigitalInput(LEFT2ID);
-        sensorR2 = new DigitalInput(RIGHT2ID);
-        sensorL4 = new DigitalInput(LEFT4ID);
-        sensorR4 = new DigitalInput(RIGHT4ID);
+        sensorL2 = new DigitalInput(LEFT_2_ID);
+        sensorR2 = new DigitalInput(RIGHT_2_ID);
+        sensorL4 = new DigitalInput(LEFT_4_ID);
+        sensorR4 = new DigitalInput(RIGHT_4_ID);
     }
 
     //-------- METHODS --------\\
 
     /**
-    *NOTE: DIO is opposite of sensor contact
-    *DIO is 0 when sensor is activated(touching metal)
-    */
+     * <h3>getInstance</h3>
+     * 
+     * Gets the instance of the endgame sensor
+     * 
+     * @return the instance of the endgame sensor
+     */
+    public static EndgameSensorUtility getInstance() {
+        if (instance == null) {
+            instance = new EndgameSensorUtility();
+        }
+        return instance;
+    }
+
+    /**
+     * NOTE: DIO is opposite of sensor contact
+     * DIO is 0 when sensor is activated(touching metal)
+     */
 
     /**
      * <h3>left2IsTouching</h3>

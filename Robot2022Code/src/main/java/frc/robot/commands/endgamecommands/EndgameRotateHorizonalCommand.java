@@ -11,8 +11,6 @@ package frc.robot.commands.endgamecommands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
-// import java.util.logging.Logger;
-
 import frc.robot.subsystems.EndgameMotorSubsystem;
 
 //-------- COMMAND CLASS --------\\
@@ -23,13 +21,9 @@ import frc.robot.subsystems.EndgameMotorSubsystem;
  */
 public class EndgameRotateHorizonalCommand extends CommandBase {
 
-  // -------- CONSTANTS --------\\
+  //-------- CONSTANTS --------\\
 
-  // private static final Logger logger =
-  // Logger.getLogger(EndgameArmCommand.class.getName());
-  // TODO: Establish speed for endgame arm
   private final double ARM_SPEED = 0.2;
-  //TODO: WORK ON ENCODER VALUES
   private final double HORIZONTAL_POSITION = 0;
   private final double DEADBAND = 0.1;
 
@@ -47,12 +41,11 @@ public class EndgameRotateHorizonalCommand extends CommandBase {
    */
   public EndgameRotateHorizonalCommand(EndgameMotorSubsystem motorSubsystem) {
     m_MotorSubsystem = motorSubsystem;
-    // logger.log(LOG_LEVEL_FINE, "Initializing the EndgameArmCommand...");
 
     addRequirements(m_MotorSubsystem); // Use addRequirements() here to declare subsystem dependencies.
   }
 
-  //-------- COMMANDBASE METHODS --------\\
+  //-------- METHODS --------\\
 
   @Override // Called when the command is initially scheduled.
   public void initialize() {
@@ -63,7 +56,6 @@ public class EndgameRotateHorizonalCommand extends CommandBase {
       m_MotorSubsystem.setMotorSpeed(-ARM_SPEED);
     }
 
-    // logger.log(LOG_LEVEL_FINE, "Starting the arm motor (command)...");
   }
 
   @Override

@@ -16,8 +16,6 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
-// import java.util.logging.Logger;
-
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 //-------- SUBSYSTEM CLASS --------\\
@@ -28,6 +26,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
  */
 public class EndgameMotorSubsystem extends SubsystemBase {
 
+    //-------- CONSTANTS --------\\
     private static final double GEAR_RATIO = 100;
     private static final double TALON_CPR = 2048;
     private static final double MOTOR_KP = 0.03;
@@ -57,7 +56,7 @@ public class EndgameMotorSubsystem extends SubsystemBase {
         endgameMotorSlave.configFactoryDefault();
         endgameMotorMaster.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor, 0, 0);
         endgameMotorMaster.config_kP(0, MOTOR_KP);
-        // Makes it so it can't be manually moved when neutral
+        // Sets motors so they can't be manually moved when neutral
         endgameMotorMaster.setNeutralMode(NeutralMode.Brake);
         endgameMotorSlave.setNeutralMode(NeutralMode.Brake);
         refollowEndgameMotors();
@@ -104,8 +103,6 @@ public class EndgameMotorSubsystem extends SubsystemBase {
     public double getMotorSpeed() {
         return endgameMotorMaster.getMotorOutputPercent();
     }
-
-    // TODO: ATTATCH ENCODER AND FINISH GETTER
 
     /**
      * <h3>getArmRotation</h3>

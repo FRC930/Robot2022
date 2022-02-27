@@ -42,7 +42,7 @@ public class EndgameCloseWhenTouching extends CommandBase {
         addRequirements(endgamePiston);
     }
 
-    //-------- COMMANDBASE METHODS --------\\
+    //-------- METHODS --------\\
 
     @Override
     public boolean isFinished() { // returns true when the sensor is active
@@ -59,7 +59,7 @@ public class EndgameCloseWhenTouching extends CommandBase {
         }
     }
 
-    @Override
+    @Override // Interrupted when button is released
     public void end(boolean interuppted) { // closes the claw
         endgamePiston.closed();
     }
