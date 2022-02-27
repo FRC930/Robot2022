@@ -27,7 +27,7 @@ public class IndexerForwardCommand extends CommandBase {
     private final double MOTOR_SPEED = 0.4;
     // Delay between the closing of a sensor circuit and
     // re-activating the motor after launching ball
-    private final double RESTART_DELAY = 50; 
+    private final double RESTART_DELAY = 45; 
 
     // -------- VARIABLES --------\\
 
