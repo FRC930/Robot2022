@@ -71,9 +71,8 @@ public class IndexerForwardCommand extends CommandBase {
         if (!reversed) {
             if ((!sensorUtility.catapultIsTripped()
                     || !sensorUtility.indexerIsTripped())) {
-                // If past delay loop or only if catapult tripped (once trying to detect catapult coming back down) 
-                // NOT sure if making a different (is catapultIsTripped)
-                if(counter > RESTART_DELAY || sensorUtility.catapultIsTripped()) {
+                // If past delay loop o
+                if(counter > RESTART_DELAY) {
                     setSpeed(MOTOR_SPEED);
                     counter = 0;
                 } else {
