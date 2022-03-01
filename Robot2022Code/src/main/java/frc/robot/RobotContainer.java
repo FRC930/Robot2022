@@ -401,11 +401,9 @@ public class RobotContainer {
         // Sets the brake mode to coast
         driveSubsystem.setMotorBrakeMode(NeutralMode.Brake);
         resheduleAutononmousLEDS(false);
-
-        // startCamera();
     }
 
-    private void startCamera() {
+    public void startCamera() {
         UsbCamera camera = CameraServer.startAutomaticCapture(0);
         if (camera != null) {
             camera.setResolution(CAMERA_WIDTH, CAMERA_HEIGHT);

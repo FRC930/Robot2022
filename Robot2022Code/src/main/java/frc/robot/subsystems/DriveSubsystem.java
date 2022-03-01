@@ -1,130 +1,150 @@
 package frc.robot.subsystems;
 
-import java.util.function.BiConsumer;
-
 import com.ctre.phoenix.motorcontrol.InvertType;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
-import com.ctre.phoenix.sensors.PigeonIMU;
 import com.ctre.phoenix.sensors.SensorVelocityMeasPeriod;
-import com.ctre.phoenix.sensors.PigeonIMU.CalibrationMode;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.math.trajectory.constraint.DifferentialDriveVoltageConstraint;
-import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.interfaces.Gyro;
-import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.utilities.GyroUtility;
 import frc.robot.utilities.ShifterUtility;
-import frc.robot.utilities.SimulatedDrivetrain;
 
 /**
  * <h3>DriveSubsystem</h3>
  * 
  * DriveSubsystem represents the drivetrain to our code
- * 
- * @author Alexander Taylor
- * @since 22 January 2022
- * @version 1.0
  */
 public class DriveSubsystem extends SubsystemBase {
-
-    public static final double highGearRatio = 6.3;
-    public static final double lowGearRatio = 12.9;
-
-    public static final double kTrackWidth = 0.381 * 2; // meters // 26.5 inch
-    public static final double kWheelRadius = Units.inchesToMeters(3.875 / 2); // meters // 3 7/8 inch
-    public static final int kEncoderResolution = 2048; // 2048 CPR
-    public static final double kMaxVolts = 12.0;
-
-    // 6380 is the max free speed (in rpms) of a Falcon 500
-    public static final double DRIVETRAIN_MAX_FREE_SPEED_LOW = 6380.0 / 60.0 / lowGearRatio
-            * (kWheelRadius * 2 * Math.PI);
-    public static final double DRIVETRAIN_MAX_FREE_SPEED_HIGH = 6380.0 / 60.0 / highGearRatio
-            * (kWheelRadius * 2 * Math.PI);
 
     // rpm = 6300
     // with a gear ratio of 6.3, divide 6380 by 6.3 which equals 1012.698
     // divide that value by 60 to get rotations per second : 1012.698 / 60 = 16.678
-    // wheel circumference times the rotations per second : 0.098425(wheel dimension) * pi * 16.678 = 5.157
-    public static final double kMaxSpeed = DRIVETRAIN_MAX_FREE_SPEED_HIGH; // meters per second
-    public static final double kMaxAngularSpeed = Math.PI; // 1 rotation per second
+    // wheel circumference times the rotations per second : 0.1016(wheel dimention)
+    // * pi * 16.678 = 5.32
 
+    // --------- CONSTANTS --------- \\
+
+    // Max linear speed of the robot
+    public static final double MAX_SPEED = 5.32; // meters per second
+    // Max angular speed of the robot
+    public static final double MAX_ANGULAR_SPEED = Math.PI; // 1 rotation per second
+
+    // The ratio between the wheels and the motors in high gear
+    public static final double HIGH_GEAR_RATIO = 6.3;
+    // The ratio between the wheels and the motors in low gear
+    public static final double LOW_GEAR_RATIO = 12.9;
+
+    // The width of the drive base
+    public static final double TRACK_WIDTH = 0.381 * 2; // meters // 26.5 inch
+    // The radius of the wheels on the robot
+    public static final double WHEEL_RADIUS = 0.0508; // meters // 2 inch
+    // The amount of internal encoder units in one motor revolution
+    public static final int FALCON_ENCODER_RESOLUTION = 2048; // 2048 CPR
+    // The maximum voltage we can send to the motors
+    public static final double MAX_VOLTS = 11.0;
+
+    // 6380 is the max free speed (in rpms) of a Falcon 500
+    // These are the max speeds of the robot in meters per second
+    public static final double DRIVETRAIN_MAX_FREE_SPEED_LOW = 6380.0
+            // Convert to rotations per second
+            / 60.0
+            // Convert to wheel rotations per second
+            / LOW_GEAR_RATIO
+            // Convert to meters per second
+            * (WHEEL_RADIUS * 2 * Math.PI);
+
+    public static final double DRIVETRAIN_MAX_FREE_SPEED_HIGH = 6380.0
+            // Convert to rotations per second
+            / 60.0
+            // Convert to wheel rotations per second
+            / HIGH_GEAR_RATIO
+            // Convert to meters per second
+            * (WHEEL_RADIUS * 2 * Math.PI);
+
+    // --------- VARIABLES --------- \\
+
+    // Our Falcon 500s
     private final WPI_TalonFX m_leftLeader;
     private final WPI_TalonFX m_leftFollower;
     private final WPI_TalonFX m_rightLeader;
     private final WPI_TalonFX m_rightFollower;
 
     // Feed Forward Constants
-    private final double m_rightKS = 0.7409;
-    private final double m_rightKV = 2.1937;
-    private final double m_rightKA = 0.17827;
-    private final double m_leftKS = 0.73751;
-    private final double m_leftKV = 2.1942;
-    private final double m_leftKA = 0.18147;
-    private final double m_combinedKS = 0.74177;
-    private final double m_combinedKV = 2.1936;
-    private final double m_combinedKA = 0.34666;
+    // KS is static voltage to add to the speed input
+    // KV is speed-to-voltage converter basically
+    // KA is the acceleration constant
+    private final double RIGHT_KS = 0.7409;
+    private final double RIGHT_KV = 2.1937;
+    private final double RIGHT_KA = 0.17827;
+    private final double LEFT_KS = 0.73751;
+    private final double LEFT_KV = 2.1942;
+    private final double LEFT_KA = 0.18147;
+    private final double COMBINED_KS = 0.74177;
+    private final double COMBINED_KV = 2.1936;
+    private final double COMBINED_KA = 0.34666;
 
     // PID Constants
-    // Getting I values
-    // 1 divided by loop period in minutes times 2
-    // our loop period is 20 miliseconds which calculated into minutes is : 20(Loop
-    // period) / 60000(Miliseconds in one minute) = 0.000333
-    // calculated estimated I = 1/(0.000333 * 2)
-    private final double m_loopPeriodPerMin = 0.000333;
+    // P is the proportional error gain
+    // I is the integral error gain
+    // D is the derivative error gain
     private final double m_leftP = 2.464;
-    private final double m_leftI = 0.0;// 1/(m_loopPeriodPerMin * 2);
+    private final double m_leftI = 0.0;
     private final double m_leftD = 0.0;
     private final double m_rightP = 2.4833;
-    private final double m_rightI = 0.0;// 1/(m_loopPeriodPerMin * 2);
+    private final double m_rightI = 0.0;
     private final double m_rightD = 0.0;
-    // MotorControllerGroup leftGroup;
-    // MotorControllerGroup rightGroup;
-    /*
-     * private final SpeedControllerGroup m_leftGroup = new
-     * SpeedControllerGroup(m_leftLeader, m_leftFollower); private final
-     * SpeedControllerGroup m_rightGroup = new SpeedControllerGroup(m_rightLeader,
-     * m_rightFollower);
-     */
 
-    private final DifferentialDriveKinematics m_kinematics = new DifferentialDriveKinematics(kTrackWidth);
+    // Kinematics to keep track of our wheel speeds
+    private final DifferentialDriveKinematics m_kinematics = new DifferentialDriveKinematics(TRACK_WIDTH);
 
-    // Gains are for example purposes only - must be determined for your own robot!
-    private final SimpleMotorFeedforward leftMotorFeedforward = new SimpleMotorFeedforward(m_leftKS, m_leftKV,
-            m_leftKA);
-    private final SimpleMotorFeedforward rightMotorFeedforward = new SimpleMotorFeedforward(m_rightKS, m_rightKV,
-            m_rightKA);
-    private final SimpleMotorFeedforward constraintFeedforward = new SimpleMotorFeedforward(m_combinedKS,
-            m_combinedKV, m_combinedKA);
+    // The feedforward gains for our motors
+    private final SimpleMotorFeedforward m_leftMotorFeedforward = new SimpleMotorFeedforward(LEFT_KS, LEFT_KV,
+            LEFT_KA);
+    private final SimpleMotorFeedforward m_rightMotorFeedforward = new SimpleMotorFeedforward(RIGHT_KS, RIGHT_KV,
+            RIGHT_KA);
+    private final SimpleMotorFeedforward m_constraintFeedforward = new SimpleMotorFeedforward(COMBINED_KS,
+            COMBINED_KV, COMBINED_KA);
 
-    private final PIDController leftPIDController = new PIDController(m_leftP, m_leftI, m_leftD);
-    private final PIDController rightPIDController = new PIDController(m_rightP, m_rightI, m_rightD);
+    // PID controllers for autonomous
+    private final PIDController m_leftPIDController = new PIDController(m_leftP, m_leftI, m_leftD);
+    private final PIDController m_rightPIDController = new PIDController(m_rightP, m_rightI, m_rightD);
 
-    private boolean shifterState;
+    // Set up the voltage constraint for autonomous
+    private final DifferentialDriveVoltageConstraint m_voltageConstraint = new DifferentialDriveVoltageConstraint(
+            m_constraintFeedforward, m_kinematics, 10);
 
-    private final DifferentialDriveVoltageConstraint voltageConstraint = new DifferentialDriveVoltageConstraint(
-            constraintFeedforward, getKinematics(), 10);
-
+    // Set up odometry for calculating robot position
     private final DifferentialDriveOdometry m_odometry = new DifferentialDriveOdometry(
             new Rotation2d(Math.toRadians(GyroUtility.getInstance().getGyro().getFusedHeading())));
 
-    private double yawPitchRollValues[] = new double[3];
+    private double m_yawPitchRollValues[] = new double[3];
+
+    // --------- CONSTRUCTOR --------- \\
 
     /**
      * Constructs a differential drive object. Sets the encoder distance per pulse
      * and resets the gyro.
+     */
+    /**
+     * <h3>DriveSubsystem</h3>
+     * 
+     * Constructs a differential drive object. Sets the encoder distance per pulse
+     * and resets the gyro.
+     * 
+     * @param leftMotorLeaderID    the ID of the left motor leader
+     * @param leftMotorFollowerID  the ID of the left motor follower
+     * @param rightMotorLeaderID   the ID of the right motor leader
+     * @param rightMotorFollowerID the ID of the right motor follower
      */
     public DriveSubsystem(int leftMotorLeaderID, int leftMotorFollowerID, int rightMotorLeaderID,
             int rightMotorFollowerID) {
@@ -132,11 +152,6 @@ public class DriveSubsystem extends SubsystemBase {
         m_leftFollower = new WPI_TalonFX(leftMotorFollowerID);
         m_rightLeader = new WPI_TalonFX(rightMotorLeaderID);
         m_rightFollower = new WPI_TalonFX(rightMotorFollowerID);
-
-        // leftGroup = new MotorControllerGroup(m_leftLeader, m_leftFollower);
-        // rightGroup = new MotorControllerGroup(m_rightLeader, m_rightFollower);
-
-        shifterState = false;
 
         TalonFXConfiguration config = new TalonFXConfiguration();
         config.velocityMeasurementPeriod = SensorVelocityMeasPeriod.Period_10Ms;
@@ -163,12 +178,14 @@ public class DriveSubsystem extends SubsystemBase {
         m_rightFollower.setNeutralMode(NeutralMode.Brake);
     }
 
+    // --------- METHODS --------- \\
+
     // Needed to overcome stopMotor() calls by CTRE's WPI motor controls
     // See https://github.com/CrossTheRoadElec/Phoenix-Releases/issues/28
     public void refollowDriveMotors() {
         m_leftFollower.follow(m_leftLeader);
         m_rightFollower.follow(m_rightLeader);
-        // Need to set setInverted to Follow Laader Motors (master)
+        // Need to set setInverted to Follow Leader Motors (master)
         m_leftFollower.setInverted(InvertType.FollowMaster);
         m_rightFollower.setInverted(InvertType.FollowMaster);
     }
@@ -197,9 +214,11 @@ public class DriveSubsystem extends SubsystemBase {
      * @param rightVoltage the right voltage
      */
     public void setVoltages(double leftVoltage, double rightVoltage) {
-        leftVoltage = MathUtil.clamp(leftVoltage, -11.0, 11.0);
-        rightVoltage = MathUtil.clamp(rightVoltage, -11.0, 11.0);
+        // Make sure the voltages are not outside of the max range
+        leftVoltage = MathUtil.clamp(leftVoltage, -MAX_VOLTS, MAX_VOLTS);
+        rightVoltage = MathUtil.clamp(rightVoltage, -MAX_VOLTS, MAX_VOLTS);
 
+        // Send the output to the motors
         m_leftLeader.setVoltage(leftVoltage);
         m_rightLeader.setVoltage(rightVoltage);
     }
@@ -209,6 +228,7 @@ public class DriveSubsystem extends SubsystemBase {
      * 
      * Gets the voltage of the left motor
      * 
+     * @return the left motor output voltage
      */
     public double getLeftVoltage() {
         return m_leftLeader.getMotorOutputVoltage();
@@ -219,6 +239,7 @@ public class DriveSubsystem extends SubsystemBase {
      * 
      * Gets the voltage of the right motor
      * 
+     * @return the right motor output voltage
      */
     public double getRightVoltage() {
         return m_rightLeader.getMotorOutputVoltage();
@@ -229,6 +250,7 @@ public class DriveSubsystem extends SubsystemBase {
      * 
      * Gets the kinematics
      * 
+     * @return the kinematics used by the drivetrain
      */
     public DifferentialDriveKinematics getKinematics() {
         return m_kinematics;
@@ -238,10 +260,10 @@ public class DriveSubsystem extends SubsystemBase {
      * Calculate the feedforward with the left controller
      * 
      * @param velocity the velocity for which to calculate feedforward
-     * @return the feedforward modified velocity
+     * @return the output of the feedforward controller (in volts)
      */
     public double calculateLeftFeedforward(double velocity) {
-        return leftMotorFeedforward.calculate(velocity);
+        return m_leftMotorFeedforward.calculate(velocity);
     }
 
     /**
@@ -249,20 +271,20 @@ public class DriveSubsystem extends SubsystemBase {
      * Overloaded method to allow the input of acceleration
      * 
      * @param velocity the velocity for which to calculate feedforward
-     * @return the feedforward modified
+     * @return the output of the feedforward contoller (in volts)
      */
     public double calculateLeftFeedforward(double velocity, double acceleration) {
-        return leftMotorFeedforward.calculate(velocity, acceleration);
+        return m_leftMotorFeedforward.calculate(velocity, acceleration);
     }
 
     /**
      * Calculate the feedforward with the right controller
      * 
      * @param velocity the velocity for which to calculate feedforward
-     * @return the feedforward modified velocity
+     * @return the output of the feedforward controller (in volts)
      */
     public double calculateRightFeedforward(double velocity) {
-        return rightMotorFeedforward.calculate(velocity);
+        return m_rightMotorFeedforward.calculate(velocity);
     }
 
     /**
@@ -270,10 +292,10 @@ public class DriveSubsystem extends SubsystemBase {
      * Overloaded method to allow the input of acceleration
      * 
      * @param velocity the velocity for which to calculate feedforward
-     * @return the feedforward modified
+     * @return the output of the feedforward controller (in volts)
      */
     public double calculateRightFeedforward(double velocity, double acceleration) {
-        return rightMotorFeedforward.calculate(velocity, acceleration);
+        return m_rightMotorFeedforward.calculate(velocity, acceleration);
     }
 
     /**
@@ -284,7 +306,7 @@ public class DriveSubsystem extends SubsystemBase {
      * @return the PID corrected speed
      */
     public double calculateLeftPID(double speed, double target) {
-        return leftPIDController.calculate(speed, target);
+        return m_leftPIDController.calculate(speed, target);
     }
 
     /**
@@ -295,7 +317,7 @@ public class DriveSubsystem extends SubsystemBase {
      * @return the PID corrected speed
      */
     public double calculateRightPID(double speed, double target) {
-        return rightPIDController.calculate(speed, target);
+        return m_rightPIDController.calculate(speed, target);
     }
 
     /**
@@ -327,7 +349,7 @@ public class DriveSubsystem extends SubsystemBase {
      * @return the volatage at which to run the motor
      */
     public double speedToVoltage(double speed) {
-        return speed / DRIVETRAIN_MAX_FREE_SPEED_HIGH * kMaxVolts;
+        return speed / DRIVETRAIN_MAX_FREE_SPEED_HIGH * MAX_VOLTS;
     }
 
     /**
@@ -337,10 +359,10 @@ public class DriveSubsystem extends SubsystemBase {
      */
     public void setSpeeds(DifferentialDriveWheelSpeeds speeds) {
         // Convert speeds to volts
-        double leftOutput = speeds.leftMetersPerSecond * kMaxVolts /
-                DriveSubsystem.kMaxSpeed;
-        double rightOutput = speeds.rightMetersPerSecond * kMaxVolts /
-                DriveSubsystem.kMaxSpeed;
+        double leftOutput = speeds.leftMetersPerSecond * MAX_VOLTS /
+                DriveSubsystem.MAX_SPEED;
+        double rightOutput = speeds.rightMetersPerSecond * MAX_VOLTS /
+                DriveSubsystem.MAX_SPEED;
 
         setVoltages(leftOutput, rightOutput);
     }
@@ -351,15 +373,13 @@ public class DriveSubsystem extends SubsystemBase {
      * @return the encoder speed
      */
     public double getLeftEncoder() {
-        return
-        // m_leftLeader.getSensorCollection().getIntegratedSensorVelocity()
-        m_leftLeader.getSelectedSensorVelocity()
+        return m_leftLeader.getSelectedSensorVelocity()
                 // Multiply by 10 to get encoder units per second
                 * 10
                 // Divide by the number of ticks in a rotation
-                / kEncoderResolution
+                / FALCON_ENCODER_RESOLUTION
                 // Multiply by the circumference of the wheel
-                * (2 * Math.PI * kWheelRadius) / (ShifterUtility.getShifterState() ? lowGearRatio : highGearRatio);
+                * (2 * Math.PI * WHEEL_RADIUS) / (ShifterUtility.getShifterState() ? LOW_GEAR_RATIO : HIGH_GEAR_RATIO);
     }
 
     /**
@@ -368,11 +388,13 @@ public class DriveSubsystem extends SubsystemBase {
      * @return the encoder speed
      */
     public double getRightEncoder() {
-        // Multiply by 10 to get encoder units per second
         return m_rightLeader.getSelectedSensorVelocity()
-                // m_rightLeader.getSensorCollection().getIntegratedSensorVelocity()
-                * 10 / kEncoderResolution
-                * (2 * Math.PI * kWheelRadius) / (ShifterUtility.getShifterState() ? lowGearRatio : highGearRatio);
+                // Multiply by 10 to get encoder units per second
+                * 10
+                // Divide by the number of ticks in a rotation
+                / FALCON_ENCODER_RESOLUTION
+                // Multiply by the circumference of the wheel
+                * (2 * Math.PI * WHEEL_RADIUS) / (ShifterUtility.getShifterState() ? LOW_GEAR_RATIO : HIGH_GEAR_RATIO);
     }
 
     /**
@@ -381,11 +403,10 @@ public class DriveSubsystem extends SubsystemBase {
      * This method gets the position of the right encoder
      * 
      * @return the position of the right encoder in raw encoder units
-     * @see {@link com.ctre.phoenix.motorcontrol.TalonFXSensorCollection#getIntegratedSensorPosition()
-     *      getIntegratedSensorPosition()}
+     * @see {@link com.ctre.phoenix.motorcontrol.can.WPI_TalonFX#getSelectedSensorPosition()
+     *      getSelectedSensorPosition()}
      */
     public double getRawLeftSensorPosition() {
-        // return m_leftLeader.getSensorCollection().getIntegratedSensorPosition();
         return m_leftLeader.getSelectedSensorPosition();
     }
 
@@ -395,60 +416,53 @@ public class DriveSubsystem extends SubsystemBase {
      * This method gets the position of the right encoder
      * 
      * @return the position of the left encoder in raw encoder units
-     * @see {@link com.ctre.phoenix.motorcontrol.TalonFXSensorCollection#getIntegratedSensorPosition()
-     *      getIntegratedSensorPosition()}
+     * @see {@link com.ctre.phoenix.motorcontrol.can.WPI_TalonFX#getSelectedSensorPosition()
+     *      getSelectedSensorPosition()}
      */
     public double getRawRightSensorPosition() {
-        // return m_rightLeader.getSensorCollection().getIntegratedSensorPosition();
         return m_rightLeader.getSelectedSensorPosition();
     }
 
     /**
      * <h3>resetLeftPID</h3>
      * 
-     * This method resets the left PID controller
-     * 
+     * This method resets the left PID controller (only useful when using integral
+     * and derivative)
      */
     public void resetLeftPID() {
-        leftPIDController.reset();
+        m_leftPIDController.reset();
     }
 
     /**
      * <h3>resetRightPID</h3>
      * 
-     * This method resets the right PID controller
-     * 
+     * This method resets the right PID controller (only useful when using integral
+     * and derivative)
      */
     public void resetRightPID() {
-        rightPIDController.reset();
+        m_rightPIDController.reset();
     }
 
+    /**
+     * <h3>resetEncoders</h3>
+     * 
+     * Resets the encoders to zero. This will affect the selected sensor position,
+     * but not the absolute position
+     */
     public void resetEncoders() {
         m_leftLeader.setSelectedSensorPosition(0.0);
         m_rightLeader.setSelectedSensorPosition(0.0);
     }
 
-    // TODO: Look into making this into a separate state machine class
     /**
-     * Set the shifting piston state
+     * <h3>getVoltageConstraint</h3>
      * 
-     * @param state the state to set
-     */
-    public void setPistonState(boolean state) {
-        shifterState = state;
-    }
-
-    /**
-     * Gets the state of the shifter
+     * Get the voltage constraint used for autonomous
      * 
-     * @return the state of the shifter
+     * @return the autonomous voltage constraint
      */
-    public boolean getPistonState() {
-        return shifterState;
-    }
-
     public DifferentialDriveVoltageConstraint getVoltageContraint() {
-        return voltageConstraint;
+        return m_voltageConstraint;
     }
 
     /**
@@ -469,8 +483,8 @@ public class DriveSubsystem extends SubsystemBase {
      * @return the heading of the gyro.
      */
     public double getHeading() {
-        GyroUtility.getInstance().getGyro().getYawPitchRoll(yawPitchRollValues);
-        return Math.IEEEremainder(yawPitchRollValues[0], 360);
+        GyroUtility.getInstance().getGyro().getYawPitchRoll(m_yawPitchRollValues);
+        return Math.IEEEremainder(m_yawPitchRollValues[0], 360);
     }
 
     /**
@@ -482,26 +496,37 @@ public class DriveSubsystem extends SubsystemBase {
         return m_odometry;
     }
 
+    /**
+     * <h3>periodic</h3>
+     * 
+     * Called every loop iteration when the scheduler runs.
+     * <p>
+     * This will update the odometry for automous
+     * 
+     * @see super {@link edu.wpi.first.wpilibj2.command.Subsystem#periodic
+     *      periodic} method
+     */
     @Override
     public void periodic() {
-        // SmartDashboard.putNumber("left encoder", getRawLeftSensorPosition());
-        // SmartDashboard.putNumber("right encoder", getRawRightSensorPosition());
+        // Update odometry using the gyro and the wheel rotations
         m_odometry.update(
                 // Create a new Rotation2d object with the reading from the pigeon
                 new Rotation2d(Math.toRadians(GyroUtility.getInstance().getGyro().getFusedHeading())),
                 // Convert raw sensor units to meters
-                // TODO: Check if we need to multiply by 2*pi*r because circumference
-                getRawLeftSensorPosition() *
-                        ((1.0 / 2048.0) * kWheelRadius * Math.PI * 2)
-                        // Divide by the current gear ratio because the motors turn more than the wheels
-                        / highGearRatio,
+                getRawLeftSensorPosition()
+                        // Convert raw sensor units to wheel rotations
+                        * (1.0 / 2048.0)
+                        // Convert wheel rotations to meters
+                        * (WHEEL_RADIUS * Math.PI * 2)
+                        // Divide by the current gear ratio
+                        / HIGH_GEAR_RATIO,
                 // Convert raw sensor units to meters
-                // TODO: Check if we need to multiply by 2*pi*r because circumference
-                getRawRightSensorPosition() * ((1.0 / 2048.0) * kWheelRadius * Math.PI * 2)
-                // Divide by the current gear ratio because the motors turn more than the wheels
-                        / highGearRatio);
-        Pose2d robotPosition = m_odometry.getPoseMeters();
-        // SmartDashboard.putNumber("robotPositionX", robotPosition.getX());
-        // SmartDashboard.putNumber("robotPositionY", robotPosition.getY());
+                getRawRightSensorPosition()
+                        // Convert raw sensor units to wheel rotations
+                        * (1.0 / 2048.0)
+                        // Convert wheel rotations to meters
+                        * (WHEEL_RADIUS * Math.PI * 2)
+                        // Divide by the current gear ratio
+                        / HIGH_GEAR_RATIO);
     }
 }

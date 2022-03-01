@@ -21,7 +21,7 @@ public class HubAimingCommand extends CommandBase {
     final double HUB_HEIGHT_METERS = Units.inchesToMeters(104);
 
     // The pitch of the camera
-    final double CAMERA_PITCH_RADIANS = Units.degreesToRadians(0.0);
+    final double CAMERA_PITCH_RADIANS = Units.degreesToRadians(20.0);
 
     final double HUB_RANGE_METERS = Units.feetToMeters(6);
 
@@ -92,8 +92,8 @@ public class HubAimingCommand extends CommandBase {
             // Clamp to joystick values
             forwardSpeed = MathUtil.clamp(forwardSpeed, -DriveSubsystem.DRIVETRAIN_MAX_FREE_SPEED_HIGH,
                     DriveSubsystem.DRIVETRAIN_MAX_FREE_SPEED_HIGH);
-            rotationSpeed = MathUtil.clamp(rotationSpeed, -DriveSubsystem.kMaxAngularSpeed,
-                    DriveSubsystem.kMaxAngularSpeed);
+            rotationSpeed = MathUtil.clamp(rotationSpeed, -DriveSubsystem.MAX_ANGULAR_SPEED,
+                    DriveSubsystem.MAX_ANGULAR_SPEED);
         } else {
             // If no target, set both speeds to zero
             forwardSpeed = 0.0;

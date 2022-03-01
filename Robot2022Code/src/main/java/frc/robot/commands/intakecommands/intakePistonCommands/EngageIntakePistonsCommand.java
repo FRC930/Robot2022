@@ -40,7 +40,7 @@ public class EngageIntakePistonsCommand extends CommandBase {
      */
     @Override
     public void initialize() {
-        DriveCameraUtility.getInstance().setCameraState(CameraStates.BALL);
+        // DriveCameraUtility.getInstance().setCameraState(CameraStates.BALL);
         intakePistonSubsystem.setIntakePistonState(true);
     }
 
@@ -60,7 +60,7 @@ public class EngageIntakePistonsCommand extends CommandBase {
     @Override
     public void end(boolean interrupted) {
         intakePistonSubsystem.setIntakePistonState(false);
-        DriveCameraUtility.getInstance().setCameraState(CameraStates.REFLECTIVE_TAPE);
+        // DriveCameraUtility.getInstance().setCameraState(CameraStates.REFLECTIVE_TAPE);
     }
 
 }

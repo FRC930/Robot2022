@@ -9,8 +9,6 @@ import frc.robot.subsystems.VisionCameraSubsystem;
 public class AutonomousAimCommand extends HubAimingCommand {
     public AutonomousAimCommand(VisionCameraSubsystem cameraSubsystem, DriveSubsystem dSubsystem) {
         super(cameraSubsystem, dSubsystem);
-
-        addRequirements(cameraSubsystem, dSubsystem);
     }
 
     @Override

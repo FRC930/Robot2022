@@ -37,6 +37,8 @@ public class Robot extends TimedRobot {
             // are sent during every iteration.
             setNetworkTablesFlushEnabled(true);
             m_robotContainer.robotSimInit();
+        } else {
+            m_robotContainer.startCamera();
         }
     }
 
