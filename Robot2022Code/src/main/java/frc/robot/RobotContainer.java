@@ -359,7 +359,7 @@ public class RobotContainer {
         driverController.getLeftBumper().whileActiveOnce(
                 new SequentialCommandGroup(
                         new WaitCommand(CatapultSubsystem.CATAPULT_FIRE_DELAY),
-                        new CatapultCommand(catapultSubsystem, CatapultPower.AllPistons)));
+                        new CatapultCommand(catapultSubsystem, CatapultPower.AllPistons).withTimeout(0.25)));
         driverController.getPOVUpTrigger().whileActiveOnce(
                 new CatapultCommand(catapultSubsystem, CatapultPower.SetLongShot));
         driverController.getPOVDownTrigger().whileActiveOnce(
