@@ -79,6 +79,7 @@ public class TerminalPickup extends PathPlannerSequentialCommandGroupUtility {
                 (Double leftVoltage, Double rightVoltage) -> dSubsystem.setVoltages(leftVoltage, rightVoltage),
                 dSubsystem);
 
+        //Creates RAMSETE Command for second trajectory
         Ramsete930Command ramseteCommand2 = new Ramsete930Command(
                 trajectory2,
                 () -> m_odometry.getPoseMeters(),
@@ -88,6 +89,7 @@ public class TerminalPickup extends PathPlannerSequentialCommandGroupUtility {
                 (Double leftVoltage, Double rightVoltage) -> dSubsystem.setVoltages(leftVoltage, rightVoltage),
                 dSubsystem);
 
+        //Creates RAMSETE Command for third trajectory
         Ramsete930Command ramseteCommand3 = new Ramsete930Command(
                 trajectory3,
                 () -> m_odometry.getPoseMeters(),

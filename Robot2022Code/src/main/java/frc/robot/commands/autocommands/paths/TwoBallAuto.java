@@ -27,7 +27,7 @@ import frc.robot.subsystems.IntakePistonSubsystem;
 import frc.robot.subsystems.VisionCameraSubsystem;
 
 //  -------- PATH DESCRIPTION -------- \\
-//  Moves forward 60 inches
+//  Backs off tarmac picks up a ball and shoots two balls
 
 public class TwoBallAuto extends PathPlannerSequentialCommandGroupUtility {
 
@@ -65,8 +65,8 @@ public class TwoBallAuto extends PathPlannerSequentialCommandGroupUtility {
         // Creates a command that can be added to the command scheduler in the
         // sequential command
 
-        // Creates RAMSETE Command for first trajectory
         SmartDashboard.putString("current Gyro Position", m_odometry.getPoseMeters().toString());
+        // Creates RAMSETE Command for first trajectory
         Ramsete930Command ramseteCommand1 = new Ramsete930Command(
                 trajectory1,
                 () -> m_odometry.getPoseMeters(),

@@ -18,6 +18,12 @@ import frc.robot.subsystems.DriveSubsystem;
 //  -------- PATH DESCRIPTION -------- \\
 //  Moves forward 60 inches
 
+/**
+ * <h3>ResetAutonomousCommand</h3>
+ * 
+ * Resets the gyro and resemtog
+ * @author Ed Pilon, Hussain Mehdi, and Caden DeGlopper
+ */
 public class ResetAutonomousCommand extends CommandBase {
 
     //  TO-DO comment this section
@@ -26,8 +32,9 @@ public class ResetAutonomousCommand extends CommandBase {
     private final Pose2d m_startingPose;
 
     /**
-     * Default path constructor
+     * <h3>ResetAutonomousCommand</h3>
      * 
+     * @param startingPose
      * @param dSubsystem
      */
     public ResetAutonomousCommand(Pose2d startingPose, DriveSubsystem dSubsystem) { 
@@ -42,9 +49,9 @@ public class ResetAutonomousCommand extends CommandBase {
     } // End of Constructor
 
 
-/**
-  * Called when the command is initially scheduled. 
-  */
+  /**
+   * Called when the command is initially scheduled. 
+   */
   @Override
   public void initialize() {
     m_odometry.resetPosition(m_startingPose, new Rotation2d(Math.toRadians(GyroUtility.getInstance().getGyro().getFusedHeading())));
@@ -53,7 +60,7 @@ public class ResetAutonomousCommand extends CommandBase {
     
   }
   
-   /**
+  /**
    * Returns true when the command should end.
    */
   @Override
