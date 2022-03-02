@@ -1,7 +1,6 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.ShifterSubsystem;
 
 /**
@@ -11,7 +10,6 @@ import frc.robot.subsystems.ShifterSubsystem;
  */
 public class ToggleShifterCommand extends CommandBase {
     private ShifterSubsystem shifterSubsystem;
-    private DriveSubsystem driveSubsystem;
 
     /**
      * <h3>ToggleShifterCommand</h3>
@@ -24,19 +22,21 @@ public class ToggleShifterCommand extends CommandBase {
      * @param sSubsystem a ShifterSubsystem representing the solenoid
      * @param dSubsystem a DriveSubsystem representing the drive base of the robot
      */
-    public ToggleShifterCommand(ShifterSubsystem sSubsystem, DriveSubsystem dSubsystem) {
+    public ToggleShifterCommand(ShifterSubsystem sSubsystem) {
         shifterSubsystem = sSubsystem;
-        driveSubsystem = dSubsystem;
+
+        shifterSubsystem.setShifterState(false);
+
+        addRequirements(shifterSubsystem);
     }
 
     @Override
     public void initialize() {
-        shifterSubsystem.setShifterState(!shifterSubsystem.getShifterState());
-        driveSubsystem.setPistonState(shifterSubsystem.getShifterState());
+        shifterSubsystem.setShifterState(true);
     }
 
     @Override
-    public boolean isFinished() {
-        return true;
+    public void end(boolean interrupted) {
+        shifterSubsystem.setShifterState(false);
     }
 }

@@ -3,6 +3,7 @@ package frc.robot.subsystems;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.utilities.ShifterUtility;
 
 /**
  * <h3>ShifterSubsystem</h3>
@@ -11,8 +12,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
  */
 public class ShifterSubsystem extends SubsystemBase {
     private Solenoid shifterSolenoid;
-
-    public static final int shifterSolenoidID = 0;
 
     /**
      * <h3>ShifterSubsystem</h3>
@@ -35,6 +34,7 @@ public class ShifterSubsystem extends SubsystemBase {
      */
     public void setShifterState(boolean state) {
         shifterSolenoid.set(state);
+        ShifterUtility.setShifterState(state);
     }
 
     /**
