@@ -15,17 +15,18 @@ import frc.robot.utilities.BallSensorUtility;
  */
 public class BallHolderCommand extends CommandBase {
 
-    //-------- CONSTANTS --------\\
+    // -------- CONSTANTS --------\\
 
     private final int CLOSE_DELAY = 25;
 
-    //-------- VARIABLES --------\\
+    // -------- VARIABLES --------\\
 
     private CatapultSubsystem catapultSubsystem;
     private int counter;
+    private boolean isAuton;
     private final BallSensorUtility sensorUtility = BallSensorUtility.getInstance();
 
-    //-------- CONSTRUCTOR --------\\
+    // -------- CONSTRUCTOR --------\\
 
     /**
      * <h3>BallHolderCommand</h3>
@@ -34,14 +35,30 @@ public class BallHolderCommand extends CommandBase {
      *
      * @param catapult the {@link frc.robot.subsystems.CaptapultSubsystem
      *                 CatapultSubsystem} to use
+     * @param isAuton  argument should be true if command is being run during
+     *                 autonomous, else false
      */
-    public BallHolderCommand(CatapultSubsystem catapult) {
+    public BallHolderCommand(CatapultSubsystem catapult, boolean isAuton) {
         catapultSubsystem = catapult;
+        this.isAuton = isAuton;
         counter = 0;
         addRequirements(catapultSubsystem);
     }
 
-    //-------- METHODS --------\\
+    /**
+     * <h3>BallHolderCommand</h3>
+     * 
+     * Initializes a new catapult command with the passed catapult subsystem
+     * USE ONLY FOR TELEOP
+     *
+     * @param catapult the {@link frc.robot.subsystems.CaptapultSubsystem
+     *                 CatapultSubsystem} to use
+     */
+    public BallHolderCommand(CatapultSubsystem catapult) {
+        this(catapult, false);
+    }
+
+    // -------- METHODS --------\\
 
     @Override
     public void initialize() {
@@ -63,11 +80,17 @@ public class BallHolderCommand extends CommandBase {
 
     @Override
     public void end(boolean interrupted) {
-        catapultSubsystem.openBallHolder();
+        if (!isAuton) {
+            catapultSubsystem.openBallHolder();
+        }
     }
 
     @Override
     public boolean isFinished() {
-        return false;
+        if (isAuton) {
+            return catapultSubsystem.ballHolderIsClosed();
+        } else {
+            return false;
+        }
     }
 } // End of class BallHolderCommand

@@ -12,6 +12,7 @@ import frc.robot.commands.intakecommands.intakemotorcommands.RunIntakeMotorsComm
 import edu.wpi.first.math.controller.RamseteController;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.trajectory.Trajectory;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.utilities.PathPlannerSequentialCommandGroupUtility;
@@ -63,13 +64,14 @@ public class ShootMoveShoot extends PathPlannerSequentialCommandGroupUtility {
                 (Double leftVoltage, Double rightVoltage) -> dSubsystem.setVoltages(leftVoltage, rightVoltage),
                 dSubsystem);
 
-        addCommands(new ParallelRaceGroup(new CatapultCommand(catapultSubsystem, CatapultPower.SetShortShot), new WaitCommand(0.5)),
+        //TODO: ADD BALL HOLDER COMMAND
+        addCommands(new InstantCommand(catapultSubsystem::setShortShot), new WaitCommand(0.5),
         new ResetAutonomousCommand(trajectory1.getInitialPose(), dSubsystem),
         new ParallelRaceGroup(new AutonomousAimCommand(visionCameraSubsystem, dSubsystem) , new WaitCommand(3)),
-        new ParallelRaceGroup(new CatapultCommand(catapultSubsystem, CatapultPower.AllPistons), new WaitCommand(0.5)),
+        new CatapultCommand(catapultSubsystem, CatapultPower.AllPistons).withTimeout(CatapultSubsystem.SHOOT_TIMEOUT),
         new ParallelRaceGroup(new EngageIntakePistonsCommand(intakePistonSubsystem), new RunIntakeMotorsCommand(intakeMotorSubsystem, false), ramseteCommand1),
         new ParallelRaceGroup(new AutonomousAimCommand(visionCameraSubsystem, dSubsystem) , new WaitCommand(3)),
-        new ParallelRaceGroup(new CatapultCommand(catapultSubsystem, CatapultPower.AllPistons), new WaitCommand(0.5))
+        new CatapultCommand(catapultSubsystem, CatapultPower.AllPistons).withTimeout(CatapultSubsystem.SHOOT_TIMEOUT)
         );
 
     } // End of Constructor

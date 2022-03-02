@@ -9,6 +9,7 @@ import frc.robot.commands.autocommands.ResetAutonomousCommand;
 import edu.wpi.first.math.controller.RamseteController;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.trajectory.Trajectory;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.utilities.PathPlannerSequentialCommandGroupUtility;
@@ -57,7 +58,7 @@ public class TemplateCommand extends PathPlannerSequentialCommandGroupUtility {
                 (Double leftVoltage, Double rightVoltage) -> dSubsystem.setVoltages(leftVoltage, rightVoltage),
                 dSubsystem);
 
-        addCommands(new ParallelRaceGroup(new CatapultCommand(catapultSubsystem, CatapultPower.SetShortShot), new WaitCommand(0.5)),
+        addCommands(new InstantCommand(catapultSubsystem::setShortShot), new WaitCommand(0.5),
         new ResetAutonomousCommand(trajectory1.getInitialPose(), dSubsystem),
         ramseteCommand1,
         new StopDrive(dSubsystem)

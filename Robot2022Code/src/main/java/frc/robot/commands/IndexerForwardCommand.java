@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 
 import frc.robot.subsystems.IndexerMotorSubsystem;
 import frc.robot.utilities.BallSensorUtility;
+import frc.robot.utilities.CatapultReturnSensorUtility;
 
 //-------- COMMAND CLASS --------\\
 /**
@@ -27,15 +28,15 @@ public class IndexerForwardCommand extends CommandBase {
     private final double MOTOR_SPEED = 0.4;
     // Delay between the closing of a sensor circuit and
     // re-activating the motor after launching ball
-    private final double RESTART_DELAY = 25; 
+    //private final double RESTART_DELAY = 25;
 
     // -------- VARIABLES --------\\
 
     private final IndexerMotorSubsystem motor;
-    private int counter;
+    //private int counter;
     private final BallSensorUtility sensorUtility = BallSensorUtility.getInstance();
     private boolean reversed = false;
-    private double lastSpeed = -2.0; //set to speed that would have never be set to before
+    private double lastSpeed = -2.0; // set to speed that would have never be set to before
 
     // -------- CONSTRUCTOR --------\\
     /**
@@ -48,18 +49,19 @@ public class IndexerForwardCommand extends CommandBase {
     public IndexerForwardCommand(IndexerMotorSubsystem _motor, boolean isReversed) {
         motor = _motor;
         reversed = isReversed;
-        counter = 0;
+        //counter = 0;
         addRequirements(motor);
     }
 
     // -------- COMMANDBASE METHODS --------\\
 
-    public void initialize(){
-        lastSpeed=-2.0; //set to speed that would have never be set to before
-        if(reversed){
+    public void initialize() {
+        lastSpeed = -2.0; // set to speed that would have never be set to before
+        if (reversed) {
             setSpeed(-MOTOR_SPEED);
         }
     }
+
     /**
      * <h3>execute</h3>
      *
@@ -69,31 +71,41 @@ public class IndexerForwardCommand extends CommandBase {
      */
     public void execute() {
         if (!reversed) {
+            /*
+             * if ((!sensorUtility.catapultIsTripped()
+             * || !sensorUtility.indexerIsTripped())) {
+             * // If past delay loop o
+             * if(counter > RESTART_DELAY) {
+             * setSpeed(MOTOR_SPEED);
+             * counter = 0;
+             * } else {
+             * counter++;
+             * }
+             * } else {
+             * counter = 0;
+             * setSpeed(0.0);
+             * }
+             */
             if ((!sensorUtility.catapultIsTripped()
-                    || !sensorUtility.indexerIsTripped())) {
-                // If past delay loop o
-                if(counter > RESTART_DELAY) {
-                    setSpeed(MOTOR_SPEED);
-                    counter = 0;
-                } else {
-                    counter++;
-                }
-            } else {
-                counter = 0;
+                    || !sensorUtility.indexerIsTripped())
+                    && CatapultReturnSensorUtility.getInstance().catapultIsReset()) {
+                setSpeed(MOTOR_SPEED);
+            }
+            else{
                 setSpeed(0.0);
             }
         }
     }
 
     private void setSpeed(double motorSpeed) {
-        //System.out.println("lastSpeed"+lastSpeed);
-        if(lastSpeed != motorSpeed) {
+        // System.out.println("lastSpeed"+lastSpeed);
+        if (lastSpeed != motorSpeed) {
             motor.setMotorSpeed(motorSpeed);
-            System.out.println("Speed"+motorSpeed);
+            //System.out.println("Speed" + motorSpeed);
         }
         lastSpeed = motorSpeed;
     }
-    
+
     /**
      * <h3>end</h3>
      *

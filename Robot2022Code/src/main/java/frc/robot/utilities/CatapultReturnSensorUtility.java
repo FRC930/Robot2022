@@ -41,13 +41,13 @@ public class CatapultReturnSensorUtility {
     }
 
     /**
-     * <h3>isCatapultReturned</h3>
+     * <h3>catapultIsReset</h3>
      * 
      * Get whether the catapult has returned to rest position
      * 
      * @return the state of the catapult return sensor
      */
-    public boolean isCatapultReturned() {
+    public boolean catapultIsReset() {
         return !catapultReturnSensor.get();
     }
 }

@@ -359,11 +359,12 @@ public class RobotContainer {
         driverController.getLeftBumper().whileActiveOnce(
                 new SequentialCommandGroup(
                         new WaitCommand(CatapultSubsystem.CATAPULT_FIRE_DELAY),
-                        new CatapultCommand(catapultSubsystem, CatapultPower.AllPistons).withTimeout(0.25)));
+                        new CatapultCommand(catapultSubsystem, CatapultPower.AllPistons)
+                                .withTimeout(CatapultSubsystem.SHOOT_TIMEOUT)));
         driverController.getPOVUpTrigger().whileActiveOnce(
-                new CatapultCommand(catapultSubsystem, CatapultPower.SetLongShot));
+                new InstantCommand(catapultSubsystem::setLongShot));
         driverController.getPOVDownTrigger().whileActiveOnce(
-                new CatapultCommand(catapultSubsystem, CatapultPower.SetShortShot));
+                new InstantCommand(catapultSubsystem::setShortShot));
         // Checks if LB is pressed, then it will engage the intake pistons
         codriverController.getLeftBumper().whileActiveOnce(
                 new ParallelCommandGroup(engageIntakePistonsCommand));
@@ -543,13 +544,12 @@ public class RobotContainer {
     }
 
     private void resheduleAutononmousLEDS(boolean useAutonomousLEDCmd) {
-        LEDCommand ledCommand = (useAutonomousLEDCmd)?autonPatternCommand:idlePatternCommand;
-        LEDCommand endledCommand = (useAutonomousLEDCmd)?idlePatternCommand:autonPatternCommand;
+        LEDCommand ledCommand = (useAutonomousLEDCmd) ? autonPatternCommand : idlePatternCommand;
+        LEDCommand endledCommand = (useAutonomousLEDCmd) ? idlePatternCommand : autonPatternCommand;
         CommandScheduler scheduler = CommandScheduler.getInstance();
         scheduler.unregisterSubsystem(ledSubsystem);
         endledCommand.cancel();
         scheduler.setDefaultCommand(ledSubsystem, ledCommand);
-
     }
 
     // Updates simulated robot periodically.

@@ -78,8 +78,8 @@ public class DefaultShoot extends PathPlannerSequentialCommandGroupUtility {
                 dSubsystem::getWheelSpeeds,
                 (Double leftVoltage, Double rightVoltage) -> dSubsystem.setVoltages(leftVoltage, rightVoltage),
                 dSubsystem);
-        
-        addCommands(ramseteCommand1, new CatapultCommand(catapultSubsystem, CatapultPower.AllPistons));
+        //TODO: ADD BALL HOLDER COMMAND
+        addCommands(ramseteCommand1, new CatapultCommand(catapultSubsystem, CatapultPower.AllPistons).withTimeout(CatapultSubsystem.SHOOT_TIMEOUT));
 
     } // End of Constructor
 } // End of Class

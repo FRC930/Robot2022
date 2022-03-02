@@ -6,7 +6,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class LEDSubsystem extends SubsystemBase {
       // ----------CONSTANT(S)--------------\\
-      private final int BUFFER_LENGTH = 300;
+      private final int BUFFER_LENGTH = 299;
       // --------VARIABLE(S)--------\\
       private final AddressableLED leds;
       private final AddressableLEDBuffer buffer;  // Creates a new buffer object

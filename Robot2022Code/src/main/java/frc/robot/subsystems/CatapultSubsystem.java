@@ -21,7 +21,9 @@ public class CatapultSubsystem extends SubsystemBase {
     // This constant is the delay when firing between openBallHolder() and extend()
     public static final double CATAPULT_FIRE_DELAY = 0.50;
     // This constant is the time of pulse for the launch solenoids
-    private final double CATAPULT_PULSE_DURATION = 0.5;
+    private static final double CATAPULT_PULSE_DURATION = 0.5;
+
+    public static final double SHOOT_TIMEOUT = 0.25;
 
     private Solenoid launchSolenoidLarge1;
     private Solenoid launchSolenoidLarge2;
@@ -153,5 +155,14 @@ public class CatapultSubsystem extends SubsystemBase {
      */
     public void openBallHolder() {
         ballHolderSolenoid.set(false);
+    }
+
+    /**
+     * <h3>ballHolderIsClosed</h3>
+     *
+     * @return if the ballHolder is currently closed
+     */
+    public boolean ballHolderIsClosed() {
+        return ballHolderSolenoid.get();
     }
 }
