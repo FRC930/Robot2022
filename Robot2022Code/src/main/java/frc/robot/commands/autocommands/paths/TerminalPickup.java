@@ -9,7 +9,6 @@ import frc.robot.commands.Ramsete930Command;
 import frc.robot.commands.CatapultCommand.CatapultPower;
 import frc.robot.commands.autocommands.AutonomousAimCommand;
 import frc.robot.commands.autocommands.ResetAutonomousCommand;
-import frc.robot.commands.autovisioncommands.HubAimingCommand;
 import frc.robot.commands.intakecommands.intakePistonCommands.EngageIntakePistonsCommand;
 import frc.robot.commands.intakecommands.intakemotorcommands.RunIntakeMotorsCommand;
 import edu.wpi.first.math.controller.RamseteController;
@@ -32,7 +31,7 @@ import frc.robot.subsystems.VisionCameraSubsystem;
 
 public class TerminalPickup extends PathPlannerSequentialCommandGroupUtility {
 
-    //  TO-DO comment this section
+    // TO-DO comment this section
     private final double KMAXSPEED = 4;
     private final double KMAXACCELERATION = 3;
     private final double KRAMSETEB = 2;
@@ -41,17 +40,18 @@ public class TerminalPickup extends PathPlannerSequentialCommandGroupUtility {
 
     /**
      * Default path constructor
+     * 
      * @author Ed Pilon, Hussain Mehdi, and Caden DeGlopper
      * @param dSubsystem
      */
     public TerminalPickup(
-        DriveSubsystem dSubsystem, 
-        IntakePistonSubsystem intakePistonSubsystem,
-        IntakeMotorSubsystem intakeMotorSubsystem,
-        VisionCameraSubsystem visionCameraSubsystem,
-        CatapultSubsystem catapultSubsystem) { 
+            DriveSubsystem dSubsystem,
+            IntakePistonSubsystem intakePistonSubsystem,
+            IntakeMotorSubsystem intakeMotorSubsystem,
+            VisionCameraSubsystem visionCameraSubsystem,
+            CatapultSubsystem catapultSubsystem) {
 
-        //  initializing gyro for pose2d
+        // initializing gyro for pose2d
         m_odometry = dSubsystem.getOdometry();
 
         // -------- Trajectories -------- \\
@@ -79,66 +79,90 @@ public class TerminalPickup extends PathPlannerSequentialCommandGroupUtility {
                 new RamseteController(KRAMSETEB, KRAMSETEZETA),
                 dSubsystem.getKinematics(),
                 dSubsystem::getWheelSpeeds,
-                (Double leftVoltage, Double rightVoltage) -> dSubsystem.setVoltages(leftVoltage, rightVoltage),
+                (Double leftVoltage, Double rightVoltage) -> dSubsystem.setVoltages(leftVoltage,
+                        rightVoltage),
                 dSubsystem);
 
-        //Creates RAMSETE Command for second trajectory
+        // Creates RAMSETE Command for second trajectory
         Ramsete930Command ramseteCommand2 = new Ramsete930Command(
                 trajectory2,
                 () -> m_odometry.getPoseMeters(),
                 new RamseteController(KRAMSETEB, KRAMSETEZETA),
                 dSubsystem.getKinematics(),
                 dSubsystem::getWheelSpeeds,
-                (Double leftVoltage, Double rightVoltage) -> dSubsystem.setVoltages(leftVoltage, rightVoltage),
+                (Double leftVoltage, Double rightVoltage) -> dSubsystem.setVoltages(leftVoltage,
+                        rightVoltage),
                 dSubsystem);
 
-        //Creates RAMSETE Command for third trajectory
+        // Creates RAMSETE Command for third trajectory
         Ramsete930Command ramseteCommand3 = new Ramsete930Command(
                 trajectory3,
                 () -> m_odometry.getPoseMeters(),
                 new RamseteController(KRAMSETEB, KRAMSETEZETA),
                 dSubsystem.getKinematics(),
                 dSubsystem::getWheelSpeeds,
-                (Double leftVoltage, Double rightVoltage) -> dSubsystem.setVoltages(leftVoltage, rightVoltage),
+                (Double leftVoltage, Double rightVoltage) -> dSubsystem.setVoltages(leftVoltage,
+                        rightVoltage),
                 dSubsystem);
 
-      // Parallel Race Group ends these commands because they dont end, they end when the wait command ends
+        // Parallel Race Group ends these commands because they dont end, they end when
+        // the wait command ends
         // Sets catapult shot to short
         // reset the encoders and odometry to where our path starts
         // starts the path
         // engages the intake piston runs them at the same time
         // it stops driving.
-        addCommands(new InstantCommand(catapultSubsystem::setShortShot), new ParallelRaceGroup(new BallHolderCommand(catapultSubsystem, true), new WaitCommand(0.5)),
-        new ResetAutonomousCommand(trajectory1.getInitialPose(), dSubsystem),
-        new ParallelRaceGroup(new EngageIntakePistonsCommand(intakePistonSubsystem), 
-                new RunIntakeMotorsCommand(intakeMotorSubsystem, false), 
-                ramseteCommand1),
-        new StopDrive(dSubsystem), 
-        // aim then shoot 
-        // moves to next position 
-        // while engaging then running the intake pistons,
-        // waits 2.5 seconds, 
-        // runs the intake pistons 
-        // moves to position 3
-        new ParallelRaceGroup(new AutonomousAimCommand(visionCameraSubsystem, dSubsystem), new WaitCommand(3)),
-        new OpenBallHolderCommand(catapultSubsystem),
-        new WaitCommand(0.5),
-        new CatapultCommand(catapultSubsystem, CatapultPower.AllPistons).withTimeout(CatapultSubsystem.SHOOT_TIMEOUT),
-        //TODO: MAYBE ADD A BALLHOLDER CLOSE AND OPEN IN BETWEEN SHOTS?
-        new WaitCommand(1.25),
-        new CatapultCommand(catapultSubsystem, CatapultPower.AllPistons).withTimeout(CatapultSubsystem.SHOOT_TIMEOUT),
+        addCommands(new InstantCommand(catapultSubsystem::setShortShot),
+                new ParallelRaceGroup(
+                        new BallHolderCommand(catapultSubsystem, true),
+                        new WaitCommand(0.5)),
+                new ResetAutonomousCommand(trajectory1.getInitialPose(), dSubsystem),
+                new ParallelRaceGroup(
+                        new EngageIntakePistonsCommand(intakePistonSubsystem),
+                        new RunIntakeMotorsCommand(intakeMotorSubsystem, false),
+                        ramseteCommand1),
+                new StopDrive(dSubsystem),
+                // aim then shoot
+                // moves to next position
+                // while engaging then running the intake pistons,
+                // waits 2.5 seconds,
+                // runs the intake pistons
+                // moves to position 3
+                new ParallelRaceGroup(
+                        new AutonomousAimCommand(visionCameraSubsystem, dSubsystem),
+                        new WaitCommand(3)),
+                new OpenBallHolderCommand(catapultSubsystem),
+                new WaitCommand(0.5),
+                new CatapultCommand(catapultSubsystem, CatapultPower.AllPistons)
+                        .withTimeout(CatapultSubsystem.SHOOT_TIMEOUT),
+                // TODO: MAYBE ADD A BALLHOLDER CLOSE AND OPEN IN BETWEEN SHOTS?
+                new WaitCommand(1.25),
+                new CatapultCommand(catapultSubsystem, CatapultPower.AllPistons)
+                        .withTimeout(CatapultSubsystem.SHOOT_TIMEOUT),
 
-        new ParallelRaceGroup(new ParallelCommandGroup(new BallHolderCommand(catapultSubsystem, true), new EngageIntakePistonsCommand(intakePistonSubsystem), new RunIntakeMotorsCommand(intakeMotorSubsystem, false)), 
-                              new SequentialCommandGroup(ramseteCommand2, new StopDrive(dSubsystem), new WaitCommand(2), ramseteCommand3)),
-        new StopDrive(dSubsystem),
-        // This segment of the path aims 
-        //shoots the catapult
-        new ParallelRaceGroup(new AutonomousAimCommand(visionCameraSubsystem, dSubsystem), new WaitCommand(3)),
-        new OpenBallHolderCommand(catapultSubsystem),
-        new WaitCommand(0.5),
-        new CatapultCommand(catapultSubsystem, CatapultPower.AllPistons).withTimeout(CatapultSubsystem.SHOOT_TIMEOUT),
-        new WaitCommand(1.25),
-        new CatapultCommand(catapultSubsystem, CatapultPower.AllPistons).withTimeout(CatapultSubsystem.SHOOT_TIMEOUT)
-        );
+                new ParallelRaceGroup(
+                        new ParallelCommandGroup(
+                                new BallHolderCommand(catapultSubsystem, true),
+                                new EngageIntakePistonsCommand(intakePistonSubsystem),
+                                new RunIntakeMotorsCommand(intakeMotorSubsystem,
+                                        false)),
+                        new SequentialCommandGroup(
+                                ramseteCommand2,
+                                new StopDrive(dSubsystem),
+                                new WaitCommand(2),
+                                ramseteCommand3)),
+                new StopDrive(dSubsystem),
+                // This segment of the path aims
+                // shoots the catapult
+                new ParallelRaceGroup(
+                        new AutonomousAimCommand(visionCameraSubsystem, dSubsystem),
+                        new WaitCommand(3)),
+                new OpenBallHolderCommand(catapultSubsystem),
+                new WaitCommand(0.5),
+                new CatapultCommand(catapultSubsystem, CatapultPower.AllPistons)
+                        .withTimeout(CatapultSubsystem.SHOOT_TIMEOUT),
+                new WaitCommand(1.25),
+                new CatapultCommand(catapultSubsystem, CatapultPower.AllPistons)
+                        .withTimeout(CatapultSubsystem.SHOOT_TIMEOUT));
     } // End of Constructor
 } // End of Class

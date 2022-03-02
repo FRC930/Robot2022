@@ -1,11 +1,8 @@
 package frc.robot.utilities;
 
-import frc.robot.subsystems.EndgameMotorSubsystem;
 import frc.robot.subsystems.IntakeMotorSubsystem;
 
 import com.ctre.phoenix.sensors.PigeonIMU;
-
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class GyroUtility {
     private static GyroUtility instance;

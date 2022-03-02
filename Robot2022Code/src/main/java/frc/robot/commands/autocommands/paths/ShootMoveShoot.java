@@ -27,7 +27,7 @@ import frc.robot.subsystems.VisionCameraSubsystem;
 
 public class ShootMoveShoot extends PathPlannerSequentialCommandGroupUtility {
 
-    //  TO-DO comment this section
+    // TO-DO comment this section
     private final double KMAXSPEED = 0.5;
     private final double KMAXACCELERATION = 0.5;
     private final double KRAMSETEB = 2;
@@ -39,9 +39,11 @@ public class ShootMoveShoot extends PathPlannerSequentialCommandGroupUtility {
      * 
      * @param dSubsystem
      */
-    public ShootMoveShoot(DriveSubsystem dSubsystem, CatapultSubsystem catapultSubsystem, IntakePistonSubsystem intakePistonSubsystem, IntakeMotorSubsystem intakeMotorSubsystem, VisionCameraSubsystem visionCameraSubsystem) { 
+    public ShootMoveShoot(DriveSubsystem dSubsystem, CatapultSubsystem catapultSubsystem,
+            IntakePistonSubsystem intakePistonSubsystem, IntakeMotorSubsystem intakeMotorSubsystem,
+            VisionCameraSubsystem visionCameraSubsystem) {
 
-        //  initializing gyro for pose2d
+        // initializing gyro for pose2d
         m_odometry = dSubsystem.getOdometry();
 
         // -------- Trajectories -------- \\
@@ -64,15 +66,24 @@ public class ShootMoveShoot extends PathPlannerSequentialCommandGroupUtility {
                 (Double leftVoltage, Double rightVoltage) -> dSubsystem.setVoltages(leftVoltage, rightVoltage),
                 dSubsystem);
 
-        //TODO: ADD BALL HOLDER COMMAND
-        addCommands(new InstantCommand(catapultSubsystem::setShortShot), new WaitCommand(0.5),
-        new ResetAutonomousCommand(trajectory1.getInitialPose(), dSubsystem),
-        new ParallelRaceGroup(new AutonomousAimCommand(visionCameraSubsystem, dSubsystem) , new WaitCommand(3)),
-        new CatapultCommand(catapultSubsystem, CatapultPower.AllPistons).withTimeout(CatapultSubsystem.SHOOT_TIMEOUT),
-        new ParallelRaceGroup(new EngageIntakePistonsCommand(intakePistonSubsystem), new RunIntakeMotorsCommand(intakeMotorSubsystem, false), ramseteCommand1),
-        new ParallelRaceGroup(new AutonomousAimCommand(visionCameraSubsystem, dSubsystem) , new WaitCommand(3)),
-        new CatapultCommand(catapultSubsystem, CatapultPower.AllPistons).withTimeout(CatapultSubsystem.SHOOT_TIMEOUT)
-        );
+        // TODO: ADD BALL HOLDER COMMAND
+        addCommands(new InstantCommand(catapultSubsystem::setShortShot),
+                new WaitCommand(0.5),
+                new ResetAutonomousCommand(trajectory1.getInitialPose(), dSubsystem),
+                new ParallelRaceGroup(
+                        new AutonomousAimCommand(visionCameraSubsystem, dSubsystem),
+                        new WaitCommand(3)),
+                new CatapultCommand(catapultSubsystem, CatapultPower.AllPistons)
+                        .withTimeout(CatapultSubsystem.SHOOT_TIMEOUT),
+                new ParallelRaceGroup(
+                        new EngageIntakePistonsCommand(intakePistonSubsystem),
+                        new RunIntakeMotorsCommand(intakeMotorSubsystem, false),
+                        ramseteCommand1),
+                new ParallelRaceGroup(
+                        new AutonomousAimCommand(visionCameraSubsystem, dSubsystem),
+                        new WaitCommand(3)),
+                new CatapultCommand(catapultSubsystem, CatapultPower.AllPistons)
+                        .withTimeout(CatapultSubsystem.SHOOT_TIMEOUT));
 
     } // End of Constructor
 } // End of Class

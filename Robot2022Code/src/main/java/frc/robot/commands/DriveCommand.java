@@ -13,16 +13,10 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.DriveSubsystem;
-import frc.robot.subsystems.EndgameMotorSubsystem;
 import frc.robot.subsystems.VisionCameraSubsystem;
-import frc.robot.utilities.DriveCameraUtility;
-import frc.robot.utilities.ShifterUtility;
 import frc.robot.utilities.ShuffleboardUtility;
-import frc.robot.utilities.DriveCameraUtility.BallColor;
 import frc.robot.utilities.ShuffleboardUtility.ShuffleBoardData;
 import frc.robot.utilities.ShuffleboardUtility.ShuffleboardKeys;
-
-import static frc.robot.utilities.DriveCameraUtility.CameraStates;
 
 /**
  * <h3>DriveCommand</h3>

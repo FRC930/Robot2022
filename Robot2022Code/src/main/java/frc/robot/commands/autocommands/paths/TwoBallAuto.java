@@ -3,19 +3,15 @@ package frc.robot.commands.autocommands.paths;
 import com.pathplanner.lib.PathPlanner;
 
 import frc.robot.commands.CatapultCommand;
-import frc.robot.commands.DriveCommand;
 import frc.robot.commands.Ramsete930Command;
 import frc.robot.commands.CatapultCommand.CatapultPower;
 import frc.robot.commands.autocommands.AutonomousAimCommand;
 import frc.robot.commands.autocommands.ResetAutonomousCommand;
-import frc.robot.commands.autovisioncommands.HubAimingCommand;
-import frc.robot.commands.intakecommands.intakePistonCommands.DisengageIntakePistonsCommand;
 import frc.robot.commands.intakecommands.intakePistonCommands.EngageIntakePistonsCommand;
 import frc.robot.commands.intakecommands.intakemotorcommands.RunIntakeMotorsCommand;
 import edu.wpi.first.math.controller.RamseteController;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.trajectory.Trajectory;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
@@ -32,7 +28,7 @@ import frc.robot.subsystems.VisionCameraSubsystem;
 
 public class TwoBallAuto extends PathPlannerSequentialCommandGroupUtility {
 
-    //  TO-DO comment this section
+    // TO-DO comment this section
     private final double KMAXSPEED = 1.5;
     private final double KMAXACCELERATION = 2.5;
     private final double KRAMSETEB = 2;
@@ -44,14 +40,13 @@ public class TwoBallAuto extends PathPlannerSequentialCommandGroupUtility {
      * 
      * @param dSubsystem
      */
-    public TwoBallAuto
-    (DriveSubsystem dSubsystem,
-    IntakePistonSubsystem intakePistonSubsystem,
-    IntakeMotorSubsystem intakeMotorSubsystem,
-    VisionCameraSubsystem visionCameraSubsystem,
-    CatapultSubsystem catapultSubsystem) { 
+    public TwoBallAuto(DriveSubsystem dSubsystem,
+            IntakePistonSubsystem intakePistonSubsystem,
+            IntakeMotorSubsystem intakeMotorSubsystem,
+            VisionCameraSubsystem visionCameraSubsystem,
+            CatapultSubsystem catapultSubsystem) {
 
-        //  initializing gyro for pose2d
+        // initializing gyro for pose2d
         m_odometry = dSubsystem.getOdometry();
 
         // -------- Trajectories -------- \\
@@ -61,7 +56,7 @@ public class TwoBallAuto extends PathPlannerSequentialCommandGroupUtility {
 
         this.addTrajectory(trajectory1);
 
-        SmartDashboard.putString("Pos1",trajectory1.getInitialPose().toString());
+        SmartDashboard.putString("Pos1", trajectory1.getInitialPose().toString());
         // -------- RAMSETE Commands -------- \\
         // Creates a command that can be added to the command scheduler in the
         // sequential command
@@ -77,17 +72,26 @@ public class TwoBallAuto extends PathPlannerSequentialCommandGroupUtility {
                 (Double leftVoltage, Double rightVoltage) -> dSubsystem.setVoltages(leftVoltage, rightVoltage),
                 dSubsystem);
 
-        //TODO: ADD BALL HOLDER COMMAND
-        // Parallel Race Group ends these commands because they dont end, they end when the wait command ends
-        addCommands(new InstantCommand(catapultSubsystem::setShortShot), new WaitCommand(0.5),
-        new ResetAutonomousCommand(trajectory1.getInitialPose(), dSubsystem),
-        new ParallelRaceGroup(new EngageIntakePistonsCommand(intakePistonSubsystem), new RunIntakeMotorsCommand(intakeMotorSubsystem, false), ramseteCommand1),
-        new StopDrive(dSubsystem),
-        new ParallelRaceGroup(new AutonomousAimCommand(visionCameraSubsystem, dSubsystem), new WaitCommand(3)),
-        new CatapultCommand(catapultSubsystem, CatapultPower.AllPistons).withTimeout(CatapultSubsystem.SHOOT_TIMEOUT),
-        new WaitCommand(1.25),
-        new CatapultCommand(catapultSubsystem, CatapultPower.AllPistons).withTimeout(CatapultSubsystem.SHOOT_TIMEOUT)
-        );
+        // TODO: ADD BALL HOLDER COMMAND
+        // Parallel Race Group ends these commands because they dont end, they end when
+        // the wait command ends
+        addCommands(
+                new InstantCommand(catapultSubsystem::setShortShot),
+                new WaitCommand(0.5),
+                new ResetAutonomousCommand(trajectory1.getInitialPose(), dSubsystem),
+                new ParallelRaceGroup(
+                        new EngageIntakePistonsCommand(intakePistonSubsystem),
+                        new RunIntakeMotorsCommand(intakeMotorSubsystem, false),
+                        ramseteCommand1),
+                new StopDrive(dSubsystem),
+                new ParallelRaceGroup(
+                        new AutonomousAimCommand(visionCameraSubsystem, dSubsystem),
+                        new WaitCommand(3)),
+                new CatapultCommand(catapultSubsystem, CatapultPower.AllPistons)
+                        .withTimeout(CatapultSubsystem.SHOOT_TIMEOUT),
+                new WaitCommand(1.25),
+                new CatapultCommand(catapultSubsystem, CatapultPower.AllPistons)
+                        .withTimeout(CatapultSubsystem.SHOOT_TIMEOUT));
 
     } // End of Constructor
 } // End of Class

@@ -1,8 +1,6 @@
 package frc.robot.utilities;
 
 import edu.wpi.first.wpilibj.DigitalInput;
-import frc.robot.utilities.ShuffleboardUtility.ShuffleBoardData;
-import frc.robot.utilities.ShuffleboardUtility.ShuffleboardKeys;
 
 /**
  * <h3>BallSensorUtility</h3>

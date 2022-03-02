@@ -2,15 +2,12 @@ package frc.robot.commands.autocommands.paths;
 
 import com.pathplanner.lib.PathPlanner;
 
-import frc.robot.commands.CatapultCommand;
 import frc.robot.commands.Ramsete930Command;
-import frc.robot.commands.CatapultCommand.CatapultPower;
 import frc.robot.commands.autocommands.ResetAutonomousCommand;
 import edu.wpi.first.math.controller.RamseteController;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.utilities.PathPlannerSequentialCommandGroupUtility;
 import frc.robot.subsystems.CatapultSubsystem;
@@ -21,7 +18,7 @@ import frc.robot.subsystems.DriveSubsystem;
 
 public class TemplateCommand extends PathPlannerSequentialCommandGroupUtility {
 
-    //  TO-DO comment this section
+    // TO-DO comment this section
     private final double KMAXSPEED = 0.5;
     private final double KMAXACCELERATION = 0.5;
     private final double KRAMSETEB = 2;
@@ -33,9 +30,9 @@ public class TemplateCommand extends PathPlannerSequentialCommandGroupUtility {
      * 
      * @param dSubsystem
      */
-    public TemplateCommand(DriveSubsystem dSubsystem, CatapultSubsystem catapultSubsystem) { 
+    public TemplateCommand(DriveSubsystem dSubsystem, CatapultSubsystem catapultSubsystem) {
 
-        //  initializing gyro for pose2d
+        // initializing gyro for pose2d
         m_odometry = dSubsystem.getOdometry();
 
         // -------- Trajectories -------- \\
@@ -58,47 +55,11 @@ public class TemplateCommand extends PathPlannerSequentialCommandGroupUtility {
                 (Double leftVoltage, Double rightVoltage) -> dSubsystem.setVoltages(leftVoltage, rightVoltage),
                 dSubsystem);
 
-        addCommands(new InstantCommand(catapultSubsystem::setShortShot), new WaitCommand(0.5),
-        new ResetAutonomousCommand(trajectory1.getInitialPose(), dSubsystem),
-        ramseteCommand1,
-        new StopDrive(dSubsystem)
-        );
+        addCommands(new InstantCommand(catapultSubsystem::setShortShot),
+                new WaitCommand(0.5),
+                new ResetAutonomousCommand(trajectory1.getInitialPose(), dSubsystem),
+                ramseteCommand1,
+                new StopDrive(dSubsystem));
 
     } // End of Constructor
 } // End of Class
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

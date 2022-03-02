@@ -30,14 +30,14 @@ import frc.robot.subsystems.EndgamePistonSubsystem;
  */
 public class EndgameManagerCommand extends CommandBase {
 
-    //-------- CONSTANTS --------\\
+    // -------- CONSTANTS --------\\
 
     // Time delay for claw commands to take effect
     private final double ENDGAME_PISTON_DELAY = 0.4;
     // Time delay for letting go of Mid while hangning from High
     private final double ENDGAME_RELEASE_DELAY = 0.75;
 
-    //-------- VARIABLES --------\\
+    // -------- VARIABLES --------\\
 
     // Map of states for the sequence
     private HashMap<Integer, CommandBase> commands = new HashMap<Integer, CommandBase>();
@@ -46,18 +46,18 @@ public class EndgameManagerCommand extends CommandBase {
     // State flag for updatable state
     private int newState;
 
-    //-------- CONSTRUCTOR --------\\
+    // -------- CONSTRUCTOR --------\\
     /**
      * <h3>EndgameManagerCommand</h3>
      * 
      * Creates new manager for endgame.
      * 
      * @param endgameMotorSubsystem the endgame motor
-     * @param endgamePiston1 the pair of left and right 1 pistons
-     * @param endgamePiston2 the pair of left and right 2 pistons
-     * @param endgamePistonL3 the left 3 piston
-     * @param endgamePistonR3 the right 3 piston
-     * @param endgamePiston4 the pair of left and right 4 pistons
+     * @param endgamePiston1        the pair of left and right 1 pistons
+     * @param endgamePiston2        the pair of left and right 2 pistons
+     * @param endgamePistonL3       the left 3 piston
+     * @param endgamePistonR3       the right 3 piston
+     * @param endgamePiston4        the pair of left and right 4 pistons
      */
     public EndgameManagerCommand(EndgameMotorSubsystem endgameMotorSubsystem, EndgamePistonSubsystem endgamePiston1,
             EndgamePistonSubsystem endgamePiston2, EndgamePistonSubsystem endgamePistonL3,
@@ -66,7 +66,7 @@ public class EndgameManagerCommand extends CommandBase {
         currentState = 1;
         newState = 1;
 
-        //----- ENDGAME COMMAND GROUP INITS -----\\
+        // ----- ENDGAME COMMAND GROUP INITS -----\\
         // Sets arm to vertical to approach
         commands.put(1,
                 new SequentialCommandGroup(
@@ -101,8 +101,8 @@ public class EndgameManagerCommand extends CommandBase {
         // Sets arm to vertical
         commands.put(4,
                 new SequentialCommandGroup(
-                        new EndgameRotateVerticalCommand(endgameMotorSubsystem, 
-                            EndgamePosition.SwingPosition),
+                        new EndgameRotateVerticalCommand(endgameMotorSubsystem,
+                                EndgamePosition.SwingPosition),
                         new EndgameIncrementStateCommand(this)));
         // Opens #3 and #4 claws
         // Gives time for robot swing
@@ -110,7 +110,8 @@ public class EndgameManagerCommand extends CommandBase {
         commands.put(5,
                 new SequentialCommandGroup(
                         new ParallelRaceGroup(
-                                new EndgameOpenClawPairCommand(endgamePistonL3, endgamePistonR3),
+                                new EndgameOpenClawPairCommand(endgamePistonL3,
+                                        endgamePistonR3),
                                 new EndgameOpenClawSingleCommand(endgamePiston4),
                                 new WaitCommand(ENDGAME_RELEASE_DELAY)),
                         new EndgameIncrementStateCommand(this)));
@@ -119,7 +120,8 @@ public class EndgameManagerCommand extends CommandBase {
                 new SequentialCommandGroup(
                         new ParallelRaceGroup(
                                 new EndgameCloseClawSingleCommand(endgamePiston4),
-                                new EndgameOpenClawPairCommand(endgamePistonL3, endgamePistonR3),
+                                new EndgameOpenClawPairCommand(endgamePistonL3,
+                                        endgamePistonR3),
                                 new WaitCommand(ENDGAME_PISTON_DELAY)),
                         new ParallelRaceGroup(
                                 new EndgameArmCommand(endgameMotorSubsystem),
@@ -162,11 +164,12 @@ public class EndgameManagerCommand extends CommandBase {
     /**
      * <h3>isFinished</h3>
      * Determines if the manager is finished
+     * 
      * @return if new state is beyond the limits of the map
      */
     @Override
     public boolean isFinished() { // when true, ends command
-        return newState > commands.size(); 
+        return newState > commands.size();
     }
 
     @Override

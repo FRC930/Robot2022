@@ -23,12 +23,12 @@ public class AutonomousAimCommand extends HubAimingCommand {
      * @return Whether or not the robot has aiming at the right target
      */
     public boolean isFinished() {
-    
+
         PhotonPipelineResult result = super.reflectiveTapeCamera.getVisionCamera().getLatestResult();
-        
+
         if (result.hasTargets()) {
             double xDegreeOffset = -result.getBestTarget().getYaw();
-            
+
             if (xDegreeOffset > -1 && xDegreeOffset < 1) {
                 return true;
             }

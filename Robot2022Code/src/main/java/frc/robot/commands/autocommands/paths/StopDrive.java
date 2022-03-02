@@ -1,26 +1,8 @@
 package frc.robot.commands.autocommands.paths;
 
-import java.util.function.DoubleSupplier;
-
-import org.photonvision.targeting.PhotonPipelineResult;
-
-import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
-import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.DriveSubsystem;
-import frc.robot.subsystems.EndgameMotorSubsystem;
-import frc.robot.subsystems.VisionCameraSubsystem;
-import frc.robot.utilities.DriveCameraUtility;
-import frc.robot.utilities.ShifterUtility;
-import frc.robot.utilities.ShuffleboardUtility;
-import frc.robot.utilities.DriveCameraUtility.BallColor;
-import frc.robot.utilities.ShuffleboardUtility.ShuffleBoardData;
-import frc.robot.utilities.ShuffleboardUtility.ShuffleboardKeys;
-
-import static frc.robot.utilities.DriveCameraUtility.CameraStates;
 
 /**
  * <h3>DriveCommand</h3>
@@ -35,7 +17,7 @@ import static frc.robot.utilities.DriveCameraUtility.CameraStates;
  */
 public class StopDrive extends CommandBase {
     private DriveSubsystem driveSubsystem;
-    
+
     /**
      * Initializes a new {@link frc.robot.commands.DriveCommand DriveCommand} with
      * the passed variables
@@ -56,11 +38,12 @@ public class StopDrive extends CommandBase {
     @Override
     public void execute() {
         DifferentialDriveWheelSpeeds wheelSpeeds = driveSubsystem.getWheelSpeeds(0.0, 0.0);
-        driveSubsystem.setVoltages(driveSubsystem.speedToVoltage(wheelSpeeds.leftMetersPerSecond), driveSubsystem.speedToVoltage(wheelSpeeds.rightMetersPerSecond));
+        driveSubsystem.setVoltages(driveSubsystem.speedToVoltage(wheelSpeeds.leftMetersPerSecond),
+                driveSubsystem.speedToVoltage(wheelSpeeds.rightMetersPerSecond));
     }
 
     @Override
     public boolean isFinished() {
-      return true;
+        return true;
     } // End of isFinished()
 }

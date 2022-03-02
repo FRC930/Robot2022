@@ -11,7 +11,6 @@ import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.utilities.PathPlannerSequentialCommandGroupUtility;
 
@@ -21,10 +20,10 @@ import frc.robot.utilities.PathPlannerSequentialCommandGroupUtility;
 public class DefaultAutoPathCommand extends PathPlannerSequentialCommandGroupUtility {
 
     // TO-DO comment this section
-    private final double KMAXSPEED = 0.5; //DriveSubsystem.DRIVETRAIN_MAX_FREE_SPEED_HIGH
+    private final double KMAXSPEED = 0.5; // DriveSubsystem.DRIVETRAIN_MAX_FREE_SPEED_HIGH
     private final double KMAXACCELERATION = 2.5;
-    //private final double KRAMSETEB = 2;
-    //private final double KRAMSETEZETA = 0.7;
+    // private final double KRAMSETEB = 2;
+    // private final double KRAMSETEZETA = 0.7;
     private final DifferentialDriveOdometry m_odometry;
 
     /**
@@ -70,12 +69,12 @@ public class DefaultAutoPathCommand extends PathPlannerSequentialCommandGroupUti
         Ramsete930Command ramseteCommand1 = new Ramsete930Command(
                 trajectory1,
                 () -> m_odometry.getPoseMeters(),
-                new RamseteController(),//new RamseteController(KRAMSETEB, KRAMSETEZETA)
+                new RamseteController(), // new RamseteController(KRAMSETEB, KRAMSETEZETA)
                 dSubsystem.getKinematics(),
                 dSubsystem::getWheelSpeeds,
                 (Double leftVoltage, Double rightVoltage) -> dSubsystem.setVoltages(leftVoltage, rightVoltage),
                 dSubsystem);
-        
+
         addCommands(ramseteCommand1);
 
     } // End of Constructor

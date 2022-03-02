@@ -8,7 +8,6 @@
 //-------- IMPORTS --------\\
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj.MotorSafety;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 import frc.robot.subsystems.IndexerMotorSubsystem;
