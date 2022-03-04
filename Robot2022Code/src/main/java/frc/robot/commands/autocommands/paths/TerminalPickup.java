@@ -32,8 +32,8 @@ import frc.robot.subsystems.VisionCameraSubsystem;
 public class TerminalPickup extends PathPlannerSequentialCommandGroupUtility {
 
     // TO-DO comment this section
-    private final double KMAXSPEED = 4;
-    private final double KMAXACCELERATION = 3;
+    private final double KMAXSPEED = 3;
+    private final double KMAXACCELERATION = 2;
     private final double KRAMSETEB = 2;
     private final double KRAMSETEZETA = 0.7;
     private final DifferentialDriveOdometry m_odometry;

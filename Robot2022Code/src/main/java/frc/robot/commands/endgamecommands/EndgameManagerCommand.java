@@ -96,7 +96,8 @@ public class EndgameManagerCommand extends CommandBase {
                         new ParallelRaceGroup(
                                 new EndgameArmCommand(endgameMotorSubsystem),
                                 new EndgameCloseWhenTouching(endgamePiston1, 2)),
-                        new WaitCommand(ENDGAME_PISTON_DELAY),
+                        new EndgameArmCommand(endgameMotorSubsystem, 0.2).withTimeout(1.0),
+                        // new WaitCommand(ENDGAME_PISTON_DELAY),
                         new EndgameIncrementStateCommand(this)));
         // Sets arm to vertical
         commands.put(4,
@@ -127,7 +128,8 @@ public class EndgameManagerCommand extends CommandBase {
                                 new EndgameArmCommand(endgameMotorSubsystem),
                                 new EndgameCloseWhenTouching(endgamePistonL3, 4),
                                 new EndgameCloseWhenTouching(endgamePistonR3, 4)),
-                        new WaitCommand(ENDGAME_PISTON_DELAY),
+                        new EndgameArmCommand(endgameMotorSubsystem, 0.2).withTimeout(1.0),
+                        //new WaitCommand(ENDGAME_PISTON_DELAY),
                         new EndgameIncrementStateCommand(this)));
         // Opens #2 claws-NOTE:Claws closed after delay ends due to default command
         commands.put(7,

@@ -17,7 +17,7 @@ public class BallHolderCommand extends CommandBase {
 
     // -------- CONSTANTS --------\\
 
-    private final int CLOSE_DELAY = 25;
+    private final int CLOSE_DELAY = 3;
 
     // -------- VARIABLES --------\\
 
@@ -82,6 +82,7 @@ public class BallHolderCommand extends CommandBase {
     public void end(boolean interrupted) {
         if (!isAuton) {
             catapultSubsystem.openBallHolder();
+            catapultSubsystem.retractRetractor();
         }
     }
 

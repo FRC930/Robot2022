@@ -23,13 +23,21 @@ public class EndgameArmCommand extends CommandBase {
 
   // -------- CONSTANTS --------\\
 
-  private final double ARM_SPEED = 0.75;
+  private double armSpeed;
 
   // -------- VARIABLES --------\\
 
   private final EndgameMotorSubsystem m_MotorSubsystem;
 
   // -------- CONSTRUCTOR --------\\
+
+  public EndgameArmCommand(EndgameMotorSubsystem motorSubsystem, double speed) {
+    m_MotorSubsystem = motorSubsystem;
+    armSpeed = speed;
+
+    addRequirements(m_MotorSubsystem); // Use addRequirements() here to declare subsystem dependencies.
+  }
+
   /**
    * <h3>EndgameArmCommand</h3>
    * 
@@ -38,9 +46,7 @@ public class EndgameArmCommand extends CommandBase {
    * @param motorSubsystem motor subsystem to control
    */
   public EndgameArmCommand(EndgameMotorSubsystem motorSubsystem) {
-    m_MotorSubsystem = motorSubsystem;
-
-    addRequirements(m_MotorSubsystem); // Use addRequirements() here to declare subsystem dependencies.
+    this(motorSubsystem, 0.5);
   }
 
   // -------- METHODS --------\\
@@ -50,7 +56,7 @@ public class EndgameArmCommand extends CommandBase {
   @Override // Called when the command is initially scheduled.
   public void initialize() {
     // Sets speed of motor to the constant
-    m_MotorSubsystem.setMotorSpeed(ARM_SPEED);
+    m_MotorSubsystem.setMotorSpeed(armSpeed);
 
   }
 

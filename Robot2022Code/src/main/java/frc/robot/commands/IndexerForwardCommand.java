@@ -49,6 +49,7 @@ public class IndexerForwardCommand extends CommandBase {
         motor = _motor;
         reversed = isReversed;
         //counter = 0;
+        CatapultReturnSensorUtility.getInstance();
         addRequirements(motor);
     }
 

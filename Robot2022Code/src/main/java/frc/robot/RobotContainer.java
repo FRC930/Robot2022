@@ -21,6 +21,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.commands.BallHolderCommand;
 import frc.robot.commands.CatapultCommand;
+import frc.robot.commands.CatapultCommandGroup;
 import frc.robot.commands.DriveCommand;
 import frc.robot.commands.IndexerForwardCommand;
 import frc.robot.commands.LEDCommand;
@@ -351,10 +352,7 @@ public class RobotContainer {
          * interrupts default and end() opens the ball holder.
          */
         driverController.getLeftBumper().whileActiveOnce(
-                new SequentialCommandGroup(
-                        new WaitCommand(CatapultSubsystem.CATAPULT_FIRE_DELAY),
-                        new CatapultCommand(catapultSubsystem, CatapultPower.AllPistons)
-                                .withTimeout(CatapultSubsystem.SHOOT_TIMEOUT)));
+                new CatapultCommandGroup(catapultSubsystem, CatapultPower.AllPistons, CatapultSubsystem.CATAPULT_FIRE_DELAY));
         driverController.getPOVUpTrigger().whileActiveOnce(
                 new InstantCommand(catapultSubsystem::setLongShot));
         driverController.getPOVDownTrigger().whileActiveOnce(

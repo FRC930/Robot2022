@@ -130,6 +130,10 @@ public class CatapultSubsystem extends SubsystemBase {
         retractor.startPulse();
     }
 
+    public void retractRetractor() {
+        retractor.startPulse();
+    }
+
     public void setLongShot() {
         shotControlSolenoid.set(true);
     }
