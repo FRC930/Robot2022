@@ -1,5 +1,7 @@
 package frc.robot.utilities;
 
+import edu.wpi.first.math.filter.Debouncer;
+import edu.wpi.first.math.filter.Debouncer.DebounceType;
 import edu.wpi.first.wpilibj.DigitalInput;
 
 /**
@@ -22,6 +24,8 @@ public class BallSensorUtility {
 
     private final DigitalInput catapultSensor;
     private final DigitalInput indexerSensor;
+
+    // private final Debouncer catapultDebouncer = new Debouncer(0.1, DebounceType.kRising);
 
     private BallSensorUtility(){
         catapultSensor = new DigitalInput(CATAPULTID);

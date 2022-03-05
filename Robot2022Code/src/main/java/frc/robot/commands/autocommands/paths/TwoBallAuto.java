@@ -2,7 +2,9 @@ package frc.robot.commands.autocommands.paths;
 
 import com.pathplanner.lib.PathPlanner;
 
+import frc.robot.commands.BallHolderCommand;
 import frc.robot.commands.CatapultCommand;
+import frc.robot.commands.OpenBallHolderCommand;
 import frc.robot.commands.Ramsete930Command;
 import frc.robot.commands.CatapultCommand.CatapultPower;
 import frc.robot.commands.autocommands.AutonomousAimCommand;
@@ -29,8 +31,8 @@ import frc.robot.subsystems.VisionCameraSubsystem;
 public class TwoBallAuto extends PathPlannerSequentialCommandGroupUtility {
 
     // TO-DO comment this section
-    private final double KMAXSPEED = 1.5;
-    private final double KMAXACCELERATION = 2.5;
+    private final double KMAXSPEED = 1.0;
+    private final double KMAXACCELERATION = 1.0;
     private final double KRAMSETEB = 2;
     private final double KRAMSETEZETA = 0.7;
     private final DifferentialDriveOdometry m_odometry;
@@ -82,7 +84,6 @@ public class TwoBallAuto extends PathPlannerSequentialCommandGroupUtility {
                 dSubsystem::getWheelSpeeds,
                 (Double leftVoltage, Double rightVoltage) -> dSubsystem.setVoltages(leftVoltage, rightVoltage),
                 dSubsystem);
-        // TODO: ADD BALL HOLDER COMMAND
         // Parallel Race Group ends these commands because they dont end, they end when
         // the wait command ends
         addCommands(
@@ -95,10 +96,19 @@ public class TwoBallAuto extends PathPlannerSequentialCommandGroupUtility {
                 new StopDrive(dSubsystem),
                 new ParallelRaceGroup(
                         new AutonomousAimCommand(visionCameraSubsystem, dSubsystem),
-                        new WaitCommand(3)),
+                        new WaitCommand(1)),
                 new CatapultCommand(catapultSubsystem, CatapultPower.AllPistons)
                         .withTimeout(CatapultSubsystem.SHOOT_TIMEOUT),
-                new WaitCommand(1.25),
+
+                
+                //new WaitCommand(1.25),//idea 2 sec
+                new WaitCommand(1.0),
+                new ParallelRaceGroup(                                
+                        new BallHolderCommand(catapultSubsystem, true),
+                        new WaitCommand(2)),
+                new WaitCommand(2.0),
+                new OpenBallHolderCommand(catapultSubsystem).withTimeout(0.5),
+
                 new CatapultCommand(catapultSubsystem, CatapultPower.AllPistons)
                         .withTimeout(CatapultSubsystem.SHOOT_TIMEOUT),
                 new WaitCommand(0.25),

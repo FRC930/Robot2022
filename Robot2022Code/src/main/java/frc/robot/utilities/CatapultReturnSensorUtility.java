@@ -19,8 +19,6 @@ public class CatapultReturnSensorUtility {
     // The digital input for our sensor
     private DigitalInput catapultReturnSensor;
 
-    private final Debouncer sensorDebounce = new Debouncer(0.1, DebounceType.kRising);
-
     /**
      * <h3>CatapultReturnSensorUtility</h3>
      * 
@@ -52,6 +50,6 @@ public class CatapultReturnSensorUtility {
      * @return the state of the catapult return sensor
      */
     public boolean catapultIsReset() {
-        return sensorDebounce.calculate(!catapultReturnSensor.get());
+        return !catapultReturnSensor.get();
     }
 }

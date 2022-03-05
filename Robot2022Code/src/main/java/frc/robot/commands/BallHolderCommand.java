@@ -18,13 +18,13 @@ public class BallHolderCommand extends CommandBase {
     // -------- CONSTANTS --------\\
 
     private final int CLOSE_DELAY = 3;
-    //private final int OPEN_DELAY = 3;
+    private final int OPEN_DELAY = 6;
 
     // -------- VARIABLES --------\\
 
     private CatapultSubsystem catapultSubsystem;
     private int counter;
-    //private int counter2;
+    private int counter2;
     private boolean isAuton;
     private final BallSensorUtility sensorUtility = BallSensorUtility.getInstance();
 
@@ -74,17 +74,18 @@ public class BallHolderCommand extends CommandBase {
             counter = 0;
         } else if (sensorUtility.catapultIsTripped()) {
             counter++;
-        } /*else if (!sensorUtility.catapultIsTripped() && counter2 > OPEN_DELAY) {
+            counter2 = 0;
+        } else if (!sensorUtility.catapultIsTripped() && counter2 > OPEN_DELAY) {
             catapultSubsystem.openBallHolder();
             counter2 = 0;
         } else if(!sensorUtility.catapultIsTripped()) {
             counter = 0;
             counter2++;
-        }*/
-        else {
-            counter = 0;
-            catapultSubsystem.openBallHolder();
         }
+        // else {
+        //     counter = 0;
+        //     catapultSubsystem.openBallHolder();
+        // }
 
     }
 
