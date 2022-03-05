@@ -74,7 +74,7 @@ public class CatapultSubsystem extends SubsystemBase {
         launchSolenoidLarge2.setPulseDuration(CATAPULT_PULSE_DURATION);
         launchSolenoidSmall1.setPulseDuration(CATAPULT_PULSE_DURATION);
         launchSolenoidSmall2.setPulseDuration(CATAPULT_PULSE_DURATION);
-        retractor.setPulseDuration(0.5);
+        retractor.setPulseDuration(0.05);
 
         launchSolenoidLarge1.set(false);
         launchSolenoidLarge2.set(false);

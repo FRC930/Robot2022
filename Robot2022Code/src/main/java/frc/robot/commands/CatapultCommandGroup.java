@@ -1,3 +1,4 @@
+
 // Copyright (c) FIRST and other WPILib contributors.
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
@@ -14,7 +15,8 @@ public class CatapultCommandGroup extends SequentialCommandGroup {
   /**
    * <h3>CatapultCommandGroup</h3>
    * 
-   * Reusable sequential command group for managing the catapult fire delay, launch, and retraction time.
+   * Reusable sequential command group for managing the catapult fire delay,
+   * launch, and retraction time.
    * 
    * @param catapultSubsystem - Catapult Subsystem
    * @param powerLevel        - Power level of the catapult launch
@@ -22,9 +24,8 @@ public class CatapultCommandGroup extends SequentialCommandGroup {
    */
   public CatapultCommandGroup(CatapultSubsystem catapultSubsystem, CatapultPower powerLevel, double timeMS) {
     super(
-      new WaitCommand(CatapultSubsystem.CATAPULT_FIRE_DELAY),
-      new CatapultCommand(catapultSubsystem, CatapultPower.AllPistons)
-            .withTimeout(timeMS)
-      );
+        new WaitCommand(CatapultSubsystem.CATAPULT_FIRE_DELAY),
+        new CatapultCommand(catapultSubsystem, CatapultPower.AllPistons)
+            .withTimeout(timeMS));
   }
 }

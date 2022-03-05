@@ -52,9 +52,11 @@ public class TwoBallAuto extends PathPlannerSequentialCommandGroupUtility {
         // -------- Trajectories -------- \\
 
         // Generates a trajectory
-        Trajectory trajectory1 = PathPlanner.loadPath("TwoBallAuto", KMAXSPEED, KMAXACCELERATION);
+        Trajectory trajectory1 = PathPlanner.loadPath("TwoBallDefense1", KMAXSPEED, KMAXACCELERATION);
+        Trajectory trajectory2 = PathPlanner.loadPath("TwoBallDefense2", KMAXSPEED, KMAXACCELERATION);
 
         this.addTrajectory(trajectory1);
+        this.addTrajectory(trajectory2);
 
         SmartDashboard.putString("Pos1", trajectory1.getInitialPose().toString());
         // -------- RAMSETE Commands -------- \\
@@ -71,13 +73,20 @@ public class TwoBallAuto extends PathPlannerSequentialCommandGroupUtility {
                 dSubsystem::getWheelSpeeds,
                 (Double leftVoltage, Double rightVoltage) -> dSubsystem.setVoltages(leftVoltage, rightVoltage),
                 dSubsystem);
-
+        
+        Ramsete930Command ramseteCommand2 = new Ramsete930Command(
+                trajectory2,
+                () -> m_odometry.getPoseMeters(),
+                new RamseteController(KRAMSETEB, KRAMSETEZETA),
+                dSubsystem.getKinematics(),
+                dSubsystem::getWheelSpeeds,
+                (Double leftVoltage, Double rightVoltage) -> dSubsystem.setVoltages(leftVoltage, rightVoltage),
+                dSubsystem);
         // TODO: ADD BALL HOLDER COMMAND
         // Parallel Race Group ends these commands because they dont end, they end when
         // the wait command ends
         addCommands(
                 new InstantCommand(catapultSubsystem::setShortShot),
-                new WaitCommand(0.5),
                 new ResetAutonomousCommand(trajectory1.getInitialPose(), dSubsystem),
                 new ParallelRaceGroup(
                         new EngageIntakePistonsCommand(intakePistonSubsystem),
@@ -91,6 +100,15 @@ public class TwoBallAuto extends PathPlannerSequentialCommandGroupUtility {
                         .withTimeout(CatapultSubsystem.SHOOT_TIMEOUT),
                 new WaitCommand(1.25),
                 new CatapultCommand(catapultSubsystem, CatapultPower.AllPistons)
+                        .withTimeout(CatapultSubsystem.SHOOT_TIMEOUT),
+                new WaitCommand(0.25),
+                new ParallelRaceGroup(
+                        new EngageIntakePistonsCommand(intakePistonSubsystem),
+                        new RunIntakeMotorsCommand(intakeMotorSubsystem, false),
+                        ramseteCommand2),
+                new StopDrive(dSubsystem),
+                new WaitCommand(2),
+                new CatapultCommand(catapultSubsystem, CatapultPower.LargePistons)
                         .withTimeout(CatapultSubsystem.SHOOT_TIMEOUT));
 
     } // End of Constructor

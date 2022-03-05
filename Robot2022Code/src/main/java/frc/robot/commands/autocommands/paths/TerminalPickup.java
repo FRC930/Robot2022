@@ -32,8 +32,8 @@ import frc.robot.subsystems.VisionCameraSubsystem;
 public class TerminalPickup extends PathPlannerSequentialCommandGroupUtility {
 
     // TO-DO comment this section
-    private final double KMAXSPEED = 3;
-    private final double KMAXACCELERATION = 2;
+    private final double KMAXSPEED = 5;
+    private final double KMAXACCELERATION = 4;
     private final double KRAMSETEB = 2;
     private final double KRAMSETEZETA = 0.7;
     private final DifferentialDriveOdometry m_odometry;
@@ -132,11 +132,17 @@ public class TerminalPickup extends PathPlannerSequentialCommandGroupUtility {
                         new AutonomousAimCommand(visionCameraSubsystem, dSubsystem),
                         new WaitCommand(3)),
                 new OpenBallHolderCommand(catapultSubsystem),
-                new WaitCommand(0.5),
+                new WaitCommand(1.0),
+
+
                 new CatapultCommand(catapultSubsystem, CatapultPower.AllPistons)
                         .withTimeout(CatapultSubsystem.SHOOT_TIMEOUT),
-                // TODO: MAYBE ADD A BALLHOLDER CLOSE AND OPEN IN BETWEEN SHOTS?
-                new WaitCommand(1.25),
+                new WaitCommand(0.5),
+                new ParallelRaceGroup(
+                        new BallHolderCommand(catapultSubsystem, true),
+                        new WaitCommand(2)),
+                new WaitCommand(1.0),
+                new OpenBallHolderCommand(catapultSubsystem).withTimeout(0.5),
                 new CatapultCommand(catapultSubsystem, CatapultPower.AllPistons)
                         .withTimeout(CatapultSubsystem.SHOOT_TIMEOUT),
 
@@ -159,9 +165,16 @@ public class TerminalPickup extends PathPlannerSequentialCommandGroupUtility {
                         new WaitCommand(3)),
                 new OpenBallHolderCommand(catapultSubsystem),
                 new WaitCommand(0.5),
+
+                
                 new CatapultCommand(catapultSubsystem, CatapultPower.AllPistons)
                         .withTimeout(CatapultSubsystem.SHOOT_TIMEOUT),
-                new WaitCommand(1.25),
+                new WaitCommand(0.5),
+                new ParallelRaceGroup(
+                        new BallHolderCommand(catapultSubsystem, true),
+                        new WaitCommand(2)),
+                new WaitCommand(1.0),
+                new OpenBallHolderCommand(catapultSubsystem).withTimeout(0.5),
                 new CatapultCommand(catapultSubsystem, CatapultPower.AllPistons)
                         .withTimeout(CatapultSubsystem.SHOOT_TIMEOUT));
     } // End of Constructor

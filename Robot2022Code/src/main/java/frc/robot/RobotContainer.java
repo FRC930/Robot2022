@@ -14,6 +14,7 @@ import edu.wpi.first.util.net.PortForwarder;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
@@ -133,6 +134,7 @@ public class RobotContainer {
     // Catapult Subsystem
     private final CatapultSubsystem catapultSubsystem;
     private final IndexerMotorSubsystem indexerMotorSubsystem;
+    private final BallHolderCommand ballHolderCommand;
 
     // ----- ENDGAME -----\\
     private final EndgameManagerCommand endgameManager;
@@ -206,6 +208,7 @@ public class RobotContainer {
         // TODO:ADD SOLENOID ID 7 FOR HARD-STOP
         catapultSubsystem = new CatapultSubsystem(2, 3, 4, 5, 6, 7, 13);
         indexerMotorSubsystem = new IndexerMotorSubsystem(6);
+        ballHolderCommand = new BallHolderCommand(catapultSubsystem);
 
         // ----- ENDGAME SUBSYSTEM INITS -----\\
         // Endgame Motor Subsystems
@@ -346,13 +349,22 @@ public class RobotContainer {
         // Shifts the drivetrain when shifter trigger is pulled
         driverController.getRightTrigger().whileActiveOnce(toggleShifterCommand);
 
+        SmartDashboard.putNumber("Catapult Timeout", 0.25);
+        Timer timeout = new Timer();
+        timeout.start();
         /*
          * Launches a cargo ball when the launch button is pressed. The delay is needed
          * in order to give the ball holder time to open before firing. Catapult command
          * interrupts default and end() opens the ball holder.
          */
-        driverController.getLeftBumper().whileActiveOnce(
-                new CatapultCommandGroup(catapultSubsystem, CatapultPower.AllPistons, CatapultSubsystem.CATAPULT_FIRE_DELAY));
+        driverController.getLeftBumper().whileActiveOnce(new InstantCommand(() -> {
+            if (timeout.get() > 0.75) {
+                CommandScheduler.getInstance().schedule(new CatapultCommandGroup(catapultSubsystem,
+                        CatapultPower.AllPistons, SmartDashboard.getNumber("Catapult Timeout", 0.25)));
+                timeout.reset();
+                timeout.start();
+            }
+        }));
         driverController.getPOVUpTrigger().whileActiveOnce(
                 new InstantCommand(catapultSubsystem::setLongShot));
         driverController.getPOVDownTrigger().whileActiveOnce(
@@ -378,6 +390,9 @@ public class RobotContainer {
                 .whileActiveOnce(new ParallelCommandGroup(endgameManager, endgamePatternCommand));
 
         driverController.getRightBumper().whileActiveContinuous(hubAimingCommand);
+
+        //Manual Commands
+        codriverController.getRightBumper().whileActiveOnce(ballHolderCommand);
     }
 
     /**
