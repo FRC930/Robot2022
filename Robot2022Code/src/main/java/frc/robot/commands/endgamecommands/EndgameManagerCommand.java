@@ -119,11 +119,13 @@ public class EndgameManagerCommand extends CommandBase {
         // Rotates arm until one #4 sensor triggers, closing all arms and stops motor
         commands.put(6,
                 new SequentialCommandGroup(
+                        // Rotates the arm to overcome backwards bounce
+                        new EndgameArmCommand(endgameMotorSubsystem).withTimeout(1.0),
                         new ParallelRaceGroup(
                                 new EndgameCloseClawSingleCommand(endgamePiston4),
                                 new EndgameOpenClawPairCommand(endgamePistonL3,
-                                        endgamePistonR3),
-                                new WaitCommand(ENDGAME_PISTON_DELAY)),
+                                        endgamePistonR3)),
+                               // new WaitCommand(ENDGAME_PISTON_DELAY)),
                         new ParallelRaceGroup(
                                 new EndgameArmCommand(endgameMotorSubsystem),
                                 new EndgameCloseWhenTouching(endgamePistonL3, 4),
