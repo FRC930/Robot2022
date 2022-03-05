@@ -1,5 +1,7 @@
 package frc.robot.utilities;
 
+import edu.wpi.first.math.filter.Debouncer;
+import edu.wpi.first.math.filter.Debouncer.DebounceType;
 import edu.wpi.first.wpilibj.DigitalInput;
 
 /**
@@ -16,6 +18,8 @@ public class CatapultReturnSensorUtility {
 
     // The digital input for our sensor
     private DigitalInput catapultReturnSensor;
+
+    private final Debouncer sensorDebounce = new Debouncer(0.1, DebounceType.kRising);
 
     /**
      * <h3>CatapultReturnSensorUtility</h3>
@@ -48,6 +52,6 @@ public class CatapultReturnSensorUtility {
      * @return the state of the catapult return sensor
      */
     public boolean catapultIsReset() {
-        return !catapultReturnSensor.get();
+        return sensorDebounce.calculate(!catapultReturnSensor.get());
     }
 }
