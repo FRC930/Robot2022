@@ -31,6 +31,14 @@ public class EndgameArmCommand extends CommandBase {
 
   // -------- CONSTRUCTOR --------\\
 
+  /**
+   * <h3>EndgameArmCommand</h3>
+   * 
+   * Rotates the endgame arm forward to climb the hangar
+   * 
+   * @param motorSubsystem  - Arm motors
+   * @param speed           - Speed of arm rotation
+   */
   public EndgameArmCommand(EndgameMotorSubsystem motorSubsystem, double speed) {
     m_MotorSubsystem = motorSubsystem;
     armSpeed = speed;
@@ -43,7 +51,8 @@ public class EndgameArmCommand extends CommandBase {
    * 
    * Rotates the endgame arm forward to climb the hangar
    * 
-   * @param motorSubsystem motor subsystem to control
+   * @param motorSubsystem  - Arm motors
+   * @param speed           - Speed of arm rotation, currently set to 0.5 by default (use overload to specify speed)
    */
   public EndgameArmCommand(EndgameMotorSubsystem motorSubsystem) {
     this(motorSubsystem, 0.5);

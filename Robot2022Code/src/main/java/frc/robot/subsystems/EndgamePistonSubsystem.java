@@ -5,7 +5,7 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-//-------- IMPORTS --------\\
+//----- IMPORTS -----\\
 
 package frc.robot.subsystems;
 
@@ -14,7 +14,7 @@ import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
 
-//-------- SUBSYSTEM CLASS --------\\
+//----- CLASS -----\\
 /**
  * <h3>EndgamePistonSubsystem</h3>
  *
@@ -22,10 +22,11 @@ import frc.robot.Robot;
  */
 public class EndgamePistonSubsystem extends SubsystemBase{
 
-    //-------- VARIABLES --------\\
-    Solenoid grabberPiston;
+    //----- SOLENOIDS -----\\
 
-    //-------- CONSTRUCTOR --------\\
+    private final Solenoid m_grabberPiston;
+
+    //----- CONSTRUCTOR -----\\
     /**
      * <h3>EndgamePistonSubsystem</h3>
      *
@@ -34,13 +35,14 @@ public class EndgamePistonSubsystem extends SubsystemBase{
      * @param solenoid_ID id of solenoid port
      */
     public EndgamePistonSubsystem(int solenoid_ID) {
+        
         //CTRE pneumatic hub has 8 slots. Cap is placed on simulation to prevent errors.
-        grabberPiston = new Solenoid(
+        m_grabberPiston = new Solenoid(
             Robot.isReal()||solenoid_ID>7?PneumaticsModuleType.REVPH:PneumaticsModuleType.CTREPCM, 
             solenoid_ID);
     }
 
-    //-------- METHODS --------\\
+    //----- METHODS -----\\
 
     /**
      * <h3>toggle</h3>
@@ -50,7 +52,7 @@ public class EndgamePistonSubsystem extends SubsystemBase{
      * 
      */
     public void toggle() {
-        grabberPiston.set(!grabberPiston.get());
+        m_grabberPiston.set(!m_grabberPiston.get());
     }
 
     /**
@@ -61,7 +63,7 @@ public class EndgamePistonSubsystem extends SubsystemBase{
      * @return grabber piston state
      */
     public boolean isOpen() {
-        return grabberPiston.get();
+        return m_grabberPiston.get();
     }
 
     /**
@@ -70,7 +72,7 @@ public class EndgamePistonSubsystem extends SubsystemBase{
      * sets piston to open
      */
     public void open() {
-        grabberPiston.set(true);
+        m_grabberPiston.set(true);
     }
     /**
      * <h3>closed</h3>
@@ -78,7 +80,7 @@ public class EndgamePistonSubsystem extends SubsystemBase{
      * sets piston to closed
      */
     public void closed() {
-        grabberPiston.set(false);
+        m_grabberPiston.set(false);
     }
 
 } // End of class EndgamePistonSubsystem

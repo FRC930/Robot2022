@@ -63,7 +63,7 @@ public class CatapultCommand extends CommandBase {
 
     @Override
     public void end(boolean interrupted) {
-        catapultSubsystem.retract();
+        catapultSubsystem.retractAll();
     }
 
     // Enum for piston usage
