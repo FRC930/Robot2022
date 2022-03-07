@@ -51,7 +51,7 @@ public class AutoCommandManager {
      */
     public void initCommands() {
 
-        DefaultAutoPathCommand defaultAutoPathCommand = new DefaultAutoPathCommand(
+        TarmacTaxi defaultAutoPathCommand = new TarmacTaxi(
                 (DriveSubsystem) subsystemMap.get(subNames.DriveSubsystem.toString()));
 
         DefaultShoot defaultShoot = new DefaultShoot(
