@@ -29,11 +29,11 @@ import frc.robot.subsystems.VisionCameraSubsystem;
 
 //----- CLASS -----\\
 /**
- * <h3>TwoBallAuto</h3>
+ * <h3>DefensiveTwoBall</h3>
  * 
- * Exits the tarmac, intakes, and shoots.
+ * Exits the tarmac, intakes, and shoots. Moves to adjacent enemy cargo, intakes it, and shoots it into the hangar zone.
  */
-public class TwoBallAuto extends PathPlannerSequentialCommandGroupUtility {
+public class DefensiveTwoBall extends PathPlannerSequentialCommandGroupUtility {
 
     //----- CONSTANTS -----\\
 
@@ -51,6 +51,9 @@ public class TwoBallAuto extends PathPlannerSequentialCommandGroupUtility {
 
     //----- CONSTRUCTOR -----\\
     /**
+     * <h3>DefensiveTwoBall</h3>
+     * 
+     * Exits the tarmac, intakes, and shoots. Moves to adjacent enemy cargo, intakes it, and shoots it into the hangar zone.
      * 
      * @param driveSubsystem
      * @param intakePistonSubsystem
@@ -58,7 +61,7 @@ public class TwoBallAuto extends PathPlannerSequentialCommandGroupUtility {
      * @param visionCameraSubsystem
      * @param catapultSubsystem
      */
-    public TwoBallAuto(
+    public DefensiveTwoBall(
         DriveSubsystem driveSubsystem,
         IntakePistonSubsystem intakePistonSubsystem,
         IntakeMotorSubsystem intakeMotorSubsystem,
@@ -72,10 +75,10 @@ public class TwoBallAuto extends PathPlannerSequentialCommandGroupUtility {
         //----- TRAJECTORIES -----\\
 
         // Robot exits the tarmac, intakes, and shoots
-        Trajectory t_exitTarmac = PathPlanner.loadPath("TwoBallDefense1", MAX_SPEED, MAX_ACCELERATION);
+        Trajectory t_exitTarmac = PathPlanner.loadPath("DefensiveTwoBall1", MAX_SPEED, MAX_ACCELERATION);
 
         // Robot approaches the adjacent enemy cargo and shoots it into the hangar zone.
-        Trajectory t_adjacentEnemyCargo = PathPlanner.loadPath("TwoBallDefense2", MAX_SPEED, MAX_ACCELERATION);
+        Trajectory t_adjacentEnemyCargo = PathPlanner.loadPath("DefensiveTwoBall2", MAX_SPEED, MAX_ACCELERATION);
 
         this.addTrajectory(t_exitTarmac);
         this.addTrajectory(t_adjacentEnemyCargo);

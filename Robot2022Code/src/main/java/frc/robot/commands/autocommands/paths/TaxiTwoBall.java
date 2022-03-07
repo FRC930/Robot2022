@@ -4,7 +4,9 @@ package frc.robot.commands.autocommands.paths;
 
 import com.pathplanner.lib.PathPlanner;
 
+import frc.robot.commands.BallHolderCommand;
 import frc.robot.commands.CatapultCommand;
+import frc.robot.commands.OpenBallHolderCommand;
 import frc.robot.commands.Ramsete930Command;
 import frc.robot.commands.CatapultCommand.CatapultPower;
 import frc.robot.commands.autocommands.AutonomousAimCommand;
@@ -14,6 +16,7 @@ import frc.robot.commands.intakecommands.intakemotorcommands.RunIntakeMotorsComm
 import edu.wpi.first.math.controller.RamseteController;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.trajectory.Trajectory;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
@@ -26,17 +29,17 @@ import frc.robot.subsystems.VisionCameraSubsystem;
 
 //----- CLASS -----\\
 /**
- * <h3>ShootMoveShoot</h3>
+ * <h3>TaxiTwoBall</h3>
  * 
- * Shoots, exits tarmac, and shoots again.
+ * Exits the tarmac, intakes, and shoots.
  */
-public class ShootMoveShoot extends PathPlannerSequentialCommandGroupUtility {
+public class TaxiTwoBall extends PathPlannerSequentialCommandGroupUtility {
 
     //----- CONSTANTS -----\\
 
     // Movement Control
-    private final double MAX_SPEED = 0.5;
-    private final double MAX_ACCELERATION = 0.5;
+    private final double MAX_SPEED = 1.0;
+    private final double MAX_ACCELERATION = 1.0;
 
     // Ramsete Controller Parameters
     private final double RAMSETE_B = 2;
@@ -48,20 +51,22 @@ public class ShootMoveShoot extends PathPlannerSequentialCommandGroupUtility {
 
     //----- CONSTRUCTOR -----\\
     /**
-     * <h3>ShootMoveShoot</h3>
+     * <h3>TaxiTwoBall</h3>
      * 
-     * Shoots, exits tarmac, and shoots again.
+     * Exits the tarmac, intakes, and shoots.
      * 
      * @param driveSubsystem
-     * @param catapultSubsystem
      * @param intakePistonSubsystem
      * @param intakeMotorSubsystem
      * @param visionCameraSubsystem
+     * @param catapultSubsystem
      */
-    public ShootMoveShoot(
-        DriveSubsystem driveSubsystem, CatapultSubsystem catapultSubsystem,
-        IntakePistonSubsystem intakePistonSubsystem, IntakeMotorSubsystem intakeMotorSubsystem,
-        VisionCameraSubsystem visionCameraSubsystem
+    public TaxiTwoBall(
+        DriveSubsystem driveSubsystem,
+        IntakePistonSubsystem intakePistonSubsystem,
+        IntakeMotorSubsystem intakeMotorSubsystem,
+        VisionCameraSubsystem visionCameraSubsystem,
+        CatapultSubsystem catapultSubsystem
     ) {
 
         // initializing gyro for pose2d
@@ -69,12 +74,15 @@ public class ShootMoveShoot extends PathPlannerSequentialCommandGroupUtility {
 
         //----- TRAJECTORIES -----\\
 
-        // Exits the tarmac
-        Trajectory t_exitTarmac = PathPlanner.loadPath("ShootMoveShoot", MAX_SPEED, MAX_ACCELERATION);
+        // Robot exits the tarmac, intakes, and shoots
+        Trajectory t_exitTarmac = PathPlanner.loadPath("TaxiTwoBall", MAX_SPEED, MAX_ACCELERATION);
 
         this.addTrajectory(t_exitTarmac);
 
-        //----- RAMSETE COMMANDS -----\\
+        SmartDashboard.putString("Pos1", t_exitTarmac.getInitialPose().toString());
+        SmartDashboard.putString("current Gyro Position", m_odometry.getPoseMeters().toString());
+
+        //----- RAMSETE COMMMANDS -----\\
         // Creates a command that can be added to the command scheduler in the
         // sequential command
 
@@ -89,26 +97,35 @@ public class ShootMoveShoot extends PathPlannerSequentialCommandGroupUtility {
         );
 
         //----- AUTO SEQUENCE -----\\
+        // Parallel Race Group ends these commands because they dont end, they end when
+        // the wait command ends
 
         addCommands(
             new InstantCommand(catapultSubsystem::setShortShot),
-            new WaitCommand(0.5),
             new ResetAutonomousCommand(t_exitTarmac.getInitialPose(), driveSubsystem),
-            new ParallelRaceGroup(
-                new AutonomousAimCommand(visionCameraSubsystem, driveSubsystem),
-                new WaitCommand(3)
-            ),
-            new CatapultCommand(catapultSubsystem, CatapultPower.AllPistons)
-                .withTimeout(CatapultSubsystem.SHOOT_TIMEOUT),
             new ParallelRaceGroup(
                 new EngageIntakePistonsCommand(intakePistonSubsystem),
                 new RunIntakeMotorsCommand(intakeMotorSubsystem, false),
                 r_exitTarmac
             ),
+            new StopDrive(driveSubsystem),
             new ParallelRaceGroup(
                 new AutonomousAimCommand(visionCameraSubsystem, driveSubsystem),
-                new WaitCommand(3)
+                new WaitCommand(1)
             ),
+            new CatapultCommand(catapultSubsystem, CatapultPower.AllPistons)
+                .withTimeout(CatapultSubsystem.SHOOT_TIMEOUT),
+
+            
+            //new WaitCommand(1.25),//idea 2 sec
+            new WaitCommand(1.0),
+            new ParallelRaceGroup(                                
+                new BallHolderCommand(catapultSubsystem, true),
+                new WaitCommand(2)
+            ),
+            new WaitCommand(2.0),
+            new OpenBallHolderCommand(catapultSubsystem).withTimeout(0.5),
+
             new CatapultCommand(catapultSubsystem, CatapultPower.AllPistons)
                 .withTimeout(CatapultSubsystem.SHOOT_TIMEOUT)
         );
