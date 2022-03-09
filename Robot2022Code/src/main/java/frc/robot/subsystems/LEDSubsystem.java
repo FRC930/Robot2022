@@ -1,49 +1,81 @@
+//----- IMPORTS -----\\
+
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
+//----- CLASS -----\\
+/**
+ * <h3>LEDSubsystem</h3>
+ * 
+ * Manages the LEDs.
+ */
 public class LEDSubsystem extends SubsystemBase {
-      // ----------CONSTANT(S)--------------\\
-      private final int BUFFER_LENGTH = 299;
-      // --------VARIABLE(S)--------\\
-      private final AddressableLED leds;
-      private final AddressableLEDBuffer buffer;  // Creates a new buffer object
 
+      //----- CONSTANTS ----\\
 
-      // ---------CONSTRUCTOR(S)----------------\
+      private final int m_BUFFER_LENGTH = 299;
+
+      private final AddressableLED m_leds;
+      private final AddressableLEDBuffer m_buffer;  // Creates a new buffer object
+
+      //----- CONSTRUCTOR -----\\
       /**
-       * LEDSubsystem
+       * <h3>LEDSubsystem</h3>
+       * 
+       * Manages the LEDs.
+       * 
        * @param port PWM port on the roboRIO
        */
       public LEDSubsystem(int port) {
+
             // TODO maybe pass in buffer length
-            leds = new AddressableLED(port); // initialization of the AdressableLED
-            leds.setLength(BUFFER_LENGTH); // Sets the LED Strip length once
-            buffer = new AddressableLEDBuffer(BUFFER_LENGTH);
+            m_leds = new AddressableLED(port); // initialization of the AdressableLED
+            m_leds.setLength(m_BUFFER_LENGTH); // Sets the LED Strip length once
+            m_buffer = new AddressableLEDBuffer(m_BUFFER_LENGTH);
+
             // TODO we start a starting color
-            setBuffer(buffer);
+            setBuffer(m_buffer);
 
             //TODO:SEE IF WE NEED THIS LINE
-            leds.start();
+            m_leds.start();
       }
 
+      //----- METHODS -----\\
+
       /**
-       * <h4>getBufferLength</h4>
-       * Returns the buffer length
+       * <h3>getBufferLength</h3>
+       * 
+       * Returns the buffer length.
        * 
        * @return BUFFER_LENGTH
        */
       public int getBufferLength() {
-            return BUFFER_LENGTH;
+            return m_BUFFER_LENGTH;
       } // End of getBufferLength()
 
+      /**
+       * <h3>getBuffer</h3>
+       * 
+       * Returns the LED buffer.
+       * 
+       * @return buffer
+       */
       public AddressableLEDBuffer getBuffer() {
-            return buffer;
+            return m_buffer;
       }
+
+      /**
+       * <h3>setBuffer</h3>
+       * 
+       * Sets the LEDs to a new buffer.
+       * 
+       * @param buffer  - New LED buffer
+       */
       public void setBuffer(AddressableLEDBuffer buffer) {
-            leds.setData(buffer);
+            m_leds.setData(buffer);
       }
 
 }

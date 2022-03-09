@@ -51,14 +51,14 @@ public class AutoCommandManager {
      */
     public void initCommands() {
 
-        DefaultAutoPathCommand defaultAutoPathCommand = new DefaultAutoPathCommand(
+        TarmacTaxi defaultAutoPathCommand = new TarmacTaxi(
                 (DriveSubsystem) subsystemMap.get(subNames.DriveSubsystem.toString()));
 
-        DefaultShoot defaultShoot = new DefaultShoot(
+        TaxiOneBall defaultShoot = new TaxiOneBall(
                 (DriveSubsystem) subsystemMap.get(subNames.DriveSubsystem.toString()),
                 (CatapultSubsystem) subsystemMap.get(subNames.CatapultSubsystem.toString()));
 
-        TwoBallAuto TwoBallAuto = new TwoBallAuto(
+        TaxiTwoBall TwoBallAuto = new TaxiTwoBall(
                 (DriveSubsystem) subsystemMap.get(subNames.DriveSubsystem.toString()),
                 (IntakePistonSubsystem) subsystemMap.get(subNames.IntakePistonSubsystem.toString()),
                 (IntakeMotorSubsystem) subsystemMap.get(subNames.IntakeMotorSubsystem.toString()),

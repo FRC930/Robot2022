@@ -43,13 +43,14 @@ public class IndexerForwardCommand extends CommandBase {
      *
      * Sets the motor speed of the indexer
      *
-     * @param _motor The motor on the indexer
+     * @param indexer The motor on the indexer
      */
-    public IndexerForwardCommand(IndexerMotorSubsystem _motor, boolean isReversed) {
-        motor = _motor;
+    public IndexerForwardCommand(IndexerMotorSubsystem indexer, boolean isReversed) {
+        motor = indexer;
         reversed = isReversed;
         //counter = 0;
-        addRequirements(motor);
+        CatapultReturnSensorUtility.getInstance();
+        addRequirements(indexer);
     }
 
     // -------- COMMANDBASE METHODS --------\\

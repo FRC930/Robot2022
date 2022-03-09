@@ -1,3 +1,5 @@
+//----- IMPORTS -----\\
+
 package frc.robot.commands.autocommands.paths;
 
 import com.pathplanner.lib.PathPlanner;
@@ -13,53 +15,73 @@ import frc.robot.utilities.PathPlannerSequentialCommandGroupUtility;
 import frc.robot.subsystems.CatapultSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 
-//  -------- PATH DESCRIPTION -------- \\
-//  Moves backward off the tarmac
-
+//----- CLASS -----\\
+/**
+ * <h3>TemplateCommand</h3>
+ * 
+ * A template for auto paths.
+ */
 public class TemplateCommand extends PathPlannerSequentialCommandGroupUtility {
 
-    // TO-DO comment this section
-    private final double KMAXSPEED = 0.5;
-    private final double KMAXACCELERATION = 0.5;
-    private final double KRAMSETEB = 2;
-    private final double KRAMSETEZETA = 0.7;
+    //----- CONSTANTS -----\\
+
+    // Movement Control
+    private final double MAX_SPEED = 0.0;
+    private final double MAX_ACCELERATION = 0.0;
+
+    // Ramsete Controller Parameters
+    private final double RAMSETE_B = 0.0;
+    private final double RAMSETE_ZETA = 0.0;
+
+    //----- ODOMETRY -----\\
+
     private final DifferentialDriveOdometry m_odometry;
 
+    //----- CONSTRUCTOR -----\\
     /**
-     * Default path constructor
+     * <h3>TemplateCommand</h3>
      * 
-     * @param dSubsystem
+     * A template for auto paths.
+     * 
+     * @param driveSubsystem
+     * @param catapultSubsystem
      */
-    public TemplateCommand(DriveSubsystem dSubsystem, CatapultSubsystem catapultSubsystem) {
+    public TemplateCommand(DriveSubsystem driveSubsystem, CatapultSubsystem catapultSubsystem) {
 
         // initializing gyro for pose2d
-        m_odometry = dSubsystem.getOdometry();
+        m_odometry = driveSubsystem.getOdometry();
 
-        // -------- Trajectories -------- \\
+        //----- TRAJECTORIES -----\\
 
-        // Generates a trajectory
-        Trajectory trajectory1 = PathPlanner.loadPath("TerminalPickup1", KMAXSPEED, KMAXACCELERATION);
+        // Describe your trajectory here
+        Trajectory t_nameYourTrajectoryHere = PathPlanner.loadPath("<ENTER PATHPLANNER PATH NAME HERE>", MAX_SPEED, MAX_ACCELERATION);
 
-        this.addTrajectory(trajectory1);
-        // -------- RAMSETE Commands -------- \\
+        this.addTrajectory(t_nameYourTrajectoryHere);
+
+        //----- RAMSETE COMMANDS -----\\
         // Creates a command that can be added to the command scheduler in the
         // sequential command
 
         // Creates RAMSETE Command for first trajectory
-        Ramsete930Command ramseteCommand1 = new Ramsete930Command(
-                trajectory1,
-                () -> m_odometry.getPoseMeters(),
-                new RamseteController(KRAMSETEB, KRAMSETEZETA),
-                dSubsystem.getKinematics(),
-                dSubsystem::getWheelSpeeds,
-                (Double leftVoltage, Double rightVoltage) -> dSubsystem.setVoltages(leftVoltage, rightVoltage),
-                dSubsystem);
+        Ramsete930Command r_nameYourTrajectoryHere = new Ramsete930Command(
+            t_nameYourTrajectoryHere,
+            () -> m_odometry.getPoseMeters(),
+            new RamseteController(RAMSETE_B, RAMSETE_ZETA),
+            driveSubsystem.getKinematics(),
+            driveSubsystem::getWheelSpeeds,
+            (Double leftVoltage, Double rightVoltage) -> driveSubsystem.setVoltages(leftVoltage, rightVoltage),
+            driveSubsystem
+        );
 
-        addCommands(new InstantCommand(catapultSubsystem::setShortShot),
-                new WaitCommand(0.5),
-                new ResetAutonomousCommand(trajectory1.getInitialPose(), dSubsystem),
-                ramseteCommand1,
-                new StopDrive(dSubsystem));
+        //----- AUTO SEQUENCE -----\\
+
+        addCommands(
+            new InstantCommand(catapultSubsystem::setShortShot),
+            new WaitCommand(0.5),
+            new ResetAutonomousCommand(t_nameYourTrajectoryHere.getInitialPose(), driveSubsystem),
+            r_nameYourTrajectoryHere,
+            new StopDrive(driveSubsystem)
+        );
 
     } // End of Constructor
 } // End of Class

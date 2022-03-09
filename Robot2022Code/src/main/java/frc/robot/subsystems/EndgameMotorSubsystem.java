@@ -35,8 +35,8 @@ public class EndgameMotorSubsystem extends SubsystemBase {
     /**
      * The motor controller that controls the endgame motor
      */
-    private final WPI_TalonFX endgameMotorMaster;
-    private final WPI_TalonFX endgameMotorSlave;
+    private final WPI_TalonFX m_endgameMotorMaster;
+    private final WPI_TalonFX m_endgameMotorSlave;
 
     //-------- CONSTRUCTOR --------\\
 
@@ -49,29 +49,40 @@ public class EndgameMotorSubsystem extends SubsystemBase {
      * @param motorIDSlave ID for the slave TalonFX
      */
     public EndgameMotorSubsystem(int motorIDMaster, int motorIDSlave) {
-        endgameMotorMaster = new WPI_TalonFX(motorIDMaster);
-        endgameMotorSlave = new WPI_TalonFX(motorIDSlave);
+
+        m_endgameMotorMaster = new WPI_TalonFX(motorIDMaster);
+        m_endgameMotorSlave = new WPI_TalonFX(motorIDSlave);
+
         // Sets default for added motors
-        endgameMotorMaster.configFactoryDefault();
-        endgameMotorSlave.configFactoryDefault();
-        endgameMotorMaster.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor, 0, 0);
-        endgameMotorMaster.config_kP(0, MOTOR_KP);
+        m_endgameMotorMaster.configFactoryDefault();
+        m_endgameMotorSlave.configFactoryDefault();
+        m_endgameMotorMaster.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor, 0, 0);
+        m_endgameMotorMaster.config_kP(0, MOTOR_KP);
+
         // Sets motors so they can't be manually moved when neutral
-        endgameMotorMaster.setNeutralMode(NeutralMode.Brake);
-        endgameMotorSlave.setNeutralMode(NeutralMode.Brake);
+        m_endgameMotorMaster.setNeutralMode(NeutralMode.Brake);
+        m_endgameMotorSlave.setNeutralMode(NeutralMode.Brake);
+
         refollowEndgameMotors();
     }
 
+    //-------- METHODS --------\\
+
     // Needed to overcome stopMotor() calls by CTRE's WPI motor controls
     // See https://github.com/CrossTheRoadElec/Phoenix-Releases/issues/28
+    /**
+     * <h3>refollowEndgameMotors</h3>
+     * 
+     * Needed to overcome stopMotor() calls by CTRE's WPI motor controls
+     * See https://github.com/CrossTheRoadElec/Phoenix-Releases/issues/28
+     */
     public void refollowEndgameMotors() {
-        // Sets slave to follow master and inverts slave
-        endgameMotorMaster.setInverted(InvertType.None);
-        endgameMotorSlave.follow(endgameMotorMaster, FollowerType.PercentOutput);
-        endgameMotorSlave.setInverted(InvertType.OpposeMaster);
-    }
 
-    //-------- METHODS --------\\
+        // Sets slave to follow master and inverts slave
+        m_endgameMotorMaster.setInverted(InvertType.None);
+        m_endgameMotorSlave.follow(m_endgameMotorMaster, FollowerType.PercentOutput);
+        m_endgameMotorSlave.setInverted(InvertType.OpposeMaster);
+    }
 
     /**
      * <h3>setMotorSpeed</h3>
@@ -81,8 +92,9 @@ public class EndgameMotorSubsystem extends SubsystemBase {
      * @param speed the speed at which to set the motor
      */
     public void setMotorSpeed(double speed) {
+
         // ControlMode.PercentOutput makes the value be given to the motor as a percent (Ex. 0.90 is 90%)
-        endgameMotorMaster.set(ControlMode.PercentOutput, speed);
+        m_endgameMotorMaster.set(ControlMode.PercentOutput, speed);
     }
 
     /**
@@ -91,7 +103,7 @@ public class EndgameMotorSubsystem extends SubsystemBase {
      * This method makes the endgame motor stop
      */
     public void stopMotor() {
-        endgameMotorMaster.set(ControlMode.PercentOutput, 0.0);
+        m_endgameMotorMaster.set(ControlMode.PercentOutput, 0.0);
     }
 
     /**
@@ -101,7 +113,7 @@ public class EndgameMotorSubsystem extends SubsystemBase {
      * @return the current motor speed asa percent
      */
     public double getMotorSpeed() {
-        return endgameMotorMaster.getMotorOutputPercent();
+        return m_endgameMotorMaster.getMotorOutputPercent();
     }
 
     /**
@@ -112,7 +124,7 @@ public class EndgameMotorSubsystem extends SubsystemBase {
      */
     public double getArmRotation() {
         // Converts the value to usable units
-        return endgameMotorMaster.getSelectedSensorPosition() / TALON_CPR / GEAR_RATIO;
+        return m_endgameMotorMaster.getSelectedSensorPosition() / TALON_CPR / GEAR_RATIO;
     }
 
     /**
@@ -122,7 +134,7 @@ public class EndgameMotorSubsystem extends SubsystemBase {
      */
     public void setArmPosition(double position){
         // Converts back to decimal
-        endgameMotorMaster.set(ControlMode.Position, position * GEAR_RATIO * TALON_CPR);
+        m_endgameMotorMaster.set(ControlMode.Position, position * GEAR_RATIO * TALON_CPR);
     }
     
     /**
@@ -131,7 +143,7 @@ public class EndgameMotorSubsystem extends SubsystemBase {
      * Resets the endcoder back to starting position. Should be set while the bar is horizontal.
      */
     public void resetEncoderPosition() {
-        endgameMotorMaster.setSelectedSensorPosition(0.0);
+        m_endgameMotorMaster.setSelectedSensorPosition(0.0);
     }
 
 } // End of class EndgameMotorSubsystem

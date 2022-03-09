@@ -1,4 +1,4 @@
-//-------- IMPORTS --------\\
+//----- IMPORTS-----\\
 
 package frc.robot.subsystems;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -8,7 +8,7 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
-//-------- CLASS --------\\
+//----- CLASS -----\\
 /**
  * <h3>IntakeMotorSubsystem</h3>
  * 
@@ -16,31 +16,34 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
  */
 public class IntakeMotorSubsystem extends SubsystemBase {
 
-    //-------- VARIABLES --------\\
+    //----- VARIABLES -----\\
 
     /**
      * The motor controller that controls the intake motor
      */
-    private WPI_TalonFX intakeMotorController;
-    private WPI_TalonSRX gyroController;
+    private final WPI_TalonFX m_intakeMotorController;
+    private final WPI_TalonSRX m_gyroController;
 
-    // -------- CONSTRUCTOR --------\
-
+    //----- CONSTRUCTOR -----\\
     /**
      * <h3>IntakeMotorSubsystem</h3>
      * 
-     * This constructor initializes the {@link #intakeMotorController} to the proper
+     * This constructor initializes the {@link #m_intakeMotorController} to the proper
      * hardware
+     * 
+     * @param intakeID  - Can ID for the intake motor
+     * @param gyroID    - ID for the gyro
      */
     public IntakeMotorSubsystem(int intakeID, int gyroID) {
-        intakeMotorController = new WPI_TalonFX(intakeID);
-        gyroController = new WPI_TalonSRX(gyroID);
+
+        m_intakeMotorController = new WPI_TalonFX(intakeID);
+        m_gyroController = new WPI_TalonSRX(gyroID);
 
         //Sets the subsystem for the gyro to the IntakeMotorSubsystem
         GyroUtility.getInstance().setGyro(this);
     }
 
-    // -------- METHODS --------\\
+    //----- METHODS -----\\
 
     /**
      * <h3>setMotorSpeed</h3>
@@ -50,8 +53,9 @@ public class IntakeMotorSubsystem extends SubsystemBase {
      * @param speed the speed at which to set the motor
      */
     public void setMotorSpeed(double speed) {
+
         //PercentOutput is the amount of output that the motor produces between -1 and 1
-        intakeMotorController.set(ControlMode.PercentOutput, speed);
+        m_intakeMotorController.set(ControlMode.PercentOutput, speed);
     }
 
     /**
@@ -61,11 +65,11 @@ public class IntakeMotorSubsystem extends SubsystemBase {
      * @return the current motor speed
      */
     public double getMotorSpeed() {
-        return intakeMotorController.getMotorOutputPercent();
+        return m_intakeMotorController.getMotorOutputPercent();
     }
 
     /**
-     * <h3?getIntakeMotor</h3>
+     * <h3>getIntakeMotor</h3>
      * 
      * Returns TalonSRX controller {@link frc.robot.subsystems.DriveSubsystem DriveSubsystem}
      * needs the talon for the Pigeon onboard.
@@ -73,6 +77,6 @@ public class IntakeMotorSubsystem extends SubsystemBase {
      * @return intakeMotor
      */
     public WPI_TalonSRX getIntakeMotor() {
-        return gyroController;
+        return m_gyroController;
     }
 } // end of class IntakeMotorSubsystem

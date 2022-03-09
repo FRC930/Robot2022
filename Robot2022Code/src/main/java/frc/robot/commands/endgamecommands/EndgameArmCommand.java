@@ -23,24 +23,39 @@ public class EndgameArmCommand extends CommandBase {
 
   // -------- CONSTANTS --------\\
 
-  private final double ARM_SPEED = 0.75;
+  private double armSpeed;
 
   // -------- VARIABLES --------\\
 
   private final EndgameMotorSubsystem m_MotorSubsystem;
 
   // -------- CONSTRUCTOR --------\\
+
   /**
    * <h3>EndgameArmCommand</h3>
    * 
    * Rotates the endgame arm forward to climb the hangar
    * 
-   * @param motorSubsystem motor subsystem to control
+   * @param motorSubsystem  - Arm motors
+   * @param speed           - Speed of arm rotation
    */
-  public EndgameArmCommand(EndgameMotorSubsystem motorSubsystem) {
+  public EndgameArmCommand(EndgameMotorSubsystem motorSubsystem, double speed) {
     m_MotorSubsystem = motorSubsystem;
+    armSpeed = speed;
 
     addRequirements(m_MotorSubsystem); // Use addRequirements() here to declare subsystem dependencies.
+  }
+
+  /**
+   * <h3>EndgameArmCommand</h3>
+   * 
+   * Rotates the endgame arm forward to climb the hangar
+   * 
+   * @param motorSubsystem  - Arm motors
+   * @param speed           - Speed of arm rotation, currently set to 0.5 by default (use overload to specify speed)
+   */
+  public EndgameArmCommand(EndgameMotorSubsystem motorSubsystem) {
+    this(motorSubsystem, 0.5);
   }
 
   // -------- METHODS --------\\
@@ -50,7 +65,7 @@ public class EndgameArmCommand extends CommandBase {
   @Override // Called when the command is initially scheduled.
   public void initialize() {
     // Sets speed of motor to the constant
-    m_MotorSubsystem.setMotorSpeed(ARM_SPEED);
+    m_MotorSubsystem.setMotorSpeed(armSpeed);
 
   }
 
