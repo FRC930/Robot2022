@@ -4,9 +4,7 @@ package frc.robot.commands.autocommands.paths;
 
 import com.pathplanner.lib.PathPlanner;
 
-import frc.robot.commands.CatapultCommand;
 import frc.robot.commands.Ramsete930Command;
-import frc.robot.commands.CatapultCommand.CatapultPower;
 import frc.robot.commands.autocommands.AutonomousAimCommand;
 import frc.robot.commands.autocommands.ResetAutonomousCommand;
 import frc.robot.commands.intakecommands.intakePistonCommands.EngageIntakePistonsCommand;
@@ -14,11 +12,9 @@ import frc.robot.commands.intakecommands.intakemotorcommands.RunIntakeMotorsComm
 import edu.wpi.first.math.controller.RamseteController;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.trajectory.Trajectory;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.utilities.PathPlannerSequentialCommandGroupUtility;
-import frc.robot.subsystems.CatapultSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IntakeMotorSubsystem;
 import frc.robot.subsystems.IntakePistonSubsystem;
@@ -59,7 +55,7 @@ public class ShootMoveShoot extends PathPlannerSequentialCommandGroupUtility {
      * @param visionCameraSubsystem
      */
     public ShootMoveShoot(
-        DriveSubsystem driveSubsystem, CatapultSubsystem catapultSubsystem,
+        DriveSubsystem driveSubsystem,
         IntakePistonSubsystem intakePistonSubsystem, IntakeMotorSubsystem intakeMotorSubsystem,
         VisionCameraSubsystem visionCameraSubsystem
     ) {
@@ -91,15 +87,12 @@ public class ShootMoveShoot extends PathPlannerSequentialCommandGroupUtility {
         //----- AUTO SEQUENCE -----\\
 
         addCommands(
-            new InstantCommand(catapultSubsystem::setShortShot),
             new WaitCommand(0.5),
             new ResetAutonomousCommand(t_exitTarmac.getInitialPose(), driveSubsystem),
             new ParallelRaceGroup(
                 new AutonomousAimCommand(visionCameraSubsystem, driveSubsystem),
                 new WaitCommand(3)
             ),
-            new CatapultCommand(catapultSubsystem, CatapultPower.AllPistons)
-                .withTimeout(CatapultSubsystem.SHOOT_TIMEOUT),
             new ParallelRaceGroup(
                 new EngageIntakePistonsCommand(intakePistonSubsystem),
                 new RunIntakeMotorsCommand(intakeMotorSubsystem, false),
@@ -108,9 +101,7 @@ public class ShootMoveShoot extends PathPlannerSequentialCommandGroupUtility {
             new ParallelRaceGroup(
                 new AutonomousAimCommand(visionCameraSubsystem, driveSubsystem),
                 new WaitCommand(3)
-            ),
-            new CatapultCommand(catapultSubsystem, CatapultPower.AllPistons)
-                .withTimeout(CatapultSubsystem.SHOOT_TIMEOUT)
+            )
         );
 
     } // End of Constructor

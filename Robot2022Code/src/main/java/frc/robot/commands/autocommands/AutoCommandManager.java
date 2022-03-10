@@ -55,19 +55,16 @@ public class AutoCommandManager {
                 (DriveSubsystem) subsystemMap.get(subNames.DriveSubsystem.toString()));
 
         TaxiOneBall defaultShoot = new TaxiOneBall(
-                (DriveSubsystem) subsystemMap.get(subNames.DriveSubsystem.toString()),
-                (CatapultSubsystem) subsystemMap.get(subNames.CatapultSubsystem.toString()));
+                (DriveSubsystem) subsystemMap.get(subNames.DriveSubsystem.toString()));
 
         TaxiTwoBall TwoBallAuto = new TaxiTwoBall(
                 (DriveSubsystem) subsystemMap.get(subNames.DriveSubsystem.toString()),
                 (IntakePistonSubsystem) subsystemMap.get(subNames.IntakePistonSubsystem.toString()),
                 (IntakeMotorSubsystem) subsystemMap.get(subNames.IntakeMotorSubsystem.toString()),
-                (VisionCameraSubsystem) subsystemMap.get(subNames.VisionCameraSubsystem.toString()),
-                (CatapultSubsystem) subsystemMap.get(subNames.CatapultSubsystem.toString()));
+                (VisionCameraSubsystem) subsystemMap.get(subNames.VisionCameraSubsystem.toString()));
 
         ShootMoveShoot ShootMoveShoot = new ShootMoveShoot(
                 (DriveSubsystem) subsystemMap.get(subNames.DriveSubsystem.toString()),
-                (CatapultSubsystem) subsystemMap.get(subNames.CatapultSubsystem.toString()),
                 (IntakePistonSubsystem) subsystemMap.get(subNames.IntakePistonSubsystem.toString()),
                 (IntakeMotorSubsystem) subsystemMap.get(subNames.IntakeMotorSubsystem.toString()),
                 (VisionCameraSubsystem) subsystemMap.get(subNames.VisionCameraSubsystem.toString()));
@@ -76,8 +73,7 @@ public class AutoCommandManager {
                 (DriveSubsystem) subsystemMap.get(subNames.DriveSubsystem.toString()),
                 (IntakePistonSubsystem) subsystemMap.get(subNames.IntakePistonSubsystem.toString()),
                 (IntakeMotorSubsystem) subsystemMap.get(subNames.IntakeMotorSubsystem.toString()),
-                (VisionCameraSubsystem) subsystemMap.get(subNames.VisionCameraSubsystem.toString()),
-                (CatapultSubsystem) subsystemMap.get(subNames.CatapultSubsystem.toString()));
+                (VisionCameraSubsystem) subsystemMap.get(subNames.VisionCameraSubsystem.toString()));
 
         // Adding auto paths to the Shuffleboard
         ShuffleboardUtility.getInstance().setDefaultAutonOptions("(None)", null);

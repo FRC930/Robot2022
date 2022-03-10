@@ -14,20 +14,12 @@ import edu.wpi.first.util.net.PortForwarder;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
-import frc.robot.commands.BallHolderCommand;
-import frc.robot.commands.CatapultCommand;
-import frc.robot.commands.CatapultCommandGroup;
 import frc.robot.commands.DriveCommand;
 import frc.robot.commands.IndexerForwardCommand;
 import frc.robot.commands.LEDCommand;
 import frc.robot.commands.ToggleShifterCommand;
-import frc.robot.commands.CatapultCommand.CatapultPower;
 import frc.robot.commands.LEDCommand.LEDPatterns;
 import frc.robot.commands.autocommands.AutoCommandManager;
 import frc.robot.commands.autocommands.AutoCommandManager.subNames;
@@ -38,7 +30,6 @@ import frc.robot.commands.endgamecommands.EndgameCloseClawSingleCommand;
 import frc.robot.commands.endgamecommands.EndgameManagerCommand;
 import frc.robot.commands.intakecommands.intakePistonCommands.*;
 import frc.robot.commands.intakecommands.intakemotorcommands.*;
-import frc.robot.subsystems.CatapultSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.EndgameMotorSubsystem;
 import frc.robot.subsystems.EndgamePistonSubsystem;
@@ -131,10 +122,8 @@ public class RobotContainer {
 
     // ----- CATAPULT -----\\
 
-    // Catapult Subsystem
-    private final CatapultSubsystem catapultSubsystem;
+    // Indexer subsystem
     private final IndexerMotorSubsystem indexerMotorSubsystem;
-    private final BallHolderCommand ballHolderCommand;
 
     // ----- ENDGAME -----\\
     private final EndgameManagerCommand endgameManager;
@@ -205,10 +194,7 @@ public class RobotContainer {
         driveSubsystem = new DriveSubsystem(1, 8, 2, 7);
 
         // ----- CATAPULT SUBSYSTEM INITS -----\\
-        // TODO:ADD SOLENOID ID 7 FOR HARD-STOP
-        catapultSubsystem = new CatapultSubsystem(2, 3, 4, 5, 6, 7, 13);
         indexerMotorSubsystem = new IndexerMotorSubsystem(6);
-        ballHolderCommand = new BallHolderCommand(catapultSubsystem);
 
         // ----- ENDGAME SUBSYSTEM INITS -----\\
         // Endgame Motor Subsystems
@@ -229,11 +215,9 @@ public class RobotContainer {
          */
         autoManager = new AutoCommandManager();
         autoManager.addSubsystem(subNames.DriveSubsystem, driveSubsystem);
-        autoManager.addSubsystem(subNames.CatapultSubsystem, catapultSubsystem);
         autoManager.addSubsystem(subNames.IntakeMotorSubsystem, intakeMotorSubsystem);
         autoManager.addSubsystem(subNames.IntakePistonSubsystem, intakePistonSubsystem);
         autoManager.addSubsystem(subNames.VisionCameraSubsystem, reflectiveTapeCameraSubsystem);
-        autoManager.addSubsystem(subNames.CatapultSubsystem, catapultSubsystem);
 
         // Create instance for sensor singletons-needed for simulation to work properly.
         BallSensorUtility.getInstance();
@@ -314,7 +298,6 @@ public class RobotContainer {
         scheduler.setDefaultCommand(endgamePistonR3, new EndgameCloseClawSingleCommand(endgamePistonR3));
         scheduler.setDefaultCommand(endgamePiston4, new EndgameCloseClawSingleCommand(endgamePiston4));
         scheduler.setDefaultCommand(indexerMotorSubsystem, new IndexerForwardCommand(indexerMotorSubsystem, false));
-        scheduler.setDefaultCommand(catapultSubsystem, new BallHolderCommand(catapultSubsystem));
     }
 
     /**
@@ -348,27 +331,7 @@ public class RobotContainer {
 
         // Shifts the drivetrain when shifter trigger is pulled
         driverController.getRightTrigger().whileActiveOnce(toggleShifterCommand);
-
-        SmartDashboard.putNumber("Catapult Timeout", 0.25);
-        Timer timeout = new Timer();
-        timeout.start();
-        /*
-         * Launches a cargo ball when the launch button is pressed. The delay is needed
-         * in order to give the ball holder time to open before firing. Catapult command
-         * interrupts default and end() opens the ball holder.
-         */
-        driverController.getLeftBumper().whileActiveOnce(new InstantCommand(() -> {
-            if (timeout.get() > 0.75) {
-                CommandScheduler.getInstance().schedule(new CatapultCommandGroup(catapultSubsystem,
-                        CatapultPower.AllPistons, SmartDashboard.getNumber("Catapult Timeout", 0.25)));
-                timeout.reset();
-                timeout.start();
-            }
-        }));
-        driverController.getPOVUpTrigger().whileActiveOnce(
-                new InstantCommand(catapultSubsystem::setLongShot));
-        driverController.getPOVDownTrigger().whileActiveOnce(
-                new InstantCommand(catapultSubsystem::setShortShot));
+        
         // Checks if LB is pressed, then it will engage the intake pistons
         codriverController.getLeftBumper().whileActiveOnce(
                 new ParallelCommandGroup(engageIntakePistonsCommand));
@@ -390,9 +353,6 @@ public class RobotContainer {
                 .whileActiveOnce(new ParallelCommandGroup(endgameManager, endgamePatternCommand));
 
         driverController.getRightBumper().whileActiveContinuous(hubAimingCommand);
-
-        //Manual Commands
-        codriverController.getRightBumper().whileActiveOnce(ballHolderCommand);
     }
 
     /**

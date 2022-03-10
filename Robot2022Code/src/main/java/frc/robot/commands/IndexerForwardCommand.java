@@ -12,7 +12,6 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 
 import frc.robot.subsystems.IndexerMotorSubsystem;
 import frc.robot.utilities.BallSensorUtility;
-import frc.robot.utilities.CatapultReturnSensorUtility;
 
 //-------- COMMAND CLASS --------\\
 /**
@@ -49,7 +48,6 @@ public class IndexerForwardCommand extends CommandBase {
         motor = indexer;
         reversed = isReversed;
         //counter = 0;
-        CatapultReturnSensorUtility.getInstance();
         addRequirements(indexer);
     }
 
@@ -86,9 +84,8 @@ public class IndexerForwardCommand extends CommandBase {
              * setSpeed(0.0);
              * }
              */
-            if ((!sensorUtility.catapultIsTripped()
-                    || !sensorUtility.indexerIsTripped())
-                    && CatapultReturnSensorUtility.getInstance().catapultIsReset()) {
+            if (!sensorUtility.catapultIsTripped()
+                    || !sensorUtility.indexerIsTripped()) {
                 setSpeed(MOTOR_SPEED);
             }
             else{

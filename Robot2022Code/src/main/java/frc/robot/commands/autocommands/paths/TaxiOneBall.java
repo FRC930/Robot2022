@@ -4,11 +4,7 @@ package frc.robot.commands.autocommands.paths;
 
 import java.util.List;
 
-import frc.robot.commands.BallHolderCommand;
-import frc.robot.commands.CatapultCommand;
-import frc.robot.commands.OpenBallHolderCommand;
 import frc.robot.commands.Ramsete930Command;
-import frc.robot.commands.CatapultCommand.CatapultPower;
 import edu.wpi.first.math.controller.RamseteController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -17,9 +13,6 @@ import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
-import frc.robot.subsystems.CatapultSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.utilities.PathPlannerSequentialCommandGroupUtility;
 
@@ -53,7 +46,7 @@ public class TaxiOneBall extends PathPlannerSequentialCommandGroupUtility {
      * @param driveSubsystem
      * @param catapultSubsystem
      */
-    public TaxiOneBall(DriveSubsystem driveSubsystem, CatapultSubsystem catapultSubsystem) {
+    public TaxiOneBall(DriveSubsystem driveSubsystem) {
 
         // initializing gyro for pose2d
         m_odometry = driveSubsystem.getOdometry();
@@ -102,18 +95,7 @@ public class TaxiOneBall extends PathPlannerSequentialCommandGroupUtility {
         //----- AUTO SEQUENCE -----\\
 
         addCommands(
-            r_exitTarmac,
-
-            new WaitCommand(1.0),
-            new ParallelRaceGroup(                                
-                new BallHolderCommand(catapultSubsystem, true),
-                new WaitCommand(2)
-            ),
-            new WaitCommand(2.0),
-            new OpenBallHolderCommand(catapultSubsystem).withTimeout(0.5),
-
-            new CatapultCommand(catapultSubsystem, CatapultPower.AllPistons)
-                .withTimeout(CatapultSubsystem.SHOOT_TIMEOUT)
+            r_exitTarmac
         );
 
     } // End of Constructor

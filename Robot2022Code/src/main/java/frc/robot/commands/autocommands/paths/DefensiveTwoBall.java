@@ -4,11 +4,7 @@ package frc.robot.commands.autocommands.paths;
 
 import com.pathplanner.lib.PathPlanner;
 
-import frc.robot.commands.BallHolderCommand;
-import frc.robot.commands.CatapultCommand;
-import frc.robot.commands.OpenBallHolderCommand;
 import frc.robot.commands.Ramsete930Command;
-import frc.robot.commands.CatapultCommand.CatapultPower;
 import frc.robot.commands.autocommands.AutonomousAimCommand;
 import frc.robot.commands.autocommands.ResetAutonomousCommand;
 import frc.robot.commands.intakecommands.intakePistonCommands.EngageIntakePistonsCommand;
@@ -17,11 +13,9 @@ import edu.wpi.first.math.controller.RamseteController;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.utilities.PathPlannerSequentialCommandGroupUtility;
-import frc.robot.subsystems.CatapultSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IntakeMotorSubsystem;
 import frc.robot.subsystems.IntakePistonSubsystem;
@@ -65,8 +59,7 @@ public class DefensiveTwoBall extends PathPlannerSequentialCommandGroupUtility {
         DriveSubsystem driveSubsystem,
         IntakePistonSubsystem intakePistonSubsystem,
         IntakeMotorSubsystem intakeMotorSubsystem,
-        VisionCameraSubsystem visionCameraSubsystem,
-        CatapultSubsystem catapultSubsystem
+        VisionCameraSubsystem visionCameraSubsystem
     ) {
 
         // initializing gyro for pose2d
@@ -117,7 +110,6 @@ public class DefensiveTwoBall extends PathPlannerSequentialCommandGroupUtility {
         // the wait command ends
 
         addCommands(
-            new InstantCommand(catapultSubsystem::setShortShot),
             new ResetAutonomousCommand(t_exitTarmac.getInitialPose(), driveSubsystem),
             new ParallelRaceGroup(
                 new EngageIntakePistonsCommand(intakePistonSubsystem),
@@ -129,21 +121,7 @@ public class DefensiveTwoBall extends PathPlannerSequentialCommandGroupUtility {
                 new AutonomousAimCommand(visionCameraSubsystem, driveSubsystem),
                 new WaitCommand(1)
             ),
-            new CatapultCommand(catapultSubsystem, CatapultPower.AllPistons)
-                .withTimeout(CatapultSubsystem.SHOOT_TIMEOUT),
 
-            
-            //new WaitCommand(1.25),//idea 2 sec
-            new WaitCommand(1.0),
-            new ParallelRaceGroup(                                
-                new BallHolderCommand(catapultSubsystem, true),
-                new WaitCommand(2)
-            ),
-            new WaitCommand(2.0),
-            new OpenBallHolderCommand(catapultSubsystem).withTimeout(0.5),
-
-            new CatapultCommand(catapultSubsystem, CatapultPower.AllPistons)
-                .withTimeout(CatapultSubsystem.SHOOT_TIMEOUT),
             new WaitCommand(0.25),
             new ParallelRaceGroup(
                 new EngageIntakePistonsCommand(intakePistonSubsystem),
@@ -151,9 +129,7 @@ public class DefensiveTwoBall extends PathPlannerSequentialCommandGroupUtility {
                 r_adjacentEnemyCargo
             ),
             new StopDrive(driveSubsystem),
-            new WaitCommand(2),
-            new CatapultCommand(catapultSubsystem, CatapultPower.LargePistons)
-                .withTimeout(CatapultSubsystem.SHOOT_TIMEOUT)
+            new WaitCommand(2)
         );
 
     } // End of Constructor
