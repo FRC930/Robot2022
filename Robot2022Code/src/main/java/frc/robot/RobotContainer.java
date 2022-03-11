@@ -46,7 +46,7 @@ import frc.robot.commands.autocommands.AutoCommandManager.subNames;
 import frc.robot.commands.autovisioncommands.HubAimingCommand;
 import frc.robot.commands.endgamecommands.EndgameArmCommand;
 import frc.robot.commands.endgamecommands.EndgameArmRevCommand;
-import frc.robot.commands.endgamecommands.EndgameCloseClawSingleCommand;
+import frc.robot.commands.endgamecommands.EndgameCloseClawCommand;
 import frc.robot.commands.endgamecommands.EndgameManagerCommand;
 import frc.robot.commands.intakecommands.intakePistonCommands.*;
 import frc.robot.commands.intakecommands.intakemotorcommands.*;
@@ -158,8 +158,7 @@ public class RobotContainer {
     // Endgame Piston Subsystems
     private final EndgamePistonSubsystem endgamePiston1;
     private final EndgamePistonSubsystem endgamePiston2;
-    private final EndgamePistonSubsystem endgamePistonL3;
-    private final EndgamePistonSubsystem endgamePistonR3;
+    private final EndgamePistonSubsystem endgamePiston3;
     private final EndgamePistonSubsystem endgamePiston4;
 
     private final HubAimingCommand hubAimingCommand;
@@ -236,8 +235,7 @@ public class RobotContainer {
         // Endgame Piston Subsystems
         endgamePiston1 = new EndgamePistonSubsystem(8);
         endgamePiston2 = new EndgamePistonSubsystem(9);
-        endgamePistonL3 = new EndgamePistonSubsystem(10);
-        endgamePistonR3 = new EndgamePistonSubsystem(14);
+        endgamePiston3 = new EndgamePistonSubsystem(10);
         endgamePiston4 = new EndgamePistonSubsystem(11);
 
         /*
@@ -294,7 +292,7 @@ public class RobotContainer {
         endgameArmCommand = new EndgameArmCommand(endgameMotorSubsystem);
         endgameArmRevCommand = new EndgameArmRevCommand(endgameMotorSubsystem);
         endgameManager = new EndgameManagerCommand(endgameMotorSubsystem,
-                endgamePiston1, endgamePiston2, endgamePistonL3, endgamePistonR3, endgamePiston4);
+                endgamePiston1, endgamePiston2, endgamePiston3, endgamePiston4);
 
         hubAimingCommand = new HubAimingCommand(reflectiveTapeCameraSubsystem, driveSubsystem);
 
@@ -328,11 +326,10 @@ public class RobotContainer {
         // scheduler.setDefaultCommand(endgameMotorSubsystem, new
         // EndgameRotateHorizonalCommand(endgameMotorSubsystem)); // -GET ENCODER
         // WORKING
-        scheduler.setDefaultCommand(endgamePiston1, new EndgameCloseClawSingleCommand(endgamePiston1));
-        scheduler.setDefaultCommand(endgamePiston2, new EndgameCloseClawSingleCommand(endgamePiston2));
-        scheduler.setDefaultCommand(endgamePistonL3, new EndgameCloseClawSingleCommand(endgamePistonL3));
-        scheduler.setDefaultCommand(endgamePistonR3, new EndgameCloseClawSingleCommand(endgamePistonR3));
-        scheduler.setDefaultCommand(endgamePiston4, new EndgameCloseClawSingleCommand(endgamePiston4));
+        scheduler.setDefaultCommand(endgamePiston1, new EndgameCloseClawCommand(endgamePiston1));
+        scheduler.setDefaultCommand(endgamePiston2, new EndgameCloseClawCommand(endgamePiston2));
+        scheduler.setDefaultCommand(endgamePiston3, new EndgameCloseClawCommand(endgamePiston3));
+        scheduler.setDefaultCommand(endgamePiston4, new EndgameCloseClawCommand(endgamePiston4));
         scheduler.setDefaultCommand(indexerMotorSubsystem, new IndexerForwardCommand(indexerMotorSubsystem, false));
         scheduler.setDefaultCommand(catapultSubsystem, new BallHolderCommand(catapultSubsystem));
     }
@@ -481,16 +478,11 @@ public class RobotContainer {
                 endgamePiston2.closed();
             }
             if (driverController.getBButton().get()) {
-                endgamePistonL3.open();
+                endgamePiston3.open();
             } else {
-                endgamePistonL3.closed();
+                endgamePiston3.closed();
             }
             if (driverController.getXButton().get()) {
-                endgamePistonR3.open();
-            } else {
-                endgamePistonR3.closed();
-            }
-            if (driverController.getRightBumper().get()) {
                 endgamePiston4.open();
             } else {
                 endgamePiston4.closed();

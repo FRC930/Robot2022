@@ -14,11 +14,11 @@ import frc.robot.subsystems.EndgamePistonSubsystem;
 
 //-------- COMMAND CLASS --------\\
 /**
- * <h3>EndgameCloseClawSingleCommand</h3>
+ * <h3>EndgameOpenClawSingleCommand</h3>
  * 
- * Closes one of the endgame claws
+ * Opens one of the endgame claws
  */
-public class EndgameCloseClawSingleCommand extends CommandBase{
+public class EndgameOpenClawCommand extends CommandBase {
 
     //-------- VARIABLES --------\\
 
@@ -26,26 +26,26 @@ public class EndgameCloseClawSingleCommand extends CommandBase{
 
     //-------- CONSTRUCTOR --------\\
     /**
-     * <h3>EndgameCloseClawSingleCommand</h3>
+     * <h3>EndgameOpenClawSingleCommand</h3>
      * 
-     * Closes one of the endgame claws
+     * Opens one of the endgame claws
      * 
-     * @param pistonSubsystem the piston you want to close
-     */
-    public EndgameCloseClawSingleCommand(EndgamePistonSubsystem pistonSubsystem) {
+     * @param pistonSubsystem the piston to be opened
+     */ 
+    public EndgameOpenClawCommand(EndgamePistonSubsystem pistonSubsystem) {
         piston = pistonSubsystem;
         addRequirements(pistonSubsystem);
     }
+    
+    //-------- METHODS --------\\
 
-    //-------- METHODS  --------\\
-    
-    public void initialize() { // runs once when called
-        piston.closed();
+    public void initialize() { // Runs once when called
+        piston.open();
     }
-    
+       
     //Leave false for default command
-    @Override
-    public boolean isFinished() { // when true, ends command
-       return false;
-    } 
-} // End of class EndgameCloseClawSingleCommand
+    public boolean isFinished() { // When true ends command
+        return false;
+    }
+
+} // End of class EndgameOpenClawSingleCommand

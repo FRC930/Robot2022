@@ -60,8 +60,8 @@ public class EndgameManagerCommand extends CommandBase {
      * @param endgamePiston4        the pair of left and right 4 pistons
      */
     public EndgameManagerCommand(EndgameMotorSubsystem endgameMotorSubsystem, EndgamePistonSubsystem endgamePiston1,
-            EndgamePistonSubsystem endgamePiston2, EndgamePistonSubsystem endgamePistonL3,
-            EndgamePistonSubsystem endgamePistonR3, EndgamePistonSubsystem endgamePiston4) {
+            EndgamePistonSubsystem endgamePiston2, EndgamePistonSubsystem endgamePiston3,
+            EndgamePistonSubsystem endgamePiston4) {
         // Starts at the beginning of the map sequence
         currentState = 1;
         newState = 1;
@@ -78,12 +78,9 @@ public class EndgameManagerCommand extends CommandBase {
         commands.put(2,
                 new SequentialCommandGroup(
                         new ParallelRaceGroup(
-                                new EndgameOpenClawPairCommand(endgamePistonL3,
-                                        endgamePistonR3),
+                                new EndgameOpenClawCommand(endgamePiston3),
                                 new WaitCommand(ENDGAME_PISTON_DELAY)),
-                        new ParallelCommandGroup(
-                                new EndgameCloseWhenTouching(endgamePistonL3, 4),
-                                new EndgameCloseWhenTouching(endgamePistonR3, 4)),
+                        new EndgameCloseWhenTouching(endgamePiston3, 4),
                         new WaitCommand(ENDGAME_PISTON_DELAY),
                         new EndgameIncrementStateCommand(this)));
         // Opens #1 claws
@@ -91,7 +88,7 @@ public class EndgameManagerCommand extends CommandBase {
         commands.put(3,
                 new SequentialCommandGroup(
                         new ParallelRaceGroup(
-                                new EndgameOpenClawSingleCommand(endgamePiston1),
+                                new EndgameOpenClawCommand(endgamePiston1),
                                 new WaitCommand(ENDGAME_PISTON_DELAY)),
                         new ParallelRaceGroup(
                                 new EndgameArmCommand(endgameMotorSubsystem),
@@ -102,8 +99,10 @@ public class EndgameManagerCommand extends CommandBase {
         // Sets arm to vertical
         commands.put(4,
                 new SequentialCommandGroup(
-                        new ParallelRaceGroup(new EndgameRotateVerticalCommand(endgameMotorSubsystem,
-                                EndgamePosition.SwingPosition), new WaitCommand(2.0)),
+                        new ParallelRaceGroup(
+                                new EndgameRotateVerticalCommand(endgameMotorSubsystem,
+                                        EndgamePosition.SwingPosition),
+                                new WaitCommand(2.0)),
                         new EndgameIncrementStateCommand(this)));
         // Opens #3 and #4 claws
         // Gives time for robot swing
@@ -111,9 +110,8 @@ public class EndgameManagerCommand extends CommandBase {
         commands.put(5,
                 new SequentialCommandGroup(
                         new ParallelRaceGroup(
-                                new EndgameOpenClawPairCommand(endgamePistonL3,
-                                        endgamePistonR3),
-                                new EndgameOpenClawSingleCommand(endgamePiston4),
+                                new EndgameOpenClawCommand(endgamePiston3),
+                                new EndgameOpenClawCommand(endgamePiston4),
                                 new WaitCommand(0.25)),
                         // Rotates the arm to overcome backwards bounce
                         new EndgameArmCommand(endgameMotorSubsystem).withTimeout(1.0),
@@ -122,25 +120,21 @@ public class EndgameManagerCommand extends CommandBase {
         commands.put(6,
                 new SequentialCommandGroup(
                         new ParallelRaceGroup(
-                                new EndgameCloseClawSingleCommand(endgamePiston4),
-                                new EndgameOpenClawPairCommand(endgamePistonL3,
-                                        endgamePistonR3),
-                               new WaitCommand(0.01)),
+                                new EndgameCloseClawCommand(endgamePiston4),
+                                new EndgameOpenClawCommand(endgamePiston3),
+                                new WaitCommand(0.01)),
                         new ParallelRaceGroup(
                                 new EndgameArmCommand(endgameMotorSubsystem),
-                                new ParallelCommandGroup(
-                                        new EndgameCloseWhenTouching(endgamePistonL3, 4),
-                                        new EndgameCloseWhenTouching(endgamePistonR3, 4)
-                                )
-                        ),
+                                new EndgameCloseWhenTouching(
+                                        endgamePiston3, 4)),
                         new EndgameArmCommand(endgameMotorSubsystem, 0.5).withTimeout(1.0),
-                        //new WaitCommand(ENDGAME_PISTON_DELAY),
+                        // new WaitCommand(ENDGAME_PISTON_DELAY),
                         new EndgameIncrementStateCommand(this)));
         // Opens #2 claws-NOTE:Claws closed after delay ends due to default command
         commands.put(7,
                 new SequentialCommandGroup(
                         new ParallelRaceGroup(
-                                new EndgameOpenClawSingleCommand(endgamePiston2),
+                                new EndgameOpenClawCommand(endgamePiston2),
                                 new WaitCommand(ENDGAME_RELEASE_DELAY)),
                         new EndgameIncrementStateCommand(this)));
     }
