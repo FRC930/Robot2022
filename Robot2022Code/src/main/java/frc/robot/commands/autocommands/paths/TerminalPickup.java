@@ -39,8 +39,9 @@ public class TerminalPickup extends PathPlannerSequentialCommandGroupUtility {
     //----- CONSTANTS -----\\
 
     // Movement Control
-    private final double MAX_SPEED = 5;
-    private final double MAX_ACCELERATION = 4;
+    //MAKE SURE THERE IS LOTS OF SPACE BEHIND TERMINAL WHEN RUNNING IN FULL SPEED
+    private final double MAX_SPEED = 5; //Set to 3 when testing
+    private final double MAX_ACCELERATION = 4; //Set to 2 when testing
 
     // Ramsete Controller Parameters
     private final double RAMSETE_B = 2;
@@ -165,7 +166,7 @@ public class TerminalPickup extends PathPlannerSequentialCommandGroupUtility {
             new OpenBallHolderCommand(catapultSubsystem),
             new WaitCommand(1.0),
 
-            new CatapultCommand(catapultSubsystem, CatapultPower.AllPistons)
+            new CatapultCommand(catapultSubsystem, CatapultPower.AllPistons) //Set to SmallPistons when testing
                     .withTimeout(CatapultSubsystem.SHOOT_TIMEOUT),
             new WaitCommand(0.5),
             new ParallelRaceGroup(
@@ -174,7 +175,7 @@ public class TerminalPickup extends PathPlannerSequentialCommandGroupUtility {
             ),
             new WaitCommand(1.0),
             new OpenBallHolderCommand(catapultSubsystem).withTimeout(0.5),
-            new CatapultCommand(catapultSubsystem, CatapultPower.AllPistons)
+            new CatapultCommand(catapultSubsystem, CatapultPower.AllPistons) //Set to SmallPistons when testing
                     .withTimeout(CatapultSubsystem.SHOOT_TIMEOUT),
 
             new ParallelRaceGroup(
@@ -201,7 +202,7 @@ public class TerminalPickup extends PathPlannerSequentialCommandGroupUtility {
             new WaitCommand(0.5),
 
             
-            new CatapultCommand(catapultSubsystem, CatapultPower.AllPistons)
+            new CatapultCommand(catapultSubsystem, CatapultPower.AllPistons) //Set to SmallPistons when testing
                     .withTimeout(CatapultSubsystem.SHOOT_TIMEOUT),
             new WaitCommand(0.5),
             new ParallelRaceGroup(
@@ -210,7 +211,7 @@ public class TerminalPickup extends PathPlannerSequentialCommandGroupUtility {
             ),
             new WaitCommand(1.0),
             new OpenBallHolderCommand(catapultSubsystem).withTimeout(0.5),
-            new CatapultCommand(catapultSubsystem, CatapultPower.AllPistons)
+            new CatapultCommand(catapultSubsystem, CatapultPower.AllPistons) //Set to SmallPistons when testing
                     .withTimeout(CatapultSubsystem.SHOOT_TIMEOUT));
     } // End of Constructor
 } // End of Class

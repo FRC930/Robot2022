@@ -79,6 +79,13 @@ public class AutoCommandManager {
                 (VisionCameraSubsystem) subsystemMap.get(subNames.VisionCameraSubsystem.toString()),
                 (CatapultSubsystem) subsystemMap.get(subNames.CatapultSubsystem.toString()));
 
+        DefensiveTwoBall DefensiveTwoBall = new DefensiveTwoBall(
+                (DriveSubsystem) subsystemMap.get(subNames.DriveSubsystem.toString()),
+                (IntakePistonSubsystem) subsystemMap.get(subNames.IntakePistonSubsystem.toString()),
+                (IntakeMotorSubsystem) subsystemMap.get(subNames.IntakeMotorSubsystem.toString()),
+                (VisionCameraSubsystem) subsystemMap.get(subNames.VisionCameraSubsystem.toString()),
+                (CatapultSubsystem) subsystemMap.get(subNames.CatapultSubsystem.toString()));
+
         // Adding auto paths to the Shuffleboard
         ShuffleboardUtility.getInstance().setDefaultAutonOptions("(None)", null);
         ShuffleboardUtility.getInstance().addAutonOptions("defaultAutoPathCommand", defaultAutoPathCommand);
@@ -88,6 +95,7 @@ public class AutoCommandManager {
         // ShuffleboardUtility.getInstance().addAutonOptions("ShootMoveShoot",
         // ShootMoveShoot);
         ShuffleboardUtility.getInstance().addAutonOptions("TerminalPickup", TerminalPickup);
+        ShuffleboardUtility.getInstance().addAutonOptions("DefensiveTwoBall", DefensiveTwoBall);
     }
 
     /**
