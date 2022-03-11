@@ -29,8 +29,8 @@ public class HubAimingCommand extends CommandBase {
     final double LINEAR_D = 0.0;
     PIDController forwardController = new PIDController(LINEAR_P, 0, LINEAR_D);
 
-    final double ANGULAR_P = 0.28;
-    final double ANGULAR_D = 0.035;
+    final double ANGULAR_P = 0.4;
+    final double ANGULAR_D = 0.01;
     PIDController turnController = new PIDController(ANGULAR_P, 0, ANGULAR_D);
 
     protected VisionCameraSubsystem reflectiveTapeCamera;

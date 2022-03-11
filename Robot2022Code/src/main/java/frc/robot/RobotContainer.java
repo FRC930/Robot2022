@@ -6,14 +6,26 @@ import java.util.List;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 
 import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.cscore.CvSink;
+import edu.wpi.first.cscore.CvSource;
+import edu.wpi.first.cscore.MjpegServer;
 import edu.wpi.first.cscore.UsbCamera;
+import edu.wpi.first.cscore.VideoMode;
+import edu.wpi.first.cscore.VideoMode.PixelFormat;
 import edu.wpi.first.math.controller.RamseteController;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.Trajectory;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.util.net.PortForwarder;
+import edu.wpi.first.util.sendable.Sendable;
+import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.livewindow.LiveWindow;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -161,6 +173,14 @@ public class RobotContainer {
     // ----- AUTONOMOUS -----\\
     private final AutoCommandManager autoManager;
 
+    UsbCamera usbCamera = new UsbCamera("USB Camera 0", 0);
+    MjpegServer mjpegServer1 = new MjpegServer("serve_USB Camera 0", 1181);
+    // Creates the CvSource and MjpegServer [2] and connects them
+    CvSource outputStream = new CvSource("Blur", PixelFormat.kMJPEG, 160, 120, 30);
+    MjpegServer mjpegServer2 = new MjpegServer("serve_Blur", 1182);
+    // Creates the CvSink and connects it to the UsbCamera
+    CvSink cvSink = new CvSink("opencv_USB Camera 0");
+
     // ----- CONSTRUCTOR -----\\
 
     /**
@@ -187,11 +207,11 @@ public class RobotContainer {
         // Camera subsystem for cargo balls
         cargoCameraSubsystem = new VisionCameraSubsystem(
                 VisionCameraSubsystem.CameraType.BALL_DETECTOR);
-        PortForwarder.add(5800, "10.9.30.25", 5800);
-        PortForwarder.add(1181, "10.9.30.25", 1181);
-        PortForwarder.add(1182, "10.9.30.25", 1182);
-        PortForwarder.add(1183, "10.9.30.25", 1183);
-        PortForwarder.add(1184, "10.9.30.25", 1184);
+        // PortForwarder.add(5800, "10.9.30.25", 5800);
+        // PortForwarder.add(1181, "10.9.30.25", 1181);
+        // PortForwarder.add(1182, "10.9.30.25", 1182);
+        // PortForwarder.add(1183, "10.9.30.25", 1183);
+        // PortForwarder.add(1184, "10.9.30.25", 1184);
 
         // ----- INTAKE SUBSYSTEM INITS -----\\
         // Intake has to be instantiated before drive subsystem because we need to
@@ -391,7 +411,7 @@ public class RobotContainer {
 
         driverController.getRightBumper().whileActiveContinuous(hubAimingCommand);
 
-        //Manual Commands
+        // Manual Commands
         codriverController.getRightBumper().whileActiveOnce(ballHolderCommand);
     }
 
@@ -412,11 +432,19 @@ public class RobotContainer {
     }
 
     public void startCamera() {
-        UsbCamera camera = CameraServer.startAutomaticCapture(0);
-        if (camera != null) {
-            camera.setResolution(CAMERA_WIDTH, CAMERA_HEIGHT);
-            camera.setFPS(CAMERA_FPS);
-        }
+        mjpegServer1.setSource(usbCamera);
+
+        cvSink.setSource(usbCamera);
+
+        CameraServer.putVideo("test", 160, 120);
+
+        mjpegServer2.setSource(outputStream);
+
+        // UsbCamera camera = CameraServer.startAutomaticCapture(0);
+        // if (camera != null) {
+        // camera.setResolution(160, 120);
+        // camera.setFPS(30);
+        // }
     }
 
     /**
