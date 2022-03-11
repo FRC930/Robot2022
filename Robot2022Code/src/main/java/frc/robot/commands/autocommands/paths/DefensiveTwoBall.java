@@ -129,7 +129,7 @@ public class DefensiveTwoBall extends PathPlannerSequentialCommandGroupUtility {
                 new AutonomousAimCommand(visionCameraSubsystem, driveSubsystem),
                 new WaitCommand(1)
             ),
-            new CatapultCommand(catapultSubsystem, CatapultPower.AllPistons)
+            new CatapultCommand(catapultSubsystem, CatapultPower.AllPistons) //Set to SmallPistons when testing
                 .withTimeout(CatapultSubsystem.SHOOT_TIMEOUT),
 
             
@@ -142,7 +142,7 @@ public class DefensiveTwoBall extends PathPlannerSequentialCommandGroupUtility {
             new WaitCommand(2.0),
             new OpenBallHolderCommand(catapultSubsystem).withTimeout(0.5),
 
-            new CatapultCommand(catapultSubsystem, CatapultPower.AllPistons)
+            new CatapultCommand(catapultSubsystem, CatapultPower.AllPistons) //Set to SmallPistons when testing
                 .withTimeout(CatapultSubsystem.SHOOT_TIMEOUT),
             new WaitCommand(0.25),
             new ParallelRaceGroup(
@@ -152,7 +152,7 @@ public class DefensiveTwoBall extends PathPlannerSequentialCommandGroupUtility {
             ),
             new StopDrive(driveSubsystem),
             new WaitCommand(2),
-            new CatapultCommand(catapultSubsystem, CatapultPower.LargePistons)
+            new CatapultCommand(catapultSubsystem, CatapultPower.LargePistons) //Set to SmallPistons when testing
                 .withTimeout(CatapultSubsystem.SHOOT_TIMEOUT)
         );
 
