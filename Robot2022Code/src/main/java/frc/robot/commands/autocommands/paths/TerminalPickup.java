@@ -157,21 +157,22 @@ public class TerminalPickup extends PathPlannerSequentialCommandGroupUtility {
             // waits 2.5 seconds,
             // runs the intake pistons
             // moves to position 3
+
             new ParallelRaceGroup(
                 new AutonomousAimCommand(driveSubsystem),
-                new WaitCommand(3)
+                new WaitCommand(0.5)
             ),
-            new OpenBallHolderCommand(catapultSubsystem),
-            new WaitCommand(1.0),
+            // new OpenBallHolderCommand(catapultSubsystem),
+            // new WaitCommand(1.0),
 
             new CatapultCommand(catapultSubsystem, CatapultPower.AllPistons) //Set to SmallPistons when testing
                     .withTimeout(CatapultSubsystem.SHOOT_TIMEOUT),
             new WaitCommand(0.5),
-            new ParallelRaceGroup(
-                new BallHolderCommand(catapultSubsystem, true),
-                new WaitCommand(2)
-            ),
-            new WaitCommand(1.0),
+            // new ParallelRaceGroup(
+            //     new BallHolderCommand(catapultSubsystem, true),
+            //     new WaitCommand(2)
+            // ),
+            // new WaitCommand(1.0),
             new OpenBallHolderCommand(catapultSubsystem).withTimeout(0.5),
             new CatapultCommand(catapultSubsystem, CatapultPower.AllPistons) //Set to SmallPistons when testing
                     .withTimeout(CatapultSubsystem.SHOOT_TIMEOUT),
@@ -194,21 +195,21 @@ public class TerminalPickup extends PathPlannerSequentialCommandGroupUtility {
             // shoots the catapult
             new ParallelRaceGroup(
                 new AutonomousAimCommand(driveSubsystem),
-                new WaitCommand(3)
+                new WaitCommand(0.5)
             ),
-            new OpenBallHolderCommand(catapultSubsystem),
-            new WaitCommand(0.5),
+            // new OpenBallHolderCommand(catapultSubsystem),
+            // new WaitCommand(0.5),
 
             
             new CatapultCommand(catapultSubsystem, CatapultPower.AllPistons) //Set to SmallPistons when testing
                     .withTimeout(CatapultSubsystem.SHOOT_TIMEOUT),
-            new WaitCommand(0.5),
-            new ParallelRaceGroup(
-                new BallHolderCommand(catapultSubsystem, true),
-                new WaitCommand(2)
-            ),
+            // new WaitCommand(0.5),
+            // new ParallelRaceGroup(
+            //     new BallHolderCommand(catapultSubsystem, true),
+            //     new WaitCommand(2)
+            // ),
             new WaitCommand(1.0),
-            new OpenBallHolderCommand(catapultSubsystem).withTimeout(0.5),
+            // new OpenBallHolderCommand(catapultSubsystem).withTimeout(0.5),
             new CatapultCommand(catapultSubsystem, CatapultPower.AllPistons) //Set to SmallPistons when testing
                     .withTimeout(CatapultSubsystem.SHOOT_TIMEOUT));
     } // End of Constructor
