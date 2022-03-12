@@ -37,8 +37,8 @@ public class DefensiveHangarCleanup extends PathPlannerSequentialCommandGroupUti
     //----- CONSTANTS -----\\
 
     // Movement Control
-    private final double MAX_SPEED = 1.0;
-    private final double MAX_ACCELERATION = 1.0;
+    private final double MAX_SPEED = 3.0;
+    private final double MAX_ACCELERATION = 2.5;
 
     // Ramsete Controller Parameters
     private final double RAMSETE_B = 2;
@@ -148,12 +148,12 @@ public class DefensiveHangarCleanup extends PathPlannerSequentialCommandGroupUti
             
             //new WaitCommand(1.25),//idea 2 sec
             new WaitCommand(1.0),
-            new ParallelRaceGroup(                                
-                new BallHolderCommand(catapultSubsystem, true),
-                new WaitCommand(2)
-            ),
-            new WaitCommand(2.0),
-            new OpenBallHolderCommand(catapultSubsystem).withTimeout(0.5),
+            // new ParallelRaceGroup(                                
+            //     new BallHolderCommand(catapultSubsystem, true),
+            //     new WaitCommand(2)
+            // ),
+            //new WaitCommand(2.0),
+            //new OpenBallHolderCommand(catapultSubsystem).withTimeout(0.5),
 
             new CatapultCommand(catapultSubsystem, CatapultPower.SmallPistons) //Set to SmallPistons when testing
                 .withTimeout(CatapultSubsystem.SHOOT_TIMEOUT),
@@ -171,6 +171,7 @@ public class DefensiveHangarCleanup extends PathPlannerSequentialCommandGroupUti
             new EngageIntakePistonsCommand(intakePistonSubsystem),
             new RunIntakeMotorsCommand(intakeMotorSubsystem, false),
             r_farEnemyCargo),
+            new WaitCommand(0.25),
             new CatapultCommand(catapultSubsystem, CatapultPower.SmallPistons) //Set to SmallPistons when testing
                 .withTimeout(CatapultSubsystem.SHOOT_TIMEOUT)
         );
