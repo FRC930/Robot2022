@@ -22,7 +22,6 @@ public class IntakeMotorSubsystem extends SubsystemBase {
      * The motor controller that controls the intake motor
      */
     private final WPI_TalonFX m_intakeMotorController;
-    private final WPI_TalonSRX m_gyroController;
 
     //----- CONSTRUCTOR -----\\
     /**
@@ -32,15 +31,9 @@ public class IntakeMotorSubsystem extends SubsystemBase {
      * hardware
      * 
      * @param intakeID  - Can ID for the intake motor
-     * @param gyroID    - ID for the gyro
      */
-    public IntakeMotorSubsystem(int intakeID, int gyroID) {
-
+    public IntakeMotorSubsystem(int intakeID) {
         m_intakeMotorController = new WPI_TalonFX(intakeID);
-        m_gyroController = new WPI_TalonSRX(gyroID);
-
-        //Sets the subsystem for the gyro to the IntakeMotorSubsystem
-        GyroUtility.getInstance().setGyro(this);
     }
 
     //----- METHODS -----\\
@@ -66,17 +59,5 @@ public class IntakeMotorSubsystem extends SubsystemBase {
      */
     public double getMotorSpeed() {
         return m_intakeMotorController.getMotorOutputPercent();
-    }
-
-    /**
-     * <h3>getIntakeMotor</h3>
-     * 
-     * Returns TalonSRX controller {@link frc.robot.subsystems.DriveSubsystem DriveSubsystem}
-     * needs the talon for the Pigeon onboard.
-     * 
-     * @return intakeMotor
-     */
-    public WPI_TalonSRX getIntakeMotor() {
-        return m_gyroController;
     }
 } // end of class IntakeMotorSubsystem

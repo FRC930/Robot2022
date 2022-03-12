@@ -133,7 +133,7 @@ public class DriveSubsystem extends SubsystemBase {
 
     // Set up odometry for calculating robot position
     private final DifferentialDriveOdometry m_odometry = new DifferentialDriveOdometry(
-            new Rotation2d(Math.toRadians(GyroUtility.getInstance().getGyro().getFusedHeading())));
+            new Rotation2d(Math.toRadians(GyroUtility.getInstance().getGyro().getYaw())));
 
     //----- VARIABLES -----\\
 
@@ -524,7 +524,7 @@ public class DriveSubsystem extends SubsystemBase {
         // Update odometry using the gyro and the wheel rotations
         m_odometry.update(
                 // Create a new Rotation2d object with the reading from the pigeon
-                new Rotation2d(Math.toRadians(GyroUtility.getInstance().getGyro().getFusedHeading())),
+                new Rotation2d(Math.toRadians(GyroUtility.getInstance().getGyro().getYaw())),
                 // Convert raw sensor units to meters
                 getRawLeftSensorPosition()
                         // Convert raw sensor units to wheel rotations

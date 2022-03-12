@@ -1,26 +1,30 @@
 package frc.robot;
 
-import edu.wpi.first.wpilibj2.command.Command;
 import java.util.List;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 
-import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.cscore.MjpegServer;
 import edu.wpi.first.cscore.UsbCamera;
+import edu.wpi.first.cscore.VideoMode.PixelFormat;
 import edu.wpi.first.math.controller.RamseteController;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.Trajectory;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.util.net.PortForwarder;
+import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.PneumaticsModuleType;
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import frc.robot.commands.DriveCommand;
 import frc.robot.commands.IndexerForwardCommand;
 import frc.robot.commands.LEDCommand;
-import frc.robot.commands.ToggleShifterCommand;
 import frc.robot.commands.LEDCommand.LEDPatterns;
+import frc.robot.commands.ToggleShifterCommand;
 import frc.robot.commands.autocommands.AutoCommandManager;
 import frc.robot.commands.autocommands.AutoCommandManager.subNames;
 import frc.robot.commands.autovisioncommands.HubAimingCommand;
@@ -28,8 +32,10 @@ import frc.robot.commands.endgamecommands.EndgameArmCommand;
 import frc.robot.commands.endgamecommands.EndgameArmRevCommand;
 import frc.robot.commands.endgamecommands.EndgameCloseClawSingleCommand;
 import frc.robot.commands.endgamecommands.EndgameManagerCommand;
-import frc.robot.commands.intakecommands.intakePistonCommands.*;
-import frc.robot.commands.intakecommands.intakemotorcommands.*;
+import frc.robot.commands.intakecommands.intakePistonCommands.DisengageIntakePistonsCommand;
+import frc.robot.commands.intakecommands.intakePistonCommands.EngageIntakePistonsCommand;
+import frc.robot.commands.intakecommands.intakemotorcommands.RunIntakeMotorsCommand;
+import frc.robot.commands.intakecommands.intakemotorcommands.StopIntakeMotorsCommand;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.EndgameMotorSubsystem;
 import frc.robot.subsystems.EndgamePistonSubsystem;
@@ -38,13 +44,13 @@ import frc.robot.subsystems.IntakeMotorSubsystem;
 import frc.robot.subsystems.IntakePistonSubsystem;
 import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.ShifterSubsystem;
-import frc.robot.subsystems.VisionCameraSubsystem;
-import frc.robot.utilities.SimulatedDrivetrain;
-import frc.robot.utilities.PathPlannerSequentialCommandGroupUtility;
 import frc.robot.utilities.BallSensorUtility;
 import frc.robot.utilities.DriveCameraUtility;
-import frc.robot.utilities.EndgameSensorUtility;
 import frc.robot.utilities.DriveCameraUtility.BallColor;
+import frc.robot.utilities.EndgameSensorUtility;
+import frc.robot.utilities.GyroUtility;
+import frc.robot.utilities.PathPlannerSequentialCommandGroupUtility;
+import frc.robot.utilities.SimulatedDrivetrain;
 
 public class RobotContainer {
 
@@ -77,12 +83,6 @@ public class RobotContainer {
      * public static final int XB_LEFTSTICK_BUTTON = 9;
      * public static final int XB_RIGHTSTICK_BUTTON = 10;
      */
-    // ----- CAMERA -----\\
-
-    // Camera subsystem for reflective tape
-    private final VisionCameraSubsystem reflectiveTapeCameraSubsystem;
-    // Camera subsystem for cargo balls
-    private final VisionCameraSubsystem cargoCameraSubsystem;
 
     // ----- CAMERA CONSTANTS -----\\
 
@@ -150,6 +150,11 @@ public class RobotContainer {
     // ----- AUTONOMOUS -----\\
     private final AutoCommandManager autoManager;
 
+    UsbCamera driverCamera = new UsbCamera("Driver Camera", 0);
+    MjpegServer mjpegServer = new MjpegServer("Drive Camera Stream", "", 1185);
+    
+    private final Compressor compressor = new Compressor(PneumaticsModuleType.REVPH);
+
     // ----- CONSTRUCTOR -----\\
 
     /**
@@ -169,13 +174,6 @@ public class RobotContainer {
         // ----- LED SUBSYSTEM INITS -----\\
         ledSubsystem = new LEDSubsystem(0);
 
-        // ----- CAMERA SUBSYSTEM INITS -----\\
-        // Camera subsystem for reflective tape
-        reflectiveTapeCameraSubsystem = new VisionCameraSubsystem(
-                VisionCameraSubsystem.CameraType.REFLECTIVE_TAPE);
-        // Camera subsystem for cargo balls
-        cargoCameraSubsystem = new VisionCameraSubsystem(
-                VisionCameraSubsystem.CameraType.BALL_DETECTOR);
         PortForwarder.add(5800, "10.9.30.25", 5800);
         PortForwarder.add(1181, "10.9.30.25", 1181);
         PortForwarder.add(1182, "10.9.30.25", 1182);
@@ -183,9 +181,7 @@ public class RobotContainer {
         PortForwarder.add(1184, "10.9.30.25", 1184);
 
         // ----- INTAKE SUBSYSTEM INITS -----\\
-        // Intake has to be instantiated before drive subsystem because we need to
-        // initialize the gyro
-        intakeMotorSubsystem = new IntakeMotorSubsystem(5, 9);
+        intakeMotorSubsystem = new IntakeMotorSubsystem(5);
         intakePistonSubsystem = new IntakePistonSubsystem(1, 12);
 
         // ----- DRIVETRAIN SUBSYSTEM INITS -----\\
@@ -217,7 +213,6 @@ public class RobotContainer {
         autoManager.addSubsystem(subNames.DriveSubsystem, driveSubsystem);
         autoManager.addSubsystem(subNames.IntakeMotorSubsystem, intakeMotorSubsystem);
         autoManager.addSubsystem(subNames.IntakePistonSubsystem, intakePistonSubsystem);
-        autoManager.addSubsystem(subNames.VisionCameraSubsystem, reflectiveTapeCameraSubsystem);
 
         // Create instance for sensor singletons-needed for simulation to work properly.
         BallSensorUtility.getInstance();
@@ -246,8 +241,6 @@ public class RobotContainer {
         // ----- DRIVETRAIN COMMAND INITS -----\\
         driveCommand = new DriveCommand(
                 driveSubsystem,
-                reflectiveTapeCameraSubsystem,
-                cargoCameraSubsystem,
                 driverController.getController());
 
         // ----- DRIVETRAIN SHIFTER COMMAND INITS -----\\
@@ -260,7 +253,7 @@ public class RobotContainer {
         endgameManager = new EndgameManagerCommand(endgameMotorSubsystem,
                 endgamePiston1, endgamePiston2, endgamePistonL3, endgamePistonR3, endgamePiston4);
 
-        hubAimingCommand = new HubAimingCommand(reflectiveTapeCameraSubsystem, driveSubsystem);
+        hubAimingCommand = new HubAimingCommand(driveSubsystem);
 
         // ----- SETTING BALL COLOR -----\\
         if (DriverStation.getAlliance() == Alliance.Blue) {
@@ -297,7 +290,9 @@ public class RobotContainer {
         scheduler.setDefaultCommand(endgamePistonL3, new EndgameCloseClawSingleCommand(endgamePistonL3));
         scheduler.setDefaultCommand(endgamePistonR3, new EndgameCloseClawSingleCommand(endgamePistonR3));
         scheduler.setDefaultCommand(endgamePiston4, new EndgameCloseClawSingleCommand(endgamePiston4));
-        scheduler.setDefaultCommand(indexerMotorSubsystem, new IndexerForwardCommand(indexerMotorSubsystem, false));
+        scheduler.setDefaultCommand(indexerMotorSubsystem, new IndexerForwardCommand(indexerMotorSubsystem, false));;
+
+        compressor.enableAnalog(100, 115);
     }
 
     /**
@@ -372,11 +367,27 @@ public class RobotContainer {
     }
 
     public void startCamera() {
-        UsbCamera camera = CameraServer.startAutomaticCapture(0);
-        if (camera != null) {
-            camera.setResolution(CAMERA_WIDTH, CAMERA_HEIGHT);
-            camera.setFPS(CAMERA_FPS);
-        }
+        // Set the video mode for the camera. This will tell the camera that we want a
+        // color stream with resolution 160x120
+        driverCamera.setVideoMode(PixelFormat.kMJPEG, 160, 120, 30);
+
+        // Set the source of the stream to the USB camera
+        mjpegServer.setSource(driverCamera);
+        // Set the compression. This gives us an OK quality stream while not chewing
+        // bandwidth
+        mjpegServer.setCompression(37);
+
+        // Get the network table instance
+        var currentNTInstance = NetworkTableInstance.getDefault();
+        // Get the camera publisher table so we can write our camera data
+        var cameraPublisherTable = currentNTInstance.getTable("CameraPublisher");
+        // Set our camera data in the publisher table
+        // This will cause the camera server to recognize the stream
+        cameraPublisherTable.getEntry("Driver Camera/connected").setBoolean(true);
+        cameraPublisherTable.getEntry("Driver Camera/description").setString("Driver Camera");
+        cameraPublisherTable.getEntry("Driver Camera/streams")
+                .setStringArray(new String[] { "mjpg:http://10.9.30.2:1185/?action=stream",
+                        "mjpg:http://172.22.11.2:1185/?action=stream" });
     }
 
     /**

@@ -19,7 +19,6 @@ import frc.robot.utilities.PathPlannerSequentialCommandGroupUtility;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IntakeMotorSubsystem;
 import frc.robot.subsystems.IntakePistonSubsystem;
-import frc.robot.subsystems.VisionCameraSubsystem;
 
 //----- CLASS -----\\
 /**
@@ -58,8 +57,7 @@ public class DefensiveTwoBall extends PathPlannerSequentialCommandGroupUtility {
     public DefensiveTwoBall(
         DriveSubsystem driveSubsystem,
         IntakePistonSubsystem intakePistonSubsystem,
-        IntakeMotorSubsystem intakeMotorSubsystem,
-        VisionCameraSubsystem visionCameraSubsystem
+        IntakeMotorSubsystem intakeMotorSubsystem
     ) {
 
         // initializing gyro for pose2d
@@ -118,7 +116,7 @@ public class DefensiveTwoBall extends PathPlannerSequentialCommandGroupUtility {
             ),
             new StopDrive(driveSubsystem),
             new ParallelRaceGroup(
-                new AutonomousAimCommand(visionCameraSubsystem, driveSubsystem),
+                new AutonomousAimCommand(driveSubsystem),
                 new WaitCommand(1)
             ),
 

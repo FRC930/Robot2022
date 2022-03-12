@@ -1,5 +1,6 @@
 package frc.robot.commands.autovisioncommands;
 
+import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonUtils;
 
 import edu.wpi.first.math.MathUtil;
@@ -8,7 +9,7 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.DriveSubsystem;
-import frc.robot.subsystems.VisionCameraSubsystem;
+import frc.robot.utilities.PhotonVisionUtility;
 import frc.robot.utilities.ShuffleboardUtility;
 import frc.robot.utilities.VisionSmoothingStack;
 import frc.robot.utilities.ShuffleboardUtility.ShuffleBoardData;
@@ -19,6 +20,8 @@ public class HubAimingCommand extends CommandBase {
     final double CAMERA_HEIGHT_METERS = Units.feetToMeters(4);
     // The height of the hub
     final double HUB_HEIGHT_METERS = Units.inchesToMeters(104);
+
+    final double HEIGHT_DIFFERENCE_METERS = HUB_HEIGHT_METERS - Units.inchesToMeters(46);
 
     // The pitch of the camera
     final double CAMERA_PITCH_RADIANS = Units.degreesToRadians(20.0);
@@ -33,21 +36,20 @@ public class HubAimingCommand extends CommandBase {
     final double ANGULAR_D = 0.035;
     PIDController turnController = new PIDController(ANGULAR_P, 0, ANGULAR_D);
 
-    protected VisionCameraSubsystem reflectiveTapeCamera;
+    protected PhotonCamera reflectiveTapeCamera = PhotonVisionUtility.getInstance().getHubTrackingCamera();
     private DriveSubsystem driveSubsystem;
 
-    private VisionSmoothingStack smoothingStack = new VisionSmoothingStack(5);
+    private VisionSmoothingStack smoothingStack = new VisionSmoothingStack(3);
 
-    public HubAimingCommand(VisionCameraSubsystem cameraSubsystem, DriveSubsystem dSubsystem) {
-        reflectiveTapeCamera = cameraSubsystem;
+    public HubAimingCommand(DriveSubsystem dSubsystem) {
         driveSubsystem = dSubsystem;
 
-        addRequirements(cameraSubsystem, dSubsystem);
+        addRequirements(dSubsystem);
     }
 
     @Override
     public void initialize() {
-        reflectiveTapeCamera.getVisionCamera().setDriverMode(false);
+        reflectiveTapeCamera.setDriverMode(false);
 
         driveSubsystem.setVoltages(0, 0);
     }
@@ -57,9 +59,9 @@ public class HubAimingCommand extends CommandBase {
         // Variables to store our speeds
         double forwardSpeed;
         double rotationSpeed;
-        
+
         // Data that we get from the camera
-        var result = reflectiveTapeCamera.getVisionCamera().getLatestResult();
+        var result = reflectiveTapeCamera.getLatestResult();
 
         // If an item is detected
         if (result.hasTargets()) {
@@ -69,6 +71,11 @@ public class HubAimingCommand extends CommandBase {
             // Use the PhotonUtils library to calcluate the distance from the target
             double range = PhotonUtils.calculateDistanceToTargetMeters(CAMERA_HEIGHT_METERS, HUB_HEIGHT_METERS,
                     CAMERA_PITCH_RADIANS, Units.degreesToRadians(smoothingStack.getAveragePitch()));
+
+            range = Math.sqrt(Math.pow(range, 2) - Math.pow(HEIGHT_DIFFERENCE_METERS, 2));
+
+            ShuffleboardUtility.getInstance().putToShuffleboard(ShuffleboardUtility.driverTab,
+                    ShuffleboardKeys.DISTANCE_FROM_GOAL, new ShuffleBoardData<Double>(range));
 
             SmartDashboard.putNumber("Distance from target", range);
 
@@ -106,7 +113,7 @@ public class HubAimingCommand extends CommandBase {
     @Override
     public void end(boolean interrupted) {
         driveSubsystem.setVoltages(0, 0);
-        reflectiveTapeCamera.getVisionCamera().setDriverMode(true);
+        reflectiveTapeCamera.setDriverMode(true);
     }
 
     @Override

@@ -60,20 +60,17 @@ public class AutoCommandManager {
         TaxiTwoBall TwoBallAuto = new TaxiTwoBall(
                 (DriveSubsystem) subsystemMap.get(subNames.DriveSubsystem.toString()),
                 (IntakePistonSubsystem) subsystemMap.get(subNames.IntakePistonSubsystem.toString()),
-                (IntakeMotorSubsystem) subsystemMap.get(subNames.IntakeMotorSubsystem.toString()),
-                (VisionCameraSubsystem) subsystemMap.get(subNames.VisionCameraSubsystem.toString()));
+                (IntakeMotorSubsystem) subsystemMap.get(subNames.IntakeMotorSubsystem.toString()));
 
         ShootMoveShoot ShootMoveShoot = new ShootMoveShoot(
                 (DriveSubsystem) subsystemMap.get(subNames.DriveSubsystem.toString()),
                 (IntakePistonSubsystem) subsystemMap.get(subNames.IntakePistonSubsystem.toString()),
-                (IntakeMotorSubsystem) subsystemMap.get(subNames.IntakeMotorSubsystem.toString()),
-                (VisionCameraSubsystem) subsystemMap.get(subNames.VisionCameraSubsystem.toString()));
+                (IntakeMotorSubsystem) subsystemMap.get(subNames.IntakeMotorSubsystem.toString()));
 
         TerminalPickup TerminalPickup = new TerminalPickup(
                 (DriveSubsystem) subsystemMap.get(subNames.DriveSubsystem.toString()),
                 (IntakePistonSubsystem) subsystemMap.get(subNames.IntakePistonSubsystem.toString()),
-                (IntakeMotorSubsystem) subsystemMap.get(subNames.IntakeMotorSubsystem.toString()),
-                (VisionCameraSubsystem) subsystemMap.get(subNames.VisionCameraSubsystem.toString()));
+                (IntakeMotorSubsystem) subsystemMap.get(subNames.IntakeMotorSubsystem.toString()));
 
         // Adding auto paths to the Shuffleboard
         ShuffleboardUtility.getInstance().setDefaultAutonOptions("(None)", null);

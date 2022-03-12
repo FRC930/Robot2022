@@ -18,7 +18,6 @@ import frc.robot.utilities.PathPlannerSequentialCommandGroupUtility;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IntakeMotorSubsystem;
 import frc.robot.subsystems.IntakePistonSubsystem;
-import frc.robot.subsystems.VisionCameraSubsystem;
 
 //----- CLASS -----\\
 /**
@@ -56,8 +55,7 @@ public class ShootMoveShoot extends PathPlannerSequentialCommandGroupUtility {
      */
     public ShootMoveShoot(
         DriveSubsystem driveSubsystem,
-        IntakePistonSubsystem intakePistonSubsystem, IntakeMotorSubsystem intakeMotorSubsystem,
-        VisionCameraSubsystem visionCameraSubsystem
+        IntakePistonSubsystem intakePistonSubsystem, IntakeMotorSubsystem intakeMotorSubsystem
     ) {
 
         // initializing gyro for pose2d
@@ -90,7 +88,7 @@ public class ShootMoveShoot extends PathPlannerSequentialCommandGroupUtility {
             new WaitCommand(0.5),
             new ResetAutonomousCommand(t_exitTarmac.getInitialPose(), driveSubsystem),
             new ParallelRaceGroup(
-                new AutonomousAimCommand(visionCameraSubsystem, driveSubsystem),
+                new AutonomousAimCommand(driveSubsystem),
                 new WaitCommand(3)
             ),
             new ParallelRaceGroup(
@@ -99,7 +97,7 @@ public class ShootMoveShoot extends PathPlannerSequentialCommandGroupUtility {
                 r_exitTarmac
             ),
             new ParallelRaceGroup(
-                new AutonomousAimCommand(visionCameraSubsystem, driveSubsystem),
+                new AutonomousAimCommand(driveSubsystem),
                 new WaitCommand(3)
             )
         );
