@@ -55,22 +55,37 @@ public class AutoCommandManager {
                 (DriveSubsystem) subsystemMap.get(subNames.DriveSubsystem.toString()));
 
         TaxiOneBall defaultShoot = new TaxiOneBall(
-                (DriveSubsystem) subsystemMap.get(subNames.DriveSubsystem.toString()));
+                (DriveSubsystem) subsystemMap.get(subNames.DriveSubsystem.toString())
+                //(CatapultSubsystem) subsystemMap.get(subNames.CatapultSubsystem.toString())
+                );
 
         TaxiTwoBall TwoBallAuto = new TaxiTwoBall(
                 (DriveSubsystem) subsystemMap.get(subNames.DriveSubsystem.toString()),
                 (IntakePistonSubsystem) subsystemMap.get(subNames.IntakePistonSubsystem.toString()),
-                (IntakeMotorSubsystem) subsystemMap.get(subNames.IntakeMotorSubsystem.toString()));
-
-        ShootMoveShoot ShootMoveShoot = new ShootMoveShoot(
-                (DriveSubsystem) subsystemMap.get(subNames.DriveSubsystem.toString()),
-                (IntakePistonSubsystem) subsystemMap.get(subNames.IntakePistonSubsystem.toString()),
-                (IntakeMotorSubsystem) subsystemMap.get(subNames.IntakeMotorSubsystem.toString()));
+                (IntakeMotorSubsystem) subsystemMap.get(subNames.IntakeMotorSubsystem.toString())
+                //(CatapultSubsystem) subsystemMap.get(subNames.CatapultSubsystem.toString())
+                );
 
         TerminalPickup TerminalPickup = new TerminalPickup(
                 (DriveSubsystem) subsystemMap.get(subNames.DriveSubsystem.toString()),
                 (IntakePistonSubsystem) subsystemMap.get(subNames.IntakePistonSubsystem.toString()),
-                (IntakeMotorSubsystem) subsystemMap.get(subNames.IntakeMotorSubsystem.toString()));
+                (IntakeMotorSubsystem) subsystemMap.get(subNames.IntakeMotorSubsystem.toString())
+                //(CatapultSubsystem) subsystemMap.get(subNames.CatapultSubsystem.toString())
+                );
+
+        DefensiveThreeBall DefensiveThreeBall = new DefensiveThreeBall(
+                (DriveSubsystem) subsystemMap.get(subNames.DriveSubsystem.toString()),
+                (IntakePistonSubsystem) subsystemMap.get(subNames.IntakePistonSubsystem.toString()),
+                (IntakeMotorSubsystem) subsystemMap.get(subNames.IntakeMotorSubsystem.toString())
+                //(CatapultSubsystem) subsystemMap.get(subNames.CatapultSubsystem.toString())
+                );
+
+        DefensiveHangarCleanup DefensiveHangarCleanup = new DefensiveHangarCleanup(
+            (DriveSubsystem) subsystemMap.get(subNames.DriveSubsystem.toString()),
+            (IntakePistonSubsystem) subsystemMap.get(subNames.IntakePistonSubsystem.toString()),
+            (IntakeMotorSubsystem) subsystemMap.get(subNames.IntakeMotorSubsystem.toString())
+            //(CatapultSubsystem) subsystemMap.get(subNames.CatapultSubsystem.toString())
+            );
 
         // Adding auto paths to the Shuffleboard
         ShuffleboardUtility.getInstance().setDefaultAutonOptions("(None)", null);
@@ -81,6 +96,8 @@ public class AutoCommandManager {
         // ShuffleboardUtility.getInstance().addAutonOptions("ShootMoveShoot",
         // ShootMoveShoot);
         ShuffleboardUtility.getInstance().addAutonOptions("TerminalPickup", TerminalPickup);
+        ShuffleboardUtility.getInstance().addAutonOptions("DefensiveThreeBall", DefensiveThreeBall);
+        ShuffleboardUtility.getInstance().addAutonOptions("DefensiveHangarCleanup", DefensiveHangarCleanup);
     }
 
     /**

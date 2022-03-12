@@ -23,11 +23,11 @@ import frc.robot.subsystems.IntakePistonSubsystem;
 
 //----- CLASS -----\\
 /**
- * <h3>TaxiTwoBall</h3>
+ * <h3>DefensiveTwoBall</h3>
  * 
- * Exits the tarmac, intakes, and shoots.
+ * Exits the tarmac, intakes, and shoots. Moves to adjacent enemy cargo, intakes it, and shoots it into the hangar zone.
  */
-public class TaxiTwoBall extends PathPlannerSequentialCommandGroupUtility {
+public class DefensiveThreeBall extends PathPlannerSequentialCommandGroupUtility {
 
     //----- CONSTANTS -----\\
 
@@ -45,9 +45,9 @@ public class TaxiTwoBall extends PathPlannerSequentialCommandGroupUtility {
 
     //----- CONSTRUCTOR -----\\
     /**
-     * <h3>TaxiTwoBall</h3>
+     * <h3>DefensiveTwoBall</h3>
      * 
-     * Exits the tarmac, intakes, and shoots.
+     * Exits the tarmac, intakes, and shoots. Moves to adjacent enemy cargo, intakes it, and shoots it into the hangar zone.
      * 
      * @param driveSubsystem
      * @param intakePistonSubsystem
@@ -55,7 +55,7 @@ public class TaxiTwoBall extends PathPlannerSequentialCommandGroupUtility {
      * @param visionCameraSubsystem
      * @param catapultSubsystem
      */
-    public TaxiTwoBall(
+    public DefensiveThreeBall(
         DriveSubsystem driveSubsystem,
         IntakePistonSubsystem intakePistonSubsystem,
         IntakeMotorSubsystem intakeMotorSubsystem
@@ -67,9 +67,13 @@ public class TaxiTwoBall extends PathPlannerSequentialCommandGroupUtility {
         //----- TRAJECTORIES -----\\
 
         // Robot exits the tarmac, intakes, and shoots
-        Trajectory t_exitTarmac = PathPlanner.loadPath("TaxiTwoBall", MAX_SPEED, MAX_ACCELERATION);
+        Trajectory t_exitTarmac = PathPlanner.loadPath("DefensiveThreeBall1", MAX_SPEED, MAX_ACCELERATION);
+
+        // Robot approaches the adjacent enemy cargo and shoots it into the hangar zone.
+        Trajectory t_adjacentEnemyCargo = PathPlanner.loadPath("DefensiveThreeBall2", MAX_SPEED, MAX_ACCELERATION);
 
         this.addTrajectory(t_exitTarmac);
+        this.addTrajectory(t_adjacentEnemyCargo);
 
         SmartDashboard.putString("Pos1", t_exitTarmac.getInitialPose().toString());
         SmartDashboard.putString("current Gyro Position", m_odometry.getPoseMeters().toString());
@@ -78,8 +82,20 @@ public class TaxiTwoBall extends PathPlannerSequentialCommandGroupUtility {
         // Creates a command that can be added to the command scheduler in the
         // sequential command
 
+
+        // Creates RAMSETE Command for first trajectory
         Ramsete930Command r_exitTarmac = new Ramsete930Command(
             t_exitTarmac,
+            () -> m_odometry.getPoseMeters(),
+            new RamseteController(RAMSETE_B, RAMSETE_ZETA),
+            driveSubsystem.getKinematics(),
+            driveSubsystem::getWheelSpeeds,
+            (Double leftVoltage, Double rightVoltage) -> driveSubsystem.setVoltages(leftVoltage, rightVoltage),
+            driveSubsystem
+        );
+        
+        Ramsete930Command r_adjacentEnemyCargo = new Ramsete930Command(
+            t_adjacentEnemyCargo,
             () -> m_odometry.getPoseMeters(),
             new RamseteController(RAMSETE_B, RAMSETE_ZETA),
             driveSubsystem.getKinematics(),
@@ -91,6 +107,7 @@ public class TaxiTwoBall extends PathPlannerSequentialCommandGroupUtility {
         //----- AUTO SEQUENCE -----\\
         // Parallel Race Group ends these commands because they dont end, they end when
         // the wait command ends
+        // Line up left side of the robot with middle of the tarmac, front right bumper is on the end of the tarmac
 
         addCommands(
             new ResetAutonomousCommand(t_exitTarmac.getInitialPose(), driveSubsystem),
@@ -104,14 +121,21 @@ public class TaxiTwoBall extends PathPlannerSequentialCommandGroupUtility {
                 new AutonomousAimCommand(driveSubsystem),
                 new WaitCommand(1)
             ),
-            // new CatapultCommand(catapultSubsystem, CatapultPower.AllPistons)
+            // new CatapultCommand(catapultSubsystem, CatapultPower.SmallPistons) //Set to SmallPistons when testing
             //     .withTimeout(CatapultSubsystem.SHOOT_TIMEOUT),
 
             
             //new WaitCommand(1.25),//idea 2 sec
-            new WaitCommand(1.0)
-            
-            // new CatapultCommand(catapultSubsystem, CatapultPower.AllPistons)
+            new WaitCommand(1.0),
+            // new CatapultCommand(catapultSubsystem, CatapultPower.SmallPistons) //Set to SmallPistons when testing
+            //     .withTimeout(CatapultSubsystem.SHOOT_TIMEOUT),
+            new ParallelRaceGroup(
+                new EngageIntakePistonsCommand(intakePistonSubsystem),
+                new RunIntakeMotorsCommand(intakeMotorSubsystem, false),
+                r_adjacentEnemyCargo
+            ),
+            new StopDrive(driveSubsystem)
+            // new CatapultCommand(catapultSubsystem, CatapultPower.SmallPistons) //Set to SmallPistons when testing
             //     .withTimeout(CatapultSubsystem.SHOOT_TIMEOUT)
         );
 
