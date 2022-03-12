@@ -45,13 +45,15 @@ public class CatapultCommand extends CommandBase {
     @Override
     public void initialize() {
         if(power == CatapultPower.AllPistons){
-            catapultSubsystem.extendAllPistons();
+            catapultSubsystem.extendSmallPistons();
+            //catapultSubsystem.extendAllPistons();
         }
         else if(power == CatapultPower.SmallPistons){
             catapultSubsystem.extendSmallPistons();
         }
         else if(power == CatapultPower.LargePistons){
-            catapultSubsystem.extendLargePistons();
+            //catapultSubsystem.extendLargePistons();
+            catapultSubsystem.extendSmallPistons();
         }
         else if(power == CatapultPower.SetLongShot){
             catapultSubsystem.setLongShot();

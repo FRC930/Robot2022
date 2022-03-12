@@ -32,7 +32,7 @@ import frc.robot.subsystems.IntakePistonSubsystem;
  * 
  * Exits the tarmac, intakes, and shoots. Moves to adjacent enemy cargo, intakes it, and shoots it into the hangar zone.
  */
-public class DefensiveTwoBall extends PathPlannerSequentialCommandGroupUtility {
+public class DefensiveThreeBall extends PathPlannerSequentialCommandGroupUtility {
 
     //----- CONSTANTS -----\\
 
@@ -60,7 +60,7 @@ public class DefensiveTwoBall extends PathPlannerSequentialCommandGroupUtility {
      * @param visionCameraSubsystem
      * @param catapultSubsystem
      */
-    public DefensiveTwoBall(
+    public DefensiveThreeBall(
         DriveSubsystem driveSubsystem,
         IntakePistonSubsystem intakePistonSubsystem,
         IntakeMotorSubsystem intakeMotorSubsystem,
@@ -73,10 +73,10 @@ public class DefensiveTwoBall extends PathPlannerSequentialCommandGroupUtility {
         //----- TRAJECTORIES -----\\
 
         // Robot exits the tarmac, intakes, and shoots
-        Trajectory t_exitTarmac = PathPlanner.loadPath("DefensiveTwoBall1", MAX_SPEED, MAX_ACCELERATION);
+        Trajectory t_exitTarmac = PathPlanner.loadPath("DefensiveThreeBall1", MAX_SPEED, MAX_ACCELERATION);
 
         // Robot approaches the adjacent enemy cargo and shoots it into the hangar zone.
-        Trajectory t_adjacentEnemyCargo = PathPlanner.loadPath("DefensiveTwoBall2", MAX_SPEED, MAX_ACCELERATION);
+        Trajectory t_adjacentEnemyCargo = PathPlanner.loadPath("DefensiveThreeBall2", MAX_SPEED, MAX_ACCELERATION);
 
         this.addTrajectory(t_exitTarmac);
         this.addTrajectory(t_adjacentEnemyCargo);
@@ -113,6 +113,7 @@ public class DefensiveTwoBall extends PathPlannerSequentialCommandGroupUtility {
         //----- AUTO SEQUENCE -----\\
         // Parallel Race Group ends these commands because they dont end, they end when
         // the wait command ends
+        // Line up left side of the robot with middle of the tarmac, front right bumper is on the end of the tarmac
 
         addCommands(
             new InstantCommand(catapultSubsystem::setShortShot),
@@ -127,7 +128,7 @@ public class DefensiveTwoBall extends PathPlannerSequentialCommandGroupUtility {
                 new AutonomousAimCommand(driveSubsystem),
                 new WaitCommand(1)
             ),
-            new CatapultCommand(catapultSubsystem, CatapultPower.AllPistons) //Set to SmallPistons when testing
+            new CatapultCommand(catapultSubsystem, CatapultPower.SmallPistons) //Set to SmallPistons when testing
                 .withTimeout(CatapultSubsystem.SHOOT_TIMEOUT),
 
             
@@ -140,7 +141,7 @@ public class DefensiveTwoBall extends PathPlannerSequentialCommandGroupUtility {
             new WaitCommand(2.0),
             new OpenBallHolderCommand(catapultSubsystem).withTimeout(0.5),
 
-            new CatapultCommand(catapultSubsystem, CatapultPower.AllPistons) //Set to SmallPistons when testing
+            new CatapultCommand(catapultSubsystem, CatapultPower.SmallPistons) //Set to SmallPistons when testing
                 .withTimeout(CatapultSubsystem.SHOOT_TIMEOUT),
             new WaitCommand(0.25),
             new ParallelRaceGroup(
@@ -150,7 +151,7 @@ public class DefensiveTwoBall extends PathPlannerSequentialCommandGroupUtility {
             ),
             new StopDrive(driveSubsystem),
             new WaitCommand(2),
-            new CatapultCommand(catapultSubsystem, CatapultPower.LargePistons) //Set to SmallPistons when testing
+            new CatapultCommand(catapultSubsystem, CatapultPower.SmallPistons) //Set to SmallPistons when testing
                 .withTimeout(CatapultSubsystem.SHOOT_TIMEOUT)
         );
 

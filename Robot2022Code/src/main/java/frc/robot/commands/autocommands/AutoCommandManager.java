@@ -76,7 +76,7 @@ public class AutoCommandManager {
                 (IntakeMotorSubsystem) subsystemMap.get(subNames.IntakeMotorSubsystem.toString()),
                 (CatapultSubsystem) subsystemMap.get(subNames.CatapultSubsystem.toString()));
 
-        DefensiveTwoBall DefensiveTwoBall = new DefensiveTwoBall(
+        DefensiveThreeBall DefensiveTwoBall = new DefensiveThreeBall(
                 (DriveSubsystem) subsystemMap.get(subNames.DriveSubsystem.toString()),
                 (IntakePistonSubsystem) subsystemMap.get(subNames.IntakePistonSubsystem.toString()),
                 (IntakeMotorSubsystem) subsystemMap.get(subNames.IntakeMotorSubsystem.toString()),
