@@ -3,8 +3,8 @@ package frc.robot.utilities;
 import org.photonvision.PhotonCamera;
 
 public class PhotonVisionUtility {
-    private PhotonCamera hubTracking = new PhotonCamera("CargoCamera");
-    private PhotonCamera ballTracking = new PhotonCamera("PiCamera");
+    private PhotonCamera hubTracking = new PhotonCamera("PiCamera");
+    private PhotonCamera ballTracking = new PhotonCamera("CargoCamera");
 
     private static PhotonVisionUtility instance;
 

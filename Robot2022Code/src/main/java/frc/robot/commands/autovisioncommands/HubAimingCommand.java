@@ -20,6 +20,8 @@ public class HubAimingCommand extends CommandBase {
     // The height of the hub
     final double HUB_HEIGHT_METERS = Units.inchesToMeters(104);
 
+    final double HEIGHT_DIFFERENCE_METERS = HUB_HEIGHT_METERS - Units.inchesToMeters(46);
+
     // The pitch of the camera
     final double CAMERA_PITCH_RADIANS = Units.degreesToRadians(20.0);
 
@@ -36,7 +38,7 @@ public class HubAimingCommand extends CommandBase {
     protected PhotonCamera hubCamera = PhotonVisionUtility.getInstance().getHubTrackingCamera();
     private DriveSubsystem driveSubsystem;
 
-    private VisionSmoothingStack smoothingStack = new VisionSmoothingStack(5);
+    private VisionSmoothingStack smoothingStack = new VisionSmoothingStack(3);
 
     public HubAimingCommand(DriveSubsystem dSubsystem) {
         driveSubsystem = dSubsystem;
@@ -69,6 +71,11 @@ public class HubAimingCommand extends CommandBase {
             double range = PhotonUtils.calculateDistanceToTargetMeters(CAMERA_HEIGHT_METERS, HUB_HEIGHT_METERS,
                     CAMERA_PITCH_RADIANS, Units.degreesToRadians(smoothingStack.getAveragePitch()));
 
+            range = Math.sqrt(Math.pow(range, 2) - Math.pow(HEIGHT_DIFFERENCE_METERS, 2));
+
+            ShuffleboardUtility.getInstance().putToShuffleboard(ShuffleboardUtility.driverTab,
+                    ShuffleboardKeys.DISTANCE_FROM_GOAL, new ShuffleBoardData<Double>(range));
+
             // Use our forward PID controller to calculate how fast we want to go forward
             forwardSpeed = -forwardController.calculate(range, HUB_RANGE_METERS);
 
@@ -76,7 +83,7 @@ public class HubAimingCommand extends CommandBase {
             rotationSpeed = turnController.calculate(smoothingStack.getAverageYaw(), 0);
 
             // Put if we are locked onto the target to the Shuffleboard
-            if (Math.abs(smoothingStack.getAverageYaw()) < 1) {
+            if (Math.abs(smoothingStack.getAverageYaw()) < 2) {
                 ShuffleboardUtility.getInstance().putToShuffleboard(ShuffleboardUtility.driverTab,
                         ShuffleboardKeys.AIMED, new ShuffleBoardData<Boolean>(true));
 
@@ -105,7 +112,7 @@ public class HubAimingCommand extends CommandBase {
     public void end(boolean interrupted) {
         driveSubsystem.setVoltages(0, 0);
         hubCamera.setDriverMode(true);
-        
+
         ShuffleboardUtility.getInstance().putToShuffleboard(ShuffleboardUtility.driverTab,
                 ShuffleboardKeys.AIMED, new ShuffleBoardData<Boolean>(false));
     }
