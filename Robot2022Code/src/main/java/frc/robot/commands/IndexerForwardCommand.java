@@ -84,8 +84,8 @@ public class IndexerForwardCommand extends CommandBase {
              * setSpeed(0.0);
              * }
              */
-            if (!sensorUtility.catapultIsTripped()
-                    || !sensorUtility.indexerIsTripped()) {
+            if (!sensorUtility.intakeIsTripped()
+                    || !sensorUtility.loadedIsTripped()) {
                 setSpeed(MOTOR_SPEED);
             }
             else{
@@ -97,7 +97,7 @@ public class IndexerForwardCommand extends CommandBase {
     private void setSpeed(double motorSpeed) {
         // System.out.println("lastSpeed"+lastSpeed);
         if (lastSpeed != motorSpeed) {
-            motor.setMotorSpeed(motorSpeed);
+            motor.setIntakeMotorSpeed(motorSpeed);
             //System.out.println("Speed" + motorSpeed);
         }
         lastSpeed = motorSpeed;

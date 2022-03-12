@@ -1,6 +1,7 @@
 package frc.robot.utilities;
 
-import edu.wpi.first.wpilibj.DigitalInput;
+import com.playingwithfusion.TimeOfFlight;
+import com.playingwithfusion.TimeOfFlight.RangingMode;
 
 /**
  * <h3>BallSensorUtility</h3>
@@ -17,35 +18,38 @@ public class BallSensorUtility {
         return instance;
     }
 
-    private final int CATAPULTID = 0;
-    private final int INDEXERID = 5;
+    private final int TRIGGER_DISTANCE = 25;
+    private final int INTAKE_ID = 0;
+    private final int LOADED_ID = 5;
 
-    private final DigitalInput catapultSensor;
-    private final DigitalInput indexerSensor;
+    private final TimeOfFlight intakeSensor;
+    private final TimeOfFlight loadedSensor;
 
     // private final Debouncer catapultDebouncer = new Debouncer(0.1, DebounceType.kRising);
 
     private BallSensorUtility(){
-        catapultSensor = new DigitalInput(CATAPULTID);
-        indexerSensor = new DigitalInput(INDEXERID);
+        intakeSensor = new TimeOfFlight(INTAKE_ID);
+        loadedSensor = new TimeOfFlight(LOADED_ID);
+        intakeSensor.setRangingMode(RangingMode.Short, 25);
+        loadedSensor.setRangingMode(RangingMode.Short, 25);
     }
 
 
     /**
-    * <h3>catapultIsTripped</h3>
-    * Returns true if the catapult sensor detects a ball.
+    * <h3>intakeIsTripped</h3>
+    * Returns true if the intake sensor detects a ball.
     * @return if the sensor was tripped
     */
-    public boolean catapultIsTripped() {
-        return !catapultSensor.get();
+    public boolean intakeIsTripped() {
+        return intakeSensor.getRange() < TRIGGER_DISTANCE;
     }
 
     /**
-    * <h3>indexerIsTripped</h3>
-    * Returns true if the indexer sensor detects a ball.
+    * <h3>loadedIsTripped</h3>
+    * Returns true if the loaded sensor detects a ball.
     * @return if the sensor was tripped
     */
-    public boolean indexerIsTripped() {
-        return !indexerSensor.get();
+    public boolean loadedIsTripped() {
+        return loadedSensor.getRange() < TRIGGER_DISTANCE;
     }
 }

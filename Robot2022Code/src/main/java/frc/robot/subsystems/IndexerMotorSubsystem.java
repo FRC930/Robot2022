@@ -14,33 +14,48 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
  */
 public class IndexerMotorSubsystem extends SubsystemBase {
 
-    //----- MOTORS -----\\
+    // ----- MOTORS -----\\
 
-    private final WPI_TalonFX m_indexerMotor;
+    private final WPI_TalonFX m_intakeIndexer;
+    private final WPI_TalonFX m_loadedIndexer;
 
-    //----- CONSTRUCTOR -----\\
+    // ----- CONSTRUCTOR -----\\
     /**
      * <h3>IndexerMotorSubsystem</h3>
      * 
-     * Manages the indexer motor.
+     * Manages the indexer motors.
      * 
-     * @param id    - Can ID of the indexer motor.
+     * @param intakeID - Can ID of the intake indexer motor.
+     * @param loadedID - Can ID of the loaded indexer motor.
      */
-    public IndexerMotorSubsystem(int id){
-        m_indexerMotor = new WPI_TalonFX(id);
-        m_indexerMotor.stopMotor();
+    public IndexerMotorSubsystem(int intakeID, int loadedID) {
+        m_intakeIndexer = new WPI_TalonFX(intakeID);
+        m_intakeIndexer.stopMotor();
+        m_loadedIndexer = new WPI_TalonFX(loadedID);
+        m_loadedIndexer.stopMotor();
     }
 
-    //----- METHODS -----\\
-    
+    // ----- METHODS -----\\
+
     /**
-     * <h3>setMotorSpeed</h3>
+     * <h3>setIntakeMotorSpeed</h3>
      * 
-     * Sets the indexer motor speed.
+     * Sets the intake indexer motor speed.
      * 
      * @param speed the speed to set the motor
      */
-    public void setMotorSpeed(double speed) {
-        m_indexerMotor.set(-speed);
+    public void setIntakeMotorSpeed(double speed) {
+        m_intakeIndexer.set(-speed);
+    }
+
+    /**
+     * <h3>setLoadedMotorSpeed</h3>
+     * 
+     * Sets the loaded indexer motor speed.
+     * 
+     * @param speed the speed to set the motor
+     */
+    public void setLoadedMotorSpeed(double speed) {
+        m_loadedIndexer.set(-speed);
     }
 }

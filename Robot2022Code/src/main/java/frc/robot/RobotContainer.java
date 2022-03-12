@@ -194,7 +194,7 @@ public class RobotContainer {
         driveSubsystem = new DriveSubsystem(1, 8, 2, 7);
 
         // ----- CATAPULT SUBSYSTEM INITS -----\\
-        indexerMotorSubsystem = new IndexerMotorSubsystem(6);
+        indexerMotorSubsystem = new IndexerMotorSubsystem(14, 13);
 
         // ----- ENDGAME SUBSYSTEM INITS -----\\
         // Endgame Motor Subsystems
