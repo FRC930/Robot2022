@@ -87,6 +87,22 @@ public class ShuffleboardUtility {
             }
         }
     }
+    
+    /**
+     * <h3>getFromShuffleboard</h3>
+     * 
+     * This method gets a value from the shuffleboard
+     * 
+     * @param key the value to get from the shuffleboard
+     * @return the value that the shuffleboard has for the key
+     */
+    public ShuffleBoardData<?> getFromShuffleboard(ShuffleboardKeys key) {
+        if (shuffleboardMap.containsKey(key)) {
+            return shuffleboardMap.get(key).m_dataContainer;
+        } else {
+            return null;
+        }
+    }
 
     /**
      * <h3>update</h3>
@@ -156,7 +172,6 @@ public class ShuffleboardUtility {
         INTAKE_SENSOR("Intake Sensor"),
         INTAKE_POSITIONING("Intake Positioning"),
         INTAKE_DIRECTION("Intake Direction"),
-        // CATAPULT_LOADED("Catapult loaded"),
         INTAKE_DOWN("Intake down"),
 
         // ENDGAME

@@ -62,28 +62,24 @@ public class AutoCommandManager {
                 (DriveSubsystem) subsystemMap.get(subNames.DriveSubsystem.toString()),
                 (IntakePistonSubsystem) subsystemMap.get(subNames.IntakePistonSubsystem.toString()),
                 (IntakeMotorSubsystem) subsystemMap.get(subNames.IntakeMotorSubsystem.toString()),
-                (VisionCameraSubsystem) subsystemMap.get(subNames.VisionCameraSubsystem.toString()),
                 (CatapultSubsystem) subsystemMap.get(subNames.CatapultSubsystem.toString()));
 
         ShootMoveShoot ShootMoveShoot = new ShootMoveShoot(
                 (DriveSubsystem) subsystemMap.get(subNames.DriveSubsystem.toString()),
                 (CatapultSubsystem) subsystemMap.get(subNames.CatapultSubsystem.toString()),
                 (IntakePistonSubsystem) subsystemMap.get(subNames.IntakePistonSubsystem.toString()),
-                (IntakeMotorSubsystem) subsystemMap.get(subNames.IntakeMotorSubsystem.toString()),
-                (VisionCameraSubsystem) subsystemMap.get(subNames.VisionCameraSubsystem.toString()));
+                (IntakeMotorSubsystem) subsystemMap.get(subNames.IntakeMotorSubsystem.toString()));
 
         TerminalPickup TerminalPickup = new TerminalPickup(
                 (DriveSubsystem) subsystemMap.get(subNames.DriveSubsystem.toString()),
                 (IntakePistonSubsystem) subsystemMap.get(subNames.IntakePistonSubsystem.toString()),
                 (IntakeMotorSubsystem) subsystemMap.get(subNames.IntakeMotorSubsystem.toString()),
-                (VisionCameraSubsystem) subsystemMap.get(subNames.VisionCameraSubsystem.toString()),
                 (CatapultSubsystem) subsystemMap.get(subNames.CatapultSubsystem.toString()));
 
         DefensiveTwoBall DefensiveTwoBall = new DefensiveTwoBall(
                 (DriveSubsystem) subsystemMap.get(subNames.DriveSubsystem.toString()),
                 (IntakePistonSubsystem) subsystemMap.get(subNames.IntakePistonSubsystem.toString()),
                 (IntakeMotorSubsystem) subsystemMap.get(subNames.IntakeMotorSubsystem.toString()),
-                (VisionCameraSubsystem) subsystemMap.get(subNames.VisionCameraSubsystem.toString()),
                 (CatapultSubsystem) subsystemMap.get(subNames.CatapultSubsystem.toString()));
 
         // Adding auto paths to the Shuffleboard

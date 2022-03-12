@@ -26,7 +26,6 @@ import frc.robot.subsystems.CatapultSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IntakeMotorSubsystem;
 import frc.robot.subsystems.IntakePistonSubsystem;
-import frc.robot.subsystems.VisionCameraSubsystem;
 
 //----- CLASS -----\\
 /**
@@ -67,7 +66,6 @@ public class TerminalPickup extends PathPlannerSequentialCommandGroupUtility {
         DriveSubsystem driveSubsystem,
         IntakePistonSubsystem intakePistonSubsystem,
         IntakeMotorSubsystem intakeMotorSubsystem,
-        VisionCameraSubsystem visionCameraSubsystem,
         CatapultSubsystem catapultSubsystem
     ) {
 
@@ -160,7 +158,7 @@ public class TerminalPickup extends PathPlannerSequentialCommandGroupUtility {
             // runs the intake pistons
             // moves to position 3
             new ParallelRaceGroup(
-                new AutonomousAimCommand(visionCameraSubsystem, driveSubsystem),
+                new AutonomousAimCommand(driveSubsystem),
                 new WaitCommand(3)
             ),
             new OpenBallHolderCommand(catapultSubsystem),
@@ -195,7 +193,7 @@ public class TerminalPickup extends PathPlannerSequentialCommandGroupUtility {
             // This segment of the path aims
             // shoots the catapult
             new ParallelRaceGroup(
-                new AutonomousAimCommand(visionCameraSubsystem, driveSubsystem),
+                new AutonomousAimCommand(driveSubsystem),
                 new WaitCommand(3)
             ),
             new OpenBallHolderCommand(catapultSubsystem),

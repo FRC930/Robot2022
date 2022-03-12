@@ -5,15 +5,14 @@ import java.util.List;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 
-import edu.wpi.first.cameraserver.CameraServer;
-import edu.wpi.first.cscore.CvSink;
-import edu.wpi.first.cscore.CvSource;
 import edu.wpi.first.cscore.MjpegServer;
 import edu.wpi.first.cscore.UsbCamera;
 import edu.wpi.first.cscore.VideoMode.PixelFormat;
 import edu.wpi.first.math.controller.RamseteController;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.Trajectory;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.util.net.PortForwarder;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
@@ -47,7 +46,6 @@ import frc.robot.subsystems.IntakeMotorSubsystem;
 import frc.robot.subsystems.IntakePistonSubsystem;
 import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.ShifterSubsystem;
-import frc.robot.subsystems.VisionCameraSubsystem;
 import frc.robot.utilities.SimulatedDrivetrain;
 import frc.robot.utilities.PathPlannerSequentialCommandGroupUtility;
 import frc.robot.utilities.BallSensorUtility;
@@ -86,12 +84,6 @@ public class RobotContainer {
      * public static final int XB_LEFTSTICK_BUTTON = 9;
      * public static final int XB_RIGHTSTICK_BUTTON = 10;
      */
-    // ----- CAMERA -----\\
-
-    // Camera subsystem for reflective tape
-    private final VisionCameraSubsystem reflectiveTapeCameraSubsystem;
-    // Camera subsystem for cargo balls
-    private final VisionCameraSubsystem cargoCameraSubsystem;
 
     // ----- CAMERA CONSTANTS -----\\
 
@@ -160,13 +152,8 @@ public class RobotContainer {
     // ----- AUTONOMOUS -----\\
     private final AutoCommandManager autoManager;
 
-    UsbCamera usbCamera = new UsbCamera("USB Camera 0", 0);
-    MjpegServer mjpegServer1 = new MjpegServer("serve_USB Camera 0", 1181);
-    // Creates the CvSource and MjpegServer [2] and connects them
-    CvSource outputStream = new CvSource("Blur", PixelFormat.kMJPEG, 160, 120, 30);
-    MjpegServer mjpegServer2 = new MjpegServer("serve_Blur", 1182);
-    // Creates the CvSink and connects it to the UsbCamera
-    CvSink cvSink = new CvSink("opencv_USB Camera 0");
+    UsbCamera driverCamera = new UsbCamera("Driver Camera", 0);
+    MjpegServer mjpegServer = new MjpegServer("Drive Camera Stream", "", 1185);
 
     // ----- CONSTRUCTOR -----\\
 
@@ -187,18 +174,12 @@ public class RobotContainer {
         // ----- LED SUBSYSTEM INITS -----\\
         ledSubsystem = new LEDSubsystem(0);
 
-        // ----- CAMERA SUBSYSTEM INITS -----\\
-        // Camera subsystem for reflective tape
-        reflectiveTapeCameraSubsystem = new VisionCameraSubsystem(
-                VisionCameraSubsystem.CameraType.REFLECTIVE_TAPE);
-        // Camera subsystem for cargo balls
-        cargoCameraSubsystem = new VisionCameraSubsystem(
-                VisionCameraSubsystem.CameraType.BALL_DETECTOR);
-        // PortForwarder.add(5800, "10.9.30.25", 5800);
-        // PortForwarder.add(1181, "10.9.30.25", 1181);
-        // PortForwarder.add(1182, "10.9.30.25", 1182);
-        // PortForwarder.add(1183, "10.9.30.25", 1183);
-        // PortForwarder.add(1184, "10.9.30.25", 1184);
+        // ------ PORT FORWARDING ------- \\
+        PortForwarder.add(5800, "10.9.30.25", 5800);
+        PortForwarder.add(1181, "10.9.30.25", 1181);
+        PortForwarder.add(1182, "10.9.30.25", 1182);
+        PortForwarder.add(1183, "10.9.30.25", 1183);
+        PortForwarder.add(1184, "10.9.30.25", 1184);
 
         // ----- INTAKE SUBSYSTEM INITS -----\\
         // Intake has to be instantiated before drive subsystem because we need to
@@ -238,7 +219,6 @@ public class RobotContainer {
         autoManager.addSubsystem(subNames.CatapultSubsystem, catapultSubsystem);
         autoManager.addSubsystem(subNames.IntakeMotorSubsystem, intakeMotorSubsystem);
         autoManager.addSubsystem(subNames.IntakePistonSubsystem, intakePistonSubsystem);
-        autoManager.addSubsystem(subNames.VisionCameraSubsystem, reflectiveTapeCameraSubsystem);
         autoManager.addSubsystem(subNames.CatapultSubsystem, catapultSubsystem);
 
         // Create instance for sensor singletons-needed for simulation to work properly.
@@ -268,8 +248,6 @@ public class RobotContainer {
         // ----- DRIVETRAIN COMMAND INITS -----\\
         driveCommand = new DriveCommand(
                 driveSubsystem,
-                reflectiveTapeCameraSubsystem,
-                cargoCameraSubsystem,
                 driverController.getController());
 
         // ----- DRIVETRAIN SHIFTER COMMAND INITS -----\\
@@ -282,7 +260,7 @@ public class RobotContainer {
         endgameManager = new EndgameManagerCommand(endgameMotorSubsystem,
                 endgamePiston1, endgamePiston2, endgamePiston3, endgamePiston4);
 
-        hubAimingCommand = new HubAimingCommand(reflectiveTapeCameraSubsystem, driveSubsystem);
+        hubAimingCommand = new HubAimingCommand(driveSubsystem);
 
         // ----- SETTING BALL COLOR -----\\
         if (DriverStation.getAlliance() == Alliance.Blue) {
@@ -417,19 +395,27 @@ public class RobotContainer {
     }
 
     public void startCamera() {
-        mjpegServer1.setSource(usbCamera);
+        // Set the video mode for the camera. This will tell the camera that we want a
+        // color stream with resolution 160x120
+        driverCamera.setVideoMode(PixelFormat.kMJPEG, 160, 120, 30);
 
-        cvSink.setSource(usbCamera);
+        // Set the source of the stream to the USB camera
+        mjpegServer.setSource(driverCamera);
+        // Set the compression. This gives us an OK quality stream while not chewing
+        // bandwidth
+        mjpegServer.setCompression(37);
 
-        CameraServer.putVideo("test", 160, 120);
-
-        mjpegServer2.setSource(outputStream);
-
-        // UsbCamera camera = CameraServer.startAutomaticCapture(0);
-        // if (camera != null) {
-        // camera.setResolution(160, 120);
-        // camera.setFPS(30);
-        // }
+        // Get the network table instance
+        var currentNTInstance = NetworkTableInstance.getDefault();
+        // Get the camera publisher table so we can write our camera data
+        var cameraPublisherTable = currentNTInstance.getTable("CameraPublisher");
+        // Set our camera data in the publisher table
+        // This will cause the camera server to recognize the stream
+        cameraPublisherTable.getEntry("Driver Camera/connected").setBoolean(true);
+        cameraPublisherTable.getEntry("Driver Camera/description").setString("Driver Camera");
+        cameraPublisherTable.getEntry("Driver Camera/streams")
+                .setStringArray(new String[] { "mjpg:http://10.9.30.2:1185/?action=stream",
+                        "mjpg:http://172.22.11.2:1185/?action=stream" });
     }
 
     /**
