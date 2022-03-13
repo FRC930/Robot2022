@@ -26,17 +26,21 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 public class ShooterHoodSubsystem extends SubsystemBase {
 
     // -------- CONSTANTS --------\\
-    private static final double TALON_CPR = 2048;
-    private static final double GEAR_RATIO = 1;
-    private static final double HOOD_MAX_POSITION = 0.3;
+    // Clicks of the TalonFX encoder per rotation
+    private static final double TALON_CPR = 2048.0;
+    // TODO: determine hood units
+    // Gear ratio from motor to the hood rack
+    private static final double GEAR_RATIO = (16.0 / 36.0) * (15.0 / 235.0);
+    // Maxiumum travel of hood in fraction of full hood rack rotation
+    private static final double HOOD_MAX_POSITION = 30.0 / 360.0;
+    // PID for adjustments
+    private static final double MOTOR_KP = 0.03;
 
     // -------- DECLARATIONS --------\\
-
     // motor controller for the shooter hood
     private final WPI_TalonFX hoodMotor;
 
     // -------- CONSTRUCTOR --------\\
-
     /**
      * <h3>ShooterHoodSubsystem</h3>
      * Creates a subsystem class to manage the shooter's hood.
@@ -47,8 +51,17 @@ public class ShooterHoodSubsystem extends SubsystemBase {
 
         // Motor declaration
         hoodMotor = new WPI_TalonFX(hoodMotorID);
+
+        // Reset configuration
         hoodMotor.configFactoryDefault();
+
+        // Config integrated sensor
         hoodMotor.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor, 0, 0);
+
+        // Set PID values
+        hoodMotor.config_kP(0, MOTOR_KP);
+        //hoodMotor.configVoltageCompSaturation(6);
+        //hoodMotor.enableVoltageCompensation(true);
 
         // Sets motor so it can't be manually moved when neutral
         hoodMotor.setNeutralMode(NeutralMode.Brake);
@@ -63,13 +76,25 @@ public class ShooterHoodSubsystem extends SubsystemBase {
      * 
      * @param pos desired position in fraction of hood rotation
      */
-    public void setHoodPosition (double pos) {
+    public void setHoodPosition(double pos) {
         if (pos < 0) {
             pos = 0;
         } else if (pos > HOOD_MAX_POSITION) {
             pos = HOOD_MAX_POSITION;
         }
-        hoodMotor.set(ControlMode.Position, pos * GEAR_RATIO * TALON_CPR);
+        hoodMotor.set(ControlMode.Position, pos * TALON_CPR / GEAR_RATIO);
+    }
+
+    public void stopHood(){
+        hoodMotor.set(ControlMode.PercentOutput, 0);
+    }
+
+    public void setSlowSpeed(){
+        hoodMotor.set(ControlMode.PercentOutput, 0.1);
+    }
+
+    public void setSlowRevSpeed(){
+        hoodMotor.set(ControlMode.PercentOutput, -0.1);
     }
 
     /**
@@ -78,8 +103,8 @@ public class ShooterHoodSubsystem extends SubsystemBase {
      * 
      * @return current position in fraction of hood rotation
      */
-    public double getHoodPosition () {
-        return (hoodMotor.getSelectedSensorPosition() / TALON_CPR) / GEAR_RATIO;
+    public double getHoodPosition() {
+        return (hoodMotor.getSelectedSensorPosition() / TALON_CPR) * GEAR_RATIO;
     }
 }
 // end of class ShooterHoodSubsystem

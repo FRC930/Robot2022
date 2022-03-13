@@ -8,6 +8,10 @@ import com.playingwithfusion.TimeOfFlight.RangingMode;
  * Controls the sensors used for the balls.
  */
 public class BallSensorUtility {
+    //-----CONSTANTS----\\
+    private final int TRIGGER_DISTANCE = 100;
+    private final int INTAKE_ID = 16;
+    private final int LOADED_ID = 15;
     
     private static BallSensorUtility instance = null;
 
@@ -17,10 +21,6 @@ public class BallSensorUtility {
         }
         return instance;
     }
-
-    private final int TRIGGER_DISTANCE = 25;
-    private final int INTAKE_ID = 0;
-    private final int LOADED_ID = 5;
 
     private final TimeOfFlight intakeSensor;
     private final TimeOfFlight loadedSensor;
@@ -41,6 +41,7 @@ public class BallSensorUtility {
     * @return if the sensor was tripped
     */
     public boolean intakeIsTripped() {
+        //System.out.println("Intake Sensor: " + intakeSensor.getRange());
         return intakeSensor.getRange() < TRIGGER_DISTANCE;
     }
 
@@ -50,6 +51,7 @@ public class BallSensorUtility {
     * @return if the sensor was tripped
     */
     public boolean loadedIsTripped() {
+        //System.out.println("Loaded Sensor: " + loadedSensor.getRange());
         return loadedSensor.getRange() < TRIGGER_DISTANCE;
     }
 }

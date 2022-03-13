@@ -9,13 +9,14 @@ import frc.robot.subsystems.ShooterHoodSubsystem;
  * Updates position of hood according to needed angle
  */
 public class UpdateHoodCommand extends CommandBase {
-    
+
     private final ShooterHoodSubsystem shooterHoodSubsystem;
 
     /**
      * <h3>UpdateHoodCommand</h3>
      * 
      * Updates position of hood according to needed angle
+     * 
      * @param shooterHood The subsystem of the shooter's hood
      */
     public UpdateHoodCommand(ShooterHoodSubsystem shooterHood) {
@@ -23,7 +24,16 @@ public class UpdateHoodCommand extends CommandBase {
     }
 
     @Override
+    public void initialize() {
+        if (shooterHoodSubsystem.getHoodPosition() < 0.04) {
+            shooterHoodSubsystem.setHoodPosition(0.08333333333333333);
+        } else if (shooterHoodSubsystem.getHoodPosition() >= 0.04) {
+            shooterHoodSubsystem.setHoodPosition(0.0);
+        }
+    }
+
+    @Override
     public void execute() {
-        // TODO: Add logic
+        System.out.println("Hood Pos: " + shooterHoodSubsystem.getHoodPosition());
     }
 }

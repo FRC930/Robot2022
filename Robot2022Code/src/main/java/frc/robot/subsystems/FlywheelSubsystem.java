@@ -27,16 +27,22 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 public class FlywheelSubsystem extends SubsystemBase {
 
     // -------- CONSTANTS --------\\
+    // Clicks of the TalonFX encoder per rotation
+    private static final double TALON_CPR = 2048.0;
+    // Gear ratio from motor to top wheel
+    private static final double TOP_GEAR_RATIO = 30.0 / 36.0;
+    // Gear ratio from motor to bottom wheel
+    private static final double BOTTOM_GEAR_RATIO = 36.0 / 24.0;
+    // PID values for velocity adjustment
+    private static final double MOTOR_KF = 0.5;
 
     // -------- DECLARATIONS --------\\
-
     // motor controllers for the shooter
     private final WPI_TalonFX topFlywheel;
     private final WPI_TalonFX bottomFlywheelMaster;
     private final WPI_TalonFX bottomFlywheelFollower;
 
     // -------- CONSTRUCTOR --------\\
-
     /**
      * <h3>FlywheelSubsystem</h3>
      * Creates a subsystem class to manage the flywheel and all related hardware.
@@ -54,12 +60,18 @@ public class FlywheelSubsystem extends SubsystemBase {
         bottomFlywheelMaster = new WPI_TalonFX(bottomFlywheelMasterID);
         bottomFlywheelFollower = new WPI_TalonFX(bottomFlywheelFollowerID);
 
+        // Reset motors
         topFlywheel.configFactoryDefault();
         bottomFlywheelMaster.configFactoryDefault();
         bottomFlywheelFollower.configFactoryDefault();
-        
+
+        // Configure integrated sensors
         topFlywheel.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor, 0, 0);
         bottomFlywheelMaster.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor, 0, 0);
+
+        // Set PID values
+        topFlywheel.config_kF(0, MOTOR_KF);
+        bottomFlywheelMaster.config_kF(0, MOTOR_KF);
 
         // Sets motors to coast so that they can move freely when neutral
         topFlywheel.setNeutralMode(NeutralMode.Coast);
@@ -71,6 +83,10 @@ public class FlywheelSubsystem extends SubsystemBase {
         refollowShooterMotors();
     }
 
+    /**
+     * <h3>refollowShooterMotors</h3>
+     * Refollows the bottom flywheel motors.
+     */
     public void refollowShooterMotors() {
         bottomFlywheelMaster.setInverted(InvertType.None);
         bottomFlywheelFollower.follow(bottomFlywheelMaster, FollowerType.PercentOutput);
@@ -80,22 +96,53 @@ public class FlywheelSubsystem extends SubsystemBase {
     // -------- METHODS --------\\
     /**
      * <h3>setBottomSpeed</h3>
-     * sets flywheel motor speed 
+     * Sets the bottom flywheel motor speed.
      *
-     * @param speed speed of the motor in percent output
+     * @param velocity speed of the bottom wheel in RPMs
      */
-    public void setBottomSpeed(double speed) {
-        bottomFlywheelMaster.set(ControlMode.PercentOutput, speed);;
+    public void setBottomSpeed(double velocity) {
+        //TODO: FIX SET SPEED
+        // Converts from RPMs to encoder counts per 100ms for set() method
+        System.out.println("Bottom Speed Expected: " + (velocity * TALON_CPR * BOTTOM_GEAR_RATIO) / 600.0);
+        System.out.println("Bottom Speed Actual: " + bottomFlywheelMaster.getSelectedSensorVelocity());
+        System.out.println("Bottom Speed Error: " + (((velocity * TALON_CPR * BOTTOM_GEAR_RATIO) / 600.0) 
+            - bottomFlywheelMaster.getSelectedSensorVelocity()));
+        //bottomFlywheelMaster.set(ControlMode.Velocity, (velocity * TALON_CPR) / (600.0 * BOTTOM_GEAR_RATIO));
+        bottomFlywheelMaster.set(ControlMode.PercentOutput, velocity);
     }
 
     /**
      * <h3>setTopSpeed</h3>
-     * sets flywheel motor speed in percent output
+     * Sets the top flywheel motor speed.
      *
-     * @param speed speed of the motor
+     * @param velocity speed of the top wheel in RPMs
      */
-    public void setTopSpeed(double speed) {
-        topFlywheel.set(ControlMode.PercentOutput, speed);;
+    public void setTopSpeed(double velocity) {
+        // Converts from RPMs to encoder counts per 100ms for set() method
+        //topFlywheel.set(ControlMode.Velocity, (velocity * TALON_CPR * TOP_GEAR_RATIO) / 600.0);
+        topFlywheel.set(ControlMode.PercentOutput, velocity);
+    }
+
+    /**
+     * <h3>getBottomSpeed</h3>
+     * Gets the bottom flywheel motor speed.
+     *
+     * @return speed of the bottom wheel in RPMs
+     */
+    public double getBottomSpeed() {
+        // Converts from encoder counts per 100ms to RPMs
+        return (bottomFlywheelMaster.getSelectedSensorVelocity() / TALON_CPR) / BOTTOM_GEAR_RATIO * 600;
+    }
+
+    /**
+     * <h3>getTopSpeed</h3>
+     * Gets the top flywheel motor speed.
+     *
+     * @return speed of the top wheel in RPMs
+     */
+    public double getTopSpeed() {
+        // Converts from encoder counts per 100ms to RPMs
+        return (topFlywheel.getSelectedSensorVelocity() / TALON_CPR) / TOP_GEAR_RATIO * 600;
     }
 }
 // end of class FlywheelSubsystem

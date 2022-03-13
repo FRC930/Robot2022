@@ -18,7 +18,9 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import frc.robot.commands.DriveCommand;
 import frc.robot.commands.IndexerForwardCommand;
@@ -36,21 +38,24 @@ import frc.robot.commands.intakecommands.intakePistonCommands.DisengageIntakePis
 import frc.robot.commands.intakecommands.intakePistonCommands.EngageIntakePistonsCommand;
 import frc.robot.commands.intakecommands.intakemotorcommands.RunIntakeMotorsCommand;
 import frc.robot.commands.intakecommands.intakemotorcommands.StopIntakeMotorsCommand;
+import frc.robot.commands.shootercommands.ShootCargoCommand;
+import frc.robot.commands.shootercommands.UpdateHoodCommand;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.EndgameMotorSubsystem;
 import frc.robot.subsystems.EndgamePistonSubsystem;
+import frc.robot.subsystems.FlywheelSubsystem;
 import frc.robot.subsystems.IndexerMotorSubsystem;
 import frc.robot.subsystems.IntakeMotorSubsystem;
 import frc.robot.subsystems.IntakePistonSubsystem;
 import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.ShifterSubsystem;
+import frc.robot.subsystems.ShooterHoodSubsystem;
+import frc.robot.utilities.SimulatedDrivetrain;
+import frc.robot.utilities.PathPlannerSequentialCommandGroupUtility;
 import frc.robot.utilities.BallSensorUtility;
 import frc.robot.utilities.DriveCameraUtility;
 import frc.robot.utilities.DriveCameraUtility.BallColor;
 import frc.robot.utilities.EndgameSensorUtility;
-import frc.robot.utilities.GyroUtility;
-import frc.robot.utilities.PathPlannerSequentialCommandGroupUtility;
-import frc.robot.utilities.SimulatedDrivetrain;
 
 public class RobotContainer {
 
@@ -120,10 +125,13 @@ public class RobotContainer {
     // Drivetrain Shifter Command
     private final ToggleShifterCommand toggleShifterCommand;
 
-    // ----- CATAPULT -----\\
+    // ----- SHOOTER -----\\
 
     // Indexer subsystem
     private final IndexerMotorSubsystem indexerMotorSubsystem;
+    // Shooter subsystems
+    private final FlywheelSubsystem flywheelSubsystem;
+    private final ShooterHoodSubsystem shooterHoodSubsystem;
 
     // ----- ENDGAME -----\\
     private final EndgameManagerCommand endgameManager;
@@ -185,12 +193,13 @@ public class RobotContainer {
         intakePistonSubsystem = new IntakePistonSubsystem(1, 12);
 
         // ----- DRIVETRAIN SUBSYSTEM INITS -----\\
-
         shifterSubsystem = new ShifterSubsystem(0);
         driveSubsystem = new DriveSubsystem(1, 8, 2, 7);
 
         // ----- CATAPULT SUBSYSTEM INITS -----\\
         indexerMotorSubsystem = new IndexerMotorSubsystem(14, 13);
+        shooterHoodSubsystem = new ShooterHoodSubsystem(12);
+        flywheelSubsystem = new FlywheelSubsystem(11, 10, 6);
 
         // ----- ENDGAME SUBSYSTEM INITS -----\\
         // Endgame Motor Subsystems
@@ -290,7 +299,7 @@ public class RobotContainer {
         scheduler.setDefaultCommand(endgamePistonL3, new EndgameCloseClawSingleCommand(endgamePistonL3));
         scheduler.setDefaultCommand(endgamePistonR3, new EndgameCloseClawSingleCommand(endgamePistonR3));
         scheduler.setDefaultCommand(endgamePiston4, new EndgameCloseClawSingleCommand(endgamePiston4));
-        scheduler.setDefaultCommand(indexerMotorSubsystem, new IndexerForwardCommand(indexerMotorSubsystem, false));;
+        //scheduler.setDefaultCommand(indexerMotorSubsystem, new IndexerForwardCommand(indexerMotorSubsystem, false));;
 
         compressor.enableAnalog(100, 115);
     }
@@ -347,7 +356,17 @@ public class RobotContainer {
         codriverController.getStartButton()
                 .whileActiveOnce(new ParallelCommandGroup(endgameManager, endgamePatternCommand));
 
-        driverController.getRightBumper().whileActiveContinuous(hubAimingCommand);
+        driverController.getLeftBumper().whileActiveOnce(/*hubAimingCommand*/ new IndexerForwardCommand(indexerMotorSubsystem, false));
+        // NOTE: Speeds are overwritten by shuffleboard
+        driverController.getRightBumper().whileActiveOnce(new ShootCargoCommand(flywheelSubsystem, indexerMotorSubsystem, 0, 0), true);
+        driverController.getLeftTrigger().whileActiveOnce(new UpdateHoodCommand(shooterHoodSubsystem));
+        SmartDashboard.putNumber("Shooter Top Speed", 0.67);
+        SmartDashboard.putNumber("Shooter Bottom Speed", 0.27);
+
+        codriverController.getXButton().whileActiveOnce(new InstantCommand(shooterHoodSubsystem::setSlowSpeed, shooterHoodSubsystem));
+        codriverController.getXButton().negate().whileActiveOnce(new InstantCommand(shooterHoodSubsystem::stopHood, shooterHoodSubsystem));
+        codriverController.getBButton().whileActiveOnce(new InstantCommand(shooterHoodSubsystem::setSlowRevSpeed, shooterHoodSubsystem));
+        codriverController.getBButton().negate().whileActiveOnce(new InstantCommand(shooterHoodSubsystem::stopHood, shooterHoodSubsystem));
     }
 
     /**

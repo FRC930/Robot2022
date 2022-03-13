@@ -45,7 +45,7 @@ public class IndexerMotorSubsystem extends SubsystemBase {
      * @param speed the speed to set the motor
      */
     public void setIntakeMotorSpeed(double speed) {
-        m_intakeIndexer.set(-speed);
+        m_intakeIndexer.set(speed);
     }
 
     /**
