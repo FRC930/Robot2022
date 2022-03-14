@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.InvertType;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
@@ -60,8 +61,16 @@ public class ShooterHoodSubsystem extends SubsystemBase {
 
         // Set PID values
         hoodMotor.config_kP(0, MOTOR_KP);
-        //hoodMotor.configVoltageCompSaturation(6);
-        //hoodMotor.enableVoltageCompensation(true);
+
+        // Set current for brake mode
+        hoodMotor.configStatorCurrentLimit(
+            new StatorCurrentLimitConfiguration(true, 5, 6, 0.15));
+
+        // Set encoder limits
+        hoodMotor.configForwardSoftLimitThreshold(HOOD_MAX_POSITION * TALON_CPR / GEAR_RATIO, 0);
+        hoodMotor.configReverseSoftLimitThreshold(0, 0);
+        hoodMotor.configForwardSoftLimitEnable(true, 0);
+        hoodMotor.configReverseSoftLimitEnable(true, 0);
 
         // Sets motor so it can't be manually moved when neutral
         hoodMotor.setNeutralMode(NeutralMode.Brake);
@@ -85,15 +94,15 @@ public class ShooterHoodSubsystem extends SubsystemBase {
         hoodMotor.set(ControlMode.Position, pos * TALON_CPR / GEAR_RATIO);
     }
 
-    public void stopHood(){
+    public void stopHood() {
         hoodMotor.set(ControlMode.PercentOutput, 0);
     }
 
-    public void setSlowSpeed(){
+    public void setSlowSpeed() {
         hoodMotor.set(ControlMode.PercentOutput, 0.1);
     }
 
-    public void setSlowRevSpeed(){
+    public void setSlowRevSpeed() {
         hoodMotor.set(ControlMode.PercentOutput, -0.1);
     }
 
