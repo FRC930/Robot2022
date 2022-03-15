@@ -11,6 +11,7 @@ import frc.robot.subsystems.ShooterHoodSubsystem;
 public class UpdateHoodCommand extends CommandBase {
 
     private final ShooterHoodSubsystem shooterHoodSubsystem;
+    private final double pos;
 
     /**
      * <h3>UpdateHoodCommand</h3>
@@ -19,21 +20,19 @@ public class UpdateHoodCommand extends CommandBase {
      * 
      * @param shooterHood The subsystem of the shooter's hood
      */
-    public UpdateHoodCommand(ShooterHoodSubsystem shooterHood) {
+    public UpdateHoodCommand(ShooterHoodSubsystem shooterHood, double pos) {
         shooterHoodSubsystem = shooterHood;
+        this.pos = pos;
     }
 
     @Override
     public void initialize() {
-        if (shooterHoodSubsystem.getHoodPosition() < 0.04) {
-            shooterHoodSubsystem.setHoodPosition(0.08333333333333333);
-        } else if (shooterHoodSubsystem.getHoodPosition() >= 0.04) {
-            shooterHoodSubsystem.setHoodPosition(0.0);
-        }
+        shooterHoodSubsystem.setHoodPosition(pos);
     }
 
     @Override
     public void execute() {
-        System.out.println("Hood Pos: " + shooterHoodSubsystem.getHoodPosition());
+        //System.out.println("Hood Pos: " + shooterHoodSubsystem.getHoodPosition());
+        //System.out.println("Hood Error: " + (shooterHoodSubsystem.getHoodPosition() - 0.03));
     }
 }

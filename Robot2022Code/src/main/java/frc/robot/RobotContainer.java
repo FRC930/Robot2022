@@ -359,10 +359,11 @@ public class RobotContainer {
         driverController.getLeftBumper().whileActiveOnce(/*hubAimingCommand*/ new IndexerForwardCommand(indexerMotorSubsystem, false));
         // NOTE: Speeds are overwritten by shuffleboard
         driverController.getRightBumper().whileActiveOnce(new ShootCargoCommand(flywheelSubsystem, indexerMotorSubsystem, 0, 0), true);
-        driverController.getLeftTrigger().whileActiveOnce(new UpdateHoodCommand(shooterHoodSubsystem));
         SmartDashboard.putNumber("Shooter Top Speed", 0.67);
         SmartDashboard.putNumber("Shooter Bottom Speed", 0.27);
-
+        driverController.getPOVUpTrigger().whileActiveOnce(new UpdateHoodCommand(shooterHoodSubsystem, 0.079));
+        driverController.getPOVLeftTrigger().whileActiveOnce(new UpdateHoodCommand(shooterHoodSubsystem, 0.05));
+        driverController.getPOVDownTrigger().whileActiveOnce(new UpdateHoodCommand(shooterHoodSubsystem, 0.00));
         codriverController.getXButton().whileActiveOnce(new InstantCommand(shooterHoodSubsystem::setSlowSpeed, shooterHoodSubsystem));
         codriverController.getXButton().negate().whileActiveOnce(new InstantCommand(shooterHoodSubsystem::stopHood, shooterHoodSubsystem));
         codriverController.getBButton().whileActiveOnce(new InstantCommand(shooterHoodSubsystem::setSlowRevSpeed, shooterHoodSubsystem));
