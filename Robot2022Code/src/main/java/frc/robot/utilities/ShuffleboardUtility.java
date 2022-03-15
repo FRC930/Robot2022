@@ -214,6 +214,10 @@ public class ShuffleboardUtility {
         public ShuffleBoardData(T data) {
             m_data = data;
         }
+
+        public T getData() {
+            return m_data;
+        }
     }
 
     /**

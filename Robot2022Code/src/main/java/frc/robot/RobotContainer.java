@@ -59,7 +59,7 @@ public class RobotContainer {
 
     // Driver Controller
     private final ControllerManager driverController = new ControllerManager(0);
-    // Codriver Controllerd
+    // Codriver Controller
     private final ControllerManager codriverController = new ControllerManager(1);
     /*
      * // Left Joystick
@@ -271,9 +271,9 @@ public class RobotContainer {
         }
 
         // ----- LED COMMAND INITS-----\\
-        autonPatternCommand = new LEDCommand(ledSubsystem, LEDPatterns.AutonPattern);
-        endgamePatternCommand = new LEDCommand(ledSubsystem, LEDPatterns.EndgamePatten);
-        idlePatternCommand = new LEDCommand(ledSubsystem, LEDPatterns.TeleopIdle);
+        autonPatternCommand = new LEDCommand(ledSubsystem, driverController, LEDPatterns.AutonPattern);
+        endgamePatternCommand = new LEDCommand(ledSubsystem, driverController, LEDPatterns.EndgamePatten);
+        idlePatternCommand = new LEDCommand(ledSubsystem, driverController, LEDPatterns.TeleopIdle);
 
         // calls the method that configures the buttons
         configureButtonBindings();
@@ -391,7 +391,9 @@ public class RobotContainer {
     public void beginTeleopRunCommands() {
         // Sets the brake mode to coast
         driveSubsystem.setMotorBrakeMode(NeutralMode.Brake);
-        resheduleAutononmousLEDS(false);
+        // rescheduleAutonomousLEDs(false);
+        CommandScheduler.getInstance().unregisterSubsystem(ledSubsystem);
+        CommandScheduler.getInstance().setDefaultCommand(ledSubsystem, idlePatternCommand);
     }
 
     public void startCamera() {
@@ -428,8 +430,9 @@ public class RobotContainer {
     public void beginAutoRunCommands() {
         // Sets the brake mode to brake
         driveSubsystem.setMotorBrakeMode(NeutralMode.Brake);
-        resheduleAutononmousLEDS(true);
-
+        // rescheduleAutonomousLEDs(true);
+        CommandScheduler.getInstance().unregisterSubsystem(ledSubsystem);
+        CommandScheduler.getInstance().setDefaultCommand(ledSubsystem, autonPatternCommand);
     }
 
     public void testInit() {
@@ -513,7 +516,7 @@ public class RobotContainer {
 
     // Begins autonomous simulation. Resets position and timer.
     public void autoSimInit() {
-        resheduleAutononmousLEDS(true);
+        // rescheduleAutonomousLEDs(true);
         m_autocmd = autoManager.getAutonomousCommand();
         if (m_autocmd != null) {
             if (m_autocmd instanceof PathPlannerSequentialCommandGroupUtility) {
@@ -544,14 +547,14 @@ public class RobotContainer {
         }
     }
 
-    private void resheduleAutononmousLEDS(boolean useAutonomousLEDCmd) {
-        LEDCommand ledCommand = (useAutonomousLEDCmd) ? autonPatternCommand : idlePatternCommand;
-        LEDCommand endledCommand = (useAutonomousLEDCmd) ? idlePatternCommand : autonPatternCommand;
-        CommandScheduler scheduler = CommandScheduler.getInstance();
-        scheduler.unregisterSubsystem(ledSubsystem);
-        endledCommand.cancel();
-        scheduler.setDefaultCommand(ledSubsystem, ledCommand);
-    }
+    // private void rescheduleAutonomousLEDs(boolean useAutonomousLEDCmd) {
+    //     LEDCommand ledCommand = (useAutonomousLEDCmd) ? autonPatternCommand : idlePatternCommand;
+    //     LEDCommand endledCommand = (useAutonomousLEDCmd) ? idlePatternCommand : autonPatternCommand;
+    //     CommandScheduler scheduler = CommandScheduler.getInstance();
+    //     scheduler.unregisterSubsystem(ledSubsystem);
+    //     endledCommand.cancel();
+    //     scheduler.setDefaultCommand(ledSubsystem, ledCommand);
+    // }
 
     // Updates simulated robot periodically.
     public void robotSimPeriodic() {
