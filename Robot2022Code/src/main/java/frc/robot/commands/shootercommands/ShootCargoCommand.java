@@ -22,7 +22,7 @@ public class ShootCargoCommand extends CommandBase {
     // -----CONSTANTS----\\
     // Number of cycles to wait before sending balls into shooter. (Cycles = time(in
     // seconds) / 0.02)
-    private final int INDEXER_DELAY = 50;
+    private final int INDEXER_DELAY = 20;
     private final double bottomSpeed;
     private final double topSpeed;
     private final FlywheelSubsystem shooterSubsystem;
@@ -54,6 +54,7 @@ public class ShootCargoCommand extends CommandBase {
         this.bottomSpeed = bottomSpeed;
         this.topSpeed = topSpeed;
         counter = 0;
+        SmartDashboard.putNumber("Shoot Delay", INDEXER_DELAY);
         addRequirements(shooterSubsystem, indexerSubsystem);
     }
 
@@ -70,7 +71,7 @@ public class ShootCargoCommand extends CommandBase {
     @Override
     public void execute() {
         counter++;
-        if (counter == INDEXER_DELAY) {
+        if (counter == SmartDashboard.getNumber("Shoot Delay", 0.0)) {
             indexerSubsystem.setIntakeMotorSpeed(1.0);
             indexerSubsystem.setLoadedMotorSpeed(1.0);
         }

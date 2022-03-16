@@ -12,12 +12,13 @@ package frc.robot.subsystems;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
+import com.ctre.phoenix.ErrorCode;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.DemandType;
 import com.ctre.phoenix.motorcontrol.InvertType;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
-import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice;
+import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
 //-------- SUBSYSTEM CLASS --------\\
@@ -29,81 +30,98 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 public class ShooterHoodSubsystem extends SubsystemBase {
 
     // -------- CONSTANTS --------\\
-    // Clicks of the TalonFX encoder per rotation
+    // Clicks of the TalonFX encoder per rotation of motor shaft
     private static final double TALON_CPR = 2048.0;
-    // TODO: determine hood units
-    // Gear ratio from motor to the hood rack
+    // Gear ratio from motor to the hood(if the hood were a full circle)
     private static final double GEAR_RATIO = (16.0 / 36.0) * (15.0 / 235.0);
-    // Maxiumum travel of hood in fraction of full hood rack rotation
-    private static final double HOOD_MAX_POSITION = 30.0 / 360.0;
-    // PID for adjustments
+    // Maxiumum travel of hood in degrees
+    private static final double HOOD_MAX_POSITION = 30.0;
+    // PID values
     private static final double MOTOR_KP = 1;
     private static final double MOTOR_KD = 15;
 
     // -------- DECLARATIONS --------\\
-    // motor controller for the shooter hood
     private final WPI_TalonFX hoodMotor;
 
     // -------- CONSTRUCTOR --------\\
     /**
      * <h3>ShooterHoodSubsystem</h3>
-     * Creates a subsystem class to manage the shooter's hood.
+     * Creates a subsystem class to manage the shooter hood.
      * 
-     * @param hoodMotorID ID of the shooter's hood's motor
+     * @param hoodMotorID ID of the shooter hood motor
      */
     public ShooterHoodSubsystem(int hoodMotorID) {
 
         // Motor declaration
         hoodMotor = new WPI_TalonFX(hoodMotorID);
 
-        // Reset configuration
-        hoodMotor.configFactoryDefault();
-
-        // Config integrated sensor
-        hoodMotor.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor, 0, 0);
+        // Config object for all config values
+        TalonFXConfiguration config = new TalonFXConfiguration();
 
         // Set PID values
-        hoodMotor.config_kP(0, MOTOR_KP);
-        hoodMotor.config_kD(0, MOTOR_KD);
+        config.slot0.kP = MOTOR_KP;
+        config.slot0.kD = MOTOR_KD;
+        // hoodMotor.config_kP(0, MOTOR_KP);
+        // hoodMotor.config_kD(0, MOTOR_KD);
 
-        // Set current for brake mode
-        hoodMotor.configStatorCurrentLimit(
-            new StatorCurrentLimitConfiguration(true, 30, 30, 0.0));
-        hoodMotor.configVoltageCompSaturation(9.0);
+        // Allow encoder deadband to prevent oscillation
+        config.slot0.allowableClosedloopError = 25;
+        // hoodMotor.configAllowableClosedloopError(0, 25);
 
-        hoodMotor.configAllowableClosedloopError(0, 25);
+        // Set current and voltage control for brake mode
+        config.statorCurrLimit = new StatorCurrentLimitConfiguration(true, 30, 30, 0.0);
+        config.statorCurrLimit.enable = true;
+        // hoodMotor.configStatorCurrentLimit(
+        // new StatorCurrentLimitConfiguration(true, 30, 30, 0.0));
+        config.voltageCompSaturation = 9.0;
+        // hoodMotor.configVoltageCompSaturation(9.0);
 
-        // Set encoder limits
-        hoodMotor.configForwardSoftLimitThreshold(HOOD_MAX_POSITION * TALON_CPR / GEAR_RATIO, 0);
-        hoodMotor.configReverseSoftLimitThreshold(252, 0);
-        hoodMotor.configForwardSoftLimitEnable(true, 0);
-        hoodMotor.configReverseSoftLimitEnable(true, 0);
+        // Sets encoder limits so the hood can't break itself by going too far
+        config.forwardSoftLimitThreshold = ((HOOD_MAX_POSITION / 360.0) * TALON_CPR / GEAR_RATIO);
+        config.reverseSoftLimitThreshold = 250;
+        config.forwardSoftLimitEnable = true;
+        config.reverseSoftLimitEnable = true;
+        // hoodMotor.configForwardSoftLimitThreshold((HOOD_MAX_POSITION / 360.0) *
+        // TALON_CPR / GEAR_RATIO, 0);
+        // hoodMotor.configReverseSoftLimitThreshold(250, 0);
+        // hoodMotor.configForwardSoftLimitEnable(true, 0);
+        // hoodMotor.configReverseSoftLimitEnable(true, 0);
 
         // Sets motor so it can't be manually moved when neutral
         hoodMotor.setNeutralMode(NeutralMode.Brake);
 
         // Motor is not inverted
         hoodMotor.setInverted(InvertType.None);
+
+        //Repeats sending the config until successful
+        ErrorCode error = ErrorCode.CAN_INVALID_PARAM;
+        do {
+            error = hoodMotor.configAllSettings(config, 500);
+            System.out.println("Trying!");
+        } while (error != ErrorCode.OK);
+
         SmartDashboard.putNumber("Hoodmotor Error: ", 0);
     }
 
-    //TODO: Convert position into degrees
     /**
      * <h3>setHoodPosition</h3>
      * Sets the desired position of the shooter hood
      * 
-     * @param pos desired position in fraction of hood rotation
+     * @param angle desired hood position in degrees
      */
-    public void setHoodPosition(double pos) {
-        // if (pos < 0) {
-        //     pos = 0;
-        // } else if (pos > HOOD_MAX_POSITION) {
-        //     pos = HOOD_MAX_POSITION;
-        // }
-        hoodMotor.set(ControlMode.Position, pos * TALON_CPR / GEAR_RATIO, DemandType.ArbitraryFeedForward, 0.06);
+    public void setHoodPosition(double angle) {
+        // Clamps position to the limits
+        if (angle < 0) {
+            angle = 0;
+        } else if (angle > HOOD_MAX_POSITION) {
+            angle = HOOD_MAX_POSITION;
+        }
+        // Converts degrees into encoder ticks
+        hoodMotor.set(ControlMode.Position, (angle / 360.0) * TALON_CPR / GEAR_RATIO,
+                DemandType.ArbitraryFeedForward, 0.06);
     }
 
-    public void stopHood() {
+    /*public void stopHood() {
         hoodMotor.set(ControlMode.PercentOutput, 0);
     }
 
@@ -113,19 +131,21 @@ public class ShooterHoodSubsystem extends SubsystemBase {
 
     public void setSlowRevSpeed() {
         hoodMotor.set(ControlMode.PercentOutput, -0.1);
-    }
+    }*/
 
     /**
      * <h3>getHoodPosition</h3>
      * Gets current position of the shooter hood
      * 
-     * @return current position in fraction of hood rotation
+     * @return current position of hood in degrees
      */
     public double getHoodPosition() {
-        //System.out.println("Hoodmotor Error: " + hoodMotor.getClosedLoopError());
-        //System.out.println("Hood Ticks: " + hoodMotor.getSelectedSensorPosition());
+        // System.out.println("Hoodmotor Error: " + hoodMotor.getClosedLoopError());
+        // System.out.println("Hood Ticks: " + hoodMotor.getSelectedSensorPosition());
         SmartDashboard.putNumber("Hoodmotor Error: ", hoodMotor.getClosedLoopError());
-        return (hoodMotor.getSelectedSensorPosition() / TALON_CPR) * GEAR_RATIO;
+        
+        // Converts encoder ticks to degrees of the hood
+        return (hoodMotor.getSelectedSensorPosition() / TALON_CPR) * GEAR_RATIO * 360.0;
     }
 }
 // end of class ShooterHoodSubsystem

@@ -1,5 +1,6 @@
 package frc.robot.commands.shootercommands;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.ShooterHoodSubsystem;
 
@@ -23,11 +24,19 @@ public class UpdateHoodCommand extends CommandBase {
     public UpdateHoodCommand(ShooterHoodSubsystem shooterHood, double pos) {
         shooterHoodSubsystem = shooterHood;
         this.pos = pos;
+        SmartDashboard.putNumber("Hood Position", 28.44);
     }
 
     @Override
     public void initialize() {
-        shooterHoodSubsystem.setHoodPosition(pos);
+        // Sets the position for the hood
+        // NOTE: without stopHood() call in end(), PID will hold set position
+        if(pos != -1){
+            shooterHoodSubsystem.setHoodPosition(pos);
+        }
+        else{
+            shooterHoodSubsystem.setHoodPosition(SmartDashboard.getNumber("Hood Position", 0));
+        }
     }
 
     @Override
