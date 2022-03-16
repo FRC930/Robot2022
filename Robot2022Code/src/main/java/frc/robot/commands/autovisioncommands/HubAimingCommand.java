@@ -83,27 +83,24 @@ public class HubAimingCommand extends CommandBase {
             rotationSpeed = turnController.calculate(smoothingStack.getAverageYaw(), 0);
 
             // Put if we are locked onto the target to the Shuffleboard
-            if (Math.abs(smoothingStack.getAverageYaw()) < 2) {
+            if (Math.abs(smoothingStack.getAverageYaw()) < 3) {
                 ShuffleboardUtility.getInstance().putToShuffleboard(ShuffleboardUtility.driverTab,
                         ShuffleboardKeys.AIMED, new ShuffleBoardData<Boolean>(true));
-
-                forwardSpeed = 0.0;
-                rotationSpeed = 0.0;
             } else {
                 ShuffleboardUtility.getInstance().putToShuffleboard(ShuffleboardUtility.driverTab,
                         ShuffleboardKeys.AIMED, new ShuffleBoardData<Boolean>(false));
-
-                // Clamp to joystick values
-                forwardSpeed = MathUtil.clamp(forwardSpeed, -DriveSubsystem.DRIVETRAIN_MAX_FREE_SPEED_HIGH,
-                        DriveSubsystem.DRIVETRAIN_MAX_FREE_SPEED_HIGH);
-                rotationSpeed = MathUtil.clamp(rotationSpeed, -DriveSubsystem.MAX_ANGULAR_SPEED,
-                        DriveSubsystem.MAX_ANGULAR_SPEED);
             }
         } else {
             // If no target, set both speeds to zero
             forwardSpeed = 0.0;
             rotationSpeed = 0.0;
         }
+
+        // Clamp to joystick values
+        forwardSpeed = MathUtil.clamp(forwardSpeed, -DriveSubsystem.DRIVETRAIN_MAX_FREE_SPEED_HIGH,
+                DriveSubsystem.DRIVETRAIN_MAX_FREE_SPEED_HIGH);
+        rotationSpeed = MathUtil.clamp(rotationSpeed, -DriveSubsystem.MAX_ANGULAR_SPEED,
+                DriveSubsystem.MAX_ANGULAR_SPEED);
 
         driveSubsystem.drive(forwardSpeed, rotationSpeed);
     }

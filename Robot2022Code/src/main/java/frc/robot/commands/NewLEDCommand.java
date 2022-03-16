@@ -33,9 +33,19 @@ public class NewLEDCommand extends CommandBase {
 
     //----- COLORS -----\\
 
+    private static final Color8Bit black = new Color8Bit(0, 0, 0);
+    private static final Color8Bit white = new Color8Bit(80, 80, 80);
+    private static final Color8Bit red = new Color8Bit(125, 0, 0);
+    private static final Color8Bit yellow = new Color8Bit(55, 40, 0);
+    private static final Color8Bit green = new Color8Bit(0, 125, 0);
+    private static final Color8Bit blue = new Color8Bit(0, 0, 125);
+     // current Alliance color
+     private Alliance allianceColor;
+
     //----- VARIABLES -----\\
 
     //----- LED BUFFERS -----\\
+
 
     public NewLEDCommand() {
 

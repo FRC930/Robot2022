@@ -41,14 +41,14 @@ public class LEDCommand extends CommandBase {
     private int counter = 0;
 
     // Flag to determine State change
-    private enum lastBallStatus {
+    private enum ballStatus {
         oneBall, TwoBalls, noBall
     };
 
     // manages the last ball status
-    private lastBallStatus m_lastBallStatus;
+    private ballStatus m_lastBallStatus;
     // manages the current ball statue
-    private lastBallStatus m_currentBallStatus;
+    private ballStatus m_currentBallStatus;
     // current Alliance color
     private Alliance allianceColor;
     // The LED Subsystem (strip) itself
@@ -81,7 +81,7 @@ public class LEDCommand extends CommandBase {
         m_YellowBuffer = createSolidYellowLEDs();
         m_GreenBuffer = createSolidGreenLEDs();
         solidYellowLEDs();
-        m_lastBallStatus = lastBallStatus.noBall;
+        m_lastBallStatus = ballStatus.noBall;
         m_currentBallStatus = m_lastBallStatus;
         addRequirements(m_LEDSubsystem);
 
@@ -102,7 +102,7 @@ public class LEDCommand extends CommandBase {
                 break;
             case TeleopIdle:
                 clearStrip();
-                ballStatus();
+                teleopStatus();
                 break;
             default:
                 break;
@@ -116,11 +116,7 @@ public class LEDCommand extends CommandBase {
                 movingSegmentPattern();
                 break;
             case TeleopIdle:
-                if (m_driverController.getRightBumper().get()
-                        && !m_driverController.getLeftBumper().get() && aimStatus()) {
-                } else {
-                    ballStatus();
-                }
+                teleopStatus();
                 break;
             default:
                 break;
@@ -278,25 +274,30 @@ public class LEDCommand extends CommandBase {
      * <h3>ballStatus</h3>
      * manages active pattern based off ball sensors
      */
-    private void ballStatus() {
-        if (BallSensorUtility.getInstance().catapultIsTripped()
+    private void teleopStatus() {
+        if (m_driverController.getRightBumper().get()
+                && !m_driverController.getLeftBumper().get() && aimStatus()){
+            
+            m_lastBallStatus = ballStatus.noBall;
+               
+        } else if (BallSensorUtility.getInstance().catapultIsTripped()
                 && BallSensorUtility.getInstance().indexerIsTripped()) {
-            m_currentBallStatus = lastBallStatus.TwoBalls;
+            m_currentBallStatus = ballStatus.TwoBalls;
             if (m_currentBallStatus != m_lastBallStatus) {
                 flashLEDHighPattern();
             }
         } else if (BallSensorUtility.getInstance().catapultIsTripped()
                 || BallSensorUtility.getInstance().indexerIsTripped()) {
-            m_currentBallStatus = lastBallStatus.oneBall;
-            if (m_lastBallStatus == lastBallStatus.TwoBalls) {
+            m_currentBallStatus = ballStatus.oneBall;
+            if (m_lastBallStatus == ballStatus.TwoBalls) {
                 retractTopLEDs();
-            } else if (m_lastBallStatus == lastBallStatus.noBall) {
+            } else if (m_lastBallStatus == ballStatus.noBall) {
                 flashLEDLowPattern();
             }
         } else if (!BallSensorUtility.getInstance().catapultIsTripped()
                 && !BallSensorUtility.getInstance().indexerIsTripped()) {
-            m_currentBallStatus = lastBallStatus.noBall;
-            if (m_lastBallStatus == lastBallStatus.oneBall) {
+            m_currentBallStatus = ballStatus.noBall;
+            if (m_lastBallStatus == ballStatus.oneBall) {
                 retractBottomLEDs();
             }
         }
@@ -313,7 +314,7 @@ public class LEDCommand extends CommandBase {
     private void flashLEDHighPattern() {
         counter++;
         if (counter > FLASH_TIMER * 3) {
-            m_lastBallStatus = lastBallStatus.TwoBalls;
+            m_lastBallStatus = ballStatus.TwoBalls;
             counter = 0;
         } else {
             if (counter % (FLASH_TIMER) == 0) {
@@ -337,7 +338,7 @@ public class LEDCommand extends CommandBase {
     private void flashLEDLowPattern() {
         counter++;
         if (counter > FLASH_TIMER * 6) {
-            m_lastBallStatus = lastBallStatus.oneBall;
+            m_lastBallStatus = ballStatus.oneBall;
             counter = 0; // alliance
         } else {
             if (counter % (FLASH_TIMER * 2) == 0) {
@@ -359,7 +360,7 @@ public class LEDCommand extends CommandBase {
      * retracts LEDs one by one from full to half
      */
     private void retractTopLEDs() {
-        m_lastBallStatus = lastBallStatus.oneBall;
+        m_lastBallStatus = ballStatus.oneBall;
         counter++;
         if (counter >= ENDGAME_TIMER * m_singleStrandBuffer.getLength() / 2) {
             counter = 0;
@@ -377,7 +378,7 @@ public class LEDCommand extends CommandBase {
      */
     private void retractBottomLEDs() {
         if (counter >= ENDGAME_TIMER * m_singleStrandBuffer.getLength() / 2) {
-            m_lastBallStatus = lastBallStatus.noBall;
+            m_lastBallStatus = ballStatus.noBall;
             counter = 0;
         } else {
             if (counter % ENDGAME_TIMER == 0) {

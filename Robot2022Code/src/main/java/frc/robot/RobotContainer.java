@@ -343,7 +343,7 @@ public class RobotContainer {
         driverController.getLeftBumper().whileActiveOnce(new InstantCommand(() -> {
             if (timeout.get() > 0.75) {
                 CommandScheduler.getInstance().schedule(new CatapultCommandGroup(catapultSubsystem,
-                        CatapultPower.AllPistons, SmartDashboard.getNumber("Catapult Timeout", 0.25)));
+                        CatapultPower.SmallPistons, SmartDashboard.getNumber("Catapult Timeout", 0.25)));
                 timeout.reset();
                 timeout.start();
             }
