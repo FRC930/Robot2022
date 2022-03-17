@@ -1,30 +1,65 @@
 package frc.robot.commands;
 
-import javax.swing.text.Position;
-
-import org.opencv.core.Point;
-
-import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.utilities.GyroUtility;
 import frc.robot.utilities.RobotToHubVectorUltility;
+import frc.robot.utilities.ShuffleboardUtility;
 
-public class PositionAimCommand {
+public class PositionAimCommand extends CommandBase {
     DriveSubsystem dSubsystem;
     RobotToHubVectorUltility robotToHubVectorUltility;
-    
-    
+    final double ANGULAR_P = 0.4;
+    final double ANGULAR_D = 0.01;
+    double rotationSpeed;
+    PIDController turnController;
+    double targetHeading;
 
+    public PositionAimCommand(DriveSubsystem driveSubsystem){
+        dSubsystem = driveSubsystem;
+        robotToHubVectorUltility = new RobotToHubVectorUltility();
+        turnController = new PIDController(ANGULAR_P, 0, ANGULAR_D);
+
+        addRequirements(dSubsystem);
+    }
     // vector angle minus the current heading of our robot
-    // @Override
-    // public void ex`ecute() {
-    //     dSubsystem.drive(1, robotToHubVectorUltility.CalculateAngle(dSubsystem.getOdometry().getPoseMeters().));
-        
-    // }
+    @Override
+    public void initialize(){
+        double angleDifference = robotToHubVectorUltility.CalculateAngle(dSubsystem.getOdometry().getPoseMeters());
+        if(GyroUtility.getInstance().getGyro().getFusedHeading() > 0){
+            targetHeading = GyroUtility.getInstance().getGyro().getFusedHeading() + angleDifference;
+        }
+        else{
+            targetHeading = GyroUtility.getInstance().getGyro().getFusedHeading() - angleDifference;
+        }
+        SmartDashboard.putNumber("targetHeading", targetHeading);
+        SmartDashboard.putNumber("angleDifference", angleDifference);
+        SmartDashboard.putNumber("poseY", dSubsystem.getOdometry().getPoseMeters().getY());
+        SmartDashboard.putNumber("poseX", dSubsystem.getOdometry().getPoseMeters().getX());
+    }
 
-    // @Override
-    // public boolean isFinished() {
-    //     return true;
-    // }
+
+    @Override
+    public void execute() {
+        rotationSpeed = turnController.calculate(GyroUtility.getInstance().getGyro().getFusedHeading(), targetHeading);
+        dSubsystem.drive(0, rotationSpeed);
+        SmartDashboard.putNumber("RotationSpeed", rotationSpeed);
+        SmartDashboard.putNumber("getYaw", GyroUtility.getInstance().getGyro().getFusedHeading());
+        SmartDashboard.putNumber("target heading", targetHeading);
+    }
+
+    @Override
+    public boolean isFinished() {
+        if(rotationSpeed == 0){
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
     
     
 }

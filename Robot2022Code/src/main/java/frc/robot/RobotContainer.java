@@ -20,11 +20,13 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.BallHolderCommand;
 import frc.robot.commands.CatapultCommandGroup;
 import frc.robot.commands.DriveCommand;
 import frc.robot.commands.IndexerForwardCommand;
 import frc.robot.commands.LEDCommand;
+import frc.robot.commands.PositionAimCommand;
 import frc.robot.commands.ToggleShifterCommand;
 import frc.robot.commands.CatapultCommand.CatapultPower;
 import frc.robot.commands.LEDCommand.LEDPatterns;
@@ -142,6 +144,7 @@ public class RobotContainer {
     private final EndgamePistonSubsystem endgamePiston4;
 
     private final HubAimingCommand hubAimingCommand;
+    private final PositionAimCommand positionAimCommand;
 
     // LED commands
     private final LEDCommand autonPatternCommand;
@@ -261,6 +264,7 @@ public class RobotContainer {
                 endgamePiston1, endgamePiston2, endgamePiston3, endgamePiston4);
 
         hubAimingCommand = new HubAimingCommand(driveSubsystem);
+        positionAimCommand = new PositionAimCommand(driveSubsystem);
 
         // ----- SETTING BALL COLOR -----\\
         if (DriverStation.getAlliance() == Alliance.Blue) {
@@ -372,7 +376,7 @@ public class RobotContainer {
         codriverController.getStartButton()
                 .whileActiveOnce(new ParallelCommandGroup(endgameManager, endgamePatternCommand));
 
-        driverController.getRightBumper().whileActiveContinuous(hubAimingCommand);
+        driverController.getRightBumper().whileActiveContinuous(positionAimCommand);//new SequentialCommandGroup(positionAimCommand,hubAimingCommand));
 
         // Manual Commands
         codriverController.getRightBumper().whileActiveOnce(ballHolderCommand);
