@@ -148,15 +148,19 @@ public class ShuffleboardUtility {
      */
     public static enum ShuffleboardKeys {
 
+        // SHOOTER MANAGEMENT
+        SHOOTER_TOP_SPEED("Shooter Top Speed"),
+        SHOOTER_BOTTOM_SPEED("Shooter Bottom Speed"),
+        SHOOTER_HOOD_POSITION("Hood Position"),
+
         // BALL MANAGEMENT
-        CATAPULT_SENSOR("Catapult Sensor"),
+        LOADED_SENSOR("Loaded Sensor"),
         ALLIANCE_COLOR("Alliance Color"),
         LED_PATTERNS("LED Patterns"),
         AUTONOMOUS_PATH("Autonomous Paths"),
         INTAKE_SENSOR("Intake Sensor"),
         INTAKE_POSITIONING("Intake Positioning"),
         INTAKE_DIRECTION("Intake Direction"),
-        // CATAPULT_LOADED("Catapult loaded"),
         INTAKE_DOWN("Intake down"),
 
         // ENDGAME
@@ -165,7 +169,6 @@ public class ShuffleboardUtility {
         ENDGAME_SENSOR3("Endgame Sensor 3"),
         ENDGAME_SENSOR4("Endgame Sensor 4"),
         ENDGAME_ENCODER("Endgame Encoder"),
-        PISTON_SENSOR("Piston Sensor"),
 
         // DRIVE TRAIN
         LEFT_SPEED("Speed of left drivetrain"),

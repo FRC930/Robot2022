@@ -68,7 +68,7 @@ public class IndexerForwardCommand extends CommandBase {
     /**
      * <h3>execute</h3>
      *
-     * If the catapult sensor does not detect a ball it sets the motor speed to
+     * If the loaded sensor does not detect a ball it sets the motor speed to
      * MOTOR_SPEED.
      * If it does detect a ball it sets the motor speed to 0
      */

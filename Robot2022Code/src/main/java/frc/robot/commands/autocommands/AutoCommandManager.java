@@ -18,12 +18,11 @@ public class AutoCommandManager {
     HashMap<String, Subsystem> subsystemMap = new HashMap<String, Subsystem>();
 
     public static enum subNames {
-        CatapultSensorSubsystem("Catapult Sensor"),
-        CatapultSubsystem("Catapult"),
+        FlywheelSubsystem("Flywheel"),
+        ShooterHoodSubsystem("Shooter Hood"),
         DriveSubsystem("Drive"),
         EndgameMotorSubsystem("Endgame Motor"),
         EndgamePistonSubsystem("Endgame Piston"),
-        EndgameSensorSubsystem("Endgame Sensor"),
         IntakeMotorSubsystem("Intake Motor"),
         IntakePistonSubsystem("Intake Piston"),
         ShifterSubsystem("Shifter"),

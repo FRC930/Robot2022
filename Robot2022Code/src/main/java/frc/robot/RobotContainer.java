@@ -196,7 +196,7 @@ public class RobotContainer {
         shifterSubsystem = new ShifterSubsystem(0);
         driveSubsystem = new DriveSubsystem(1, 8, 2, 7);
 
-        // ----- CATAPULT SUBSYSTEM INITS -----\\
+        // ----- SHOOTER SUBSYSTEM INITS -----\\
         indexerMotorSubsystem = new IndexerMotorSubsystem(14, 13);
         shooterHoodSubsystem = new ShooterHoodSubsystem(12);
         flywheelSubsystem = new FlywheelSubsystem(11, 10, 6);
@@ -356,11 +356,9 @@ public class RobotContainer {
         codriverController.getStartButton()
                 .whileActiveOnce(new ParallelCommandGroup(endgameManager, endgamePatternCommand));
 
-        driverController.getLeftBumper().whileActiveOnce(/*hubAimingCommand*/ new IndexerForwardCommand(indexerMotorSubsystem, false));
-        // NOTE: Speeds are overwritten by shuffleboard
-        driverController.getRightBumper().whileActiveOnce(new ShootCargoCommand(flywheelSubsystem, indexerMotorSubsystem, 0, 0), true);
-        SmartDashboard.putNumber("Shooter Top Speed", 0.67);
-        SmartDashboard.putNumber("Shooter Bottom Speed", 0.27);
+        driverController.getLeftBumper().whileActiveOnce(hubAimingCommand);
+        driverController.getLeftTrigger().whileActiveOnce(new IndexerForwardCommand(indexerMotorSubsystem, false));
+        driverController.getRightBumper().whileActiveOnce(new ShootCargoCommand(flywheelSubsystem, indexerMotorSubsystem, -1));
         driverController.getPOVUpTrigger().whileActiveOnce(new UpdateHoodCommand(shooterHoodSubsystem, 28.44));
         driverController.getPOVLeftTrigger().whileActiveOnce(new UpdateHoodCommand(shooterHoodSubsystem, -1));
         driverController.getPOVDownTrigger().whileActiveOnce(new UpdateHoodCommand(shooterHoodSubsystem, 0.0));

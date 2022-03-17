@@ -25,8 +25,6 @@ public class BallSensorUtility {
     private final TimeOfFlight intakeSensor;
     private final TimeOfFlight loadedSensor;
 
-    // private final Debouncer catapultDebouncer = new Debouncer(0.1, DebounceType.kRising);
-
     private BallSensorUtility(){
         intakeSensor = new TimeOfFlight(INTAKE_ID);
         loadedSensor = new TimeOfFlight(LOADED_ID);

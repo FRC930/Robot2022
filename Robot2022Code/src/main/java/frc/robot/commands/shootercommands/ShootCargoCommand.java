@@ -23,18 +23,20 @@ public class ShootCargoCommand extends CommandBase {
     // Number of cycles to wait before sending balls into shooter. (Cycles = time(in
     // seconds) / 0.02)
     private final int INDEXER_DELAY = 20;
+
+    // -----VARIABLES----\\
     private final double bottomSpeed;
     private final double topSpeed;
     private final FlywheelSubsystem shooterSubsystem;
     private final IndexerMotorSubsystem indexerSubsystem;
-
     private int counter;
 
     /**
      * <h3>ShootCargoCommand</h3>
+     * Uses shuffleboard speed if value is -1, otherwise use the values inputed.
      * 
      * @param shooter The ShooterSubsystem to use
-     * @param speed   The velocity(in RPMs) you want both wheels to be at
+     * @param speed   The speed(in PercentOutput) you want both wheels to be at. Set -1 to use shuffleboard values
      */
     public ShootCargoCommand(FlywheelSubsystem shooter, IndexerMotorSubsystem indexer, double speed) {
         this(shooter, indexer, speed, speed);
@@ -42,10 +44,11 @@ public class ShootCargoCommand extends CommandBase {
 
     /**
      * <h3>ShootCargoCommand</h3>
+     * Uses shuffleboard speed if value is -1, otherwise use the values inputed.
      * 
      * @param shooter     The ShooterSubsystem to use
-     * @param topSpeed    The velocity(in RPMs) you want the top wheel to be at
-     * @param bottomSpeed The velocity(in RPMs) you want the bottom wheel to be at
+     * @param topSpeed    The speed(in PercentOutput) you want the top wheel to be at. Set -1 to use shuffleboard
+     * @param bottomSpeed The speed(in PercentOutput) you want the bottom wheel to be at. Set -1 to use shuffleboard
      */
     public ShootCargoCommand(FlywheelSubsystem shooter, IndexerMotorSubsystem indexer, double bottomSpeed,
             double topSpeed) {
@@ -54,24 +57,40 @@ public class ShootCargoCommand extends CommandBase {
         this.bottomSpeed = bottomSpeed;
         this.topSpeed = topSpeed;
         counter = 0;
-        SmartDashboard.putNumber("Shoot Delay", INDEXER_DELAY);
         addRequirements(shooterSubsystem, indexerSubsystem);
     }
 
     @Override
     public void initialize() {
-        // shooterSubsystem.setBottomSpeed(bottomSpeed);
-        // shooterSubsystem.setTopSpeed(topSpeed);
-        // Sets speed from dashboard values
-        shooterSubsystem.setBottomSpeed(SmartDashboard.getNumber("Shooter Bottom Speed", 0));
-        shooterSubsystem.setTopSpeed(SmartDashboard.getNumber("Shooter Top Speed", 0));
+        if (bottomSpeed == -1) {
+            // Sets speed from dashboard values
+            shooterSubsystem.setBottomSpeed(SmartDashboard.getNumber("Shooter Bottom Speed", 0));
+        } else if(bottomSpeed > 0) {
+            // Sets using constructor speeds
+            shooterSubsystem.setBottomSpeed(bottomSpeed);
+        }
+        else{
+            // Stops motor
+            shooterSubsystem.setTopSpeed(0);
+        }
+        if (topSpeed == -1) {
+            // Sets speed from dashboard values
+            shooterSubsystem.setTopSpeed(SmartDashboard.getNumber("Shooter Top Speed", 0));
+        } else if(topSpeed > 0) {
+            // Sets using constructor speeds
+            shooterSubsystem.setTopSpeed(topSpeed);
+        }
+        else{
+            // Stops motor
+            shooterSubsystem.setTopSpeed(0);
+        }
         counter = 0;
     }
 
     @Override
     public void execute() {
         counter++;
-        if (counter == SmartDashboard.getNumber("Shoot Delay", 0.0)) {
+        if (counter == INDEXER_DELAY) {
             indexerSubsystem.setIntakeMotorSpeed(1.0);
             indexerSubsystem.setLoadedMotorSpeed(1.0);
         }

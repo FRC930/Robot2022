@@ -17,14 +17,14 @@ public class UpdateHoodCommand extends CommandBase {
     /**
      * <h3>UpdateHoodCommand</h3>
      * 
-     * Updates position of hood according to needed angle
+     * Updates position of hood
      * 
      * @param shooterHood The subsystem of the shooter's hood
+     * @param pos The position to set the hood. Set -1 to use Shuffleboard.
      */
     public UpdateHoodCommand(ShooterHoodSubsystem shooterHood, double pos) {
         shooterHoodSubsystem = shooterHood;
         this.pos = pos;
-        SmartDashboard.putNumber("Hood Position", 28.44);
     }
 
     @Override
@@ -35,6 +35,7 @@ public class UpdateHoodCommand extends CommandBase {
             shooterHoodSubsystem.setHoodPosition(pos);
         }
         else{
+            // Sets position using shuffleboard
             shooterHoodSubsystem.setHoodPosition(SmartDashboard.getNumber("Hood Position", 0));
         }
     }
