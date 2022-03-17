@@ -69,6 +69,8 @@ public class LEDCommand extends CommandBase {
     private int beamStartPosition;
     private int beamEndPosition;
 
+    private boolean aimIsPressed;
+
     // ------CONSTUCTOR(S)--------\\
     public LEDCommand(LEDSubsystem subsystem, ControllerManager driverController, LEDPatterns pattern) {
         m_pattern = pattern;
@@ -83,6 +85,8 @@ public class LEDCommand extends CommandBase {
         solidYellowLEDs();
         m_lastBallStatus = ballStatus.noBall;
         m_currentBallStatus = m_lastBallStatus;
+
+        aimIsPressed = false;
         addRequirements(m_LEDSubsystem);
 
     }
@@ -275,11 +279,15 @@ public class LEDCommand extends CommandBase {
      * manages active pattern based off ball sensors
      */
     private void teleopStatus() {
-        if (m_driverController.getRightBumper().get()
+        if (m_driverController.getRightBumper().get() 
                 && !m_driverController.getLeftBumper().get() && aimStatus()){
             
             m_lastBallStatus = ballStatus.noBall;
+            aimIsPressed = true;
                
+        } else if(aimIsPressed) {
+            clearStrip();
+            aimIsPressed = false;
         } else if (BallSensorUtility.getInstance().catapultIsTripped()
                 && BallSensorUtility.getInstance().indexerIsTripped()) {
             m_currentBallStatus = ballStatus.TwoBalls;
@@ -391,6 +399,7 @@ public class LEDCommand extends CommandBase {
 
     /**
      * <h3>aimStatus</h3>
+     * 
      */
     private boolean aimStatus() {
         if (ShuffleboardUtility.getInstance().getFromShuffleboard(ShuffleboardKeys.AIMED) == null) {
