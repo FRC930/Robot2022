@@ -1,9 +1,15 @@
 package frc.robot;
 
-import edu.wpi.first.wpilibj2.command.Command;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.List;
+import java.util.Scanner;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
+
+import org.photonvision.common.hardware.VisionLEDMode;
 
 import edu.wpi.first.cscore.MjpegServer;
 import edu.wpi.first.cscore.UsbCamera;
@@ -14,14 +20,17 @@ import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.util.net.PortForwarder;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.BallHolderCommand;
+import frc.robot.commands.CatapultCommand.CatapultPower;
 import frc.robot.commands.CatapultCommandGroup;
 import frc.robot.commands.DriveCommand;
 import frc.robot.commands.IndexerForwardCommand;
@@ -30,6 +39,7 @@ import frc.robot.commands.PositionAimCommand;
 import frc.robot.commands.ToggleShifterCommand;
 import frc.robot.commands.CatapultCommand.CatapultPower;
 import frc.robot.commands.LEDCommand.LEDPatterns;
+import frc.robot.commands.ToggleShifterCommand;
 import frc.robot.commands.autocommands.AutoCommandManager;
 import frc.robot.commands.autocommands.AutoCommandManager.subNames;
 import frc.robot.commands.autovisioncommands.HubAimingCommand;
@@ -37,8 +47,10 @@ import frc.robot.commands.endgamecommands.EndgameArmCommand;
 import frc.robot.commands.endgamecommands.EndgameArmRevCommand;
 import frc.robot.commands.endgamecommands.EndgameCloseClawCommand;
 import frc.robot.commands.endgamecommands.EndgameManagerCommand;
-import frc.robot.commands.intakecommands.intakePistonCommands.*;
-import frc.robot.commands.intakecommands.intakemotorcommands.*;
+import frc.robot.commands.intakecommands.intakePistonCommands.DisengageIntakePistonsCommand;
+import frc.robot.commands.intakecommands.intakePistonCommands.EngageIntakePistonsCommand;
+import frc.robot.commands.intakecommands.intakemotorcommands.RunIntakeMotorsCommand;
+import frc.robot.commands.intakecommands.intakemotorcommands.StopIntakeMotorsCommand;
 import frc.robot.subsystems.CatapultSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.EndgameMotorSubsystem;
@@ -48,12 +60,14 @@ import frc.robot.subsystems.IntakeMotorSubsystem;
 import frc.robot.subsystems.IntakePistonSubsystem;
 import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.ShifterSubsystem;
-import frc.robot.utilities.SimulatedDrivetrain;
-import frc.robot.utilities.PathPlannerSequentialCommandGroupUtility;
 import frc.robot.utilities.BallSensorUtility;
 import frc.robot.utilities.DriveCameraUtility;
-import frc.robot.utilities.EndgameSensorUtility;
 import frc.robot.utilities.DriveCameraUtility.BallColor;
+import frc.robot.utilities.EndgameSensorUtility;
+import frc.robot.utilities.PathPlannerSequentialCommandGroupUtility;
+import frc.robot.utilities.PhotonVisionUtility;
+import frc.robot.utilities.ShuffleboardUtility;
+import frc.robot.utilities.SimulatedDrivetrain;
 
 public class RobotContainer {
 
@@ -302,6 +316,21 @@ public class RobotContainer {
         scheduler.setDefaultCommand(endgamePiston4, new EndgameCloseClawCommand(endgamePiston4));
         scheduler.setDefaultCommand(indexerMotorSubsystem, new IndexerForwardCommand(indexerMotorSubsystem, false));
         scheduler.setDefaultCommand(catapultSubsystem, new BallHolderCommand(catapultSubsystem));
+
+        
+
+        // Get the directory where we get files
+        File fileDeployDir = Filesystem.getDeployDirectory();
+        // Get the file from the deploy directory that has the pipelines
+        File pipelineConfig = new File(fileDeployDir.getAbsolutePath() + "/pipelines.txt");
+        try (Scanner reader = new Scanner(pipelineConfig)) {
+            // Read the options from the pipelines file
+            for (int i = 0; reader.hasNextLine(); i++) {
+                ShuffleboardUtility.getInstance().addPipelineChooser(reader.nextLine(), i);
+            }
+        } catch (IOException e) {
+            System.out.println("****** COULDN\'T FIND PIPELINES FILE ******");
+        }
     }
 
     /**
@@ -398,6 +427,11 @@ public class RobotContainer {
         // rescheduleAutonomousLEDs(false);
         CommandScheduler.getInstance().unregisterSubsystem(ledSubsystem);
         CommandScheduler.getInstance().setDefaultCommand(ledSubsystem, idlePatternCommand);
+
+        PhotonVisionUtility.getInstance().getHubTrackingCamera().setDriverMode(false);
+        PhotonVisionUtility.getInstance().getHubTrackingCamera().setLED(VisionLEDMode.kOff);
+
+        PhotonVisionUtility.getInstance().setPiCameraExposure();
     }
 
     public void startCamera() {
@@ -437,6 +471,11 @@ public class RobotContainer {
         // rescheduleAutonomousLEDs(true);
         CommandScheduler.getInstance().unregisterSubsystem(ledSubsystem);
         CommandScheduler.getInstance().setDefaultCommand(ledSubsystem, autonPatternCommand);
+
+        PhotonVisionUtility.getInstance().getHubTrackingCamera().setDriverMode(false);
+        PhotonVisionUtility.getInstance().getHubTrackingCamera().setLED(VisionLEDMode.kOff);
+
+        PhotonVisionUtility.getInstance().setPiCameraExposure();
     }
 
     public void testInit() {
@@ -586,5 +625,7 @@ public class RobotContainer {
 
     public void disabledInit() {
         idlePatternCommand.solidYellowLEDs();
+        PhotonVisionUtility.getInstance().getHubTrackingCamera().setDriverMode(true);
+        PhotonVisionUtility.getInstance().getHubTrackingCamera().setLED(VisionLEDMode.kDefault);
     }
 } // End of RobotContainer

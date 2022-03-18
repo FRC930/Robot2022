@@ -2,6 +2,7 @@ package frc.robot.commands.autovisioncommands;
 
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonUtils;
+import org.photonvision.common.hardware.VisionLEDMode;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
@@ -10,9 +11,9 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.utilities.PhotonVisionUtility;
 import frc.robot.utilities.ShuffleboardUtility;
-import frc.robot.utilities.VisionSmoothingStack;
 import frc.robot.utilities.ShuffleboardUtility.ShuffleBoardData;
 import frc.robot.utilities.ShuffleboardUtility.ShuffleboardKeys;
+import frc.robot.utilities.VisionSmoothingStack;
 
 public class HubAimingCommand extends CommandBase {
     // The height of the camera
@@ -48,9 +49,11 @@ public class HubAimingCommand extends CommandBase {
 
     @Override
     public void initialize() {
-        hubCamera.setDriverMode(false);
+        hubCamera.setLED(VisionLEDMode.kOn);
 
         driveSubsystem.setVoltages(0, 0);
+
+        PhotonVisionUtility.getInstance().setPiCamerPipeline(ShuffleboardUtility.getInstance().getSelectedPipelineChooser());
     }
 
     @Override
@@ -108,7 +111,8 @@ public class HubAimingCommand extends CommandBase {
     @Override
     public void end(boolean interrupted) {
         driveSubsystem.setVoltages(0, 0);
-        hubCamera.setDriverMode(true);
+        
+        hubCamera.setLED(VisionLEDMode.kOff);
 
         ShuffleboardUtility.getInstance().putToShuffleboard(ShuffleboardUtility.driverTab,
                 ShuffleboardKeys.AIMED, new ShuffleBoardData<Boolean>(false));
