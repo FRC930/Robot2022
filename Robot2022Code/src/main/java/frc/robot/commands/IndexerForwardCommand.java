@@ -46,8 +46,6 @@ public class IndexerForwardCommand extends CommandBase {
     public IndexerForwardCommand(IndexerMotorSubsystem indexer, boolean isReversed) {
         indexerMotor = indexer;
         reversed = isReversed;
-        SmartDashboard.putNumber("Intake Indexer Speed", INTAKE_MOTOR_SPEED);
-        SmartDashboard.putNumber("Loaded Indexer Speed", LOADED_MOTOR_SPEED);
         addRequirements(indexer);
     }
 
@@ -77,10 +75,10 @@ public class IndexerForwardCommand extends CommandBase {
             if (sensorUtility.loadedIsTripped()) {
                 setLoadedSpeed(0.0);
             } else {
-                setLoadedSpeed(SmartDashboard.getNumber("Loaded Indexer Speed", 0));
+                setLoadedSpeed(LOADED_MOTOR_SPEED);
             }
             if (!sensorUtility.intakeIsTripped() || !sensorUtility.loadedIsTripped()) {
-                setIntakeSpeed(SmartDashboard.getNumber("Intake Indexer Speed", 0));
+                setIntakeSpeed(INTAKE_MOTOR_SPEED);
             } else {
                 setIntakeSpeed(0.0);
             }

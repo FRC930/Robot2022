@@ -140,10 +140,6 @@ public class ShooterHoodSubsystem extends SubsystemBase {
      * @return current position of hood in degrees
      */
     public double getHoodPosition() {
-        // System.out.println("Hoodmotor Error: " + hoodMotor.getClosedLoopError());
-        // System.out.println("Hood Ticks: " + hoodMotor.getSelectedSensorPosition());
-        SmartDashboard.putNumber("Hoodmotor Error: ", hoodMotor.getClosedLoopError());
-        
         // Converts encoder ticks to degrees of the hood
         return (hoodMotor.getSelectedSensorPosition() / TALON_CPR) * GEAR_RATIO * 360.0;
     }

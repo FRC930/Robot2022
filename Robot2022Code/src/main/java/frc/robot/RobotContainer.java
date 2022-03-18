@@ -1,8 +1,6 @@
 package frc.robot;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileReader;
 import java.io.IOException;
 import java.util.List;
 import java.util.Scanner;
@@ -26,10 +24,7 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import frc.robot.commands.DriveCommand;
 import frc.robot.commands.IndexerForwardCommand;
@@ -48,7 +43,7 @@ import frc.robot.commands.intakecommands.intakePistonCommands.EngageIntakePiston
 import frc.robot.commands.intakecommands.intakemotorcommands.RunIntakeMotorsCommand;
 import frc.robot.commands.intakecommands.intakemotorcommands.StopIntakeMotorsCommand;
 import frc.robot.commands.shootercommands.ShootCargoCommand;
-import frc.robot.commands.shootercommands.UpdateHoodCommand;
+import frc.robot.commands.shootercommands.AdjustHoodCommand;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.EndgameMotorSubsystem;
 import frc.robot.subsystems.EndgamePistonSubsystem;
@@ -65,10 +60,8 @@ import frc.robot.utilities.BallSensorUtility;
 import frc.robot.utilities.DriveCameraUtility;
 import frc.robot.utilities.DriveCameraUtility.BallColor;
 import frc.robot.utilities.EndgameSensorUtility;
-import frc.robot.utilities.PathPlannerSequentialCommandGroupUtility;
 import frc.robot.utilities.PhotonVisionUtility;
 import frc.robot.utilities.ShuffleboardUtility;
-import frc.robot.utilities.SimulatedDrivetrain;
 
 public class RobotContainer {
 
@@ -381,11 +374,12 @@ public class RobotContainer {
                 .whileActiveOnce(new ParallelCommandGroup(endgameManager, endgamePatternCommand));
 
         driverController.getLeftBumper().whileActiveOnce(hubAimingCommand);
+
         driverController.getLeftTrigger().whileActiveOnce(new IndexerForwardCommand(indexerMotorSubsystem, false));
-        driverController.getRightBumper().whileActiveOnce(new ShootCargoCommand(flywheelSubsystem, indexerMotorSubsystem, -1));
-        driverController.getPOVUpTrigger().whileActiveOnce(new UpdateHoodCommand(shooterHoodSubsystem, 28.44));
-        driverController.getPOVLeftTrigger().whileActiveOnce(new UpdateHoodCommand(shooterHoodSubsystem, -1));
-        driverController.getPOVDownTrigger().whileActiveOnce(new UpdateHoodCommand(shooterHoodSubsystem, 0.0));
+        driverController.getRightBumper().whileActiveOnce(new ShootCargoCommand(flywheelSubsystem, indexerMotorSubsystem));
+        driverController.getPOVUpTrigger().whileActiveOnce(new AdjustHoodCommand(shooterHoodSubsystem, 28.44));
+        driverController.getPOVLeftTrigger().whileActiveOnce(new AdjustHoodCommand(shooterHoodSubsystem));
+        driverController.getPOVDownTrigger().whileActiveOnce(new AdjustHoodCommand(shooterHoodSubsystem, 0.0));
         /*codriverController.getXButton().whileActiveOnce(new InstantCommand(shooterHoodSubsystem::setSlowSpeed, shooterHoodSubsystem));
         codriverController.getXButton().negate().whileActiveOnce(new InstantCommand(shooterHoodSubsystem::stopHood, shooterHoodSubsystem));
         codriverController.getBButton().whileActiveOnce(new InstantCommand(shooterHoodSubsystem::setSlowRevSpeed, shooterHoodSubsystem));

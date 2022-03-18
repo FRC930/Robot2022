@@ -7,15 +7,17 @@
 
 package frc.robot.commands.shootercommands;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.FlywheelSubsystem;
 import frc.robot.subsystems.IndexerMotorSubsystem;
+import frc.robot.utilities.BallSensorUtility;
+import frc.robot.utilities.ShuffleboardUtility;
+import frc.robot.utilities.ShuffleboardUtility.ShuffleboardKeys;
 
 /**
  * <h3>ShootCargoCommand</h3>
  * 
- * Shoots ball with shooter.
+ * Complete shooting command.
  */
 public class ShootCargoCommand extends CommandBase {
 
@@ -25,71 +27,79 @@ public class ShootCargoCommand extends CommandBase {
     private final int INDEXER_DELAY = 20;
 
     // -----VARIABLES----\\
-    private final double bottomSpeed;
-    private final double topSpeed;
     private final FlywheelSubsystem shooterSubsystem;
     private final IndexerMotorSubsystem indexerSubsystem;
+    private boolean usingShuffleboard;
+    private double bottomSpeed;
+    private double topSpeed;
     private int counter;
 
     /**
      * <h3>ShootCargoCommand</h3>
-     * Uses shuffleboard speed if value is -1, otherwise use the values inputed.
+     * Uses shuffleboard for speeds.
      * 
-     * @param shooter The ShooterSubsystem to use
-     * @param speed   The speed(in PercentOutput) you want both wheels to be at. Set -1 to use shuffleboard values
+     * @param shooter The FlywheelSubsystem to use
+     * @param indexer The IndexerMotorSubsystem to use
+     */
+    public ShootCargoCommand(FlywheelSubsystem shooter, IndexerMotorSubsystem indexer) {
+        // ---CANNOT USE this() BECAUSE OF BOOLEAN FLAG---\\
+        shooterSubsystem = shooter;
+        indexerSubsystem = indexer;
+        usingShuffleboard = true;
+        addRequirements(shooterSubsystem, indexerSubsystem);
+    }
+
+    /**
+     * <h3>ShootCargoCommand</h3>
+     * 
+     * @param shooter The FlywheelSubsystem to use
+     * @param indexer The IndexerMotorSubsystem to use
+     * @param speed   The speed(in PercentOutput) you want both wheels to spin at
      */
     public ShootCargoCommand(FlywheelSubsystem shooter, IndexerMotorSubsystem indexer, double speed) {
+        // Applies speed to both motors
         this(shooter, indexer, speed, speed);
     }
 
     /**
      * <h3>ShootCargoCommand</h3>
-     * Uses shuffleboard speed if value is -1, otherwise use the values inputed.
      * 
-     * @param shooter     The ShooterSubsystem to use
-     * @param topSpeed    The speed(in PercentOutput) you want the top wheel to be at. Set -1 to use shuffleboard
-     * @param bottomSpeed The speed(in PercentOutput) you want the bottom wheel to be at. Set -1 to use shuffleboard
+     * @param shooter     The FlywheelSubsystem to use
+     * @param indexer     The IndexerMotorSubsystem to use
+     * @param topSpeed    The speed(in PercentOutput) you want the top wheel to spin
+     *                    at
+     * @param bottomSpeed The speed(in PercentOutput) you want the bottom wheel to
+     *                    spin at
      */
     public ShootCargoCommand(FlywheelSubsystem shooter, IndexerMotorSubsystem indexer, double bottomSpeed,
             double topSpeed) {
         shooterSubsystem = shooter;
         indexerSubsystem = indexer;
+        usingShuffleboard = false;
         this.bottomSpeed = bottomSpeed;
         this.topSpeed = topSpeed;
-        counter = 0;
         addRequirements(shooterSubsystem, indexerSubsystem);
     }
 
     @Override
     public void initialize() {
-        if (bottomSpeed == -1) {
-            // Sets speed from dashboard values
-            shooterSubsystem.setBottomSpeed(SmartDashboard.getNumber("Shooter Bottom Speed", 0));
-        } else if(bottomSpeed > 0) {
-            // Sets using constructor speeds
-            shooterSubsystem.setBottomSpeed(bottomSpeed);
+        // Gets values from shuffleboard driver tab
+        if (usingShuffleboard) {
+            this.bottomSpeed = (double) ShuffleboardUtility.getInstance().getFromShuffleboard(
+                    ShuffleboardKeys.SHOOTER_BOTTOM_SPEED).getData();
+            this.topSpeed = (double) ShuffleboardUtility.getInstance().getFromShuffleboard(
+                    ShuffleboardKeys.SHOOTER_TOP_SPEED).getData();
         }
-        else{
-            // Stops motor
-            shooterSubsystem.setTopSpeed(0);
-        }
-        if (topSpeed == -1) {
-            // Sets speed from dashboard values
-            shooterSubsystem.setTopSpeed(SmartDashboard.getNumber("Shooter Top Speed", 0));
-        } else if(topSpeed > 0) {
-            // Sets using constructor speeds
-            shooterSubsystem.setTopSpeed(topSpeed);
-        }
-        else{
-            // Stops motor
-            shooterSubsystem.setTopSpeed(0);
-        }
+
+        shooterSubsystem.setBottomSpeed(bottomSpeed);
+        shooterSubsystem.setTopSpeed(topSpeed);
         counter = 0;
     }
 
     @Override
     public void execute() {
         counter++;
+        // Waits for delay before activating indexer system
         if (counter == INDEXER_DELAY) {
             indexerSubsystem.setIntakeMotorSpeed(1.0);
             indexerSubsystem.setLoadedMotorSpeed(1.0);
@@ -98,7 +108,9 @@ public class ShootCargoCommand extends CommandBase {
 
     @Override
     public boolean isFinished() {
-        return false;
+        // Finishes if no balls are left
+        return !BallSensorUtility.getInstance().intakeIsTripped() &&
+                !BallSensorUtility.getInstance().loadedIsTripped();
     }
 
     @Override
