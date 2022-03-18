@@ -309,10 +309,6 @@ public class LEDCommand extends CommandBase {
                 retractBottomLEDs();
             }
         }
-        // if (!BallSensorUtility.getInstance().catapultIsTripped()
-        //         && !BallSensorUtility.getInstance().indexerIsTripped()) {
-        //     clearStrip();
-        // }
     }
 
     /**
