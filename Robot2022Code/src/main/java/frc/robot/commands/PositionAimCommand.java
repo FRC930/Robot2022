@@ -1,26 +1,29 @@
 package frc.robot.commands;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.utilities.GyroUtility;
-import frc.robot.utilities.RobotToHubVectorUltility;
+import frc.robot.utilities.RobotToHubVectorUtility;
 import frc.robot.utilities.ShuffleboardUtility;
 
 public class PositionAimCommand extends CommandBase {
     DriveSubsystem dSubsystem;
-    RobotToHubVectorUltility robotToHubVectorUltility;
-    final double ANGULAR_P = 0.4;
-    final double ANGULAR_D = 0.01;
+    RobotToHubVectorUtility robotToHubVectorUltility;
+    final double ANGULAR_P = 0.03;
+    final double ANGULAR_D = 0.0;
     double rotationSpeed;
     PIDController turnController;
     double targetHeading;
+    Double robotHeading;
 
     public PositionAimCommand(DriveSubsystem driveSubsystem){
+        robotHeading = 0.0;
         dSubsystem = driveSubsystem;
-        robotToHubVectorUltility = new RobotToHubVectorUltility();
+        robotToHubVectorUltility = new RobotToHubVectorUtility();
         turnController = new PIDController(ANGULAR_P, 0, ANGULAR_D);
 
         addRequirements(dSubsystem);
@@ -28,15 +31,8 @@ public class PositionAimCommand extends CommandBase {
     // vector angle minus the current heading of our robot
     @Override
     public void initialize(){
-        double angleDifference = robotToHubVectorUltility.CalculateAngle(dSubsystem.getOdometry().getPoseMeters());
-        if(GyroUtility.getInstance().getGyro().getFusedHeading() > 0){
-            targetHeading = GyroUtility.getInstance().getGyro().getFusedHeading() + angleDifference;
-        }
-        else{
-            targetHeading = GyroUtility.getInstance().getGyro().getFusedHeading() - angleDifference;
-        }
+        targetHeading = robotToHubVectorUltility.CalculateAngle(dSubsystem.getOdometry().getPoseMeters());
         SmartDashboard.putNumber("targetHeading", targetHeading);
-        SmartDashboard.putNumber("angleDifference", angleDifference);
         SmartDashboard.putNumber("poseY", dSubsystem.getOdometry().getPoseMeters().getY());
         SmartDashboard.putNumber("poseX", dSubsystem.getOdometry().getPoseMeters().getX());
     }
@@ -44,16 +40,35 @@ public class PositionAimCommand extends CommandBase {
 
     @Override
     public void execute() {
-        rotationSpeed = turnController.calculate(GyroUtility.getInstance().getGyro().getFusedHeading(), targetHeading);
-        dSubsystem.drive(0, rotationSpeed);
+        robotHeading = dSubsystem.getOdometry().getPoseMeters().getRotation().getDegrees();
+        if(Math.signum(robotHeading) == -1){
+            turnController.setP(-1 * ANGULAR_P);
+        }
+        else{
+            turnController.setP(ANGULAR_P);
+        }
+        
+        rotationSpeed = turnController.calculate(robotHeading, targetHeading);
+
+        var wheelSpeeds = dSubsystem.getWheelSpeeds(0, rotationSpeed);
+
+        dSubsystem.setVoltages(
+                // Calculate feedforward with the feedforward controller in drive subsystem
+                dSubsystem.calculateLeftFeedforward(
+                        // Use the speed to voltage method in the drive subsystem
+                        wheelSpeeds.leftMetersPerSecond),
+                // Same deal here, feedforward using the helper method
+                dSubsystem.calculateRightFeedforward(
+                        // Again, speed to voltage
+                        wheelSpeeds.rightMetersPerSecond));
+
         SmartDashboard.putNumber("RotationSpeed", rotationSpeed);
-        SmartDashboard.putNumber("getYaw", GyroUtility.getInstance().getGyro().getFusedHeading());
-        SmartDashboard.putNumber("target heading", targetHeading);
+        SmartDashboard.putNumber("fusedHeading", robotHeading);
     }
 
     @Override
     public boolean isFinished() {
-        if(rotationSpeed == 0){
+        if(Math.abs(robotHeading - targetHeading) < 6) {
             return true;
         }
         else{

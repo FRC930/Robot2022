@@ -51,14 +51,14 @@ public class AutoCommandManager {
      */
     public void initCommands() {
 
-        TarmacTaxi defaultAutoPathCommand = new TarmacTaxi(
+        TarmacTaxi TarmacTaxi = new TarmacTaxi(
                 (DriveSubsystem) subsystemMap.get(subNames.DriveSubsystem.toString()));
 
-        TaxiOneBall defaultShoot = new TaxiOneBall(
+        TaxiOneBall TaxiOneBall = new TaxiOneBall(
                 (DriveSubsystem) subsystemMap.get(subNames.DriveSubsystem.toString()),
                 (CatapultSubsystem) subsystemMap.get(subNames.CatapultSubsystem.toString()));
 
-        TaxiTwoBall TwoBallAuto = new TaxiTwoBall(
+        TaxiTwoBall TaxiTwoBall = new TaxiTwoBall(
                 (DriveSubsystem) subsystemMap.get(subNames.DriveSubsystem.toString()),
                 (IntakePistonSubsystem) subsystemMap.get(subNames.IntakePistonSubsystem.toString()),
                 (IntakeMotorSubsystem) subsystemMap.get(subNames.IntakeMotorSubsystem.toString()),
@@ -90,10 +90,10 @@ public class AutoCommandManager {
 
         // Adding auto paths to the Shuffleboard
         ShuffleboardUtility.getInstance().setDefaultAutonOptions("(None)", null);
-        ShuffleboardUtility.getInstance().addAutonOptions("defaultAutoPathCommand", defaultAutoPathCommand);
-        ShuffleboardUtility.getInstance().addAutonOptions("defaultShootingCommand", defaultShoot);
+        ShuffleboardUtility.getInstance().addAutonOptions("TarmacTaxi", TarmacTaxi);
+        ShuffleboardUtility.getInstance().addAutonOptions("TaxiOneBall", TaxiOneBall);
 
-        ShuffleboardUtility.getInstance().addAutonOptions("TwoBallAuto", TwoBallAuto);
+        ShuffleboardUtility.getInstance().addAutonOptions("TaxiTwoBall", TaxiTwoBall);
         // ShuffleboardUtility.getInstance().addAutonOptions("ShootMoveShoot",
         // ShootMoveShoot);
         ShuffleboardUtility.getInstance().addAutonOptions("TerminalPickup", TerminalPickup);
