@@ -7,6 +7,8 @@ import org.photonvision.common.hardware.VisionLEDMode;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.utilities.PhotonVisionUtility;
@@ -41,7 +43,16 @@ public class HubAimingCommand extends CommandBase {
 
     private VisionSmoothingStack smoothingStack = new VisionSmoothingStack(3);
 
+    private XboxController driverController;
+    private XboxController codriverController;
+
     public HubAimingCommand(DriveSubsystem dSubsystem) {
+        this(dSubsystem, null, null);
+    }
+
+    public HubAimingCommand(DriveSubsystem dSubsystem, XboxController driverController,
+            XboxController coDriverController) {
+
         driveSubsystem = dSubsystem;
 
         addRequirements(dSubsystem);
@@ -53,7 +64,8 @@ public class HubAimingCommand extends CommandBase {
 
         driveSubsystem.setVoltages(0, 0);
 
-        PhotonVisionUtility.getInstance().setPiCamerPipeline(ShuffleboardUtility.getInstance().getSelectedPipelineChooser());
+        PhotonVisionUtility.getInstance()
+                .setPiCamerPipeline(ShuffleboardUtility.getInstance().getSelectedPipelineChooser());
     }
 
     @Override
@@ -89,9 +101,23 @@ public class HubAimingCommand extends CommandBase {
             if (Math.abs(smoothingStack.getAverageYaw()) < 3) {
                 ShuffleboardUtility.getInstance().putToShuffleboard(ShuffleboardUtility.driverTab,
                         ShuffleboardKeys.AIMED, new ShuffleBoardData<Boolean>(true));
+
+                if (driverController != null && codriverController != null) {
+                    driverController.setRumble(RumbleType.kLeftRumble, 1);
+                    driverController.setRumble(RumbleType.kRightRumble, 1);
+                    codriverController.setRumble(RumbleType.kLeftRumble, 1);
+                    codriverController.setRumble(RumbleType.kRightRumble, 1);
+                }
             } else {
                 ShuffleboardUtility.getInstance().putToShuffleboard(ShuffleboardUtility.driverTab,
                         ShuffleboardKeys.AIMED, new ShuffleBoardData<Boolean>(false));
+                        
+                if (driverController != null && codriverController != null) {
+                    driverController.setRumble(RumbleType.kLeftRumble, 0);
+                    driverController.setRumble(RumbleType.kRightRumble, 0);
+                    codriverController.setRumble(RumbleType.kLeftRumble, 0);
+                    codriverController.setRumble(RumbleType.kRightRumble, 0);
+                }
             }
         } else {
             // If no target, set both speeds to zero
@@ -111,7 +137,7 @@ public class HubAimingCommand extends CommandBase {
     @Override
     public void end(boolean interrupted) {
         driveSubsystem.setVoltages(0, 0);
-        
+
         hubCamera.setLED(VisionLEDMode.kOff);
 
         ShuffleboardUtility.getInstance().putToShuffleboard(ShuffleboardUtility.driverTab,
