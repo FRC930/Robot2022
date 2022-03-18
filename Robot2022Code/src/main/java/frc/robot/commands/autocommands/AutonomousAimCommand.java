@@ -23,7 +23,7 @@ public class AutonomousAimCommand extends HubAimingCommand {
      */
     public boolean isFinished() {
 
-        PhotonPipelineResult result = super.reflectiveTapeCamera.getLatestResult();
+        PhotonPipelineResult result = super.hubCamera.getLatestResult();
 
         if (result.hasTargets()) {
             double xDegreeOffset = -result.getBestTarget().getYaw();

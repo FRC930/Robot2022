@@ -38,8 +38,6 @@ public class DriveCommand extends CommandBase {
     private DoubleSupplier driveStick;
     private DoubleSupplier rotationStick;
 
-    private PIDController turnController = new PIDController(0.000001, 0, 0);
-
     //-------- CONSTRUCTOR --------\\
     /**
      * Initializes a new {@link frc.robot.commands.DriveCommand DriveCommand} with
@@ -69,7 +67,6 @@ public class DriveCommand extends CommandBase {
 
     @Override
     public void execute() {
-        // No need to modify drive speed axis
         double xStick = driveStick.getAsDouble();
         double rotationSpeed = rotationStick.getAsDouble();
 

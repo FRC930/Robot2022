@@ -1,8 +1,15 @@
 package frc.robot;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.List;
+import java.util.Scanner;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
+
+import org.photonvision.common.hardware.VisionLEDMode;
 
 import edu.wpi.first.cscore.MjpegServer;
 import edu.wpi.first.cscore.UsbCamera;
@@ -14,11 +21,13 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.util.net.PortForwarder;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
@@ -32,7 +41,7 @@ import frc.robot.commands.autocommands.AutoCommandManager.subNames;
 import frc.robot.commands.autovisioncommands.HubAimingCommand;
 import frc.robot.commands.endgamecommands.EndgameArmCommand;
 import frc.robot.commands.endgamecommands.EndgameArmRevCommand;
-import frc.robot.commands.endgamecommands.EndgameCloseClawSingleCommand;
+import frc.robot.commands.endgamecommands.EndgameCloseClawCommand;
 import frc.robot.commands.endgamecommands.EndgameManagerCommand;
 import frc.robot.commands.intakecommands.intakePistonCommands.DisengageIntakePistonsCommand;
 import frc.robot.commands.intakecommands.intakePistonCommands.EngageIntakePistonsCommand;
@@ -56,6 +65,10 @@ import frc.robot.utilities.BallSensorUtility;
 import frc.robot.utilities.DriveCameraUtility;
 import frc.robot.utilities.DriveCameraUtility.BallColor;
 import frc.robot.utilities.EndgameSensorUtility;
+import frc.robot.utilities.PathPlannerSequentialCommandGroupUtility;
+import frc.robot.utilities.PhotonVisionUtility;
+import frc.robot.utilities.ShuffleboardUtility;
+import frc.robot.utilities.SimulatedDrivetrain;
 
 public class RobotContainer {
 
@@ -63,7 +76,7 @@ public class RobotContainer {
 
     // Driver Controller
     private final ControllerManager driverController = new ControllerManager(0);
-    // Codriver Controllerd
+    // Codriver Controller
     private final ControllerManager codriverController = new ControllerManager(1);
     /*
      * // Left Joystick
@@ -143,8 +156,7 @@ public class RobotContainer {
     // Endgame Piston Subsystems
     private final EndgamePistonSubsystem endgamePiston1;
     private final EndgamePistonSubsystem endgamePiston2;
-    private final EndgamePistonSubsystem endgamePistonL3;
-    private final EndgamePistonSubsystem endgamePistonR3;
+    private final EndgamePistonSubsystem endgamePiston3;
     private final EndgamePistonSubsystem endgamePiston4;
 
     private final HubAimingCommand hubAimingCommand;
@@ -182,6 +194,7 @@ public class RobotContainer {
         // ----- LED SUBSYSTEM INITS -----\\
         ledSubsystem = new LEDSubsystem(0);
 
+        // ------ PORT FORWARDING ------- \\
         PortForwarder.add(5800, "10.9.30.25", 5800);
         PortForwarder.add(1181, "10.9.30.25", 1181);
         PortForwarder.add(1182, "10.9.30.25", 1182);
@@ -207,8 +220,7 @@ public class RobotContainer {
         // Endgame Piston Subsystems
         endgamePiston1 = new EndgamePistonSubsystem(8);
         endgamePiston2 = new EndgamePistonSubsystem(9);
-        endgamePistonL3 = new EndgamePistonSubsystem(10);
-        endgamePistonR3 = new EndgamePistonSubsystem(14);
+        endgamePiston3 = new EndgamePistonSubsystem(10);
         endgamePiston4 = new EndgamePistonSubsystem(11);
 
         /*
@@ -260,7 +272,7 @@ public class RobotContainer {
         endgameArmCommand = new EndgameArmCommand(endgameMotorSubsystem);
         endgameArmRevCommand = new EndgameArmRevCommand(endgameMotorSubsystem);
         endgameManager = new EndgameManagerCommand(endgameMotorSubsystem,
-                endgamePiston1, endgamePiston2, endgamePistonL3, endgamePistonR3, endgamePiston4);
+                endgamePiston1, endgamePiston2, endgamePiston3, endgamePiston4);
 
         hubAimingCommand = new HubAimingCommand(driveSubsystem);
 
@@ -294,14 +306,26 @@ public class RobotContainer {
         // scheduler.setDefaultCommand(endgameMotorSubsystem, new
         // EndgameRotateHorizonalCommand(endgameMotorSubsystem)); // -GET ENCODER
         // WORKING
-        scheduler.setDefaultCommand(endgamePiston1, new EndgameCloseClawSingleCommand(endgamePiston1));
-        scheduler.setDefaultCommand(endgamePiston2, new EndgameCloseClawSingleCommand(endgamePiston2));
-        scheduler.setDefaultCommand(endgamePistonL3, new EndgameCloseClawSingleCommand(endgamePistonL3));
-        scheduler.setDefaultCommand(endgamePistonR3, new EndgameCloseClawSingleCommand(endgamePistonR3));
-        scheduler.setDefaultCommand(endgamePiston4, new EndgameCloseClawSingleCommand(endgamePiston4));
+        scheduler.setDefaultCommand(endgamePiston1, new EndgameCloseClawCommand(endgamePiston1));
+        scheduler.setDefaultCommand(endgamePiston2, new EndgameCloseClawCommand(endgamePiston2));
+        scheduler.setDefaultCommand(endgamePiston3, new EndgameCloseClawCommand(endgamePiston3));
+        scheduler.setDefaultCommand(endgamePiston4, new EndgameCloseClawCommand(endgamePiston4));
         //scheduler.setDefaultCommand(indexerMotorSubsystem, new IndexerForwardCommand(indexerMotorSubsystem, false));;
 
         compressor.enableAnalog(100, 115);
+        
+        // Get the directory where we get files
+        File fileDeployDir = Filesystem.getDeployDirectory();
+        // Get the file from the deploy directory that has the pipelines
+        File pipelineConfig = new File(fileDeployDir.getAbsolutePath() + "/pipelines.txt");
+        try (Scanner reader = new Scanner(pipelineConfig)) {
+            // Read the options from the pipelines file
+            for (int i = 0; reader.hasNextLine(); i++) {
+                ShuffleboardUtility.getInstance().addPipelineChooser(reader.nextLine(), i);
+            }
+        } catch (IOException e) {
+            System.out.println("****** COULDN\'T FIND PIPELINES FILE ******");
+        }
     }
 
     /**
@@ -381,7 +405,14 @@ public class RobotContainer {
     public void beginTeleopRunCommands() {
         // Sets the brake mode to coast
         driveSubsystem.setMotorBrakeMode(NeutralMode.Brake);
-        resheduleAutononmousLEDS(false);
+        // rescheduleAutonomousLEDs(false);
+        CommandScheduler.getInstance().unregisterSubsystem(ledSubsystem);
+        CommandScheduler.getInstance().setDefaultCommand(ledSubsystem, idlePatternCommand);
+
+        PhotonVisionUtility.getInstance().getHubTrackingCamera().setDriverMode(false);
+        PhotonVisionUtility.getInstance().getHubTrackingCamera().setLED(VisionLEDMode.kOff);
+
+        PhotonVisionUtility.getInstance().setPiCameraExposure();
     }
 
     public void startCamera() {
@@ -418,8 +449,14 @@ public class RobotContainer {
     public void beginAutoRunCommands() {
         // Sets the brake mode to brake
         driveSubsystem.setMotorBrakeMode(NeutralMode.Brake);
-        resheduleAutononmousLEDS(true);
+        // rescheduleAutonomousLEDs(true);
+        CommandScheduler.getInstance().unregisterSubsystem(ledSubsystem);
+        CommandScheduler.getInstance().setDefaultCommand(ledSubsystem, autonPatternCommand);
 
+        PhotonVisionUtility.getInstance().getHubTrackingCamera().setDriverMode(false);
+        PhotonVisionUtility.getInstance().getHubTrackingCamera().setLED(VisionLEDMode.kOff);
+
+        PhotonVisionUtility.getInstance().setPiCameraExposure();
     }
 
     public void testInit() {
@@ -442,16 +479,11 @@ public class RobotContainer {
                 endgamePiston2.closed();
             }
             if (driverController.getBButton().get()) {
-                endgamePistonL3.open();
+                endgamePiston3.open();
             } else {
-                endgamePistonL3.closed();
+                endgamePiston3.closed();
             }
             if (driverController.getXButton().get()) {
-                endgamePistonR3.open();
-            } else {
-                endgamePistonR3.closed();
-            }
-            if (driverController.getRightBumper().get()) {
                 endgamePiston4.open();
             } else {
                 endgamePiston4.closed();
@@ -508,7 +540,7 @@ public class RobotContainer {
 
     // Begins autonomous simulation. Resets position and timer.
     public void autoSimInit() {
-        resheduleAutononmousLEDS(true);
+        // rescheduleAutonomousLEDs(true);
         m_autocmd = autoManager.getAutonomousCommand();
         if (m_autocmd != null) {
             if (m_autocmd instanceof PathPlannerSequentialCommandGroupUtility) {
@@ -539,14 +571,14 @@ public class RobotContainer {
         }
     }
 
-    private void resheduleAutononmousLEDS(boolean useAutonomousLEDCmd) {
-        LEDCommand ledCommand = (useAutonomousLEDCmd) ? autonPatternCommand : idlePatternCommand;
-        LEDCommand endledCommand = (useAutonomousLEDCmd) ? idlePatternCommand : autonPatternCommand;
-        CommandScheduler scheduler = CommandScheduler.getInstance();
-        scheduler.unregisterSubsystem(ledSubsystem);
-        endledCommand.cancel();
-        scheduler.setDefaultCommand(ledSubsystem, ledCommand);
-    }
+    // private void rescheduleAutonomousLEDs(boolean useAutonomousLEDCmd) {
+    //     LEDCommand ledCommand = (useAutonomousLEDCmd) ? autonPatternCommand : idlePatternCommand;
+    //     LEDCommand endledCommand = (useAutonomousLEDCmd) ? idlePatternCommand : autonPatternCommand;
+    //     CommandScheduler scheduler = CommandScheduler.getInstance();
+    //     scheduler.unregisterSubsystem(ledSubsystem);
+    //     endledCommand.cancel();
+    //     scheduler.setDefaultCommand(ledSubsystem, ledCommand);
+    // }
 
     // Updates simulated robot periodically.
     public void robotSimPeriodic() {
@@ -574,5 +606,7 @@ public class RobotContainer {
 
     public void disabledInit() {
         idlePatternCommand.solidYellowLEDs();
+        PhotonVisionUtility.getInstance().getHubTrackingCamera().setDriverMode(true);
+        PhotonVisionUtility.getInstance().getHubTrackingCamera().setLED(VisionLEDMode.kDefault);
     }
 } // End of RobotContainer
