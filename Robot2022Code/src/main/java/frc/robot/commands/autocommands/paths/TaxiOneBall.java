@@ -109,7 +109,7 @@ public class TaxiOneBall extends PathPlannerSequentialCommandGroupUtility {
         addCommands(
             r_exitTarmac,
             new HubAimCommand(driveSubsystem),
-            new ParallelRaceGroup(new ShootCargoCommand(flywheelSubsystem, indexerMotorSubsystem, -1), new WaitCommand(1))
+            new ParallelRaceGroup(new ShootCargoCommand(flywheelSubsystem, indexerMotorSubsystem), new WaitCommand(1))
         );
 
     } // End of Constructor

@@ -133,7 +133,7 @@ public class DefensiveThreeBall extends PathPlannerSequentialCommandGroupUtility
                 r_adjacentEnemyCargo
             ),
             new StopDrive(driveSubsystem),
-            new ParallelRaceGroup(new ShootCargoCommand(flywheelSubsystem, indexerMotorSubsystem, -1), new WaitCommand(1))
+            new ParallelRaceGroup(new ShootCargoCommand(flywheelSubsystem, indexerMotorSubsystem, 0.5), new WaitCommand(1))
         );
 
     } // End of Constructor

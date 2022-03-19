@@ -452,7 +452,7 @@ public class RobotContainer {
         codriverController.getStartButton()
                 .whileActiveOnce(new ParallelCommandGroup(endgameManager, endgamePatternCommand));
         int shootTime = 5;
-        driverController.getLeftBumper().whileActiveOnce(new SequentialCommandGroup(new PigeonAimCommand(driveSubsystem),new PhotonAimCommand(driveSubsystem), new ShootCargoCommand(flywheelSubsystem, indexerMotorSubsystem, -1).withTimeout(shootTime)));
+        driverController.getLeftBumper().whileActiveOnce(new SequentialCommandGroup(new PigeonAimCommand(driveSubsystem),new PhotonAimCommand(driveSubsystem), new ShootCargoCommand(flywheelSubsystem, indexerMotorSubsystem).withTimeout(shootTime)));
         driverController.getLeftTrigger().whileActiveOnce(new IndexerForwardCommand(indexerMotorSubsystem, false));
         driverController.getRightBumper().whileActiveOnce(new ShootCargoCommand(flywheelSubsystem, indexerMotorSubsystem));
         driverController.getPOVUpTrigger().whileActiveOnce(new AdjustHoodCommand(shooterHoodSubsystem, 28.44));

@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.utilities.PathPlannerSequentialCommandGroupUtility;
+import frc.robot.utilities.ShooterUtility;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.FlywheelSubsystem;
 import frc.robot.subsystems.IndexerMotorSubsystem;
@@ -140,21 +141,21 @@ public class DefensiveHangarCleanup extends PathPlannerSequentialCommandGroupUti
                 new HubAimCommand(driveSubsystem),
                 new WaitCommand(1)
             ),
-            new ParallelRaceGroup(new ShootCargoCommand(flywheelSubsystem, indexerMotorSubsystem, -1), new WaitCommand(1)),
-            new ParallelRaceGroup(new ShootCargoCommand(flywheelSubsystem, indexerMotorSubsystem, -1), new WaitCommand(1)),
+            new ParallelRaceGroup(new ShootCargoCommand(flywheelSubsystem, indexerMotorSubsystem), new WaitCommand(1)),
+            new ParallelRaceGroup(new ShootCargoCommand(flywheelSubsystem, indexerMotorSubsystem), new WaitCommand(1)),
             new ParallelRaceGroup(
                 new EngageIntakePistonsCommand(intakePistonSubsystem),
                 new RunIntakeMotorsCommand(intakeMotorSubsystem, false),
                 r_adjacentEnemyCargo
             ),
             new StopDrive(driveSubsystem),
-            new ParallelRaceGroup(new ShootCargoCommand(flywheelSubsystem, indexerMotorSubsystem, -1), new WaitCommand(1)),
+            new ParallelRaceGroup(new ShootCargoCommand(flywheelSubsystem, indexerMotorSubsystem, 0.5), new WaitCommand(1)),
             new ParallelRaceGroup(
             new EngageIntakePistonsCommand(intakePistonSubsystem),
             new RunIntakeMotorsCommand(intakeMotorSubsystem, false),
             r_farEnemyCargo),
             new WaitCommand(0.25),
-            new ParallelRaceGroup(new ShootCargoCommand(flywheelSubsystem, indexerMotorSubsystem, -1), new WaitCommand(1))
+            new ParallelRaceGroup(new ShootCargoCommand(flywheelSubsystem, indexerMotorSubsystem, 1), new WaitCommand(1))
 
         );
 
