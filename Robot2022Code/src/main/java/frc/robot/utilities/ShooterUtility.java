@@ -56,12 +56,10 @@ public class ShooterUtility {
         if (vDistance >= 0 && vDistance <= MAX_DISTANCE) {
             if (vDistance >= 8) {
                 return (SPEED_M * vDistance + TOP_SPEED_B) / 100;
-            } else if (vDistance >= 6) {
+            } else if (vDistance >= 5) {
                 return 0.76;
-            } else if (vDistance >= 2) {
-                return 0.74;
             } else {
-                return 0.0;
+                return 0.74;
             }
         } else {
             return -1;
@@ -80,12 +78,10 @@ public class ShooterUtility {
         if (vDistance >= 0 && vDistance <= MAX_DISTANCE) {
             if (vDistance >= 8) {
                 return (SPEED_M * vDistance + BOT_SPEED_B) / 100;
-            } else if (vDistance >= 6) {
+            } else if (vDistance >= 5) {
                 return 0.26;
-            } else if (vDistance >= 2) {
-                return 0.24;
             } else {
-                return 0.0;
+                return 0.24;
             }
         } else {
             return -1;

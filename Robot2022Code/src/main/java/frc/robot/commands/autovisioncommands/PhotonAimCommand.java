@@ -34,11 +34,11 @@ public class PhotonAimCommand extends CommandBase {
     public static final double YAW_OFFSET = 3.0;
 
     // The height of the camera
-    private final double CAMERA_HEIGHT_METERS = Units.feetToMeters(4);
+    private final double CAMERA_HEIGHT_METERS = Units.inchesToMeters(46);
     // The height of the hub
     private final double HUB_HEIGHT_METERS = Units.inchesToMeters(104);
 
-    private final double HEIGHT_DIFFERENCE_METERS = HUB_HEIGHT_METERS - Units.inchesToMeters(46);
+    private final double HEIGHT_DIFFERENCE_METERS = HUB_HEIGHT_METERS - CAMERA_HEIGHT_METERS;
 
     // The pitch of the camera
     private final double CAMERA_PITCH_RADIANS = Units.degreesToRadians(20.0);
@@ -99,6 +99,9 @@ public class PhotonAimCommand extends CommandBase {
 
         driveSubsystem.setVoltages(0, 0);
 
+        ShuffleboardUtility.getInstance().putToShuffleboard(ShuffleboardUtility.driverTab,
+                ShuffleboardKeys.AIMED, new ShuffleBoardData<Boolean>(false));
+
         PhotonVisionUtility.getInstance()
                 .setPiCamerPipeline(ShuffleboardUtility.getInstance().getSelectedPipelineChooser());
     }
@@ -121,7 +124,9 @@ public class PhotonAimCommand extends CommandBase {
             double range = PhotonUtils.calculateDistanceToTargetMeters(CAMERA_HEIGHT_METERS, HUB_HEIGHT_METERS,
                     CAMERA_PITCH_RADIANS, Units.degreesToRadians(smoothingStack.getAveragePitch()));
 
-            range = Math.sqrt(Math.pow(range, 2) - Math.pow(HEIGHT_DIFFERENCE_METERS, 2));
+            range = Math.sqrt(Math.pow(range, 2) - Math.pow(HEIGHT_DIFFERENCE_METERS, 2))
+                    // Adjusted to measure from front of the robot to hub stand wall.
+                    - 1.1;
 
             ShuffleboardUtility.getInstance().putToShuffleboard(ShuffleboardUtility.driverTab,
                     ShuffleboardKeys.DISTANCE_FROM_GOAL, new ShuffleBoardData<Double>(range));
@@ -167,7 +172,7 @@ public class PhotonAimCommand extends CommandBase {
 
             ShuffleboardUtility.getInstance().putToShuffleboard(ShuffleboardUtility.driverTab,
                     ShuffleboardKeys.DISTANCE_FROM_GOAL, new ShuffleBoardData<Double>(range));
-                    
+
             ShooterUtility.setValuesToShuffleboard(range);
         }
 
@@ -192,6 +197,6 @@ public class PhotonAimCommand extends CommandBase {
 
     @Override
     public boolean isFinished() {
-            return Math.abs(smoothingStack.getAverageYaw()) < YAW_OFFSET;
+        return (boolean) ShuffleboardUtility.getInstance().getFromShuffleboard(ShuffleboardKeys.AIMED).getData();
     }
 }
