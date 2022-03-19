@@ -22,6 +22,8 @@ import org.msgpack.jackson.dataformat.Tuple;
 import org.photonvision.PhotonCamera;
 import org.photonvision.common.hardware.VisionLEDMode;
 
+import frc.robot.Robot;
+
 /**
  * <h3>PhotonVisionUtility</h3>
  * 
@@ -50,7 +52,7 @@ public class PhotonVisionUtility {
                 try {
                     System.out.println("****** STARTED INITIALIZING PHOTON ******");
                     // Connect to the photonvision over the radio
-                    photonGetConnection = (HttpURLConnection) new URL("http://127.0.0.1:5800/")
+                    photonGetConnection = (HttpURLConnection) new URL(Robot.isReal() ? "http://10.9.30.25:5800/" : "http://127.0.0.1:5800/")
                             .openConnection();
                     // Set the connection timeout
                     photonGetConnection.setConnectTimeout(100);
@@ -66,7 +68,7 @@ public class PhotonVisionUtility {
 
             try {
                 // The websocket we will use to broadcast data to photon
-                ws = httpClient.newWebSocketBuilder().buildAsync(URI.create("ws://127.0.0.1:5800/websocket"),
+                ws = httpClient.newWebSocketBuilder().buildAsync(URI.create(Robot.isReal() ? "ws://10.9.30.25:5800/websocket" : "ws://127.0.0.1:5800/websocket"),
                         new WebsocketListener()).get();
 
                 // Set the exposure for the pi camera

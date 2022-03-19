@@ -26,6 +26,7 @@ import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.util.net.PortForwarder;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -33,7 +34,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.BallHolderCommand;
 import frc.robot.commands.CatapultCommand.CatapultPower;
 import frc.robot.commands.CatapultCommandGroup;
@@ -42,9 +42,7 @@ import frc.robot.commands.IndexerForwardCommand;
 import frc.robot.commands.LEDCommand;
 import frc.robot.commands.PositionAimCommand;
 import frc.robot.commands.ToggleShifterCommand;
-import frc.robot.commands.CatapultCommand.CatapultPower;
 import frc.robot.commands.LEDCommand.LEDPatterns;
-import frc.robot.commands.ToggleShifterCommand;
 import frc.robot.commands.autocommands.AutoCommandManager;
 import frc.robot.commands.autocommands.AutoCommandManager.subNames;
 import frc.robot.commands.autovisioncommands.HubAimingCommand;
@@ -282,7 +280,8 @@ public class RobotContainer {
         endgameManager = new EndgameManagerCommand(endgameMotorSubsystem,
                 endgamePiston1, endgamePiston2, endgamePiston3, endgamePiston4);
 
-        hubAimingCommand = new HubAimingCommand(driveSubsystem, driverController.getController(), codriverController.getController());
+        hubAimingCommand = new HubAimingCommand(driveSubsystem, driverController.getController(),
+                codriverController.getController());
         positionAimCommand = new PositionAimCommand(driveSubsystem);
 
         // ----- SETTING BALL COLOR -----\\
@@ -322,69 +321,83 @@ public class RobotContainer {
         scheduler.setDefaultCommand(indexerMotorSubsystem, new IndexerForwardCommand(indexerMotorSubsystem, false));
         scheduler.setDefaultCommand(catapultSubsystem, new BallHolderCommand(catapultSubsystem));
 
-        try {
-            BufferedInputStream zipFile = new BufferedInputStream(
-                    new URL("http://127.0.0.1:5800/api/settings/photonvision_config.zip").openStream());
+        if (Robot.isReal()) {
+            try {
+                // Open the zip file stream from the photon
+                BufferedInputStream zipFile = new BufferedInputStream(
+                        new URL("http://10.9.30.25:5800/api/settings/photonvision_config.zip").openStream());
 
-            ObjectMapper objectMapper = new ObjectMapper();
+                // This is our json parser
+                ObjectMapper objectMapper = new ObjectMapper();
 
-            File destDir = new File("settings_unzipped");
-            byte[] buffer = new byte[1024];
-            ZipInputStream zis = new ZipInputStream(zipFile);
-            ZipEntry zipEntry = zis.getNextEntry();
-            while (zipEntry != null) {
-                File newFile = newFile(destDir, zipEntry);
-                if (zipEntry.isDirectory()) {
-                    if (!newFile.isDirectory() && !newFile.mkdirs()) {
-                        throw new IOException("Failed to create directory " + newFile);
-                    }
-                } else {
-                    File parent = newFile.getParentFile();
-                    if (!parent.isDirectory() && !parent.mkdirs()) {
-                        throw new IOException("Failed to create directory " + parent);
-                    }
+                // Get the directory where we should store files
+                File destDir = new File(Filesystem.getOperatingDirectory().getAbsolutePath() + "settings_unzipped");
+                // Set up a buffer for reading the zip file
+                byte[] buffer = new byte[1024];
+                // Zip input stream for reading the zip files
+                ZipInputStream zis = new ZipInputStream(zipFile);
+                // Zip entry for the files inside of the zip
+                ZipEntry zipEntry = zis.getNextEntry();
+                // Set up the zip file extraction
+                while (zipEntry != null) {
+                    File newFile = newFile(destDir, zipEntry);
+                    if (zipEntry.isDirectory()) {
+                        if (!newFile.isDirectory() && !newFile.mkdirs()) {
+                            throw new IOException("Failed to create directory " + newFile);
+                        }
+                    } else {
+                        File parent = newFile.getParentFile();
+                        if (!parent.isDirectory() && !parent.mkdirs()) {
+                            throw new IOException("Failed to create directory " + parent);
+                        }
 
-                    FileOutputStream fos = new FileOutputStream(newFile);
-                    int len;
-                    while ((len = zis.read(buffer)) > 0) {
-                        fos.write(buffer, 0, len);
+                        FileOutputStream fos = new FileOutputStream(newFile);
+                        int len;
+                        while ((len = zis.read(buffer)) > 0) {
+                            fos.write(buffer, 0, len);
+                        }
+                        fos.close();
                     }
-                    fos.close();
+                    zipEntry = zis.getNextEntry();
                 }
-                zipEntry = zis.getNextEntry();
-            }
-            zis.closeEntry();
-            zis.close();
+                zis.closeEntry();
+                zis.close();
 
-            File pipelinesDir = new File("settings_unzipped/cameras/Integrated_Camera/pipelines"); //mmal_service_16.1
-            String[] pipelinesList = pipelinesDir.list();
-            for (String piplineFile : pipelinesList) {
-                File currentPipeline = new File(pipelinesDir.getPath() + "/" + piplineFile);
-                String fileContents = "";
-                Scanner sc = new Scanner(currentPipeline);
-                while (sc.hasNextLine()) {
-                    fileContents += sc.nextLine() + "\n";
+                // Read pipelines from the directory
+                File pipelinesDir = new File(Filesystem.getOperatingDirectory().getAbsolutePath()
+                        + "settings_unzipped/cameras/mmal_service_16.1/pipelines");
+                // List the pipelines in the directory
+                String[] pipelinesList = pipelinesDir.list();
+                for (String piplineFile : pipelinesList) {
+                    // Set up a file for the current pipeline
+                    File currentPipeline = new File(pipelinesDir.getPath() + "/" + piplineFile);
+                    String fileContents = "";
+                    Scanner sc = new Scanner(currentPipeline);
+                    while (sc.hasNextLine()) {
+                        fileContents += sc.nextLine() + "\n";
+                    }
+                    sc.close();
+
+                    // Json to hold the overall file structure
+                    JsonNode jsonNode = objectMapper.readTree(fileContents);
+                    // Json to hold the settings values
+                    JsonNode settingsMap = jsonNode.get(1);
+                    String pipelineName = settingsMap.get("pipelineNickname").asText();
+                    int pipelineIndex = Integer.parseInt(settingsMap.get("pipelineIndex").asText());
+                    double exposure = Double.parseDouble(settingsMap.get("cameraExposure").asText());
+
+                    ShuffleboardUtility.getInstance().addPipelineChooser(pipelineName, pipelineIndex);
+                    PhotonVisionUtility.getInstance().addPipeline(pipelineName, exposure);
+
+                    System.out.println(pipelineName);
+                    System.out.println(exposure);
                 }
-                sc.close();
-
-                JsonNode jsonNode = objectMapper.readTree(fileContents);
-                JsonNode settingsMap = jsonNode.get(1);
-                String pipelineName = settingsMap.get("pipelineNickname").asText();
-                int pipelineIndex = Integer.parseInt(settingsMap.get("pipelineIndex").asText());
-                double exposure = Double.parseDouble(settingsMap.get("cameraExposure").asText());
-
-                ShuffleboardUtility.getInstance().addPipelineChooser(pipelineName, pipelineIndex);
-                PhotonVisionUtility.getInstance().addPipeline(pipelineName, exposure);
-
-                System.out.println(pipelineName);
-                System.out.println(exposure);
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
         }
-
     }
 
     private static File newFile(File destinationDir, ZipEntry zipEntry) throws IOException {
@@ -472,7 +485,8 @@ public class RobotContainer {
         codriverController.getStartButton()
                 .whileActiveOnce(new ParallelCommandGroup(endgameManager, endgamePatternCommand));
 
-        driverController.getRightBumper().whileActiveContinuous(positionAimCommand);//new SequentialCommandGroup(positionAimCommand,hubAimingCommand));
+        driverController.getRightBumper().whileActiveContinuous(positionAimCommand);// new
+                                                                                    // SequentialCommandGroup(positionAimCommand,hubAimingCommand));
 
         // Manual Commands
         codriverController.getRightBumper().whileActiveOnce(ballHolderCommand);
