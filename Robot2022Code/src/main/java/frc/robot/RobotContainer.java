@@ -1,13 +1,19 @@
 package frc.robot;
 
+import java.io.BufferedInputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileReader;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.List;
 import java.util.Scanner;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.photonvision.common.hardware.VisionLEDMode;
 
@@ -20,7 +26,6 @@ import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.util.net.PortForwarder;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -277,7 +282,7 @@ public class RobotContainer {
         endgameManager = new EndgameManagerCommand(endgameMotorSubsystem,
                 endgamePiston1, endgamePiston2, endgamePiston3, endgamePiston4);
 
-        hubAimingCommand = new HubAimingCommand(driveSubsystem);
+        hubAimingCommand = new HubAimingCommand(driveSubsystem, driverController.getController(), codriverController.getController());
         positionAimCommand = new PositionAimCommand(driveSubsystem);
 
         // ----- SETTING BALL COLOR -----\\
@@ -317,20 +322,82 @@ public class RobotContainer {
         scheduler.setDefaultCommand(indexerMotorSubsystem, new IndexerForwardCommand(indexerMotorSubsystem, false));
         scheduler.setDefaultCommand(catapultSubsystem, new BallHolderCommand(catapultSubsystem));
 
-        
+        try {
+            BufferedInputStream zipFile = new BufferedInputStream(
+                    new URL("http://127.0.0.1:5800/api/settings/photonvision_config.zip").openStream());
 
-        // Get the directory where we get files
-        File fileDeployDir = Filesystem.getDeployDirectory();
-        // Get the file from the deploy directory that has the pipelines
-        File pipelineConfig = new File(fileDeployDir.getAbsolutePath() + "/pipelines.txt");
-        try (Scanner reader = new Scanner(pipelineConfig)) {
-            // Read the options from the pipelines file
-            for (int i = 0; reader.hasNextLine(); i++) {
-                ShuffleboardUtility.getInstance().addPipelineChooser(reader.nextLine(), i);
+            ObjectMapper objectMapper = new ObjectMapper();
+
+            File destDir = new File("settings_unzipped");
+            byte[] buffer = new byte[1024];
+            ZipInputStream zis = new ZipInputStream(zipFile);
+            ZipEntry zipEntry = zis.getNextEntry();
+            while (zipEntry != null) {
+                File newFile = newFile(destDir, zipEntry);
+                if (zipEntry.isDirectory()) {
+                    if (!newFile.isDirectory() && !newFile.mkdirs()) {
+                        throw new IOException("Failed to create directory " + newFile);
+                    }
+                } else {
+                    File parent = newFile.getParentFile();
+                    if (!parent.isDirectory() && !parent.mkdirs()) {
+                        throw new IOException("Failed to create directory " + parent);
+                    }
+
+                    FileOutputStream fos = new FileOutputStream(newFile);
+                    int len;
+                    while ((len = zis.read(buffer)) > 0) {
+                        fos.write(buffer, 0, len);
+                    }
+                    fos.close();
+                }
+                zipEntry = zis.getNextEntry();
             }
+            zis.closeEntry();
+            zis.close();
+
+            File pipelinesDir = new File("settings_unzipped/cameras/Integrated_Camera/pipelines"); //mmal_service_16.1
+            String[] pipelinesList = pipelinesDir.list();
+            for (String piplineFile : pipelinesList) {
+                File currentPipeline = new File(pipelinesDir.getPath() + "/" + piplineFile);
+                String fileContents = "";
+                Scanner sc = new Scanner(currentPipeline);
+                while (sc.hasNextLine()) {
+                    fileContents += sc.nextLine() + "\n";
+                }
+                sc.close();
+
+                JsonNode jsonNode = objectMapper.readTree(fileContents);
+                JsonNode settingsMap = jsonNode.get(1);
+                String pipelineName = settingsMap.get("pipelineNickname").asText();
+                int pipelineIndex = Integer.parseInt(settingsMap.get("pipelineIndex").asText());
+                double exposure = Double.parseDouble(settingsMap.get("cameraExposure").asText());
+
+                ShuffleboardUtility.getInstance().addPipelineChooser(pipelineName, pipelineIndex);
+                PhotonVisionUtility.getInstance().addPipeline(pipelineName, exposure);
+
+                System.out.println(pipelineName);
+                System.out.println(exposure);
+            }
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
         } catch (IOException e) {
-            System.out.println("****** COULDN\'T FIND PIPELINES FILE ******");
+            e.printStackTrace();
         }
+
+    }
+
+    private static File newFile(File destinationDir, ZipEntry zipEntry) throws IOException {
+        File destFile = new File(destinationDir, zipEntry.getName());
+
+        String destDirPath = destinationDir.getCanonicalPath();
+        String destFilePath = destFile.getCanonicalPath();
+
+        if (!destFilePath.startsWith(destDirPath + File.separator)) {
+            throw new IOException("Entry is outside of the target dir: " + zipEntry.getName());
+        }
+
+        return destFile;
     }
 
     /**
@@ -591,12 +658,14 @@ public class RobotContainer {
     }
 
     // private void rescheduleAutonomousLEDs(boolean useAutonomousLEDCmd) {
-    //     LEDCommand ledCommand = (useAutonomousLEDCmd) ? autonPatternCommand : idlePatternCommand;
-    //     LEDCommand endledCommand = (useAutonomousLEDCmd) ? idlePatternCommand : autonPatternCommand;
-    //     CommandScheduler scheduler = CommandScheduler.getInstance();
-    //     scheduler.unregisterSubsystem(ledSubsystem);
-    //     endledCommand.cancel();
-    //     scheduler.setDefaultCommand(ledSubsystem, ledCommand);
+    // LEDCommand ledCommand = (useAutonomousLEDCmd) ? autonPatternCommand :
+    // idlePatternCommand;
+    // LEDCommand endledCommand = (useAutonomousLEDCmd) ? idlePatternCommand :
+    // autonPatternCommand;
+    // CommandScheduler scheduler = CommandScheduler.getInstance();
+    // scheduler.unregisterSubsystem(ledSubsystem);
+    // endledCommand.cancel();
+    // scheduler.setDefaultCommand(ledSubsystem, ledCommand);
     // }
 
     // Updates simulated robot periodically.
