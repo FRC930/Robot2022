@@ -41,6 +41,7 @@ import frc.robot.commands.LEDCommand.LEDPatterns;
 import frc.robot.commands.ToggleShifterCommand;
 import frc.robot.commands.autocommands.AutoCommandManager;
 import frc.robot.commands.autocommands.AutoCommandManager.subNames;
+import frc.robot.commands.autovisioncommands.HubAimCommand;
 import frc.robot.commands.autovisioncommands.PhotonAimCommand;
 import frc.robot.commands.autovisioncommands.PigeonAimCommand;
 import frc.robot.commands.endgamecommands.EndgameArmCommand;
@@ -163,7 +164,6 @@ public class RobotContainer {
 
     private final PhotonAimCommand photonAimCommand;
     private final PigeonAimCommand pigeonAimCommand;
-    
 
     // LED commands
     private final LEDCommand autonPatternCommand;
@@ -281,8 +281,9 @@ public class RobotContainer {
                 endgamePiston1, endgamePiston2, endgamePiston3, endgamePiston4);
 
         pigeonAimCommand = new PigeonAimCommand(driveSubsystem);
-        photonAimCommand = new PhotonAimCommand(driveSubsystem, driverController.getController(), codriverController.getController());
-        
+        photonAimCommand = new PhotonAimCommand(driveSubsystem, driverController.getController(),
+                codriverController.getController());
+
         // ----- SETTING BALL COLOR -----\\
         if (DriverStation.getAlliance() == Alliance.Blue) {
             DriveCameraUtility.getInstance().setBallColor(BallColor.BLUE);
@@ -322,69 +323,70 @@ public class RobotContainer {
 
         compressor.enableAnalog(100, 115);
 
-        try {
-            BufferedInputStream zipFile = new BufferedInputStream(
-                    new URL("http://127.0.0.1:5800/api/settings/photonvision_config.zip").openStream());
+        if (Robot.isReal()) {
+            try {
+                BufferedInputStream zipFile = new BufferedInputStream(
+                        new URL("http://10.9.30.25:5800/api/settings/photonvision_config.zip").openStream());
 
-            ObjectMapper objectMapper = new ObjectMapper();
+                ObjectMapper objectMapper = new ObjectMapper();
 
-            File destDir = new File("settings_unzipped");
-            byte[] buffer = new byte[1024];
-            ZipInputStream zis = new ZipInputStream(zipFile);
-            ZipEntry zipEntry = zis.getNextEntry();
-            while (zipEntry != null) {
-                File newFile = newFile(destDir, zipEntry);
-                if (zipEntry.isDirectory()) {
-                    if (!newFile.isDirectory() && !newFile.mkdirs()) {
-                        throw new IOException("Failed to create directory " + newFile);
-                    }
-                } else {
-                    File parent = newFile.getParentFile();
-                    if (!parent.isDirectory() && !parent.mkdirs()) {
-                        throw new IOException("Failed to create directory " + parent);
-                    }
+                File destDir = new File("settings_unzipped");
+                byte[] buffer = new byte[1024];
+                ZipInputStream zis = new ZipInputStream(zipFile);
+                ZipEntry zipEntry = zis.getNextEntry();
+                while (zipEntry != null) {
+                    File newFile = newFile(destDir, zipEntry);
+                    if (zipEntry.isDirectory()) {
+                        if (!newFile.isDirectory() && !newFile.mkdirs()) {
+                            throw new IOException("Failed to create directory " + newFile);
+                        }
+                    } else {
+                        File parent = newFile.getParentFile();
+                        if (!parent.isDirectory() && !parent.mkdirs()) {
+                            throw new IOException("Failed to create directory " + parent);
+                        }
 
-                    FileOutputStream fos = new FileOutputStream(newFile);
-                    int len;
-                    while ((len = zis.read(buffer)) > 0) {
-                        fos.write(buffer, 0, len);
+                        FileOutputStream fos = new FileOutputStream(newFile);
+                        int len;
+                        while ((len = zis.read(buffer)) > 0) {
+                            fos.write(buffer, 0, len);
+                        }
+                        fos.close();
                     }
-                    fos.close();
+                    zipEntry = zis.getNextEntry();
                 }
-                zipEntry = zis.getNextEntry();
-            }
-            zis.closeEntry();
-            zis.close();
+                zis.closeEntry();
+                zis.close();
 
-            File pipelinesDir = new File("settings_unzipped/cameras/Integrated_Camera/pipelines"); //mmal_service_16.1
-            String[] pipelinesList = pipelinesDir.list();
-            for (String piplineFile : pipelinesList) {
-                File currentPipeline = new File(pipelinesDir.getPath() + "/" + piplineFile);
-                String fileContents = "";
-                Scanner sc = new Scanner(currentPipeline);
-                while (sc.hasNextLine()) {
-                    fileContents += sc.nextLine() + "\n";
+                File pipelinesDir = new File("settings_unzipped/cameras/Integrated_Camera/pipelines"); // mmal_service_16.1
+                String[] pipelinesList = pipelinesDir.list();
+                for (String piplineFile : pipelinesList) {
+                    File currentPipeline = new File(pipelinesDir.getPath() + "/" + piplineFile);
+                    String fileContents = "";
+                    Scanner sc = new Scanner(currentPipeline);
+                    while (sc.hasNextLine()) {
+                        fileContents += sc.nextLine() + "\n";
+                    }
+                    sc.close();
+
+                    JsonNode jsonNode = objectMapper.readTree(fileContents);
+                    JsonNode settingsMap = jsonNode.get(1);
+                    String pipelineName = settingsMap.get("pipelineNickname").asText();
+                    int pipelineIndex = Integer.parseInt(settingsMap.get("pipelineIndex").asText());
+                    double exposure = Double.parseDouble(settingsMap.get("cameraExposure").asText());
+
+                    ShuffleboardUtility.getInstance().addPipelineChooser(pipelineName, pipelineIndex);
+                    PhotonVisionUtility.getInstance().addPipeline(pipelineName, exposure);
+
+                    System.out.println(pipelineName);
+                    System.out.println(exposure);
                 }
-                sc.close();
-
-                JsonNode jsonNode = objectMapper.readTree(fileContents);
-                JsonNode settingsMap = jsonNode.get(1);
-                String pipelineName = settingsMap.get("pipelineNickname").asText();
-                int pipelineIndex = Integer.parseInt(settingsMap.get("pipelineIndex").asText());
-                double exposure = Double.parseDouble(settingsMap.get("cameraExposure").asText());
-
-                ShuffleboardUtility.getInstance().addPipelineChooser(pipelineName, pipelineIndex);
-                PhotonVisionUtility.getInstance().addPipeline(pipelineName, exposure);
-
-                System.out.println(pipelineName);
-                System.out.println(exposure);
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
         }
-
     }
 
     private static File newFile(File destinationDir, ZipEntry zipEntry) throws IOException {
@@ -451,17 +453,27 @@ public class RobotContainer {
 
         codriverController.getStartButton()
                 .whileActiveOnce(new ParallelCommandGroup(endgameManager, endgamePatternCommand));
-        int shootTime = 5;
-        driverController.getLeftBumper().whileActiveOnce(new SequentialCommandGroup(new PigeonAimCommand(driveSubsystem),new PhotonAimCommand(driveSubsystem), new ShootCargoCommand(flywheelSubsystem, indexerMotorSubsystem).withTimeout(shootTime)));
+        driverController.getLeftBumper()
+                .whileActiveOnce(new SequentialCommandGroup(new HubAimCommand(driveSubsystem),
+                        new AdjustHoodCommand(shooterHoodSubsystem),
+                        new ShootCargoCommand(flywheelSubsystem, indexerMotorSubsystem)
+                                .withTimeout(ShootCargoCommand.SHOOT_TIME)));
         driverController.getLeftTrigger().whileActiveOnce(new IndexerForwardCommand(indexerMotorSubsystem, false));
-        driverController.getRightBumper().whileActiveOnce(new ShootCargoCommand(flywheelSubsystem, indexerMotorSubsystem));
+        driverController.getRightBumper()
+                .whileActiveOnce(new ShootCargoCommand(flywheelSubsystem, indexerMotorSubsystem));
         driverController.getPOVUpTrigger().whileActiveOnce(new AdjustHoodCommand(shooterHoodSubsystem, 28.44));
         driverController.getPOVLeftTrigger().whileActiveOnce(new AdjustHoodCommand(shooterHoodSubsystem));
         driverController.getPOVDownTrigger().whileActiveOnce(new AdjustHoodCommand(shooterHoodSubsystem, 0.0));
-        /*codriverController.getXButton().whileActiveOnce(new InstantCommand(shooterHoodSubsystem::setSlowSpeed, shooterHoodSubsystem));
-        codriverController.getXButton().negate().whileActiveOnce(new InstantCommand(shooterHoodSubsystem::stopHood, shooterHoodSubsystem));
-        codriverController.getBButton().whileActiveOnce(new InstantCommand(shooterHoodSubsystem::setSlowRevSpeed, shooterHoodSubsystem));
-        codriverController.getBButton().negate().whileActiveOnce(new InstantCommand(shooterHoodSubsystem::stopHood, shooterHoodSubsystem));*/
+        /*
+         * codriverController.getXButton().whileActiveOnce(new
+         * InstantCommand(shooterHoodSubsystem::setSlowSpeed, shooterHoodSubsystem));
+         * codriverController.getXButton().negate().whileActiveOnce(new
+         * InstantCommand(shooterHoodSubsystem::stopHood, shooterHoodSubsystem));
+         * codriverController.getBButton().whileActiveOnce(new
+         * InstantCommand(shooterHoodSubsystem::setSlowRevSpeed, shooterHoodSubsystem));
+         * codriverController.getBButton().negate().whileActiveOnce(new
+         * InstantCommand(shooterHoodSubsystem::stopHood, shooterHoodSubsystem));
+         */
     }
 
     /**

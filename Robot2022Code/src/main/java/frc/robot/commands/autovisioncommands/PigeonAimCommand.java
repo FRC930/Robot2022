@@ -1,14 +1,11 @@
 package frc.robot.commands.autovisioncommands;
 
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Robot;
 import frc.robot.subsystems.DriveSubsystem;
-import frc.robot.utilities.GyroUtility;
 import frc.robot.utilities.RobotToHubVectorUtility;
-import frc.robot.utilities.ShuffleboardUtility;
 
 public class PigeonAimCommand extends CommandBase {
     DriveSubsystem dSubsystem;
@@ -20,7 +17,7 @@ public class PigeonAimCommand extends CommandBase {
     double targetHeading;
     Double robotHeading;
 
-    public PigeonAimCommand(DriveSubsystem driveSubsystem){
+    public PigeonAimCommand(DriveSubsystem driveSubsystem) {
         robotHeading = 0.0;
         dSubsystem = driveSubsystem;
         robotToHubVectorUtility = new RobotToHubVectorUtility();
@@ -28,26 +25,25 @@ public class PigeonAimCommand extends CommandBase {
 
         addRequirements(dSubsystem);
     }
+
     // vector angle minus the current heading of our robot
     @Override
-    public void initialize(){
+    public void initialize() {
         targetHeading = robotToHubVectorUtility.CalculateAngle(dSubsystem.getOdometry().getPoseMeters());
         SmartDashboard.putNumber("targetHeading", targetHeading);
         SmartDashboard.putNumber("poseY", dSubsystem.getOdometry().getPoseMeters().getY());
         SmartDashboard.putNumber("poseX", dSubsystem.getOdometry().getPoseMeters().getX());
     }
 
-
     @Override
     public void execute() {
         robotHeading = dSubsystem.getOdometry().getPoseMeters().getRotation().getDegrees();
-        if(Math.signum(robotHeading) == -1){
+        if (Math.signum(robotHeading) == -1) {
             turnController.setP(-1 * ANGULAR_P);
-        }
-        else{
+        } else {
             turnController.setP(ANGULAR_P);
         }
-        
+
         rotationSpeed = turnController.calculate(robotHeading, targetHeading);
 
         var wheelSpeeds = dSubsystem.getWheelSpeeds(0, rotationSpeed);
@@ -68,13 +64,7 @@ public class PigeonAimCommand extends CommandBase {
 
     @Override
     public boolean isFinished() {
-        if(Math.abs(robotHeading - targetHeading) < 6) {
-            return true;
-        }
-        else{
-            return false;
-        }
+        return (Math.abs(robotHeading - targetHeading) < 6) || Robot.isSimulation();
     }
-    
-    
+
 }

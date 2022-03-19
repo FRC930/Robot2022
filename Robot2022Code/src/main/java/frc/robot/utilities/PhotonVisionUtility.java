@@ -22,6 +22,8 @@ import org.msgpack.jackson.dataformat.Tuple;
 import org.photonvision.PhotonCamera;
 import org.photonvision.common.hardware.VisionLEDMode;
 
+import frc.robot.Robot;
+
 /**
  * <h3>PhotonVisionUtility</h3>
  * 
@@ -43,38 +45,40 @@ public class PhotonVisionUtility {
     private PhotonVisionUtility() {
         hubTracking.setLED(VisionLEDMode.kOff);
 
-        ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
-        executorService.schedule(() -> {
-            HttpURLConnection photonGetConnection = null;
-            do {
-                try {
-                    System.out.println("****** STARTED INITIALIZING PHOTON ******");
-                    // Connect to the photonvision over the radio
-                    photonGetConnection = (HttpURLConnection) new URL("http://127.0.0.1:5800/")
-                            .openConnection();
-                    // Set the connection timeout
-                    photonGetConnection.setConnectTimeout(100);
-                    // Try reconnecting until we either get an error or get a response
-                    while (photonGetConnection.getResponseCode() != 200) {
-                        photonGetConnection.connect();
+        if (Robot.isReal()) {
+            ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
+            executorService.schedule(() -> {
+                HttpURLConnection photonGetConnection = null;
+                do {
+                    try {
+                        System.out.println("****** STARTED INITIALIZING PHOTON ******");
+                        // Connect to the photonvision over the radio
+                        photonGetConnection = (HttpURLConnection) new URL("http://10.9.30.25:5800/")
+                                .openConnection();
+                        // Set the connection timeout
+                        photonGetConnection.setConnectTimeout(100);
+                        // Try reconnecting until we either get an error or get a response
+                        while (photonGetConnection.getResponseCode() != 200) {
+                            photonGetConnection.connect();
+                        }
+                        System.out.println("****** FINISHED INITIALIZING PHOTON ******");
+                    } catch (Exception e) {
+                        System.out.println("****** ERROR FINDING PHOTONVISION ******");
                     }
-                    System.out.println("****** FINISHED INITIALIZING PHOTON ******");
+                } while (photonGetConnection == null);
+
+                try {
+                    // The websocket we will use to broadcast data to photon
+                    ws = httpClient.newWebSocketBuilder().buildAsync(URI.create("ws://10.9.30.25:5800/websocket"),
+                            new WebsocketListener()).get();
+
+                    // Set the exposure for the pi camera
+                    executorService.schedule(this::setPiCameraExposure, 1000, TimeUnit.MILLISECONDS);
                 } catch (Exception e) {
-                    System.out.println("****** ERROR FINDING PHOTONVISION ******");
+                    System.out.println("****** ERROR CONNECTING TO PHOTONVISION ******");
                 }
-            } while (photonGetConnection == null);
-
-            try {
-                // The websocket we will use to broadcast data to photon
-                ws = httpClient.newWebSocketBuilder().buildAsync(URI.create("ws://127.0.0.1:5800/websocket"),
-                        new WebsocketListener()).get();
-
-                // Set the exposure for the pi camera
-                executorService.schedule(this::setPiCameraExposure, 1000, TimeUnit.MILLISECONDS);
-            } catch (Exception e) {
-                System.out.println("****** ERROR CONNECTING TO PHOTONVISION ******");
-            }
-        }, 2000, TimeUnit.MILLISECONDS);
+            }, 2000, TimeUnit.MILLISECONDS);
+        }
     }
 
     public static PhotonVisionUtility getInstance() {

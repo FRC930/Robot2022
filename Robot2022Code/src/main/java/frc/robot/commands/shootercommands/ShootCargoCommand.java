@@ -22,10 +22,11 @@ import frc.robot.utilities.ShuffleboardUtility.ShuffleboardKeys;
 public class ShootCargoCommand extends CommandBase {
 
     // -----CONSTANTS----\\
+    public static final int SHOOT_TIME = 5;
     // Number of cycles to wait before sending balls into shooter. (Cycles = time(in
     // seconds) / 0.02)
     private final int INDEXER_DELAY = 20;
-
+    
     // -----VARIABLES----\\
     private final FlywheelSubsystem shooterSubsystem;
     private final IndexerMotorSubsystem indexerSubsystem;

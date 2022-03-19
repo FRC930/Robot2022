@@ -28,7 +28,7 @@ import frc.robot.utilities.VisionSmoothingStack;
  */
 public class PhotonAimCommand extends CommandBase {
 
-    //----- VARIABLES -----\\
+    // ----- VARIABLES -----\\
 
     // Yaw offset allowance in degrees
     public static final double YAW_OFFSET = 3.0;
@@ -61,7 +61,7 @@ public class PhotonAimCommand extends CommandBase {
     private XboxController driverController;
     private XboxController codriverController;
 
-    //----- CONSTRUCTORS -----\\
+    // ----- CONSTRUCTORS -----\\
 
     /**
      * <h3>HubAimingCommand</h3>
@@ -91,7 +91,7 @@ public class PhotonAimCommand extends CommandBase {
         addRequirements(dSubsystem);
     }
 
-    //----- METHODS -----\\
+    // ----- METHODS -----\\
 
     @Override
     public void initialize() {
@@ -149,7 +149,7 @@ public class PhotonAimCommand extends CommandBase {
             } else {
                 ShuffleboardUtility.getInstance().putToShuffleboard(ShuffleboardUtility.driverTab,
                         ShuffleboardKeys.AIMED, new ShuffleBoardData<Boolean>(false));
-                        
+
                 if (driverController != null && codriverController != null) {
                     driverController.setRumble(RumbleType.kLeftRumble, 0);
                     driverController.setRumble(RumbleType.kRightRumble, 0);
@@ -164,6 +164,10 @@ public class PhotonAimCommand extends CommandBase {
 
             // Set distance to 0 for shooter math
             double range = 0.0;
+
+            ShuffleboardUtility.getInstance().putToShuffleboard(ShuffleboardUtility.driverTab,
+                    ShuffleboardKeys.DISTANCE_FROM_GOAL, new ShuffleBoardData<Double>(range));
+                    
             ShooterUtility.setValuesToShuffleboard(range);
         }
 
@@ -188,11 +192,6 @@ public class PhotonAimCommand extends CommandBase {
 
     @Override
     public boolean isFinished() {
-        if (Math.abs(smoothingStack.getAverageYaw()) < YAW_OFFSET){
-            return true;
-        }
-        else{
-            return false;
-        }
+            return Math.abs(smoothingStack.getAverageYaw()) < YAW_OFFSET;
     }
 }

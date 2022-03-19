@@ -52,4 +52,9 @@ public class AdjustHoodCommand extends CommandBase {
         // Sets the position for the hood
         shooterHoodSubsystem.setHoodPosition(pos);
     }
+
+    @Override
+    public boolean isFinished(){
+        return true;
+    }
 }
