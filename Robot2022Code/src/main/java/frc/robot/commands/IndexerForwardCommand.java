@@ -23,7 +23,7 @@ public class IndexerForwardCommand extends CommandBase {
 
     // -------- CONSTANTS --------\\
     private final double INTAKE_MOTOR_SPEED = 0.75;
-    private final double LOADED_MOTOR_SPEED = 0.35;
+    private final double LOADED_MOTOR_SPEED = 0.30;
 
     // -------- VARIABLES --------\\
 

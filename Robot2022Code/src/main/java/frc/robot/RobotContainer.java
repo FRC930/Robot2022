@@ -486,7 +486,6 @@ public class RobotContainer {
                         new AdjustHoodCommand(shooterHoodSubsystem),
                         new ShootCargoCommand(flywheelSubsystem, indexerMotorSubsystem)
                                 .withTimeout(ShootCargoCommand.SHOOT_TIME)));
-        driverController.getLeftTrigger().whileActiveOnce(new IndexerForwardCommand(indexerMotorSubsystem, false));
         driverController.getRightBumper()
                 .whileActiveOnce(new ShootCargoCommand(flywheelSubsystem, indexerMotorSubsystem));
         /*
