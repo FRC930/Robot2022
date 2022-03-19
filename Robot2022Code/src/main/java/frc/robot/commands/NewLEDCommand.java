@@ -24,21 +24,21 @@ public class NewLEDCommand extends CommandBase {
 
     // Timer Counters
     // Used for flash patterns
-    private static final int FLASH_TIMER = 5;
+    private final int FLASH_TIMER = 5;
     // Used for moving segments (endgame pattern)
-    private static final int ENDGAME_TIMER = 1;
+    private final int ENDGAME_TIMER = 1;
     // Used for retraction patterns
-    private static final int RETRACT_TIMER = 1;
+    private final int RETRACT_TIMER = 1;
 
     // Length of a singular segment
-    private static final int SEGMENT_LENGTH = 20;
+    private final int SEGMENT_LENGTH = 20;
 
     // Starting index for each strip
     // This is needed due to the uneven distribution of LEDs on the week 1 robot
     // (lost one at the beginning)
     // Order is as follows: Front Left, Back Left, Front Right, Back Right, Total #
     // of indexes
-    private static final int STRAND_STARTS[] = { 0, 74, 149, 224, 299 };
+    private final int STRAND_STARTS[] = { 0, 74, 149, 224, 299 };
 
     //-----  COLORS  -----\\
 
@@ -62,26 +62,33 @@ public class NewLEDCommand extends CommandBase {
 
     private boolean m_aimIsPressed;
 
+    // Conditions
+    private boolean m_hasFlashedTop;
+    private boolean m_hasFlashedBottom;
+    private boolean m_hadTwoBalls;
+    private boolean m_hadOneBall;
+
     //-----  LED BUFFERS  -----\\
 
     // Virtual placeholder for the LED strip
     // Compile data is sent to the LED strip through the subsystem
     private final AddressableLEDBuffer m_fullBuffer;
-    private final AddressableLEDBuffer m_singleStrandBuffer;
+    private AddressableLEDBuffer m_singleStrandBuffer;
+
     // Precompiled buffers for solid patterns
-    private final AddressableLEDBuffer m_OffBuffer;
-    private final AddressableLEDBuffer m_YellowBuffer;
-    private final AddressableLEDBuffer m_GreenBuffer;
-    private AddressableLEDBuffer m_allianceColor;
+    private final AddressableLEDBuffer m_offBuffer;
+    private final AddressableLEDBuffer m_yellowBuffer;
+    private final AddressableLEDBuffer m_greenBuffer;
+    private AddressableLEDBuffer m_fullAllianceColor;
+    private AddressableLEDBuffer m_halfAllianceColor;
 
     //----- MISCELLANEOUS -----\\
 
     // The LED Subsystem (strip) itself
     private final LEDSubsystem m_LEDSubsystem;
-    // manages the last ball status
-    private ballStatus m_lastBallStatus;
-    // manages the current ball statue
-    private ballStatus m_currentBallStatus;
+
+    // LED State to use
+    private LEDStates m_LEDState;    
 
     //----- CONSTRUCTOR -----\\
     /**
@@ -90,16 +97,24 @@ public class NewLEDCommand extends CommandBase {
      * Manages and deploys LED patterns.
      */
     public NewLEDCommand(LEDSubsystem leds, ControllerManager driverController) {
+
+        m_LEDState = LEDStates.Disabled;
         
         m_LEDSubsystem = leds;
         m_fullBuffer = m_LEDSubsystem.getBuffer();
         m_singleStrandBuffer = new AddressableLEDBuffer((int) Math.ceil(m_fullBuffer.getLength() / 4.0));
 
-        m_OffBuffer = createFullColoredBuffer(black);
-        m_YellowBuffer = createFullColoredBuffer(yellow);
-        m_GreenBuffer = createFullColoredBuffer(green);
-        m_allianceColor = createFullColoredBuffer((allianceColor == Alliance.Blue) ? blue : red);
-       
+        m_offBuffer = createFullColoredBuffer(black);
+        m_yellowBuffer = createFullColoredBuffer(yellow);
+        m_greenBuffer = createFullColoredBuffer(green);
+        m_fullAllianceColor = createFullColoredBuffer((allianceColor == Alliance.Blue) ? blue : red);
+        m_halfAllianceColor = createBottomColoredBuffer((allianceColor == Alliance.Blue) ? blue : red);
+
+        m_hadOneBall = false;
+        m_hadTwoBalls = false;
+        m_hasFlashedBottom = false;
+        m_hasFlashedTop = false;
+
     }
 
     //----- COMMAND METHODS -----\\
@@ -109,6 +124,17 @@ public class NewLEDCommand extends CommandBase {
      */
     @Override
     public void initialize() {
+        switch(m_LEDState) {
+            case Disabled:
+                
+                break;
+            case Autonomous:
+
+                break;
+            default:
+
+                break;
+        }
 
     }
 
@@ -117,7 +143,17 @@ public class NewLEDCommand extends CommandBase {
      */
     @Override
     public void execute() {
+        switch(m_LEDState) {
+            case Teleoperated:
 
+                break;
+            case Endgame:
+
+                break;
+            default:
+
+                break;
+        }
     }
 
     /**
@@ -160,14 +196,115 @@ public class NewLEDCommand extends CommandBase {
         return buffer;
     }
 
-    
-    
+    private AddressableLEDBuffer createBottomColoredBuffer(Color8Bit color) {
+        AddressableLEDBuffer buffer = new AddressableLEDBuffer(m_singleStrandBuffer.getLength());
+
+        for(int i = 0; i < buffer.getLength()/2; i++) {
+            buffer.setLED(i, color);
+        }
+
+        return buffer;
+    }
 
     //----- ACTION METHODS -----\\
 
-    //----- STATE METHODS -----\\
-    
+    /**
+     * <h3>movingSegmentPattern</h3>
+     * Shifts a segment of LEDs along the strip.
+     * pattern for Endgame
+     */
+    private void movingSegmentPattern() {
+        m_counter++;
+        if (m_counter >= m_singleStrandBuffer.getLength() * ENDGAME_TIMER) {
+            m_counter = 0;
+        }
+        // Keeping track of animation speed.
+        if (m_counter % ENDGAME_TIMER == 0) {
 
+            if (m_beamStartPosition > m_singleStrandBuffer.getLength()) {
+                m_beamStartPosition = 0;
+            }
+
+            if (m_beamEndPosition > m_singleStrandBuffer.getLength()) {
+                m_beamEndPosition = 0;
+            }
+
+            if (m_beamStartPosition >= 0) {
+                m_singleStrandBuffer.setLED(m_beamStartPosition, black);
+            }
+
+            m_singleStrandBuffer.setLED(m_beamEndPosition, (allianceColor == Alliance.Blue) ? blue : red);
+
+            m_beamStartPosition += 1;
+            m_beamEndPosition += 1;
+
+           applyBuffer();
+        }
+    }
+
+    /**
+     * <h3>flashLEDHighPattern</h3>
+     * 
+     * Flashes alliance color on the top half three times then remains on.
+     * 
+     * @param num - Number of times to flash
+     */
+    private void flashTop(int num) {
+        
+        if(m_counter == FLASH_TIMER * 2 * num) { // If flashed num times
+            m_hasFlashedTop = true;
+        } else if(m_counter % (FLASH_TIMER * 2) < FLASH_TIMER) { // If needs to flash again
+            m_singleStrandBuffer = m_halfAllianceColor;
+        } else {
+            m_singleStrandBuffer = m_fullAllianceColor;
+        }
+
+        applyBuffer();
+
+        m_counter++;
+    }
+
+    /**
+     * <h3>flashBottom</h3>
+     * 
+     * Flashes the bottom half of LEDs num times.
+     */
+    private void flashBottom(int num) {
+
+        if(m_counter == FLASH_TIMER * 2 * num) { // If flashed num times
+            m_hasFlashedBottom = true;
+        } else if(m_counter % (FLASH_TIMER * 2) < FLASH_TIMER) { // If needs to flash again
+            m_singleStrandBuffer = m_halfAllianceColor;
+        } else {
+            m_singleStrandBuffer = m_fullAllianceColor;
+        }
+
+        applyBuffer();
+
+        m_counter++;
+    }
+
+    //----- STATE METHODS -----\\
+
+    public void setLEDState(LEDStates newState) {
+        m_LEDState = newState;
+    }
+    
+    private void disabledState() {
+        m_singleStrandBuffer = m_yellowBuffer;
+    }
+
+    private void autonomousState() {
+
+    }
+
+    private void teleoperatedState() {
+
+    }
+
+    private void endgameState() {
+
+    }
 
     //----- ENUMS -----\\
 
@@ -177,14 +314,4 @@ public class NewLEDCommand extends CommandBase {
     public static enum LEDStates {
         Disabled, Autonomous, Teleoperated, Endgame;
     }
-
-    /**
-     * <h3>ballStatus</h3>
-     * 
-     * Flag to determine state change for teleoperated status.
-     */
-    private enum ballStatus {
-        OneBall, TwoBalls, NoBall;
-    }
-
 }
