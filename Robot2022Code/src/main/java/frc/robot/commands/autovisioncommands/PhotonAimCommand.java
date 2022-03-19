@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.utilities.PhotonVisionUtility;
+import frc.robot.utilities.ShooterUtility;
 import frc.robot.utilities.ShuffleboardUtility;
 import frc.robot.utilities.ShuffleboardUtility.ShuffleBoardData;
 import frc.robot.utilities.ShuffleboardUtility.ShuffleboardKeys;
@@ -125,6 +126,9 @@ public class PhotonAimCommand extends CommandBase {
             ShuffleboardUtility.getInstance().putToShuffleboard(ShuffleboardUtility.driverTab,
                     ShuffleboardKeys.DISTANCE_FROM_GOAL, new ShuffleBoardData<Double>(range));
 
+            // Calculate shooter values
+            ShooterUtility.setValuesToShuffleboard(range);
+
             // Use our forward PID controller to calculate how fast we want to go forward
             forwardSpeed = -forwardController.calculate(range, HUB_RANGE_METERS);
 
@@ -157,6 +161,10 @@ public class PhotonAimCommand extends CommandBase {
             // If no target, set both speeds to zero
             forwardSpeed = 0.0;
             rotationSpeed = 0.0;
+
+            // Set distance to 0 for shooter math
+            double range = 0.0;
+            ShooterUtility.setValuesToShuffleboard(range);
         }
 
         // Clamp to joystick values
