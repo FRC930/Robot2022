@@ -28,6 +28,7 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.util.net.PortForwarder;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Timer;
@@ -331,7 +332,7 @@ public class RobotContainer {
 
                 ObjectMapper objectMapper = new ObjectMapper();
 
-                File destDir = new File("settings_unzipped");
+                File destDir = new File(Filesystem.getOperatingDirectory().getAbsolutePath() + "/settings_unzipped");
                 byte[] buffer = new byte[1024];
                 ZipInputStream zis = new ZipInputStream(zipFile);
                 ZipEntry zipEntry = zis.getNextEntry();
@@ -359,7 +360,8 @@ public class RobotContainer {
                 zis.closeEntry();
                 zis.close();
 
-                File pipelinesDir = new File("settings_unzipped/cameras/Integrated_Camera/pipelines"); // mmal_service_16.1
+                File pipelinesDir = new File(Filesystem.getOperatingDirectory().getAbsolutePath()
+                        + "/settings_unzipped/cameras/mmal_service_16.1/pipelines");
                 String[] pipelinesList = pipelinesDir.list();
                 for (String piplineFile : pipelinesList) {
                     File currentPipeline = new File(pipelinesDir.getPath() + "/" + piplineFile);
@@ -459,7 +461,7 @@ public class RobotContainer {
                         new ShootCargoCommand(flywheelSubsystem, indexerMotorSubsystem,
                                 ShooterUtility.calculateTopSpeed(Units.feetToMeters(8.5)),
                                 ShooterUtility.calculateBottomSpeed(Units.feetToMeters(8.5))))
-                        .withTimeout(0.1));
+                                        .withTimeout(0.1));
 
         codriverController.getPOVUpTrigger()
                 .whileActiveOnce(new ParallelCommandGroup(
@@ -468,16 +470,16 @@ public class RobotContainer {
                         new ShootCargoCommand(flywheelSubsystem, indexerMotorSubsystem,
                                 ShooterUtility.calculateTopSpeed(Units.feetToMeters(17)),
                                 ShooterUtility.calculateBottomSpeed(Units.feetToMeters(17))))
-                        .withTimeout(0.1));
+                                        .withTimeout(0.1));
 
         codriverController.getPOVDownTrigger()
                 .whileActiveOnce(new ParallelCommandGroup(
                         new AdjustHoodCommand(shooterHoodSubsystem,
-                                ShooterUtility.calculateHoodPos(Units.feetToMeters(19/12))),
+                                ShooterUtility.calculateHoodPos(Units.feetToMeters(19 / 12))),
                         new ShootCargoCommand(flywheelSubsystem, indexerMotorSubsystem,
-                                ShooterUtility.calculateTopSpeed(Units.feetToMeters(19/12)),
-                                ShooterUtility.calculateBottomSpeed(Units.feetToMeters(19/12))))
-                        .withTimeout(0.1));
+                                ShooterUtility.calculateTopSpeed(Units.feetToMeters(19 / 12)),
+                                ShooterUtility.calculateBottomSpeed(Units.feetToMeters(19 / 12))))
+                                        .withTimeout(0.1));
 
         codriverController.getStartButton()
                 .whileActiveOnce(new ParallelCommandGroup(endgameManager, endgamePatternCommand));

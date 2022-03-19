@@ -14,6 +14,8 @@
 
 package frc.robot;
 
+import org.photonvision.common.hardware.VisionLEDMode;
+
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -40,7 +42,7 @@ public class Robot extends TimedRobot {
             m_robotContainer.robotSimInit();
         } else {
             m_robotContainer.startCamera();
-            PhotonVisionUtility.getInstance().getHubTrackingCamera();
+            PhotonVisionUtility.getInstance().getHubTrackingCamera().setLED(VisionLEDMode.kOff);
         }
     }
 

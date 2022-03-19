@@ -72,12 +72,14 @@ public class PhotonVisionUtility {
                     ws = httpClient.newWebSocketBuilder().buildAsync(URI.create("ws://10.9.30.25:5800/websocket"),
                             new WebsocketListener()).get();
 
-                    // Set the exposure for the pi camera
-                    executorService.schedule(this::setPiCameraExposure, 1000, TimeUnit.MILLISECONDS);
+                    Thread.sleep(2000);
+
+                    setPiCameraExposure();
                 } catch (Exception e) {
+                    e.printStackTrace();
                     System.out.println("****** ERROR CONNECTING TO PHOTONVISION ******");
                 }
-            }, 2000, TimeUnit.MILLISECONDS);
+            }, 500, TimeUnit.MILLISECONDS);
         }
     }
 
@@ -134,10 +136,13 @@ public class PhotonVisionUtility {
 
             System.out.println("****** SET PHOTON SETTINGS ******");
         } catch (RuntimeException e) {
+            e.printStackTrace();
             System.out.println("****** PHOTON WEBSOCKET WAS NOT INITIALIZED ******");
         } catch (JsonProcessingException e) {
+            e.printStackTrace();
             System.out.println("****** ERROR SETTING PHOTON SETTINGS ******");
         } catch (InterruptedException e) {
+            e.printStackTrace();
             System.out.println("****** ERROR SETTING PHOTON SETTINGS ******");
         }
     }
@@ -150,7 +155,7 @@ public class PhotonVisionUtility {
             // Set up the map to set the pipeline
             LinkedHashMap<String, Object> pipelineSetMap = new LinkedHashMap<>();
             pipelineSetMap.put("currentPipeline", pipeline);
-            pipelineSetMap.put("cameraIndex", 1);
+            pipelineSetMap.put("cameraIndex", 0);
 
             // Convert and send data to photon
             byte[] convertedMap = objectMapper.writeValueAsBytes(pipelineSetMap);
