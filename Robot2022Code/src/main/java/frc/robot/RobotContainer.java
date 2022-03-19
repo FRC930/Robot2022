@@ -31,6 +31,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.DriveCommand;
 import frc.robot.commands.IndexerForwardCommand;
 import frc.robot.commands.LEDCommand;
@@ -38,7 +39,8 @@ import frc.robot.commands.LEDCommand.LEDPatterns;
 import frc.robot.commands.ToggleShifterCommand;
 import frc.robot.commands.autocommands.AutoCommandManager;
 import frc.robot.commands.autocommands.AutoCommandManager.subNames;
-import frc.robot.commands.autovisioncommands.HubAimingCommand;
+import frc.robot.commands.autovisioncommands.PhotonAimCommand;
+import frc.robot.commands.autovisioncommands.PigeonAimCommand;
 import frc.robot.commands.endgamecommands.EndgameArmCommand;
 import frc.robot.commands.endgamecommands.EndgameArmRevCommand;
 import frc.robot.commands.endgamecommands.EndgameCloseClawCommand;
@@ -159,7 +161,8 @@ public class RobotContainer {
     private final EndgamePistonSubsystem endgamePiston3;
     private final EndgamePistonSubsystem endgamePiston4;
 
-    private final HubAimingCommand hubAimingCommand;
+    private final PhotonAimCommand hubAimingCommand;
+    private final PigeonAimCommand positionAimCommand;
 
     // LED commands
     private final LEDCommand autonPatternCommand;
@@ -234,6 +237,8 @@ public class RobotContainer {
         autoManager.addSubsystem(subNames.DriveSubsystem, driveSubsystem);
         autoManager.addSubsystem(subNames.IntakeMotorSubsystem, intakeMotorSubsystem);
         autoManager.addSubsystem(subNames.IntakePistonSubsystem, intakePistonSubsystem);
+        autoManager.addSubsystem(subNames.FlywheelSubsystem, flywheelSubsystem);
+        autoManager.addSubsystem(subNames.IndexerMotorSubsystem, indexerMotorSubsystem);
 
         // Create instance for sensor singletons-needed for simulation to work properly.
         BallSensorUtility.getInstance();
@@ -274,7 +279,8 @@ public class RobotContainer {
         endgameManager = new EndgameManagerCommand(endgameMotorSubsystem,
                 endgamePiston1, endgamePiston2, endgamePiston3, endgamePiston4);
 
-        hubAimingCommand = new HubAimingCommand(driveSubsystem);
+        hubAimingCommand = new PhotonAimCommand(driveSubsystem);
+        positionAimCommand = new PigeonAimCommand(driveSubsystem);
 
         // ----- SETTING BALL COLOR -----\\
         if (DriverStation.getAlliance() == Alliance.Blue) {
@@ -379,8 +385,8 @@ public class RobotContainer {
 
         codriverController.getStartButton()
                 .whileActiveOnce(new ParallelCommandGroup(endgameManager, endgamePatternCommand));
-
-        driverController.getLeftBumper().whileActiveOnce(hubAimingCommand);
+        int shootTime = 5;
+        driverController.getLeftBumper().whileActiveOnce(new SequentialCommandGroup(new PigeonAimCommand(driveSubsystem),new PhotonAimCommand(driveSubsystem), new ShootCargoCommand(flywheelSubsystem, indexerMotorSubsystem, -1).withTimeout(shootTime)));
         driverController.getLeftTrigger().whileActiveOnce(new IndexerForwardCommand(indexerMotorSubsystem, false));
         driverController.getRightBumper().whileActiveOnce(new ShootCargoCommand(flywheelSubsystem, indexerMotorSubsystem, -1));
         driverController.getPOVUpTrigger().whileActiveOnce(new UpdateHoodCommand(shooterHoodSubsystem, 28.44));

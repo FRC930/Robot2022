@@ -1,3 +1,5 @@
+//----- IMPORTS -----\\
+
 package frc.robot.commands.autovisioncommands;
 
 import org.photonvision.PhotonCamera;
@@ -17,25 +19,37 @@ import frc.robot.utilities.ShuffleboardUtility.ShuffleBoardData;
 import frc.robot.utilities.ShuffleboardUtility.ShuffleboardKeys;
 import frc.robot.utilities.VisionSmoothingStack;
 
-public class HubAimingCommand extends CommandBase {
-    // The height of the camera
-    final double CAMERA_HEIGHT_METERS = Units.feetToMeters(4);
-    // The height of the hub
-    final double HUB_HEIGHT_METERS = Units.inchesToMeters(104);
+//----- CLASS -----\\
+/**
+ * <h3>HubAimingCommand</h3>
+ * 
+ * Rotates the robot to aim at the cargo hub.
+ */
+public class PhotonAimCommand extends CommandBase {
 
-    final double HEIGHT_DIFFERENCE_METERS = HUB_HEIGHT_METERS - Units.inchesToMeters(46);
+    //----- VARIABLES -----\\
+
+    // Yaw offset allowance in degrees
+    public static final double YAW_OFFSET = 3.0;
+
+    // The height of the camera
+    private final double CAMERA_HEIGHT_METERS = Units.feetToMeters(4);
+    // The height of the hub
+    private final double HUB_HEIGHT_METERS = Units.inchesToMeters(104);
+
+    private final double HEIGHT_DIFFERENCE_METERS = HUB_HEIGHT_METERS - Units.inchesToMeters(46);
 
     // The pitch of the camera
-    final double CAMERA_PITCH_RADIANS = Units.degreesToRadians(20.0);
+    private final double CAMERA_PITCH_RADIANS = Units.degreesToRadians(20.0);
 
-    final double HUB_RANGE_METERS = Units.feetToMeters(6);
+    private final double HUB_RANGE_METERS = Units.feetToMeters(6);
 
-    final double LINEAR_P = 0.0;
-    final double LINEAR_D = 0.0;
+    private final double LINEAR_P = 0.0;
+    private final double LINEAR_D = 0.0;
     PIDController forwardController = new PIDController(LINEAR_P, 0, LINEAR_D);
 
-    final double ANGULAR_P = 0.4;
-    final double ANGULAR_D = 0.01;
+    private final double ANGULAR_P = 0.4;
+    private final double ANGULAR_D = 0.01;
     PIDController turnController = new PIDController(ANGULAR_P, 0, ANGULAR_D);
 
     protected PhotonCamera hubCamera = PhotonVisionUtility.getInstance().getHubTrackingCamera();
@@ -46,17 +60,37 @@ public class HubAimingCommand extends CommandBase {
     private XboxController driverController;
     private XboxController codriverController;
 
-    public HubAimingCommand(DriveSubsystem dSubsystem) {
+    //----- CONSTRUCTORS -----\\
+
+    /**
+     * <h3>HubAimingCommand</h3>
+     * 
+     * Rotates the robot to aim at the cargo hub.
+     * 
+     * @param dSubsystem
+     */
+    public PhotonAimCommand(DriveSubsystem dSubsystem) {
         this(dSubsystem, null, null);
     }
 
-    public HubAimingCommand(DriveSubsystem dSubsystem, XboxController driverController,
+    /**
+     * <h3>HubAimingCommand</h3>
+     * 
+     * Rotates the robot to aim at the cargo hub.
+     * 
+     * @param dSubsystem
+     * @param driverController
+     * @param coDriverController
+     */
+    public PhotonAimCommand(DriveSubsystem dSubsystem, XboxController driverController,
             XboxController coDriverController) {
 
         driveSubsystem = dSubsystem;
 
         addRequirements(dSubsystem);
     }
+
+    //----- METHODS -----\\
 
     @Override
     public void initialize() {
@@ -98,7 +132,7 @@ public class HubAimingCommand extends CommandBase {
             rotationSpeed = turnController.calculate(smoothingStack.getAverageYaw(), 0);
 
             // Put if we are locked onto the target to the Shuffleboard
-            if (Math.abs(smoothingStack.getAverageYaw()) < 3) {
+            if (Math.abs(smoothingStack.getAverageYaw()) < YAW_OFFSET) {
                 ShuffleboardUtility.getInstance().putToShuffleboard(ShuffleboardUtility.driverTab,
                         ShuffleboardKeys.AIMED, new ShuffleBoardData<Boolean>(true));
 
@@ -146,6 +180,11 @@ public class HubAimingCommand extends CommandBase {
 
     @Override
     public boolean isFinished() {
-        return false;
+        if (Math.abs(smoothingStack.getAverageYaw()) < YAW_OFFSET){
+            return true;
+        }
+        else{
+            return false;
+        }
     }
 }

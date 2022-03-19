@@ -5,6 +5,8 @@ package frc.robot.commands.autocommands.paths;
 import java.util.List;
 
 import frc.robot.commands.Ramsete930Command;
+import frc.robot.commands.autovisioncommands.HubAimCommand;
+import frc.robot.commands.shootercommands.ShootCargoCommand;
 import edu.wpi.first.math.controller.RamseteController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -13,7 +15,13 @@ import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.FlywheelSubsystem;
+import frc.robot.subsystems.IndexerMotorSubsystem;
+import frc.robot.subsystems.IntakeMotorSubsystem;
+import frc.robot.subsystems.IntakePistonSubsystem;
 import frc.robot.utilities.PathPlannerSequentialCommandGroupUtility;
 
 //----- CLASS -----\\
@@ -44,9 +52,13 @@ public class TaxiOneBall extends PathPlannerSequentialCommandGroupUtility {
      * Exits the tarmac and shoots.
      * 
      * @param driveSubsystem
+     * @param indexerMotorSubsystem
+     * @param flywheelSubsystem
+     * @param intakeMotorSubsystem
+     * @param intakePistonSubsystem
      * @param catapultSubsystem
      */
-    public TaxiOneBall(DriveSubsystem driveSubsystem) {
+    public TaxiOneBall(DriveSubsystem driveSubsystem, IntakePistonSubsystem intakePistonSubsystem, IntakeMotorSubsystem intakeMotorSubsystem, FlywheelSubsystem flywheelSubsystem, IndexerMotorSubsystem indexerMotorSubsystem) {
 
         // initializing gyro for pose2d
         m_odometry = driveSubsystem.getOdometry();
@@ -95,7 +107,9 @@ public class TaxiOneBall extends PathPlannerSequentialCommandGroupUtility {
         //----- AUTO SEQUENCE -----\\
 
         addCommands(
-            r_exitTarmac
+            r_exitTarmac,
+            new HubAimCommand(driveSubsystem),
+            new ParallelRaceGroup(new ShootCargoCommand(flywheelSubsystem, indexerMotorSubsystem, -1), new WaitCommand(1))
         );
 
     } // End of Constructor

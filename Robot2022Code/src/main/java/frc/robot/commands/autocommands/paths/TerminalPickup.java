@@ -5,10 +5,11 @@ package frc.robot.commands.autocommands.paths;
 import com.pathplanner.lib.PathPlanner;
 
 import frc.robot.commands.Ramsete930Command;
-import frc.robot.commands.autocommands.AutonomousAimCommand;
 import frc.robot.commands.autocommands.ResetAutonomousCommand;
+import frc.robot.commands.autovisioncommands.HubAimCommand;
 import frc.robot.commands.intakecommands.intakePistonCommands.EngageIntakePistonsCommand;
 import frc.robot.commands.intakecommands.intakemotorcommands.RunIntakeMotorsCommand;
+import frc.robot.commands.shootercommands.ShootCargoCommand;
 import edu.wpi.first.math.controller.RamseteController;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.trajectory.Trajectory;
@@ -18,6 +19,8 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.utilities.PathPlannerSequentialCommandGroupUtility;
 import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.FlywheelSubsystem;
+import frc.robot.subsystems.IndexerMotorSubsystem;
 import frc.robot.subsystems.IntakeMotorSubsystem;
 import frc.robot.subsystems.IntakePistonSubsystem;
 
@@ -59,7 +62,9 @@ public class TerminalPickup extends PathPlannerSequentialCommandGroupUtility {
     public TerminalPickup(
         DriveSubsystem driveSubsystem,
         IntakePistonSubsystem intakePistonSubsystem,
-        IntakeMotorSubsystem intakeMotorSubsystem
+        IntakeMotorSubsystem intakeMotorSubsystem,
+        FlywheelSubsystem flywheelSubsystem,
+        IndexerMotorSubsystem indexerMotorSubsystem
     ) {
 
         // initializing gyro for pose2d
@@ -132,11 +137,6 @@ public class TerminalPickup extends PathPlannerSequentialCommandGroupUtility {
         // engages the intake piston runs them at the same time
         // it stops driving.
         addCommands(
-            // new InstantCommand(catapultSubsystem::setShortShot),
-            // new ParallelRaceGroup(
-            //     new BallHolderCommand(catapultSubsystem, true),
-            //     new WaitCommand(0.5)
-            // ),
             new ResetAutonomousCommand(t_taxi.getInitialPose(), driveSubsystem),
             new ParallelRaceGroup(
                 new EngageIntakePistonsCommand(intakePistonSubsystem),
@@ -144,35 +144,15 @@ public class TerminalPickup extends PathPlannerSequentialCommandGroupUtility {
                 r_taxi
             ),
             new StopDrive(driveSubsystem),
-            // aim then shoot
-            // moves to next position
-            // while engaging then running the intake pistons,
-            // waits 2.5 seconds,
-            // runs the intake pistons
-            // moves to position 3
-
             new ParallelRaceGroup(
-                new AutonomousAimCommand(driveSubsystem),
+                new HubAimCommand(driveSubsystem),
                 new WaitCommand(0.5)
             ),
-            // new OpenBallHolderCommand(catapultSubsystem),
-            // new WaitCommand(1.0),
-
-            // new CatapultCommand(catapultSubsystem, CatapultPower.AllPistons) //Set to SmallPistons when testing
-            //         .withTimeout(CatapultSubsystem.SHOOT_TIMEOUT),
-            // new WaitCommand(0.5),
-            // new ParallelRaceGroup(
-            //     new BallHolderCommand(catapultSubsystem, true),
-            //     new WaitCommand(2)
-            // ),
-            // new WaitCommand(1.0),
-            // new OpenBallHolderCommand(catapultSubsystem).withTimeout(0.5),
-            // new CatapultCommand(catapultSubsystem, CatapultPower.AllPistons) //Set to SmallPistons when testing
-            //         .withTimeout(CatapultSubsystem.SHOOT_TIMEOUT),
+            new ParallelRaceGroup(new ShootCargoCommand(flywheelSubsystem, indexerMotorSubsystem, -1), new WaitCommand(1)),
+            new ParallelRaceGroup(new ShootCargoCommand(flywheelSubsystem, indexerMotorSubsystem, -1), new WaitCommand(1)),
 
             new ParallelRaceGroup(
                 new ParallelCommandGroup(
-                //    new BallHolderCommand(catapultSubsystem, true),
                     new EngageIntakePistonsCommand(intakePistonSubsystem),
                     new RunIntakeMotorsCommand(intakeMotorSubsystem, false)
                 ),
@@ -184,27 +164,12 @@ public class TerminalPickup extends PathPlannerSequentialCommandGroupUtility {
                 )
             ),
             new StopDrive(driveSubsystem),
-            // This segment of the path aims
-            // shoots the catapult
             new ParallelRaceGroup(
-                new AutonomousAimCommand(driveSubsystem),
+                new HubAimCommand(driveSubsystem),
                 new WaitCommand(0.5)
             ),
-            // new OpenBallHolderCommand(catapultSubsystem),
-            // new WaitCommand(0.5),
-
-            
-            // new CatapultCommand(catapultSubsystem, CatapultPower.AllPistons) //Set to SmallPistons when testing
-            //         .withTimeout(CatapultSubsystem.SHOOT_TIMEOUT),
-            // new WaitCommand(0.5),
-            // new ParallelRaceGroup(
-            //     new BallHolderCommand(catapultSubsystem, true),
-            //     new WaitCommand(2)
-            // ),
-            new WaitCommand(1.0)
-            // new OpenBallHolderCommand(catapultSubsystem).withTimeout(0.5),
-            // new CatapultCommand(catapultSubsystem, CatapultPower.AllPistons) //Set to SmallPistons when testing
-            //         .withTimeout(CatapultSubsystem.SHOOT_TIMEOUT)
+            new ParallelRaceGroup(new ShootCargoCommand(flywheelSubsystem, indexerMotorSubsystem, -1), new WaitCommand(1)),
+            new ParallelRaceGroup(new ShootCargoCommand(flywheelSubsystem, indexerMotorSubsystem, -1), new WaitCommand(1))
             );
     } // End of Constructor
 } // End of Class

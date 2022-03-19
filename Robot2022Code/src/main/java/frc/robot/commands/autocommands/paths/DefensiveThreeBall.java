@@ -5,10 +5,11 @@ package frc.robot.commands.autocommands.paths;
 import com.pathplanner.lib.PathPlanner;
 
 import frc.robot.commands.Ramsete930Command;
-import frc.robot.commands.autocommands.AutonomousAimCommand;
 import frc.robot.commands.autocommands.ResetAutonomousCommand;
+import frc.robot.commands.autovisioncommands.HubAimCommand;
 import frc.robot.commands.intakecommands.intakePistonCommands.EngageIntakePistonsCommand;
 import frc.robot.commands.intakecommands.intakemotorcommands.RunIntakeMotorsCommand;
+import frc.robot.commands.shootercommands.ShootCargoCommand;
 import edu.wpi.first.math.controller.RamseteController;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.trajectory.Trajectory;
@@ -17,6 +18,8 @@ import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.utilities.PathPlannerSequentialCommandGroupUtility;
 import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.FlywheelSubsystem;
+import frc.robot.subsystems.IndexerMotorSubsystem;
 import frc.robot.subsystems.IntakeMotorSubsystem;
 import frc.robot.subsystems.IntakePistonSubsystem;
 
@@ -57,7 +60,9 @@ public class DefensiveThreeBall extends PathPlannerSequentialCommandGroupUtility
     public DefensiveThreeBall(
         DriveSubsystem driveSubsystem,
         IntakePistonSubsystem intakePistonSubsystem,
-        IntakeMotorSubsystem intakeMotorSubsystem
+        IntakeMotorSubsystem intakeMotorSubsystem,
+        FlywheelSubsystem flywheelSubsystem,
+        IndexerMotorSubsystem indexerMotorSubsystem
     ) {
 
         // initializing gyro for pose2d
@@ -117,25 +122,18 @@ public class DefensiveThreeBall extends PathPlannerSequentialCommandGroupUtility
             ),
             new StopDrive(driveSubsystem),
             new ParallelRaceGroup(
-                new AutonomousAimCommand(driveSubsystem),
+                new HubAimCommand(driveSubsystem),
                 new WaitCommand(1)
             ),
-            // new CatapultCommand(catapultSubsystem, CatapultPower.SmallPistons) //Set to SmallPistons when testing
-            //     .withTimeout(CatapultSubsystem.SHOOT_TIMEOUT),
-
-            
-            //new WaitCommand(1.25),//idea 2 sec
-            new WaitCommand(1.0),
-            // new CatapultCommand(catapultSubsystem, CatapultPower.SmallPistons) //Set to SmallPistons when testing
-            //     .withTimeout(CatapultSubsystem.SHOOT_TIMEOUT),
+            new ParallelRaceGroup(new ShootCargoCommand(flywheelSubsystem, indexerMotorSubsystem, -1), new WaitCommand(1)),
+            new ParallelRaceGroup(new ShootCargoCommand(flywheelSubsystem, indexerMotorSubsystem, -1), new WaitCommand(1)),
             new ParallelRaceGroup(
                 new EngageIntakePistonsCommand(intakePistonSubsystem),
                 new RunIntakeMotorsCommand(intakeMotorSubsystem, false),
                 r_adjacentEnemyCargo
             ),
-            new StopDrive(driveSubsystem)
-            // new CatapultCommand(catapultSubsystem, CatapultPower.SmallPistons) //Set to SmallPistons when testing
-            //     .withTimeout(CatapultSubsystem.SHOOT_TIMEOUT)
+            new StopDrive(driveSubsystem),
+            new ParallelRaceGroup(new ShootCargoCommand(flywheelSubsystem, indexerMotorSubsystem, -1), new WaitCommand(1))
         );
 
     } // End of Constructor

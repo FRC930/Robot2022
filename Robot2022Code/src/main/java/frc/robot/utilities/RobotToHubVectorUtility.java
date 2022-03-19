@@ -4,14 +4,14 @@ import org.opencv.core.Point;
 
 import edu.wpi.first.math.geometry.Pose2d;
 
-public class RobotToHubVectorUltility {
+public class RobotToHubVectorUtility {
     //
-    public RobotToHubVectorUltility RobotVector;
+    public RobotToHubVectorUtility RobotVector;
     public Point hubPosition;
     double hubMagnitude;
     public double angleToHub;
 
-public RobotToHubVectorUltility(){
+public RobotToHubVectorUtility(){
     hubPosition = new Point(8.26, 4.11);
     hubMagnitude = Math.sqrt((hubPosition.x * hubPosition.x)+(hubPosition.y * hubPosition.y));
 }
