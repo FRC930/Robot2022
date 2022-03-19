@@ -12,6 +12,7 @@ import frc.robot.subsystems.FlywheelSubsystem;
 import frc.robot.subsystems.IndexerMotorSubsystem;
 import frc.robot.utilities.BallSensorUtility;
 import frc.robot.utilities.ShuffleboardUtility;
+import frc.robot.utilities.ShuffleboardUtility.ShuffleBoardData;
 import frc.robot.utilities.ShuffleboardUtility.ShuffleboardKeys;
 
 /**
@@ -26,7 +27,7 @@ public class ShootCargoCommand extends CommandBase {
     // Number of cycles to wait before sending balls into shooter. (Cycles = time(in
     // seconds) / 0.02)
     private final int INDEXER_DELAY = 20;
-    
+
     // -----VARIABLES----\\
     private final FlywheelSubsystem shooterSubsystem;
     private final IndexerMotorSubsystem indexerSubsystem;
@@ -72,13 +73,13 @@ public class ShootCargoCommand extends CommandBase {
      * @param bottomSpeed The speed(in PercentOutput) you want the bottom wheel to
      *                    spin at
      */
-    public ShootCargoCommand(FlywheelSubsystem shooter, IndexerMotorSubsystem indexer, double bottomSpeed,
-            double topSpeed) {
+    public ShootCargoCommand(FlywheelSubsystem shooter, IndexerMotorSubsystem indexer, double topSpeed,
+            double bottomSpeed) {
         shooterSubsystem = shooter;
         indexerSubsystem = indexer;
         usingShuffleboard = false;
-        this.bottomSpeed = bottomSpeed;
         this.topSpeed = topSpeed;
+        this.bottomSpeed = bottomSpeed;
         addRequirements(shooterSubsystem, indexerSubsystem);
     }
 
@@ -90,6 +91,11 @@ public class ShootCargoCommand extends CommandBase {
                     ShuffleboardKeys.SHOOTER_BOTTOM_SPEED).getData();
             this.topSpeed = (double) ShuffleboardUtility.getInstance().getFromShuffleboard(
                     ShuffleboardKeys.SHOOTER_TOP_SPEED).getData();
+        } else {
+            ShuffleboardUtility.getInstance().putToShuffleboard(ShuffleboardUtility.driverTab,
+                    ShuffleboardKeys.SHOOTER_BOTTOM_SPEED, new ShuffleBoardData<Double>(bottomSpeed));
+            ShuffleboardUtility.getInstance().putToShuffleboard(ShuffleboardUtility.driverTab,
+                    ShuffleboardKeys.SHOOTER_TOP_SPEED, new ShuffleBoardData<Double>(topSpeed));
         }
 
         shooterSubsystem.setBottomSpeed(bottomSpeed);
@@ -109,9 +115,10 @@ public class ShootCargoCommand extends CommandBase {
 
     @Override
     public boolean isFinished() {
+        return false;
         // Finishes if no balls are left
-        return !BallSensorUtility.getInstance().intakeIsTripped() &&
-                !BallSensorUtility.getInstance().loadedIsTripped();
+        //return !BallSensorUtility.getInstance().intakeIsTripped() &&
+        //        !BallSensorUtility.getInstance().loadedIsTripped();
     }
 
     @Override

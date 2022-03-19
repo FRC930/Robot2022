@@ -3,6 +3,7 @@ package frc.robot.commands.shootercommands;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.ShooterHoodSubsystem;
 import frc.robot.utilities.ShuffleboardUtility;
+import frc.robot.utilities.ShuffleboardUtility.ShuffleBoardData;
 import frc.robot.utilities.ShuffleboardUtility.ShuffleboardKeys;
 
 /**
@@ -45,16 +46,19 @@ public class AdjustHoodCommand extends CommandBase {
     @Override
     public void initialize() {
         // Gets values from shuffleboard driver tab
-        if(usingShuffleboard){
+        if (usingShuffleboard) {
             pos = (double) ShuffleboardUtility.getInstance().getFromShuffleboard(
-                        ShuffleboardKeys.SHOOTER_HOOD_POSITION).getData();
+                    ShuffleboardKeys.SHOOTER_HOOD_POSITION).getData();
+        } else {
+            ShuffleboardUtility.getInstance().putToShuffleboard(ShuffleboardUtility.driverTab,
+                    ShuffleboardKeys.SHOOTER_HOOD_POSITION, new ShuffleBoardData<Double>(pos));
         }
         // Sets the position for the hood
         shooterHoodSubsystem.setHoodPosition(pos);
     }
 
     @Override
-    public boolean isFinished(){
+    public boolean isFinished() {
         return true;
     }
 }

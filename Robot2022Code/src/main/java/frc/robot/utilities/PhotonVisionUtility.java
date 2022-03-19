@@ -102,7 +102,7 @@ public class PhotonVisionUtility {
             // Tell photon to turn off driver mode
             pipelineToggleMap.put("currentPipeline", currentPipeline);
             // Tell photon that we want to operate on the camera at index 1 (PiCamera)
-            pipelineToggleMap.put("cameraIndex", 1);
+            pipelineToggleMap.put("cameraIndex", 0);
 
             // Set up the binary data we will use to send data to photon
             byte[] convertedMap = objectMapper.writeValueAsBytes(pipelineToggleMap);
@@ -116,7 +116,7 @@ public class PhotonVisionUtility {
             LinkedHashMap<String, Object> exposureValueMap = new LinkedHashMap<>();
             // Set the exposure to the target plus 0.1
             exposureValueMap.put("cameraExposure", (double) (exposureValues.get(currentPipeline).second() + 0.1));
-            exposureValueMap.put("cameraIndex", 1);
+            exposureValueMap.put("cameraIndex", 0);
             exposureToggleMap.put("changePipelineSetting", exposureValueMap);
 
             // Convert the map to a binary json

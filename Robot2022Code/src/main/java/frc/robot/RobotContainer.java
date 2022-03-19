@@ -23,6 +23,7 @@ import edu.wpi.first.cscore.VideoMode.PixelFormat;
 import edu.wpi.first.math.controller.RamseteController;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.Trajectory;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.util.net.PortForwarder;
 import edu.wpi.first.wpilibj.Compressor;
@@ -71,6 +72,7 @@ import frc.robot.utilities.DriveCameraUtility;
 import frc.robot.utilities.DriveCameraUtility.BallColor;
 import frc.robot.utilities.EndgameSensorUtility;
 import frc.robot.utilities.PhotonVisionUtility;
+import frc.robot.utilities.ShooterUtility;
 import frc.robot.utilities.ShuffleboardUtility;
 
 public class RobotContainer {
@@ -318,8 +320,7 @@ public class RobotContainer {
         scheduler.setDefaultCommand(endgamePiston2, new EndgameCloseClawCommand(endgamePiston2));
         scheduler.setDefaultCommand(endgamePiston3, new EndgameCloseClawCommand(endgamePiston3));
         scheduler.setDefaultCommand(endgamePiston4, new EndgameCloseClawCommand(endgamePiston4));
-        // scheduler.setDefaultCommand(indexerMotorSubsystem, new
-        // IndexerForwardCommand(indexerMotorSubsystem, false));;
+        scheduler.setDefaultCommand(indexerMotorSubsystem, new IndexerForwardCommand(indexerMotorSubsystem, false));
 
         compressor.enableAnalog(100, 115);
 
@@ -451,19 +452,43 @@ public class RobotContainer {
         // Manually rotates the endgame arms in reverse while pressed
         codriverController.getAButton().whileActiveOnce(endgameArmRevCommand);
 
+        codriverController.getPOVLeftTrigger()
+                .whileActiveOnce(new ParallelCommandGroup(
+                        new AdjustHoodCommand(shooterHoodSubsystem,
+                                ShooterUtility.calculateHoodPos(Units.feetToMeters(8.5))),
+                        new ShootCargoCommand(flywheelSubsystem, indexerMotorSubsystem,
+                                ShooterUtility.calculateTopSpeed(Units.feetToMeters(8.5)),
+                                ShooterUtility.calculateBottomSpeed(Units.feetToMeters(8.5))))
+                        .withTimeout(0.1));
+
+        codriverController.getPOVUpTrigger()
+                .whileActiveOnce(new ParallelCommandGroup(
+                        new AdjustHoodCommand(shooterHoodSubsystem,
+                                ShooterUtility.calculateHoodPos(Units.feetToMeters(17))),
+                        new ShootCargoCommand(flywheelSubsystem, indexerMotorSubsystem,
+                                ShooterUtility.calculateTopSpeed(Units.feetToMeters(17)),
+                                ShooterUtility.calculateBottomSpeed(Units.feetToMeters(17))))
+                        .withTimeout(0.1));
+
+        codriverController.getPOVDownTrigger()
+                .whileActiveOnce(new ParallelCommandGroup(
+                        new AdjustHoodCommand(shooterHoodSubsystem,
+                                ShooterUtility.calculateHoodPos(Units.feetToMeters(19/12))),
+                        new ShootCargoCommand(flywheelSubsystem, indexerMotorSubsystem,
+                                ShooterUtility.calculateTopSpeed(Units.feetToMeters(19/12)),
+                                ShooterUtility.calculateBottomSpeed(Units.feetToMeters(19/12))))
+                        .withTimeout(0.1));
+
         codriverController.getStartButton()
                 .whileActiveOnce(new ParallelCommandGroup(endgameManager, endgamePatternCommand));
         driverController.getLeftBumper()
-                .whileActiveOnce(new SequentialCommandGroup(new HubAimCommand(driveSubsystem),
+                .whileActiveOnce(new SequentialCommandGroup(new PhotonAimCommand(driveSubsystem),
                         new AdjustHoodCommand(shooterHoodSubsystem),
                         new ShootCargoCommand(flywheelSubsystem, indexerMotorSubsystem)
                                 .withTimeout(ShootCargoCommand.SHOOT_TIME)));
         driverController.getLeftTrigger().whileActiveOnce(new IndexerForwardCommand(indexerMotorSubsystem, false));
         driverController.getRightBumper()
                 .whileActiveOnce(new ShootCargoCommand(flywheelSubsystem, indexerMotorSubsystem));
-        driverController.getPOVUpTrigger().whileActiveOnce(new AdjustHoodCommand(shooterHoodSubsystem, 28.44));
-        driverController.getPOVLeftTrigger().whileActiveOnce(new AdjustHoodCommand(shooterHoodSubsystem));
-        driverController.getPOVDownTrigger().whileActiveOnce(new AdjustHoodCommand(shooterHoodSubsystem, 0.0));
         /*
          * codriverController.getXButton().whileActiveOnce(new
          * InstantCommand(shooterHoodSubsystem::setSlowSpeed, shooterHoodSubsystem));

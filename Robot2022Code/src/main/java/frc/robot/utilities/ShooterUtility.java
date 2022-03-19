@@ -52,15 +52,16 @@ public class ShooterUtility {
      * @return the required speed in percent output
      */
     public static double calculateTopSpeed(double distance) {
-        if (distance >= 0 && metersToFeet(distance) <= MAX_DISTANCE) {
-            if (metersToFeet(distance) >= 8) {
-                return (SPEED_M * distance + TOP_SPEED_B) / 100;
-            } else if (metersToFeet(distance) >= 6) {
+        double vDistance = metersToFeet(distance);
+        if (vDistance >= 0 && vDistance <= MAX_DISTANCE) {
+            if (vDistance >= 8) {
+                return (SPEED_M * vDistance + TOP_SPEED_B) / 100;
+            } else if (vDistance >= 6) {
                 return 0.76;
-            } else if (metersToFeet(distance) >= 2) {
+            } else if (vDistance >= 2) {
                 return 0.74;
             } else {
-                return 1.0;
+                return 0.0;
             }
         } else {
             return -1;
@@ -75,12 +76,13 @@ public class ShooterUtility {
      * @return the required speed in percent output
      */
     public static double calculateBottomSpeed(double distance) {
-        if (distance >= 0 && metersToFeet(distance) <= MAX_DISTANCE) {
-            if (metersToFeet(distance) >= 8) {
-                return (SPEED_M * distance + BOT_SPEED_B) / 100;
-            } else if (metersToFeet(distance) >= 6) {
+        double vDistance = metersToFeet(distance);
+        if (vDistance >= 0 && vDistance <= MAX_DISTANCE) {
+            if (vDistance >= 8) {
+                return (SPEED_M * vDistance + BOT_SPEED_B) / 100;
+            } else if (vDistance >= 6) {
                 return 0.26;
-            } else if (metersToFeet(distance) >= 2) {
+            } else if (vDistance >= 2) {
                 return 0.24;
             } else {
                 return 0.0;
@@ -98,13 +100,14 @@ public class ShooterUtility {
      * @return the required position in degrees
      */
     public static double calculateHoodPos(double distance) {
-        if (distance >= 0 && metersToFeet(distance) <= MAX_DISTANCE) {
-            if (metersToFeet(distance) >= 19) {
+        double vDistance = metersToFeet(distance);
+        if (vDistance >= 0 && vDistance <= MAX_DISTANCE) {
+            if (vDistance >= 19) {
                 return 30.0;
-            } else if (metersToFeet(distance) >= 8) {
+            } else if (vDistance >= 8) {
                 return 28.44;
             } else {
-                return HOOD_A * Math.pow(distance, 3) + HOOD_B * Math.pow(distance, 2) + HOOD_C * distance + HOOD_D;
+                return HOOD_A * Math.pow(vDistance, 3) + HOOD_B * Math.pow(vDistance, 2) + HOOD_C * vDistance + HOOD_D;
             }
         } else {
             return -1;
