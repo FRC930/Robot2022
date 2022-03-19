@@ -47,7 +47,7 @@ public class DriveSubsystem extends SubsystemBase {
     // The width of the drive base
     public static final double TRACK_WIDTH = 0.381 * 2; // meters // 26.5 inch
     // The radius of the wheels on the robot
-    public static final double WHEEL_RADIUS = 0.0508; // meters // 2 inch
+    public static final double WHEEL_RADIUS = 0.0555625; // meters // 2 inch
     // The amount of internal encoder units in one motor revolution
     public static final int FALCON_ENCODER_RESOLUTION = 2048; // 2048 CPR
     // The maximum voltage we can send to the motors
