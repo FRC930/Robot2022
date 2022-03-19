@@ -167,13 +167,12 @@ public class PhotonAimCommand extends CommandBase {
             forwardSpeed = 0.0;
             rotationSpeed = 0.0;
 
-            // Set distance to 0 for shooter math
-            double range = 0.0;
-
+            // Set shuffleboard distance to zero if no target
             ShuffleboardUtility.getInstance().putToShuffleboard(ShuffleboardUtility.driverTab,
-                    ShuffleboardKeys.DISTANCE_FROM_GOAL, new ShuffleBoardData<Double>(range));
+                    ShuffleboardKeys.DISTANCE_FROM_GOAL, new ShuffleBoardData<Double>(0.0));
 
-            ShooterUtility.setValuesToShuffleboard(range);
+            // Set distance to shortest shot for shooter math
+            ShooterUtility.setValuesToShuffleboard(Units.feetToMeters(1.6));
         }
 
         // Clamp to joystick values
