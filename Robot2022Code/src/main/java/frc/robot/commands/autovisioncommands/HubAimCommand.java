@@ -7,7 +7,7 @@ import frc.robot.subsystems.DriveSubsystem;
 public class HubAimCommand extends SequentialCommandGroup{
 
     public HubAimCommand(DriveSubsystem driveSubsystem){
-        new SequentialCommandGroup(
+        addCommands(
             new PigeonAimCommand(driveSubsystem), 
             new PhotonAimCommand(driveSubsystem)
         );
@@ -18,7 +18,7 @@ public class HubAimCommand extends SequentialCommandGroup{
         XboxController driverController, 
         XboxController coDriverController
     ) {
-        new SequentialCommandGroup(
+        addCommands(
             new PigeonAimCommand(driveSubsystem), 
             new PhotonAimCommand(driveSubsystem, driverController, coDriverController)
         );
