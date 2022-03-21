@@ -684,6 +684,7 @@ public class RobotContainer {
      */
     public void testExit() {
         m_driveSubsystem.refollowDriveMotors();
+        m_flywheelSubsystem.refollowShooterMotors();
         m_endgameMotorSubsystem.refollowEndgameMotors();
     }
 

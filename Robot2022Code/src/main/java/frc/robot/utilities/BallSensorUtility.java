@@ -8,7 +8,9 @@ import com.playingwithfusion.TimeOfFlight.RangingMode;
  * Controls the sensors used for the balls.
  */
 public class BallSensorUtility {
+
     //-----CONSTANTS----\\
+    
     private final int TRIGGER_DISTANCE = 200;
     private final int INTAKE_ID = 16;
     private final int LOADED_ID = 15;
