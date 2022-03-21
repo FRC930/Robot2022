@@ -29,7 +29,7 @@ public class ShooterUtility {
      * <h3>setValuesToShuffleboard</h3>
      * Sends all three calculation results to the shuffleboard.
      * 
-     * @param distance the distance from the hub
+     * @param distance the distance from the hub in feet
      */
     public static void setValuesToShuffleboard(double distance) {
         // Applies each calculation to the shuffleboard
@@ -48,15 +48,14 @@ public class ShooterUtility {
      * <h3>calculateTopSpeed</h3>
      * Returns the new speed for the top roller to make the shot.
      * 
-     * @param distance the distance from the hub in meters
+     * @param distance the distance from the hub in feet
      * @return the required speed in percent output
      */
     public static double calculateTopSpeed(double distance) {
-        double vDistance = metersToFeet(distance);
-        if (vDistance >= 0 && vDistance <= MAX_DISTANCE) {
-            if (vDistance >= 8) {
-                return (SPEED_M * vDistance + TOP_SPEED_B) / 100;
-            } else if (vDistance >= 5) {
+        if (distance >= 0 && distance <= MAX_DISTANCE) {
+            if (distance >= 8) {
+                return (SPEED_M * distance + TOP_SPEED_B) / 100;
+            } else if (distance >= 5) {
                 return 0.76;
             } else {
                 return 0.74;
@@ -70,15 +69,14 @@ public class ShooterUtility {
      * <h3>calculateBottomSpeed</h3>
      * Returns the new speed for the bottom roller to make the shot.
      * 
-     * @param distance the distance from the hub in meters
+     * @param distance the distance from the hub in feet
      * @return the required speed in percent output
      */
     public static double calculateBottomSpeed(double distance) {
-        double vDistance = metersToFeet(distance);
-        if (vDistance >= 0 && vDistance <= MAX_DISTANCE) {
-            if (vDistance >= 8) {
-                return (SPEED_M * vDistance + BOT_SPEED_B) / 100;
-            } else if (vDistance >= 5) {
+        if (distance >= 0 && distance <= MAX_DISTANCE) {
+            if (distance >= 8) {
+                return (SPEED_M * distance + BOT_SPEED_B) / 100;
+            } else if (distance >= 5) {
                 return 0.26;
             } else {
                 return 0.24;
@@ -92,32 +90,20 @@ public class ShooterUtility {
      * <h3>calculateHoodPos</h3>
      * Returns the new hood positiion to make the shot.
      * 
-     * @param distance the distance from the hub in meters
+     * @param distance the distance from the hub in feet
      * @return the required position in degrees
      */
     public static double calculateHoodPos(double distance) {
-        double vDistance = metersToFeet(distance);
-        if (vDistance >= 0 && vDistance <= MAX_DISTANCE) {
-            if (vDistance >= 19) {
+        if (distance >= 0 && distance <= MAX_DISTANCE) {
+            if (distance >= 19) {
                 return 30.0;
-            } else if (vDistance >= 8) {
+            } else if (distance >= 8) {
                 return 28.44;
             } else {
-                return HOOD_A * Math.pow(vDistance, 3) + HOOD_B * Math.pow(vDistance, 2) + HOOD_C * vDistance + HOOD_D;
+                return HOOD_A * Math.pow(distance, 3) + HOOD_B * Math.pow(distance, 2) + HOOD_C * distance + HOOD_D;
             }
         } else {
             return -1;
         }
-    }
-
-    /**
-     * <h3>metersToFeet</h3>
-     * Converts distance meters to feet.
-     * 
-     * @param length in meters
-     * @return the length in feet
-     */
-    public static double metersToFeet(double length) {
-        return 3.28084 * length;
     }
 }

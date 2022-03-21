@@ -494,11 +494,11 @@ public class RobotContainer {
         m_codriverController.getPOVLeftTrigger().whileActiveOnce(
             new ParallelCommandGroup(
                 new AdjustHoodCommand(m_shooterHoodSubsystem,
-                    ShooterUtility.calculateHoodPos(Units.feetToMeters(8.5))
+                    ShooterUtility.calculateHoodPos(8.5)
                 ),
                 new ShootCargoCommand(m_flywheelSubsystem, m_indexerMotorSubsystem,
-                    ShooterUtility.calculateTopSpeed(Units.feetToMeters(8.5)),
-                    ShooterUtility.calculateBottomSpeed(Units.feetToMeters(8.5))
+                    ShooterUtility.calculateTopSpeed(8.5),
+                    ShooterUtility.calculateBottomSpeed(8.5)
                 )
             ).withTimeout(0.1)
         );
@@ -506,11 +506,11 @@ public class RobotContainer {
         m_codriverController.getPOVUpTrigger().whileActiveOnce(
             new ParallelCommandGroup(
                 new AdjustHoodCommand(m_shooterHoodSubsystem,
-                    ShooterUtility.calculateHoodPos(Units.feetToMeters(17))
+                    ShooterUtility.calculateHoodPos(17)
                 ),
                 new ShootCargoCommand(m_flywheelSubsystem, m_indexerMotorSubsystem,
-                    ShooterUtility.calculateTopSpeed(Units.feetToMeters(17)),
-                    ShooterUtility.calculateBottomSpeed(Units.feetToMeters(17))
+                    ShooterUtility.calculateTopSpeed(17),
+                    ShooterUtility.calculateBottomSpeed(17)
                 )
             ).withTimeout(0.1)
         );
@@ -518,11 +518,11 @@ public class RobotContainer {
         m_codriverController.getPOVDownTrigger().whileActiveOnce(
             new ParallelCommandGroup(
                 new AdjustHoodCommand(m_shooterHoodSubsystem,
-                    ShooterUtility.calculateHoodPos(Units.feetToMeters(19 / 12))
+                    ShooterUtility.calculateHoodPos(19 / 12)
                 ),
                 new ShootCargoCommand(m_flywheelSubsystem, m_indexerMotorSubsystem,
-                    ShooterUtility.calculateTopSpeed(Units.feetToMeters(19 / 12)),
-                    ShooterUtility.calculateBottomSpeed(Units.feetToMeters(19 / 12))
+                    ShooterUtility.calculateTopSpeed(19 / 12),
+                    ShooterUtility.calculateBottomSpeed(19 / 12)
                 )
             ).withTimeout(0.1)
         );

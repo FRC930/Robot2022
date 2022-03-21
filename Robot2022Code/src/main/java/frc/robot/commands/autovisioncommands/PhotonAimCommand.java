@@ -132,7 +132,7 @@ public class PhotonAimCommand extends CommandBase {
                     ShuffleboardKeys.DISTANCE_FROM_GOAL, new ShuffleBoardData<Double>(range));
 
             // Calculate shooter values
-            ShooterUtility.setValuesToShuffleboard(range);
+            ShooterUtility.setValuesToShuffleboard(Units.metersToFeet(range));
 
             // Use our forward PID controller to calculate how fast we want to go forward
             forwardSpeed = -forwardController.calculate(range, HUB_RANGE_METERS);
@@ -172,7 +172,7 @@ public class PhotonAimCommand extends CommandBase {
                     ShuffleboardKeys.DISTANCE_FROM_GOAL, new ShuffleBoardData<Double>(0.0));
 
             // Set distance to shortest shot for shooter math
-            ShooterUtility.setValuesToShuffleboard(Units.feetToMeters(1.6));
+            ShooterUtility.setValuesToShuffleboard(1.6);
         }
 
         // Clamp to joystick values
