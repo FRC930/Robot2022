@@ -27,6 +27,7 @@ public class EndgameSensorUtility {
     private static final int RIGHT_4_ID = 4;
     
     //-------- VARIABLES --------\\
+    
     private static EndgameSensorUtility instance = null;
     private final DigitalInput sensorL2;
     private final DigitalInput sensorR2;
