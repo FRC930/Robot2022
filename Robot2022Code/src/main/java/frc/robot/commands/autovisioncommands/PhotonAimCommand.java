@@ -28,38 +28,39 @@ import frc.robot.utilities.VisionSmoothingStack;
  */
 public class PhotonAimCommand extends CommandBase {
 
-    // ----- VARIABLES -----\\
+    // ----- CONSTANTS -----\\
 
-    // Yaw offset allowance in degrees
-    public static final double YAW_OFFSET = 3.0;
+    // Target yaw offset in degrees
+    public static final double YAW_OFFSET = 1.25;
 
     // The height of the camera
-    private final double CAMERA_HEIGHT_METERS = Units.inchesToMeters(46);
+    private final double CAMERA_HEIGHT_METERS = Units.inchesToMeters(48);
     // The height of the hub
     private final double HUB_HEIGHT_METERS = Units.inchesToMeters(104);
 
+    // Get the difference in height between the camera and the hub
     private final double HEIGHT_DIFFERENCE_METERS = HUB_HEIGHT_METERS - CAMERA_HEIGHT_METERS;
 
-    // The pitch of the camera
+    // The pitch of the camera (from ground normal)
     private final double CAMERA_PITCH_RADIANS = Units.degreesToRadians(20.0);
 
-    private final double HUB_RANGE_METERS = Units.feetToMeters(6);
-
-    private final double LINEAR_P = 0.0;
-    private final double LINEAR_D = 0.0;
-    PIDController forwardController = new PIDController(LINEAR_P, 0, LINEAR_D);
-
-    private final double ANGULAR_P = 0.4;
+    private final double ANGULAR_P = 0.42;
+    private final double ANGULAR_I = 0.01;
     private final double ANGULAR_D = 0.01;
-    PIDController turnController = new PIDController(ANGULAR_P, 0, ANGULAR_D);
 
-    protected PhotonCamera hubCamera = PhotonVisionUtility.getInstance().getHubTrackingCamera();
-    private DriveSubsystem driveSubsystem;
+    // ----- VARIABLES -----\\
 
-    private VisionSmoothingStack smoothingStack = new VisionSmoothingStack(3);
+    private PIDController m_turnController = new PIDController(ANGULAR_P, ANGULAR_I, ANGULAR_D);
 
-    private XboxController driverController;
-    private XboxController codriverController;
+    protected PhotonCamera m_hubCamera = PhotonVisionUtility.getInstance().getHubTrackingCamera();
+    private DriveSubsystem m_driveSubsystem;
+
+    private int cyclesAimed = 0;
+
+    private VisionSmoothingStack m_smoothingStack = new VisionSmoothingStack(3);
+
+    private XboxController m_driverController;
+    private XboxController m_codriverController;
 
     // ----- CONSTRUCTORS -----\\
 
@@ -79,14 +80,16 @@ public class PhotonAimCommand extends CommandBase {
      * 
      * Rotates the robot to aim at the cargo hub.
      * 
-     * @param dSubsystem
-     * @param driverController
-     * @param coDriverController
+     * @param dSubsystem         the drive subsystem to use to rotate the robot
+     * @param driverController   driver controller (for rumble)
+     * @param codriverController driver controller (for rumble)
      */
     public PhotonAimCommand(DriveSubsystem dSubsystem, XboxController driverController,
-            XboxController coDriverController) {
+            XboxController codriverController) {
 
-        driveSubsystem = dSubsystem;
+        m_driveSubsystem = dSubsystem;
+        m_driverController = driverController;
+        m_codriverController = codriverController;
 
         addRequirements(dSubsystem);
     }
@@ -95,37 +98,46 @@ public class PhotonAimCommand extends CommandBase {
 
     @Override
     public void initialize() {
-        hubCamera.setLED(VisionLEDMode.kOn);
+        // Set the LEDs to on to ensure that we can see the reflective tape
+        m_hubCamera.setLED(VisionLEDMode.kOn);
 
-        driveSubsystem.setVoltages(0, 0);
+        // Make sure that any previous voltages are not recorded
+        m_driveSubsystem.setVoltages(0, 0);
 
+        // Set aimed to false to ensure that we do not exit right away
         ShuffleboardUtility.getInstance().putToShuffleboard(ShuffleboardUtility.driverTab,
                 ShuffleboardKeys.AIMED, new ShuffleBoardData<Boolean>(false));
 
+        // Set the pipeline on the camera to be whatever the user has selected on
+        // shuffleboard
         PhotonVisionUtility.getInstance()
-                .setPiCamerPipeline(ShuffleboardUtility.getInstance().getSelectedPipelineChooser());
+                .setPiCameraPipeline(ShuffleboardUtility.getInstance().getSelectedPipelineChooser());
     }
 
     @Override
     public void execute() {
         // Variables to store our speeds
-        double forwardSpeed;
         double rotationSpeed;
 
         // Data that we get from the camera
-        var result = hubCamera.getLatestResult();
+        var result = m_hubCamera.getLatestResult();
 
         // If an item is detected
         if (result.hasTargets()) {
             // Finds the best target and puts into the stack
-            smoothingStack.addItem(result.getBestTarget());
+            m_smoothingStack.addItem(result.getBestTarget());
+
+            ShuffleboardUtility.getInstance().putToShuffleboard(ShuffleboardUtility.driverTab,
+                    ShuffleboardKeys.PHOTON_YAW, new ShuffleBoardData<Double>(m_smoothingStack.getAverageYaw()));
 
             // Use the PhotonUtils library to calcluate the distance from the target
             double range = PhotonUtils.calculateDistanceToTargetMeters(CAMERA_HEIGHT_METERS, HUB_HEIGHT_METERS,
-                    CAMERA_PITCH_RADIANS, Units.degreesToRadians(smoothingStack.getAveragePitch()));
+                    CAMERA_PITCH_RADIANS, Units.degreesToRadians(m_smoothingStack.getAveragePitch()));
 
+            // Use some pythagoras to calculate the horizontal distance to the hub
             range = Math.sqrt(Math.pow(range, 2) - Math.pow(HEIGHT_DIFFERENCE_METERS, 2))
                     // Adjusted to measure from front of the robot to hub stand wall.
+                    // This distance is in meters ~43.307 inches
                     - 1.1;
 
             ShuffleboardUtility.getInstance().putToShuffleboard(ShuffleboardUtility.driverTab,
@@ -134,37 +146,38 @@ public class PhotonAimCommand extends CommandBase {
             // Calculate shooter values
             ShooterUtility.setValuesToShuffleboard(Units.metersToFeet(range));
 
-            // Use our forward PID controller to calculate how fast we want to go forward
-            forwardSpeed = -forwardController.calculate(range, HUB_RANGE_METERS);
-
             // Use the turn PID controller to calculate how fast we want to turn
-            rotationSpeed = turnController.calculate(smoothingStack.getAverageYaw(), 0);
+            rotationSpeed = m_turnController.calculate(m_smoothingStack.getAverageYaw(), 0);
 
             // Put if we are locked onto the target to the Shuffleboard
-            if (Math.abs(smoothingStack.getAverageYaw()) < YAW_OFFSET) {
+            if (Math.abs(m_smoothingStack.getAverageYaw()) < YAW_OFFSET) {
                 ShuffleboardUtility.getInstance().putToShuffleboard(ShuffleboardUtility.driverTab,
                         ShuffleboardKeys.AIMED, new ShuffleBoardData<Boolean>(true));
 
-                if (driverController != null && codriverController != null) {
-                    driverController.setRumble(RumbleType.kLeftRumble, 1);
-                    driverController.setRumble(RumbleType.kRightRumble, 1);
-                    codriverController.setRumble(RumbleType.kLeftRumble, 1);
-                    codriverController.setRumble(RumbleType.kRightRumble, 1);
+                cyclesAimed++;
+
+                // Rumble both controllers
+                if (m_driverController != null && m_codriverController != null) {
+                    m_driverController.setRumble(RumbleType.kLeftRumble, 1);
+                    m_driverController.setRumble(RumbleType.kRightRumble, 1);
+                    m_codriverController.setRumble(RumbleType.kLeftRumble, 1);
+                    m_codriverController.setRumble(RumbleType.kRightRumble, 1);
                 }
             } else {
                 ShuffleboardUtility.getInstance().putToShuffleboard(ShuffleboardUtility.driverTab,
                         ShuffleboardKeys.AIMED, new ShuffleBoardData<Boolean>(false));
 
-                if (driverController != null && codriverController != null) {
-                    driverController.setRumble(RumbleType.kLeftRumble, 0);
-                    driverController.setRumble(RumbleType.kRightRumble, 0);
-                    codriverController.setRumble(RumbleType.kLeftRumble, 0);
-                    codriverController.setRumble(RumbleType.kRightRumble, 0);
+                cyclesAimed = 0;
+
+                // Turn off rumble for both controllers
+                if (m_driverController != null && m_codriverController != null) {
+                    m_driverController.setRumble(RumbleType.kLeftRumble, 0);
+                    m_driverController.setRumble(RumbleType.kRightRumble, 0);
+                    m_codriverController.setRumble(RumbleType.kLeftRumble, 0);
+                    m_codriverController.setRumble(RumbleType.kRightRumble, 0);
                 }
             }
         } else {
-            // If no target, set both speeds to zero
-            forwardSpeed = 0.0;
             rotationSpeed = 0.0;
 
             // Set shuffleboard distance to zero if no target
@@ -175,27 +188,31 @@ public class PhotonAimCommand extends CommandBase {
             ShooterUtility.setValuesToShuffleboard(1.6);
         }
 
-        // Clamp to joystick values
-        forwardSpeed = MathUtil.clamp(forwardSpeed, -DriveSubsystem.DRIVETRAIN_MAX_FREE_SPEED_HIGH,
-                DriveSubsystem.DRIVETRAIN_MAX_FREE_SPEED_HIGH);
+        // Make sure we aren't sending in weird values to our drive method
         rotationSpeed = MathUtil.clamp(rotationSpeed, -DriveSubsystem.MAX_ANGULAR_SPEED,
                 DriveSubsystem.MAX_ANGULAR_SPEED);
 
-        driveSubsystem.drive(forwardSpeed, rotationSpeed);
+        m_driveSubsystem.drive(0, rotationSpeed);
     }
 
     @Override
     public void end(boolean interrupted) {
-        driveSubsystem.setVoltages(0, 0);
+        // Don't want any irregular signals being sent to drivetrain
+        m_driveSubsystem.setVoltages(0, 0);
 
-        hubCamera.setLED(VisionLEDMode.kOff);
+        // Set the LEDs for the pi camera to off
+        m_hubCamera.setLED(VisionLEDMode.kOff);
 
+        cyclesAimed = 0;
+
+        // Tell shuffleboard utility that we are no longer aimed. This will make sure
+        // that we don't think that we are aimed when we aren't
         ShuffleboardUtility.getInstance().putToShuffleboard(ShuffleboardUtility.driverTab,
                 ShuffleboardKeys.AIMED, new ShuffleBoardData<Boolean>(false));
     }
 
     @Override
     public boolean isFinished() {
-        return (boolean) ShuffleboardUtility.getInstance().getFromShuffleboard(ShuffleboardKeys.AIMED).getData();
+        return cyclesAimed > 4;
     }
 }

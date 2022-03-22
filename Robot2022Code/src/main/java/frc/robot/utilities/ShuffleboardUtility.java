@@ -81,7 +81,7 @@ public class ShuffleboardUtility {
                 }
             } else {
                 try {
-                    // Create a new file because it doesn't exist
+                    // Create a new file to write data
                     currentPipeline.createNewFile();
 
                     // Write the default settings
@@ -114,12 +114,14 @@ public class ShuffleboardUtility {
             // Set up the file writer
             FileWriter writer;
             try {
-                // Write the pipeline that on the Shuffleboard to a file
+                // Write the pipeline that on the Shuffleboard to the file
                 writer = new FileWriter(currentPipeline);
                 String pipelineName = currentChooserValue.getString("(Default)");
                 writer.write(pipelineName + "\n");
                 writer.write(Integer.toString(pipelineMap.get(pipelineName)));
                 writer.close();
+
+                PhotonVisionUtility.getInstance().setPiCameraPipeline(pipelineMap.get(pipelineName));
             } catch (IOException e) {
             }
         }, EntryListenerFlags.kUpdate);
@@ -298,8 +300,10 @@ public class ShuffleboardUtility {
         // MISCELLANEOUS
         CAMERA_STREAM("Camera stream"),
         DISTANCE_FROM_GOAL("Distance from goal"),
+        PHOTON_READY("Photon Ready?"),
 
-        AIMED("Is Aimed?");
+        AIMED("Is Aimed?"),
+        PHOTON_YAW("Photon Angle");
 
         final String m_name;
 

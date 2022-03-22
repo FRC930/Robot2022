@@ -2,20 +2,9 @@
 
 package frc.robot;
 
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.List;
-import java.util.Scanner;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.photonvision.common.hardware.VisionLEDMode;
 
@@ -30,7 +19,6 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.util.net.PortForwarder;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Timer;
@@ -45,7 +33,6 @@ import frc.robot.commands.LEDCommand.LEDPatterns;
 import frc.robot.commands.ToggleShifterCommand;
 import frc.robot.commands.autocommands.AutoCommandManager;
 import frc.robot.commands.autocommands.AutoCommandManager.subNames;
-import frc.robot.commands.autovisioncommands.HubAimCommand;
 import frc.robot.commands.autovisioncommands.PhotonAimCommand;
 import frc.robot.commands.autovisioncommands.PigeonAimCommand;
 import frc.robot.commands.endgamecommands.EndgameArmCommand;
@@ -76,7 +63,6 @@ import frc.robot.utilities.DriveCameraUtility.BallColor;
 import frc.robot.utilities.EndgameSensorUtility;
 import frc.robot.utilities.PhotonVisionUtility;
 import frc.robot.utilities.ShooterUtility;
-import frc.robot.utilities.ShuffleboardUtility;
 
 //----- CLASS -----\\
 /**
@@ -343,93 +329,6 @@ public class RobotContainer {
         scheduler.setDefaultCommand(m_indexerMotorSubsystem, new IndexerForwardCommand(m_indexerMotorSubsystem, false));
 
         compressor.enableAnalog(100, 115);
-
-        /*
-         * -----------------------------------------------------------------------------
-         * PHOTON VISION PIPELINE RETRIEVAL AND CONFIGURATION
-         * -----------------------------------------------------------------------------
-         */
-
-        if (Robot.isReal()) {
-            try {
-                BufferedInputStream zipFile = new BufferedInputStream(
-                        new URL("http://10.9.30.25:5800/api/settings/photonvision_config.zip").openStream());
-
-                ObjectMapper objectMapper = new ObjectMapper();
-
-                File destDir = new File(Filesystem.getOperatingDirectory().getAbsolutePath() + "/settings_unzipped");
-                byte[] buffer = new byte[1024];
-                ZipInputStream zis = new ZipInputStream(zipFile);
-                ZipEntry zipEntry = zis.getNextEntry();
-                while (zipEntry != null) {
-                    File newFile = newFile(destDir, zipEntry);
-                    if (zipEntry.isDirectory()) {
-                        if (!newFile.isDirectory() && !newFile.mkdirs()) {
-                            throw new IOException("Failed to create directory " + newFile);
-                        }
-                    } else {
-                        File parent = newFile.getParentFile();
-                        if (!parent.isDirectory() && !parent.mkdirs()) {
-                            throw new IOException("Failed to create directory " + parent);
-                        }
-
-                        FileOutputStream fos = new FileOutputStream(newFile);
-                        int len;
-                        while ((len = zis.read(buffer)) > 0) {
-                            fos.write(buffer, 0, len);
-                        }
-                        fos.close();
-                    }
-                    zipEntry = zis.getNextEntry();
-                }
-                zis.closeEntry();
-                zis.close();
-
-                File pipelinesDir = new File(Filesystem.getOperatingDirectory().getAbsolutePath()
-                        + "/settings_unzipped/cameras/mmal_service_16.1/pipelines");
-                String[] pipelinesList = pipelinesDir.list();
-                for (String piplineFile : pipelinesList) {
-                    File currentPipeline = new File(pipelinesDir.getPath() + "/" + piplineFile);
-                    String fileContents = "";
-                    Scanner sc = new Scanner(currentPipeline);
-                    while (sc.hasNextLine()) {
-                        fileContents += sc.nextLine() + "\n";
-                    }
-                    sc.close();
-
-                    JsonNode jsonNode = objectMapper.readTree(fileContents);
-                    JsonNode settingsMap = jsonNode.get(1);
-                    String pipelineName = settingsMap.get("pipelineNickname").asText();
-                    int pipelineIndex = Integer.parseInt(settingsMap.get("pipelineIndex").asText());
-                    double exposure = Double.parseDouble(settingsMap.get("cameraExposure").asText());
-
-                    ShuffleboardUtility.getInstance().addPipelineChooser(pipelineName, pipelineIndex);
-                    PhotonVisionUtility.getInstance().addPipeline(pipelineName, exposure);
-
-                    System.out.println(pipelineName);
-                    System.out.println(exposure);
-                }
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    //----- METHODS -----\\
-
-    private static File newFile(File destinationDir, ZipEntry zipEntry) throws IOException {
-        File destFile = new File(destinationDir, zipEntry.getName());
-
-        String destDirPath = destinationDir.getCanonicalPath();
-        String destFilePath = destFile.getCanonicalPath();
-
-        if (!destFilePath.startsWith(destDirPath + File.separator)) {
-            throw new IOException("Entry is outside of the target dir: " + zipEntry.getName());
-        }
-
-        return destFile;
     }
 
     /**
