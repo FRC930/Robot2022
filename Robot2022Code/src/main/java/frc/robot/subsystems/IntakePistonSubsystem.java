@@ -10,14 +10,13 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 /**
  * <h3>IntakePistonSubsystem</h3>
  * 
- * Handles the pistons that raise and lower the intake.
+ * Handles the piston that raises and lowers the intake.
  */
 public class IntakePistonSubsystem extends SubsystemBase {
 
     //----- SOLENOIDS -----\\
 
-    private final Solenoid m_solenoidOne;
-    private final Solenoid m_solenoidTwo;
+    private final Solenoid m_solenoid;
 
     //----- CONSTRUCTOR -----\\
     /**
@@ -25,17 +24,15 @@ public class IntakePistonSubsystem extends SubsystemBase {
      * 
      * Handles the pistons that raise and lower the intake.
      * 
-     * @param solenoidOneID ID for the first intake solenoid that retracts
-     * @param solenoidTwoID ID for the second intake solenoid that always stays open
+     * @param solenoidID ID for the first intake solenoid that retracts
      */
-    public IntakePistonSubsystem(int solenoidOneID, int solenoidTwoID) {
+    public IntakePistonSubsystem(int solenoidID) {
 
         //REVPH is the device on the robot that controls the compressors
-        m_solenoidOne = new Solenoid(PneumaticsModuleType.REVPH, solenoidOneID);
-        m_solenoidTwo = new Solenoid(PneumaticsModuleType.REVPH, solenoidTwoID);
+        m_solenoid = new Solenoid(PneumaticsModuleType.REVPH, solenoidID);
         
-        //solenoidTwo is being set to true so that way there is room for another ball
-        m_solenoidTwo.set(true);
+        //solenoid is being set to false to start
+        m_solenoid.set(false);
     }
 
     /**
@@ -46,21 +43,18 @@ public class IntakePistonSubsystem extends SubsystemBase {
      * @param state the state to write to the piston
      */
     public void setIntakePistonState(boolean state) {
-
-        //Sets the first solenoid to the boolean passed in and sets the second solenoid to the opposite state
-        m_solenoidOne.set(state);
-        m_solenoidTwo.set(!state);
+        m_solenoid.set(state);
     }
 
     /**
-     * <h3>getIntakeSolenoidOneState</h3>
+     * <h3>getIntakeSolenoidState</h3>
      * 
-     * Reads the state of the second intake piston
+     * Reads the state of the intake piston
      * 
      * @return the piston state
      */
     public boolean getIntakeSolenoidOneState() {
-        return m_solenoidOne.get();
+        return m_solenoid.get();
     }
 
 }

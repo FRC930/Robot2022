@@ -8,9 +8,8 @@
 package frc.robot.commands.shootercommands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.FlywheelSubsystem;
 import frc.robot.subsystems.IndexerMotorSubsystem;
-import frc.robot.utilities.BallSensorUtility;
+import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.utilities.ShuffleboardUtility;
 import frc.robot.utilities.ShuffleboardUtility.ShuffleBoardData;
 import frc.robot.utilities.ShuffleboardUtility.ShuffleboardKeys;
@@ -29,7 +28,7 @@ public class ShootCargoCommand extends CommandBase {
     private final int INDEXER_DELAY = 20;
 
     // -----VARIABLES----\\
-    private final FlywheelSubsystem shooterSubsystem;
+    private final ShooterSubsystem shooterSubsystem;
     private final IndexerMotorSubsystem indexerSubsystem;
     private boolean usingShuffleboard;
     private double bottomSpeed;
@@ -40,10 +39,10 @@ public class ShootCargoCommand extends CommandBase {
      * <h3>ShootCargoCommand</h3>
      * Uses shuffleboard for speeds.
      * 
-     * @param shooter The FlywheelSubsystem to use
+     * @param shooter The ShooterSubsystem to use
      * @param indexer The IndexerMotorSubsystem to use
      */
-    public ShootCargoCommand(FlywheelSubsystem shooter, IndexerMotorSubsystem indexer) {
+    public ShootCargoCommand(ShooterSubsystem shooter, IndexerMotorSubsystem indexer) {
         // ---CANNOT USE this() BECAUSE OF BOOLEAN FLAG---\\
         shooterSubsystem = shooter;
         indexerSubsystem = indexer;
@@ -54,11 +53,11 @@ public class ShootCargoCommand extends CommandBase {
     /**
      * <h3>ShootCargoCommand</h3>
      * 
-     * @param shooter The FlywheelSubsystem to use
+     * @param shooter The ShooterSubsystem to use
      * @param indexer The IndexerMotorSubsystem to use
      * @param speed   The speed(in PercentOutput) you want both wheels to spin at
      */
-    public ShootCargoCommand(FlywheelSubsystem shooter, IndexerMotorSubsystem indexer, double speed) {
+    public ShootCargoCommand(ShooterSubsystem shooter, IndexerMotorSubsystem indexer, double speed) {
         // Applies speed to both motors
         this(shooter, indexer, speed, speed);
     }
@@ -66,14 +65,14 @@ public class ShootCargoCommand extends CommandBase {
     /**
      * <h3>ShootCargoCommand</h3>
      * 
-     * @param shooter     The FlywheelSubsystem to use
+     * @param shooter     The ShooterSubsystem to use
      * @param indexer     The IndexerMotorSubsystem to use
      * @param topSpeed    The speed(in PercentOutput) you want the top wheel to spin
      *                    at
      * @param bottomSpeed The speed(in PercentOutput) you want the bottom wheel to
      *                    spin at
      */
-    public ShootCargoCommand(FlywheelSubsystem shooter, IndexerMotorSubsystem indexer, double topSpeed,
+    public ShootCargoCommand(ShooterSubsystem shooter, IndexerMotorSubsystem indexer, double topSpeed,
             double bottomSpeed) {
         shooterSubsystem = shooter;
         indexerSubsystem = indexer;
@@ -108,7 +107,7 @@ public class ShootCargoCommand extends CommandBase {
         counter++;
         // Waits for delay before activating indexer system
         if (counter == INDEXER_DELAY) {
-            indexerSubsystem.setIntakeMotorSpeed(1.0);
+            indexerSubsystem.setStagedMotorSpeed(1.0);
             indexerSubsystem.setLoadedMotorSpeed(1.0);
         }
     }
@@ -123,9 +122,7 @@ public class ShootCargoCommand extends CommandBase {
 
     @Override
     public void end(boolean interrupted) {
-        shooterSubsystem.setBottomSpeed(0);
-        shooterSubsystem.setTopSpeed(0);
-        indexerSubsystem.setIntakeMotorSpeed(0);
-        indexerSubsystem.setLoadedMotorSpeed(0);
+        shooterSubsystem.stopMotors();
+        indexerSubsystem.stopMotors();
     }
 } // End of CLass

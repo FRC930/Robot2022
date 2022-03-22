@@ -54,11 +54,10 @@ public class IndexerForwardCommand extends CommandBase {
         lastIntakeSpeed = -2.0; // Set last speed outside of usable range
         lastLoadedSpeed = -2.0;
         if (reversed) {
-            indexerMotor.setIntakeMotorSpeed(-LOADED_MOTOR_SPEED);
+            indexerMotor.setStagedMotorSpeed(-LOADED_MOTOR_SPEED);
             indexerMotor.setLoadedMotorSpeed(-LOADED_MOTOR_SPEED);
         } else {
-            indexerMotor.setIntakeMotorSpeed(0.0);
-            indexerMotor.setLoadedMotorSpeed(0.0);
+            indexerMotor.stopMotors();
         }
     }
 
@@ -86,7 +85,7 @@ public class IndexerForwardCommand extends CommandBase {
 
     private void setIntakeSpeed(double speed) {
         if (lastIntakeSpeed != speed) {
-            indexerMotor.setIntakeMotorSpeed(speed);
+            indexerMotor.setStagedMotorSpeed(speed);
             lastIntakeSpeed = speed;
         }
     }
@@ -105,8 +104,7 @@ public class IndexerForwardCommand extends CommandBase {
      */
     @Override
     public void end(boolean interrupted) { // sets the motor speed to 0
-        indexerMotor.setIntakeMotorSpeed(0.0);
-        indexerMotor.setLoadedMotorSpeed(0.0);
+        indexerMotor.stopMotors();
     }
 
     @Override

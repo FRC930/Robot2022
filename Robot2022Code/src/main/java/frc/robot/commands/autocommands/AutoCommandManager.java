@@ -18,7 +18,7 @@ public class AutoCommandManager {
     HashMap<String, Subsystem> subsystemMap = new HashMap<String, Subsystem>();
 
     public static enum subNames {
-        FlywheelSubsystem("Flywheel"),
+        ShooterSubsystem("Shooter"),
         ShooterHoodSubsystem("Shooter Hood"),
         DriveSubsystem("Drive"),
         EndgameMotorSubsystem("Endgame Motor"),
@@ -58,7 +58,7 @@ public class AutoCommandManager {
                 (DriveSubsystem) subsystemMap.get(subNames.DriveSubsystem.toString()),
                 (IntakePistonSubsystem) subsystemMap.get(subNames.IntakePistonSubsystem.toString()),
                 (IntakeMotorSubsystem) subsystemMap.get(subNames.IntakeMotorSubsystem.toString()),
-                (FlywheelSubsystem) subsystemMap.get(subNames.FlywheelSubsystem.toString()),
+                (ShooterSubsystem) subsystemMap.get(subNames.ShooterSubsystem.toString()),
                 (IndexerMotorSubsystem) subsystemMap.get(subNames.IndexerMotorSubsystem.toString())
                 );
 
@@ -66,7 +66,7 @@ public class AutoCommandManager {
                 (DriveSubsystem) subsystemMap.get(subNames.DriveSubsystem.toString()),
                 (IntakePistonSubsystem) subsystemMap.get(subNames.IntakePistonSubsystem.toString()),
                 (IntakeMotorSubsystem) subsystemMap.get(subNames.IntakeMotorSubsystem.toString()),
-                (FlywheelSubsystem) subsystemMap.get(subNames.FlywheelSubsystem.toString()),
+                (ShooterSubsystem) subsystemMap.get(subNames.ShooterSubsystem.toString()),
                 (IndexerMotorSubsystem) subsystemMap.get(subNames.IndexerMotorSubsystem.toString())
                 );
 
@@ -74,7 +74,7 @@ public class AutoCommandManager {
                 (DriveSubsystem) subsystemMap.get(subNames.DriveSubsystem.toString()),
                 (IntakePistonSubsystem) subsystemMap.get(subNames.IntakePistonSubsystem.toString()),
                 (IntakeMotorSubsystem) subsystemMap.get(subNames.IntakeMotorSubsystem.toString()),
-                (FlywheelSubsystem) subsystemMap.get(subNames.FlywheelSubsystem.toString()),
+                (ShooterSubsystem) subsystemMap.get(subNames.ShooterSubsystem.toString()),
                 (IndexerMotorSubsystem) subsystemMap.get(subNames.IndexerMotorSubsystem.toString())
                 );
 
@@ -82,7 +82,7 @@ public class AutoCommandManager {
                 (DriveSubsystem) subsystemMap.get(subNames.DriveSubsystem.toString()),
                 (IntakePistonSubsystem) subsystemMap.get(subNames.IntakePistonSubsystem.toString()),
                 (IntakeMotorSubsystem) subsystemMap.get(subNames.IntakeMotorSubsystem.toString()),
-                (FlywheelSubsystem) subsystemMap.get(subNames.FlywheelSubsystem.toString()),
+                (ShooterSubsystem) subsystemMap.get(subNames.ShooterSubsystem.toString()),
                 (IndexerMotorSubsystem) subsystemMap.get(subNames.IndexerMotorSubsystem.toString())
                 );
 
@@ -90,7 +90,7 @@ public class AutoCommandManager {
             (DriveSubsystem) subsystemMap.get(subNames.DriveSubsystem.toString()),
             (IntakePistonSubsystem) subsystemMap.get(subNames.IntakePistonSubsystem.toString()),
             (IntakeMotorSubsystem) subsystemMap.get(subNames.IntakeMotorSubsystem.toString()),
-            (FlywheelSubsystem) subsystemMap.get(subNames.FlywheelSubsystem.toString()),
+            (ShooterSubsystem) subsystemMap.get(subNames.ShooterSubsystem.toString()),
             (IndexerMotorSubsystem) subsystemMap.get(subNames.IndexerMotorSubsystem.toString())
             );
 

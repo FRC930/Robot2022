@@ -14,7 +14,6 @@ import edu.wpi.first.cscore.VideoMode.PixelFormat;
 import edu.wpi.first.math.controller.RamseteController;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.Trajectory;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.util.net.PortForwarder;
 import edu.wpi.first.wpilibj.Compressor;
@@ -48,13 +47,13 @@ import frc.robot.commands.shootercommands.AdjustHoodCommand;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.EndgameMotorSubsystem;
 import frc.robot.subsystems.EndgamePistonSubsystem;
-import frc.robot.subsystems.FlywheelSubsystem;
 import frc.robot.subsystems.IndexerMotorSubsystem;
 import frc.robot.subsystems.IntakeMotorSubsystem;
 import frc.robot.subsystems.IntakePistonSubsystem;
 import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.ShifterSubsystem;
 import frc.robot.subsystems.ShooterHoodSubsystem;
+import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.utilities.SimulatedDrivetrain;
 import frc.robot.utilities.PathPlannerSequentialCommandGroupUtility;
 import frc.robot.utilities.BallSensorUtility;
@@ -120,7 +119,7 @@ public class RobotContainer {
     // Indexer subsystem
     private final IndexerMotorSubsystem m_indexerMotorSubsystem;
     // Shooter subsystems
-    private final FlywheelSubsystem m_flywheelSubsystem;
+    private final ShooterSubsystem m_shooterSubsystem;
     private final ShooterHoodSubsystem m_shooterHoodSubsystem;
 
     //----- ENDGAME -----\\
@@ -196,7 +195,7 @@ public class RobotContainer {
         //----- INTAKE SUBSYSTEM INITS -----\\
 
         m_intakeMotorSubsystem = new IntakeMotorSubsystem(5);
-        m_intakePistonSubsystem = new IntakePistonSubsystem(1, 12);
+        m_intakePistonSubsystem = new IntakePistonSubsystem(1);
 
         //----- DRIVETRAIN SUBSYSTEM INITS -----\\
 
@@ -207,7 +206,7 @@ public class RobotContainer {
 
         m_indexerMotorSubsystem = new IndexerMotorSubsystem(14, 13);
         m_shooterHoodSubsystem = new ShooterHoodSubsystem(12);
-        m_flywheelSubsystem = new FlywheelSubsystem(11, 10, 6);
+        m_shooterSubsystem = new ShooterSubsystem(10, 6, 11);
 
         //----- ENDGAME SUBSYSTEM INITS -----\\
 
@@ -229,7 +228,7 @@ public class RobotContainer {
         m_autoManager.addSubsystem(subNames.DriveSubsystem, m_driveSubsystem);
         m_autoManager.addSubsystem(subNames.IntakeMotorSubsystem, m_intakeMotorSubsystem);
         m_autoManager.addSubsystem(subNames.IntakePistonSubsystem, m_intakePistonSubsystem);
-        m_autoManager.addSubsystem(subNames.FlywheelSubsystem, m_flywheelSubsystem);
+        m_autoManager.addSubsystem(subNames.ShooterSubsystem, m_shooterSubsystem);
         m_autoManager.addSubsystem(subNames.IndexerMotorSubsystem, m_indexerMotorSubsystem);
 
         /*
@@ -351,13 +350,13 @@ public class RobotContainer {
             new SequentialCommandGroup(
                 new PhotonAimCommand(m_driveSubsystem),
                 new AdjustHoodCommand(m_shooterHoodSubsystem),
-                new ShootCargoCommand(m_flywheelSubsystem, m_indexerMotorSubsystem)
+                new ShootCargoCommand(m_shooterSubsystem, m_indexerMotorSubsystem)
                         .withTimeout(ShootCargoCommand.SHOOT_TIME)
             )
         );
 
         m_driverController.getRightBumper().whileActiveOnce(
-            new ShootCargoCommand(m_flywheelSubsystem, m_indexerMotorSubsystem)
+            new ShootCargoCommand(m_shooterSubsystem, m_indexerMotorSubsystem)
         );
 
         //----- CODRIVER CONTROLLER -----\\
@@ -395,7 +394,7 @@ public class RobotContainer {
                 new AdjustHoodCommand(m_shooterHoodSubsystem,
                     ShooterUtility.calculateHoodPos(8.5)
                 ),
-                new ShootCargoCommand(m_flywheelSubsystem, m_indexerMotorSubsystem,
+                new ShootCargoCommand(m_shooterSubsystem, m_indexerMotorSubsystem,
                     ShooterUtility.calculateTopSpeed(8.5),
                     ShooterUtility.calculateBottomSpeed(8.5)
                 )
@@ -407,7 +406,7 @@ public class RobotContainer {
                 new AdjustHoodCommand(m_shooterHoodSubsystem,
                     ShooterUtility.calculateHoodPos(17)
                 ),
-                new ShootCargoCommand(m_flywheelSubsystem, m_indexerMotorSubsystem,
+                new ShootCargoCommand(m_shooterSubsystem, m_indexerMotorSubsystem,
                     ShooterUtility.calculateTopSpeed(17),
                     ShooterUtility.calculateBottomSpeed(17)
                 )
@@ -419,7 +418,7 @@ public class RobotContainer {
                 new AdjustHoodCommand(m_shooterHoodSubsystem,
                     ShooterUtility.calculateHoodPos(19 / 12)
                 ),
-                new ShootCargoCommand(m_flywheelSubsystem, m_indexerMotorSubsystem,
+                new ShootCargoCommand(m_shooterSubsystem, m_indexerMotorSubsystem,
                     ShooterUtility.calculateTopSpeed(19 / 12),
                     ShooterUtility.calculateBottomSpeed(19 / 12)
                 )
@@ -583,7 +582,7 @@ public class RobotContainer {
      */
     public void testExit() {
         m_driveSubsystem.refollowDriveMotors();
-        m_flywheelSubsystem.refollowShooterMotors();
+        m_shooterSubsystem.refollowShooterMotors();
         m_endgameMotorSubsystem.refollowEndgameMotors();
     }
 

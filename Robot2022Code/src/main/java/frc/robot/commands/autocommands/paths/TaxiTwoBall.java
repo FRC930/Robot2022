@@ -18,7 +18,7 @@ import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.utilities.PathPlannerSequentialCommandGroupUtility;
 import frc.robot.subsystems.DriveSubsystem;
-import frc.robot.subsystems.FlywheelSubsystem;
+import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.IndexerMotorSubsystem;
 import frc.robot.subsystems.IntakeMotorSubsystem;
 import frc.robot.subsystems.IntakePistonSubsystem;
@@ -61,7 +61,7 @@ public class TaxiTwoBall extends PathPlannerSequentialCommandGroupUtility {
         DriveSubsystem driveSubsystem,
         IntakePistonSubsystem intakePistonSubsystem,
         IntakeMotorSubsystem intakeMotorSubsystem,
-        FlywheelSubsystem flywheelSubsystem,
+        ShooterSubsystem shooterSubsystem,
         IndexerMotorSubsystem indexerMotorSubsystem
     ) {
 
@@ -107,8 +107,8 @@ public class TaxiTwoBall extends PathPlannerSequentialCommandGroupUtility {
             new ParallelRaceGroup(
                 new HubAimCommand(driveSubsystem)
             ),
-            new ParallelRaceGroup(new ShootCargoCommand(flywheelSubsystem, indexerMotorSubsystem), new WaitCommand(1)),
-            new ParallelRaceGroup(new ShootCargoCommand(flywheelSubsystem, indexerMotorSubsystem), new WaitCommand(1))
+            new ParallelRaceGroup(new ShootCargoCommand(shooterSubsystem, indexerMotorSubsystem), new WaitCommand(1)),
+            new ParallelRaceGroup(new ShootCargoCommand(shooterSubsystem, indexerMotorSubsystem), new WaitCommand(1))
         );
 
     } // End of Constructor

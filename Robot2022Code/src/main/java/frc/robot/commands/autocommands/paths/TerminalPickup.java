@@ -19,7 +19,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.utilities.PathPlannerSequentialCommandGroupUtility;
 import frc.robot.subsystems.DriveSubsystem;
-import frc.robot.subsystems.FlywheelSubsystem;
+import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.IndexerMotorSubsystem;
 import frc.robot.subsystems.IntakeMotorSubsystem;
 import frc.robot.subsystems.IntakePistonSubsystem;
@@ -63,7 +63,7 @@ public class TerminalPickup extends PathPlannerSequentialCommandGroupUtility {
         DriveSubsystem driveSubsystem,
         IntakePistonSubsystem intakePistonSubsystem,
         IntakeMotorSubsystem intakeMotorSubsystem,
-        FlywheelSubsystem flywheelSubsystem,
+        ShooterSubsystem shooterSubsystem,
         IndexerMotorSubsystem indexerMotorSubsystem
     ) {
 
@@ -148,8 +148,8 @@ public class TerminalPickup extends PathPlannerSequentialCommandGroupUtility {
                 new HubAimCommand(driveSubsystem),
                 new WaitCommand(0.5)
             ),
-            new ParallelRaceGroup(new ShootCargoCommand(flywheelSubsystem, indexerMotorSubsystem), new WaitCommand(1)),
-            new ParallelRaceGroup(new ShootCargoCommand(flywheelSubsystem, indexerMotorSubsystem), new WaitCommand(1)),
+            new ParallelRaceGroup(new ShootCargoCommand(shooterSubsystem, indexerMotorSubsystem), new WaitCommand(1)),
+            new ParallelRaceGroup(new ShootCargoCommand(shooterSubsystem, indexerMotorSubsystem), new WaitCommand(1)),
 
             new ParallelRaceGroup(
                 new ParallelCommandGroup(
@@ -168,8 +168,8 @@ public class TerminalPickup extends PathPlannerSequentialCommandGroupUtility {
                 new HubAimCommand(driveSubsystem),
                 new WaitCommand(0.5)
             ),
-            new ParallelRaceGroup(new ShootCargoCommand(flywheelSubsystem, indexerMotorSubsystem), new WaitCommand(1)),
-            new ParallelRaceGroup(new ShootCargoCommand(flywheelSubsystem, indexerMotorSubsystem), new WaitCommand(1))
+            new ParallelRaceGroup(new ShootCargoCommand(shooterSubsystem, indexerMotorSubsystem), new WaitCommand(1)),
+            new ParallelRaceGroup(new ShootCargoCommand(shooterSubsystem, indexerMotorSubsystem), new WaitCommand(1))
             );
     } // End of Constructor
 } // End of Class

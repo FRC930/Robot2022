@@ -18,7 +18,7 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.subsystems.DriveSubsystem;
-import frc.robot.subsystems.FlywheelSubsystem;
+import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.IndexerMotorSubsystem;
 import frc.robot.subsystems.IntakeMotorSubsystem;
 import frc.robot.subsystems.IntakePistonSubsystem;
@@ -53,12 +53,12 @@ public class TaxiOneBall extends PathPlannerSequentialCommandGroupUtility {
      * 
      * @param driveSubsystem
      * @param indexerMotorSubsystem
-     * @param flywheelSubsystem
+     * @param shooterSubsystem
      * @param intakeMotorSubsystem
      * @param intakePistonSubsystem
      * @param catapultSubsystem
      */
-    public TaxiOneBall(DriveSubsystem driveSubsystem, IntakePistonSubsystem intakePistonSubsystem, IntakeMotorSubsystem intakeMotorSubsystem, FlywheelSubsystem flywheelSubsystem, IndexerMotorSubsystem indexerMotorSubsystem) {
+    public TaxiOneBall(DriveSubsystem driveSubsystem, IntakePistonSubsystem intakePistonSubsystem, IntakeMotorSubsystem intakeMotorSubsystem, ShooterSubsystem shooterSubsystem, IndexerMotorSubsystem indexerMotorSubsystem) {
 
         // initializing gyro for pose2d
         m_odometry = driveSubsystem.getOdometry();
@@ -109,7 +109,7 @@ public class TaxiOneBall extends PathPlannerSequentialCommandGroupUtility {
         addCommands(
             r_exitTarmac,
             new HubAimCommand(driveSubsystem),
-            new ParallelRaceGroup(new ShootCargoCommand(flywheelSubsystem, indexerMotorSubsystem), new WaitCommand(1))
+            new ParallelRaceGroup(new ShootCargoCommand(shooterSubsystem, indexerMotorSubsystem), new WaitCommand(1))
         );
 
     } // End of Constructor

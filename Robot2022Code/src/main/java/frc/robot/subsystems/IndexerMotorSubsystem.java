@@ -10,13 +10,13 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 /**
  * <h3>IndexerMotorSubsystem</h3>
  * 
- * Manages the indexer motor.
+ * Manages the indexer motors.
  */
 public class IndexerMotorSubsystem extends SubsystemBase {
 
     // ----- MOTORS -----\\
 
-    private final WPI_TalonFX m_intakeIndexer;
+    private final WPI_TalonFX m_stagedIndexer;
     private final WPI_TalonFX m_loadedIndexer;
 
     // ----- CONSTRUCTOR -----\\
@@ -25,12 +25,12 @@ public class IndexerMotorSubsystem extends SubsystemBase {
      * 
      * Manages the indexer motors.
      * 
-     * @param intakeID - Can ID of the intake indexer motor.
-     * @param loadedID - Can ID of the loaded indexer motor.
+     * @param stagedID - Can ID of the staged motor
+     * @param loadedID - Can ID of the loaded motor
      */
-    public IndexerMotorSubsystem(int intakeID, int loadedID) {
-        m_intakeIndexer = new WPI_TalonFX(intakeID);
-        m_intakeIndexer.stopMotor();
+    public IndexerMotorSubsystem(int stagedID, int loadedID) {
+        m_stagedIndexer = new WPI_TalonFX(stagedID);
+        m_stagedIndexer.stopMotor();
         m_loadedIndexer = new WPI_TalonFX(loadedID);
         m_loadedIndexer.stopMotor();
     }
@@ -38,14 +38,14 @@ public class IndexerMotorSubsystem extends SubsystemBase {
     // ----- METHODS -----\\
 
     /**
-     * <h3>setIntakeMotorSpeed</h3>
+     * <h3>setStagedMotorSpeed</h3>
      * 
-     * Sets the intake indexer motor speed.
+     * Sets the staged indexer motor speed.
      * 
      * @param speed the speed to set the motor
      */
-    public void setIntakeMotorSpeed(double speed) {
-        m_intakeIndexer.set(speed);
+    public void setStagedMotorSpeed(double speed) {
+        m_stagedIndexer.set(speed);
     }
 
     /**
@@ -57,5 +57,15 @@ public class IndexerMotorSubsystem extends SubsystemBase {
      */
     public void setLoadedMotorSpeed(double speed) {
         m_loadedIndexer.set(-speed);
+    }
+
+    /**
+     * <h3>stopMotors</h3>
+     * 
+     * Stops both indexer motors.
+     */
+    public void stopMotors(){
+        m_stagedIndexer.stopMotor();
+        m_loadedIndexer.stopMotor();
     }
 }
