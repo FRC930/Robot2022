@@ -31,7 +31,7 @@ public class PhotonAimCommand extends CommandBase {
     // ----- CONSTANTS -----\\
 
     // Target yaw offset in degrees
-    public static final double YAW_OFFSET = 1.25;
+    public static final double YAW_OFFSET = 2;
 
     // The height of the camera
     private final double CAMERA_HEIGHT_METERS = Units.inchesToMeters(48);
@@ -138,7 +138,7 @@ public class PhotonAimCommand extends CommandBase {
             range = Math.sqrt(Math.pow(range, 2) - Math.pow(HEIGHT_DIFFERENCE_METERS, 2))
                     // Adjusted to measure from front of the robot to hub stand wall.
                     // This distance is in meters ~43.307 inches
-                    - 1.1;
+                    -0.2;
 
             ShuffleboardUtility.getInstance().putToShuffleboard(ShuffleboardUtility.driverTab,
                     ShuffleboardKeys.DISTANCE_FROM_GOAL, new ShuffleBoardData<Double>(range));
