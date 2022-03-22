@@ -426,11 +426,12 @@ public class RobotContainer {
             ).withTimeout(0.1)
         );
 
-        m_codriverController.getStartButton().whileActiveOnce(
+        m_codriverController.getStartButton().whileActiveOnce(new SequentialCommandGroup(
+            new AdjustHoodCommand(m_shooterHoodSubsystem, -1),
             new ParallelCommandGroup(
                 m_endgameManagerCommand, 
                 m_endgamePatternCommand
-            )
+            ))
         );
 
         /*
