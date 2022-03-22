@@ -8,6 +8,7 @@ public class GyroUtility {
 
     private GyroUtility() {
         m_gyro = new Pigeon2(9);
+        m_gyro.setYaw(0.0);
     }
 
     /**

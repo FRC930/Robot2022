@@ -5,8 +5,8 @@ package frc.robot.commands.autocommands.paths;
 import java.util.List;
 
 import frc.robot.commands.Ramsete930Command;
+import frc.robot.commands.autocommands.SequentialCommands.AutoShootCargo;
 import frc.robot.commands.autovisioncommands.HubAimCommand;
-import frc.robot.commands.shootercommands.ShootCargoCommand;
 import edu.wpi.first.math.controller.RamseteController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -15,13 +15,13 @@ import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.IndexerMotorSubsystem;
 import frc.robot.subsystems.IntakeMotorSubsystem;
 import frc.robot.subsystems.IntakePistonSubsystem;
+import frc.robot.subsystems.ShooterHoodSubsystem;
+import frc.robot.utilities.CurrentToHubDistanceUtility;
 import frc.robot.utilities.PathPlannerSequentialCommandGroupUtility;
 
 //----- CLASS -----\\
@@ -37,6 +37,8 @@ public class TaxiOneBall extends PathPlannerSequentialCommandGroupUtility {
     // Movement Control
     private final double MAX_SPEED = 0.5; // DriveSubsystem.DRIVETRAIN_MAX_FREE_SPEED_HIGH
     private final double MAX_ACCELERATION = 2.5;
+
+    private final CurrentToHubDistanceUtility currentToHubDistanceUtility;
 
     // Ramsete Controller Parameters
     // private final double RAMSETE_B = 2;
@@ -58,10 +60,11 @@ public class TaxiOneBall extends PathPlannerSequentialCommandGroupUtility {
      * @param intakePistonSubsystem
      * @param catapultSubsystem
      */
-    public TaxiOneBall(DriveSubsystem driveSubsystem, IntakePistonSubsystem intakePistonSubsystem, IntakeMotorSubsystem intakeMotorSubsystem, ShooterSubsystem shooterSubsystem, IndexerMotorSubsystem indexerMotorSubsystem) {
+    public TaxiOneBall(DriveSubsystem driveSubsystem, IntakePistonSubsystem intakePistonSubsystem, IntakeMotorSubsystem intakeMotorSubsystem, ShooterSubsystem shooterSubsystem, ShooterHoodSubsystem shooterHoodSubsystem, IndexerMotorSubsystem indexerMotorSubsystem) {
 
         // initializing gyro for pose2d
         m_odometry = driveSubsystem.getOdometry();
+        currentToHubDistanceUtility = new CurrentToHubDistanceUtility();
 
         // Configurate the values of all trajectories for max velocity and acceleration
         TrajectoryConfig config = new TrajectoryConfig(
@@ -109,7 +112,7 @@ public class TaxiOneBall extends PathPlannerSequentialCommandGroupUtility {
         addCommands(
             r_exitTarmac,
             new HubAimCommand(driveSubsystem),
-            new ParallelRaceGroup(new ShootCargoCommand(shooterSubsystem, indexerMotorSubsystem), new WaitCommand(1))
+            new AutoShootCargo(shooterHoodSubsystem, shooterSubsystem, indexerMotorSubsystem, currentToHubDistanceUtility.getDistanceToHub(driveSubsystem.getOdometry().getPoseMeters()))
         );
 
     } // End of Constructor

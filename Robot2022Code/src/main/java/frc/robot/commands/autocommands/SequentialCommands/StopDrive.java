@@ -1,4 +1,4 @@
-package frc.robot.commands.autocommands.paths;
+package frc.robot.commands.autocommands.SequentialCommands;
 
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.wpilibj2.command.CommandBase;

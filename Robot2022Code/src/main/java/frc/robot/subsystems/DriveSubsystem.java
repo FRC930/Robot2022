@@ -35,8 +35,6 @@ public class DriveSubsystem extends SubsystemBase {
 
     // ----- CONSTANTS -----\\
 
-    // Max linear speed of the robot
-    public static final double MAX_SPEED = 5.32; // meters per second
     // Max angular speed of the robot
     public static final double MAX_ANGULAR_SPEED = Math.PI; // 1 rotation per second
 
@@ -76,24 +74,24 @@ public class DriveSubsystem extends SubsystemBase {
     // KS is static voltage to add to the speed input
     // KV is speed-to-voltage converter basically
     // KA is the acceleration constant
-    private final double m_RIGHT_KS = 0.71548;
-    private final double m_RIGHT_KV = 2.1891;
-    private final double m_RIGHT_KA = 0.21744;
-    private final double m_LEFT_KS = 0.7254;
-    private final double m_LEFT_KV = 2.2018;
-    private final double m_LEFT_KA = 0.39339;
-    private final double m_COMBINED_KS = 0.72832;
-    private final double m_COMBINED_KV = 2.2139;
-    private final double m_COMBINED_KA = 0.19858;
+    private final double m_RIGHT_KS = 0.72894;
+    private final double m_RIGHT_KV = 2.1981;
+    private final double m_RIGHT_KA = 0.39618;
+    private final double m_LEFT_KS = 0.73198;
+    private final double m_LEFT_KV = 2.2081;
+    private final double m_LEFT_KA = 0.20989;
+    private final double m_COMBINED_KS = 0.72074;
+    private final double m_COMBINED_KV = 2.1866;
+    private final double m_COMBINED_KA = 0.20704;
 
     // PID Constants
     // P is the proportional error gain
     // I is the integral error gain
     // D is the derivative error gain
-    private final double m_LEFT_P = 3.1412;
+    private final double m_LEFT_P = 3.1442;
     private final double m_LEFT_I = 0.0;
     private final double m_LEFT_D = 0.0;
-    private final double m_RIGHT_P = 2.7718;
+    private final double m_RIGHT_P = 2.7313;
     private final double m_RIGHT_I = 0.0;
     private final double m_RIGHT_D = 0.0;
 
@@ -374,9 +372,9 @@ public class DriveSubsystem extends SubsystemBase {
     public void setSpeeds(DifferentialDriveWheelSpeeds speeds) {
         // Convert speeds to volts
         double leftOutput = speeds.leftMetersPerSecond * MAX_VOLTS /
-                DriveSubsystem.MAX_SPEED;
+                DRIVETRAIN_MAX_FREE_SPEED_HIGH;
         double rightOutput = speeds.rightMetersPerSecond * MAX_VOLTS /
-                DriveSubsystem.MAX_SPEED;
+                DRIVETRAIN_MAX_FREE_SPEED_HIGH;
 
         setVoltages(leftOutput, rightOutput);
     }

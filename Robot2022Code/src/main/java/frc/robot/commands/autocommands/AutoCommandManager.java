@@ -51,7 +51,7 @@ public class AutoCommandManager {
      */
     public void initCommands() {
 
-        TarmacTaxi defaultAutoPathCommand = new TarmacTaxi(
+        TarmacTaxi TarmacTaxi = new TarmacTaxi(
                 (DriveSubsystem) subsystemMap.get(subNames.DriveSubsystem.toString()));
 
         TaxiOneBall TaxiOneBall = new TaxiOneBall(
@@ -59,14 +59,16 @@ public class AutoCommandManager {
                 (IntakePistonSubsystem) subsystemMap.get(subNames.IntakePistonSubsystem.toString()),
                 (IntakeMotorSubsystem) subsystemMap.get(subNames.IntakeMotorSubsystem.toString()),
                 (ShooterSubsystem) subsystemMap.get(subNames.ShooterSubsystem.toString()),
+                (ShooterHoodSubsystem) subsystemMap.get(subNames.ShooterHoodSubsystem.toString()),
                 (IndexerMotorSubsystem) subsystemMap.get(subNames.IndexerMotorSubsystem.toString())
                 );
 
-        TaxiTwoBall TwoBallAuto = new TaxiTwoBall(
+        TaxiTwoBall TaxiTwoBall = new TaxiTwoBall(
                 (DriveSubsystem) subsystemMap.get(subNames.DriveSubsystem.toString()),
                 (IntakePistonSubsystem) subsystemMap.get(subNames.IntakePistonSubsystem.toString()),
                 (IntakeMotorSubsystem) subsystemMap.get(subNames.IntakeMotorSubsystem.toString()),
                 (ShooterSubsystem) subsystemMap.get(subNames.ShooterSubsystem.toString()),
+                (ShooterHoodSubsystem) subsystemMap.get(subNames.ShooterHoodSubsystem.toString()),
                 (IndexerMotorSubsystem) subsystemMap.get(subNames.IndexerMotorSubsystem.toString())
                 );
 
@@ -75,6 +77,7 @@ public class AutoCommandManager {
                 (IntakePistonSubsystem) subsystemMap.get(subNames.IntakePistonSubsystem.toString()),
                 (IntakeMotorSubsystem) subsystemMap.get(subNames.IntakeMotorSubsystem.toString()),
                 (ShooterSubsystem) subsystemMap.get(subNames.ShooterSubsystem.toString()),
+                (ShooterHoodSubsystem) subsystemMap.get(subNames.ShooterHoodSubsystem.toString()),
                 (IndexerMotorSubsystem) subsystemMap.get(subNames.IndexerMotorSubsystem.toString())
                 );
 
@@ -83,6 +86,7 @@ public class AutoCommandManager {
                 (IntakePistonSubsystem) subsystemMap.get(subNames.IntakePistonSubsystem.toString()),
                 (IntakeMotorSubsystem) subsystemMap.get(subNames.IntakeMotorSubsystem.toString()),
                 (ShooterSubsystem) subsystemMap.get(subNames.ShooterSubsystem.toString()),
+                (ShooterHoodSubsystem) subsystemMap.get(subNames.ShooterHoodSubsystem.toString()),
                 (IndexerMotorSubsystem) subsystemMap.get(subNames.IndexerMotorSubsystem.toString())
                 );
 
@@ -91,14 +95,15 @@ public class AutoCommandManager {
             (IntakePistonSubsystem) subsystemMap.get(subNames.IntakePistonSubsystem.toString()),
             (IntakeMotorSubsystem) subsystemMap.get(subNames.IntakeMotorSubsystem.toString()),
             (ShooterSubsystem) subsystemMap.get(subNames.ShooterSubsystem.toString()),
+            (ShooterHoodSubsystem) subsystemMap.get(subNames.ShooterHoodSubsystem.toString()),
             (IndexerMotorSubsystem) subsystemMap.get(subNames.IndexerMotorSubsystem.toString())
             );
 
         // Adding auto paths to the Shuffleboard
         ShuffleboardUtility.getInstance().setDefaultAutonOptions("(None)", null);
-        ShuffleboardUtility.getInstance().addAutonOptions("defaultAutoPathCommand", defaultAutoPathCommand);
+        ShuffleboardUtility.getInstance().addAutonOptions("defaultAutoPathCommand", TarmacTaxi);
 
-        ShuffleboardUtility.getInstance().addAutonOptions("TwoBallAuto", TwoBallAuto);
+        ShuffleboardUtility.getInstance().addAutonOptions("TaxiTwoBall", TaxiTwoBall);
         ShuffleboardUtility.getInstance().addAutonOptions("TaxiOneBall", TaxiOneBall);
         // ShuffleboardUtility.getInstance().addAutonOptions("ShootMoveShoot",
         // ShootMoveShoot);

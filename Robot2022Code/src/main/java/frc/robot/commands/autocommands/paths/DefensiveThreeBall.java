@@ -6,22 +6,24 @@ import com.pathplanner.lib.PathPlanner;
 
 import frc.robot.commands.Ramsete930Command;
 import frc.robot.commands.autocommands.ResetAutonomousCommand;
+import frc.robot.commands.autocommands.SequentialCommands.AutoShootCargo;
+import frc.robot.commands.autocommands.SequentialCommands.CombinedIntake;
+import frc.robot.commands.autocommands.SequentialCommands.StopDrive;
 import frc.robot.commands.autovisioncommands.HubAimCommand;
-import frc.robot.commands.intakecommands.intakePistonCommands.EngageIntakePistonsCommand;
-import frc.robot.commands.intakecommands.intakemotorcommands.RunIntakeMotorsCommand;
-import frc.robot.commands.shootercommands.ShootCargoCommand;
 import edu.wpi.first.math.controller.RamseteController;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import frc.robot.utilities.CurrentToHubDistanceUtility;
 import frc.robot.utilities.PathPlannerSequentialCommandGroupUtility;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.IndexerMotorSubsystem;
 import frc.robot.subsystems.IntakeMotorSubsystem;
 import frc.robot.subsystems.IntakePistonSubsystem;
+import frc.robot.subsystems.ShooterHoodSubsystem;
 
 //----- CLASS -----\\
 /**
@@ -44,6 +46,7 @@ public class DefensiveThreeBall extends PathPlannerSequentialCommandGroupUtility
     //----- ODOMETRY -----\\
 
     private final DifferentialDriveOdometry m_odometry;
+    private final CurrentToHubDistanceUtility currentToHubDistanceUtility;
 
     //----- CONSTRUCTOR -----\\
     /**
@@ -62,12 +65,13 @@ public class DefensiveThreeBall extends PathPlannerSequentialCommandGroupUtility
         IntakePistonSubsystem intakePistonSubsystem,
         IntakeMotorSubsystem intakeMotorSubsystem,
         ShooterSubsystem shooterSubsystem,
+        ShooterHoodSubsystem shooterHoodSubsystem,
         IndexerMotorSubsystem indexerMotorSubsystem
     ) {
 
         // initializing gyro for pose2d
         m_odometry = driveSubsystem.getOdometry();
-
+        currentToHubDistanceUtility = new CurrentToHubDistanceUtility();
         //----- TRAJECTORIES -----\\
 
         // Robot exits the tarmac, intakes, and shoots
@@ -115,9 +119,9 @@ public class DefensiveThreeBall extends PathPlannerSequentialCommandGroupUtility
 
         addCommands(
             new ResetAutonomousCommand(t_exitTarmac.getInitialPose(), driveSubsystem),
-            new ParallelRaceGroup(
-                new EngageIntakePistonsCommand(intakePistonSubsystem),
-                new RunIntakeMotorsCommand(intakeMotorSubsystem, false),
+            new CombinedIntake(
+                intakePistonSubsystem,
+                intakeMotorSubsystem,
                 r_exitTarmac
             ),
             new StopDrive(driveSubsystem),
@@ -125,15 +129,14 @@ public class DefensiveThreeBall extends PathPlannerSequentialCommandGroupUtility
                 new HubAimCommand(driveSubsystem),
                 new WaitCommand(1)
             ),
-            new ParallelRaceGroup(new ShootCargoCommand(shooterSubsystem, indexerMotorSubsystem, -1), new WaitCommand(1)),
-            new ParallelRaceGroup(new ShootCargoCommand(shooterSubsystem, indexerMotorSubsystem, -1), new WaitCommand(1)),
-            new ParallelRaceGroup(
-                new EngageIntakePistonsCommand(intakePistonSubsystem),
-                new RunIntakeMotorsCommand(intakeMotorSubsystem, false),
+            new AutoShootCargo(shooterHoodSubsystem, shooterSubsystem, indexerMotorSubsystem, currentToHubDistanceUtility.getDistanceToHub(driveSubsystem.getOdometry().getPoseMeters())),
+            new CombinedIntake(
+                intakePistonSubsystem,
+                intakeMotorSubsystem,
                 r_adjacentEnemyCargo
             ),
             new StopDrive(driveSubsystem),
-            new ParallelRaceGroup(new ShootCargoCommand(shooterSubsystem, indexerMotorSubsystem, 0.5), new WaitCommand(1))
+            new AutoShootCargo(shooterHoodSubsystem, shooterSubsystem, indexerMotorSubsystem, currentToHubDistanceUtility.getDistanceToHub(driveSubsystem.getOdometry().getPoseMeters()))
         );
 
     } // End of Constructor

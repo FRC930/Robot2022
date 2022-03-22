@@ -229,6 +229,7 @@ public class RobotContainer {
         m_autoManager.addSubsystem(subNames.IntakeMotorSubsystem, m_intakeMotorSubsystem);
         m_autoManager.addSubsystem(subNames.IntakePistonSubsystem, m_intakePistonSubsystem);
         m_autoManager.addSubsystem(subNames.ShooterSubsystem, m_shooterSubsystem);
+        m_autoManager.addSubsystem(subNames.ShooterHoodSubsystem, m_shooterHoodSubsystem);
         m_autoManager.addSubsystem(subNames.IndexerMotorSubsystem, m_indexerMotorSubsystem);
 
         /*
