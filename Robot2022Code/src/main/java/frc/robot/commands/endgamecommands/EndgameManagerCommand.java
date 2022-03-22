@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 
+import frc.robot.Robot;
 import frc.robot.commands.endgamecommands.EndgameRotateVerticalCommand.EndgamePosition;
 import frc.robot.subsystems.EndgameMotorSubsystem;
 import frc.robot.subsystems.EndgamePistonSubsystem;
@@ -30,14 +31,10 @@ import frc.robot.subsystems.EndgamePistonSubsystem;
 public class EndgameManagerCommand extends CommandBase {
 
     // -------- CONSTANTS --------\\
-
     // Time delay for claw commands to take effect
-    private final double ENDGAME_PISTON_DELAY = 0.4;
-    // Time delay for letting go of Mid while hangning from High
-    private final double ENDGAME_RELEASE_DELAY = 0.75;
+    private final double ENDGAME_PISTON_DELAY = 0.5;
 
     // -------- VARIABLES --------\\
-
     // Map of states for the sequence
     private HashMap<Integer, CommandBase> commands = new HashMap<Integer, CommandBase>();
     // State flag for currently used state command
@@ -54,87 +51,93 @@ public class EndgameManagerCommand extends CommandBase {
      * @param endgameMotorSubsystem the endgame motor
      * @param endgamePiston1        the pair of left and right 1 pistons
      * @param endgamePiston2        the pair of left and right 2 pistons
-     * @param endgamePistonL3       the left 3 piston
-     * @param endgamePistonR3       the right 3 piston
+     * @param endgamePiston3        the pair of left and right 3 pistons
      * @param endgamePiston4        the pair of left and right 4 pistons
      */
     public EndgameManagerCommand(EndgameMotorSubsystem endgameMotorSubsystem, EndgamePistonSubsystem endgamePiston1,
             EndgamePistonSubsystem endgamePiston2, EndgamePistonSubsystem endgamePiston3,
             EndgamePistonSubsystem endgamePiston4) {
         // Starts at the beginning of the map sequence
-        currentState = 1;
-        newState = 1;
+        // Simulation cannot rotate arm, need to start at step 2
+        if (Robot.isReal()) {
+            currentState = 1;
+            newState = 1;
+        } else {
+            currentState = 2;
+            newState = 2;
+        }
 
         // ----- ENDGAME COMMAND GROUP INITS -----\\
         // Sets arm to vertical to approach
         commands.put(1,
                 new SequentialCommandGroup(
+                        // Sets arm to vertical to approach
                         new EndgameRotateVerticalCommand(endgameMotorSubsystem,
                                 EndgamePosition.ApproachPosition),
                         new EndgameIncrementStateCommand(this)));
         // Opens #3 claws
-        // Closes #3 claws independently on both sides when sensors trigger
+        // Closes #3 claws when both #4 sensors trigger
         commands.put(2,
                 new SequentialCommandGroup(
+                        // Opens #3 claws
                         new ParallelRaceGroup(
                                 new EndgameOpenClawCommand(endgamePiston3),
                                 new WaitCommand(ENDGAME_PISTON_DELAY)),
+                        // Closes #3 claws when both #4 sensors trigger
                         new EndgameCloseWhenTouching(endgamePiston3, 4),
                         new WaitCommand(ENDGAME_PISTON_DELAY),
                         new EndgameIncrementStateCommand(this)));
         // Opens #1 claws
-        // Rotates arm until one #2 sensor triggers, closing all arms and stops motor
+        // Rotates arm until both #2 sensors trigger
+        // Then closes the #2 claws and stops the motor
         commands.put(3,
                 new SequentialCommandGroup(
+                        // Opens #1 claws
                         new ParallelRaceGroup(
                                 new EndgameOpenClawCommand(endgamePiston1),
                                 new WaitCommand(ENDGAME_PISTON_DELAY)),
+                        // Rotates arm until both #2 sensors trigger
+                        // Then closes the #2 claws and stops the motor
                         new ParallelRaceGroup(
                                 new EndgameArmCommand(endgameMotorSubsystem),
                                 new EndgameCloseWhenTouching(endgamePiston1, 2)),
-                        new EndgameArmCommand(endgameMotorSubsystem, 0.2).withTimeout(1.0),
-                        // new WaitCommand(ENDGAME_PISTON_DELAY),
+                        new WaitCommand(ENDGAME_PISTON_DELAY),
                         new EndgameIncrementStateCommand(this)));
-        // Sets arm to vertical
+        // Opens #3 and #4 claws, waits extra before letting go
         commands.put(4,
                 new SequentialCommandGroup(
-                        new ParallelRaceGroup(
-                                new EndgameRotateVerticalCommand(endgameMotorSubsystem,
-                                        EndgamePosition.SwingPosition),
-                                new WaitCommand(2.0)),
-                        new EndgameIncrementStateCommand(this)));
-        // Opens #3 and #4 claws
-        // Gives time for robot swing
-        // Closes #4 claws
-        commands.put(5,
-                new SequentialCommandGroup(
+                        // Opens #3 and #4 claws, waits extra before letting go
                         new ParallelRaceGroup(
                                 new EndgameOpenClawCommand(endgamePiston3),
                                 new EndgameOpenClawCommand(endgamePiston4),
-                                new WaitCommand(0.25)),
-                        // Rotates the arm to overcome backwards bounce
-                        new EndgameArmCommand(endgameMotorSubsystem).withTimeout(1.0),
+                                new WaitCommand(ENDGAME_PISTON_DELAY * 2)),
                         new EndgameIncrementStateCommand(this)));
-        // Rotates arm until one #4 sensor triggers, closing all arms and stops motor
-        commands.put(6,
+        // Opens #3 claw and closes #4
+        // Rotates arm until both #4 sensor triggers
+        // Then closes all arms and stops motor
+        commands.put(5,
                 new SequentialCommandGroup(
+                        // Opens #3 claw and closes #4
                         new ParallelRaceGroup(
                                 new EndgameCloseClawCommand(endgamePiston4),
                                 new EndgameOpenClawCommand(endgamePiston3),
-                                new WaitCommand(0.01)),
+                                new WaitCommand(ENDGAME_PISTON_DELAY)),
+                        // Rotates arm until both #4 sensor triggers
+                        // Then closes #3 claws and stops motor
                         new ParallelRaceGroup(
                                 new EndgameArmCommand(endgameMotorSubsystem),
-                                new EndgameCloseWhenTouching(
-                                        endgamePiston3, 4)),
-                        new EndgameArmCommand(endgameMotorSubsystem, 0.5).withTimeout(1.0),
-                        // new WaitCommand(ENDGAME_PISTON_DELAY),
+                                new EndgameCloseWhenTouching(endgamePiston3, 4)),
+                        new WaitCommand(ENDGAME_PISTON_DELAY),
                         new EndgameIncrementStateCommand(this)));
-        // Opens #2 claws-NOTE:Claws closed after delay ends due to default command
-        commands.put(7,
+        // Opens #2 claws
+        // NOTE:Claws close automatically after the final stage ends due to default
+        // commands
+        commands.put(6,
                 new SequentialCommandGroup(
+                        // Opens #2 claws
                         new ParallelRaceGroup(
                                 new EndgameOpenClawCommand(endgamePiston2),
-                                new WaitCommand(ENDGAME_RELEASE_DELAY)),
+                                new WaitCommand(ENDGAME_PISTON_DELAY)),
                         new EndgameIncrementStateCommand(this)));
     }
 
