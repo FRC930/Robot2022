@@ -100,7 +100,8 @@ public class EndgameManagerCommand extends CommandBase {
                         // Then closes the #2 claws and stops the motor
                         new ParallelRaceGroup(
                                 new EndgameArmCommand(endgameMotorSubsystem),
-                                new EndgameCloseWhenTouching(endgamePiston1, 2)),
+                                new SequentialCommandGroup(new EndgameCloseWhenTouching(endgamePiston1, 2),
+                                        new WaitCommand(0.5))),
                         new WaitCommand(ENDGAME_PISTON_DELAY),
                         new EndgameIncrementStateCommand(this)));
         // Opens #3 and #4 claws, waits extra before letting go
