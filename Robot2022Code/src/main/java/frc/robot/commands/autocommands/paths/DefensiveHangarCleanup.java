@@ -10,6 +10,7 @@ import frc.robot.commands.autocommands.SequentialCommands.AutoShootCargo;
 import frc.robot.commands.autocommands.SequentialCommands.CombinedIntake;
 import frc.robot.commands.autocommands.SequentialCommands.StopDrive;
 import frc.robot.commands.autovisioncommands.HubAimCommand;
+import frc.robot.commands.shootercommands.ShootCargoCommand;
 import edu.wpi.first.math.controller.RamseteController;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.trajectory.Trajectory;
@@ -137,6 +138,7 @@ public class DefensiveHangarCleanup extends PathPlannerSequentialCommandGroupUti
             new CombinedIntake(
                 intakePistonSubsystem,
                 intakeMotorSubsystem,
+                indexerMotorSubsystem,
                 r_exitTarmac
             ),
             new StopDrive(driveSubsystem),
@@ -144,21 +146,23 @@ public class DefensiveHangarCleanup extends PathPlannerSequentialCommandGroupUti
                 new HubAimCommand(driveSubsystem),
                 new WaitCommand(1)
             ),
-            new AutoShootCargo(shooterHoodSubsystem, shooterSubsystem, indexerMotorSubsystem, currentToHubDistanceUtility.getDistanceToHub(driveSubsystem.getOdometry().getPoseMeters())),
+            new AutoShootCargo(shooterHoodSubsystem, shooterSubsystem, indexerMotorSubsystem, currentToHubDistanceUtility.getDistanceToHub(driveSubsystem.getOdometry().getPoseMeters()), intakeMotorSubsystem, intakePistonSubsystem, ShootCargoCommand.SHOOT_TIME),
             new CombinedIntake(
                 intakePistonSubsystem,
                 intakeMotorSubsystem,
+                indexerMotorSubsystem,
                 r_adjacentEnemyCargo
             ),
             new StopDrive(driveSubsystem),
-            new AutoShootCargo(shooterHoodSubsystem, shooterSubsystem, indexerMotorSubsystem, currentToHubDistanceUtility.getDistanceToHub(driveSubsystem.getOdometry().getPoseMeters())),
+            new AutoShootCargo(shooterHoodSubsystem, shooterSubsystem, indexerMotorSubsystem, currentToHubDistanceUtility.getDistanceToHub(driveSubsystem.getOdometry().getPoseMeters()), intakeMotorSubsystem, intakePistonSubsystem, ShootCargoCommand.SHOOT_TIME),
             new CombinedIntake(
                 intakePistonSubsystem,
                 intakeMotorSubsystem,
+                indexerMotorSubsystem,
                 r_farEnemyCargo
             ),
             new WaitCommand(0.25),
-            new AutoShootCargo(shooterHoodSubsystem, shooterSubsystem, indexerMotorSubsystem, currentToHubDistanceUtility.getDistanceToHub(driveSubsystem.getOdometry().getPoseMeters()))
+            new AutoShootCargo(shooterHoodSubsystem, shooterSubsystem, indexerMotorSubsystem, currentToHubDistanceUtility.getDistanceToHub(driveSubsystem.getOdometry().getPoseMeters()), intakeMotorSubsystem, intakePistonSubsystem, ShootCargoCommand.SHOOT_TIME)
         );
 
     } // End of Constructor

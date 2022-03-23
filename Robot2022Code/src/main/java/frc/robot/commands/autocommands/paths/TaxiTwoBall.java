@@ -10,6 +10,7 @@ import frc.robot.commands.autocommands.SequentialCommands.AutoShootCargo;
 import frc.robot.commands.autocommands.SequentialCommands.CombinedIntake;
 import frc.robot.commands.autocommands.SequentialCommands.StopDrive;
 import frc.robot.commands.autovisioncommands.PhotonAimCommand;
+import frc.robot.commands.shootercommands.ShootCargoCommand;
 import edu.wpi.first.math.controller.RamseteController;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.trajectory.Trajectory;
@@ -104,11 +105,12 @@ public class TaxiTwoBall extends PathPlannerSequentialCommandGroupUtility {
             new CombinedIntake(
                 intakePistonSubsystem,
                 intakeMotorSubsystem,
+                indexerMotorSubsystem,
                 r_exitTarmac
             ),
             new StopDrive(driveSubsystem),
             new PhotonAimCommand(driveSubsystem),
-            new AutoShootCargo(shooterHoodSubsystem, shooterSubsystem, indexerMotorSubsystem, currentToHubDistanceUtility.getDistanceToHub(driveSubsystem.getOdometry().getPoseMeters())));
+            new AutoShootCargo(shooterHoodSubsystem, shooterSubsystem, indexerMotorSubsystem, currentToHubDistanceUtility.getDistanceToHub(driveSubsystem.getOdometry().getPoseMeters()), intakeMotorSubsystem, intakePistonSubsystem, ShootCargoCommand.SHOOT_TIME));
         
 
     } // End of Constructor

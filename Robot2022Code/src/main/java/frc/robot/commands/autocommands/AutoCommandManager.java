@@ -81,6 +81,15 @@ public class AutoCommandManager {
                 (IndexerMotorSubsystem) subsystemMap.get(subNames.IndexerMotorSubsystem.toString())
                 );
 
+        FiveBallAuto FiveBallAuto = new FiveBallAuto(
+            (DriveSubsystem) subsystemMap.get(subNames.DriveSubsystem.toString()),
+            (IntakePistonSubsystem) subsystemMap.get(subNames.IntakePistonSubsystem.toString()),
+            (IntakeMotorSubsystem) subsystemMap.get(subNames.IntakeMotorSubsystem.toString()),
+            (ShooterSubsystem) subsystemMap.get(subNames.ShooterSubsystem.toString()),
+            (ShooterHoodSubsystem) subsystemMap.get(subNames.ShooterHoodSubsystem.toString()),
+            (IndexerMotorSubsystem) subsystemMap.get(subNames.IndexerMotorSubsystem.toString())
+            );
+
         DefensiveThreeBall DefensiveThreeBall = new DefensiveThreeBall(
                 (DriveSubsystem) subsystemMap.get(subNames.DriveSubsystem.toString()),
                 (IntakePistonSubsystem) subsystemMap.get(subNames.IntakePistonSubsystem.toString()),
@@ -110,6 +119,7 @@ public class AutoCommandManager {
         ShuffleboardUtility.getInstance().addAutonOptions("TerminalPickup", TerminalPickup);
         ShuffleboardUtility.getInstance().addAutonOptions("DefensiveThreeBall", DefensiveThreeBall);
         ShuffleboardUtility.getInstance().addAutonOptions("DefensiveHangarCleanup", DefensiveHangarCleanup);
+        ShuffleboardUtility.getInstance().addAutonOptions("FiveBallAuto", FiveBallAuto);
     }
 
     /**

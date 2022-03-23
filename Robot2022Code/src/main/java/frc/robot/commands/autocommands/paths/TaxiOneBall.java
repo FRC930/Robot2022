@@ -7,6 +7,8 @@ import java.util.List;
 import frc.robot.commands.Ramsete930Command;
 import frc.robot.commands.autocommands.SequentialCommands.AutoShootCargo;
 import frc.robot.commands.autovisioncommands.HubAimCommand;
+import frc.robot.commands.autovisioncommands.PhotonAimCommand;
+import frc.robot.commands.shootercommands.ShootCargoCommand;
 import edu.wpi.first.math.controller.RamseteController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -111,8 +113,8 @@ public class TaxiOneBall extends PathPlannerSequentialCommandGroupUtility {
 
         addCommands(
             r_exitTarmac,
-            new HubAimCommand(driveSubsystem),
-            new AutoShootCargo(shooterHoodSubsystem, shooterSubsystem, indexerMotorSubsystem, currentToHubDistanceUtility.getDistanceToHub(driveSubsystem.getOdometry().getPoseMeters()))
+            new PhotonAimCommand(driveSubsystem),
+            new AutoShootCargo(shooterHoodSubsystem, shooterSubsystem, indexerMotorSubsystem, currentToHubDistanceUtility.getDistanceToHub(driveSubsystem.getOdometry().getPoseMeters()), intakeMotorSubsystem, intakePistonSubsystem, ShootCargoCommand.SHOOT_TIME)
         );
 
     } // End of Constructor
