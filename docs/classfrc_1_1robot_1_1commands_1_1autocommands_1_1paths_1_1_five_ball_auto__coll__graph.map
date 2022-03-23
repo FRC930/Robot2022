@@ -1,0 +1,8 @@
+<map id="frc.robot.commands.autocommands.paths.FiveBallAuto" name="frc.robot.commands.autocommands.paths.FiveBallAuto">
+<area shape="rect" id="node1" title=" " alt="" coords="935,79,1205,121"/>
+<area shape="rect" id="node2" href="$classfrc_1_1robot_1_1utilities_1_1_path_planner_sequential_command_group_utility.html" title=" " alt="" coords="594,5,815,61"/>
+<area shape="rect" id="node3" title=" " alt="" coords="179,20,356,47"/>
+<area shape="rect" id="node4" href="$classfrc_1_1robot_1_1utilities_1_1_current_to_hub_distance_utility.html" title=" " alt="" coords="187,126,347,167"/>
+<area shape="rect" id="node6" href="$classfrc_1_1robot_1_1commands_1_1autocommands_1_1paths_1_1_terminal_pickup.html" title=" " alt="" coords="569,231,840,273"/>
+<area shape="rect" id="node5" title=" " alt="" coords="5,133,57,160"/>
+</map>

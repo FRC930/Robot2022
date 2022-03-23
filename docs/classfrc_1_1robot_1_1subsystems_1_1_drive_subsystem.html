@@ -117,6 +117,9 @@ $(document).ready(function(){initNavTree('classfrc_1_1robot_1_1subsystems_1_1_dr
 Public Member Functions</h2></td></tr>
 <tr class="memitem:ab640a1a26d8e4b2b259b0918d6670a9e"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem.html#ab640a1a26d8e4b2b259b0918d6670a9e">DriveSubsystem</a> (int leftMotorLeaderID, int leftMotorFollowerID, int rightMotorLeaderID, int rightMotorFollowerID)</td></tr>
 <tr class="separator:ab640a1a26d8e4b2b259b0918d6670a9e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aef59489e2cd23f2924838d13c1019ab0"><td class="memItemLeft" align="right" valign="top"><a id="aef59489e2cd23f2924838d13c1019ab0" name="aef59489e2cd23f2924838d13c1019ab0"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>refollowDriveMotors</b> ()</td></tr>
+<tr class="separator:aef59489e2cd23f2924838d13c1019ab0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3c2aa7783d8c0f858d2da80180ad336a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem.html#a3c2aa7783d8c0f858d2da80180ad336a">setMotorBrakeMode</a> (NeutralMode brakeMode)</td></tr>
 <tr class="separator:a3c2aa7783d8c0f858d2da80180ad336a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad55ff101390932755974b445c1b58c02"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem.html#ad55ff101390932755974b445c1b58c02">setVoltages</a> (double leftVoltage, double rightVoltage)</td></tr>
@@ -159,53 +162,42 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a3fb207982f5a391a5a1783332f468896"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2afbda98f15f51e515a1ad3fc17a36b3"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem.html#a2afbda98f15f51e515a1ad3fc17a36b3">resetRightPID</a> ()</td></tr>
 <tr class="separator:a2afbda98f15f51e515a1ad3fc17a36b3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3756a0deffc832e0d7fbd0d2db877afa"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem.html#a3756a0deffc832e0d7fbd0d2db877afa">setPistonState</a> (boolean state)</td></tr>
-<tr class="separator:a3756a0deffc832e0d7fbd0d2db877afa"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8c6b75995cdfc3a4da6416b58c7256c0"><td class="memItemLeft" align="right" valign="top">boolean&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem.html#a8c6b75995cdfc3a4da6416b58c7256c0">getPistonState</a> ()</td></tr>
-<tr class="separator:a8c6b75995cdfc3a4da6416b58c7256c0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0a4cb0335db0073a98b104d7bbb3ace3"><td class="memItemLeft" align="right" valign="top"><a id="a0a4cb0335db0073a98b104d7bbb3ace3" name="a0a4cb0335db0073a98b104d7bbb3ace3"></a>
-DifferentialDriveVoltageConstraint&#160;</td><td class="memItemRight" valign="bottom"><b>getVoltageContraint</b> ()</td></tr>
+<tr class="memitem:a7f4a59dd423cfd7f5bab9c5676b8cec4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem.html#a7f4a59dd423cfd7f5bab9c5676b8cec4">resetEncoders</a> ()</td></tr>
+<tr class="separator:a7f4a59dd423cfd7f5bab9c5676b8cec4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0a4cb0335db0073a98b104d7bbb3ace3"><td class="memItemLeft" align="right" valign="top">DifferentialDriveVoltageConstraint&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem.html#a0a4cb0335db0073a98b104d7bbb3ace3">getVoltageContraint</a> ()</td></tr>
 <tr class="separator:a0a4cb0335db0073a98b104d7bbb3ace3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7a39523fdd20062a3857f24dd3d7a410"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem.html#a7a39523fdd20062a3857f24dd3d7a410">drive</a> (double xSpeed, double rot)</td></tr>
 <tr class="separator:a7a39523fdd20062a3857f24dd3d7a410"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acec37fb31fc920ee2f00f162f11cfe69"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem.html#acec37fb31fc920ee2f00f162f11cfe69">getHeading</a> ()</td></tr>
 <tr class="separator:acec37fb31fc920ee2f00f162f11cfe69"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a942cc181c6efa9fd7707fe7609edc2b6"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem.html#a942cc181c6efa9fd7707fe7609edc2b6">hardReset</a> (Pose2d pose)</td></tr>
-<tr class="separator:a942cc181c6efa9fd7707fe7609edc2b6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a26a6c9968485adb03f2b4a7efca0f5d8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem.html#a26a6c9968485adb03f2b4a7efca0f5d8">softReset</a> ()</td></tr>
-<tr class="separator:a26a6c9968485adb03f2b4a7efca0f5d8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:acbaccc5ca3773a09906eb83fb2d59112"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classfrc_1_1robot_1_1utilities_1_1_differential_drive_odometry930.html">DifferentialDriveOdometry930</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem.html#acbaccc5ca3773a09906eb83fb2d59112">getOdometry</a> ()</td></tr>
-<tr class="separator:acbaccc5ca3773a09906eb83fb2d59112"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a30edf9031c28862c5c09ce3f762e7a71"><td class="memItemLeft" align="right" valign="top"><a id="a30edf9031c28862c5c09ce3f762e7a71" name="a30edf9031c28862c5c09ce3f762e7a71"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>periodic</b> ()</td></tr>
+<tr class="memitem:a6c7503061e455512eb7edeab06af8483"><td class="memItemLeft" align="right" valign="top">DifferentialDriveOdometry&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem.html#a6c7503061e455512eb7edeab06af8483">getOdometry</a> ()</td></tr>
+<tr class="separator:a6c7503061e455512eb7edeab06af8483"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a30edf9031c28862c5c09ce3f762e7a71"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem.html#a30edf9031c28862c5c09ce3f762e7a71">periodic</a> ()</td></tr>
 <tr class="separator:a30edf9031c28862c5c09ce3f762e7a71"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-attribs" name="pub-static-attribs"></a>
 Static Public Attributes</h2></td></tr>
-<tr class="memitem:a282102c3fda8c388a89e1da7539e8f96"><td class="memItemLeft" align="right" valign="top"><a id="a282102c3fda8c388a89e1da7539e8f96" name="a282102c3fda8c388a89e1da7539e8f96"></a>
-static final double&#160;</td><td class="memItemRight" valign="bottom"><b>kMaxSpeed</b> = 5.32</td></tr>
-<tr class="separator:a282102c3fda8c388a89e1da7539e8f96"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:adc145e679a0b54f3b6a079d60fa9d0ef"><td class="memItemLeft" align="right" valign="top"><a id="adc145e679a0b54f3b6a079d60fa9d0ef" name="adc145e679a0b54f3b6a079d60fa9d0ef"></a>
-static final double&#160;</td><td class="memItemRight" valign="bottom"><b>kMaxAngularSpeed</b> = Math.PI</td></tr>
-<tr class="separator:adc145e679a0b54f3b6a079d60fa9d0ef"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9d6b3c98b0faa88d8fd5dd0cf945f4ea"><td class="memItemLeft" align="right" valign="top"><a id="a9d6b3c98b0faa88d8fd5dd0cf945f4ea" name="a9d6b3c98b0faa88d8fd5dd0cf945f4ea"></a>
-static final double&#160;</td><td class="memItemRight" valign="bottom"><b>highGearRatio</b> = 6.3</td></tr>
-<tr class="separator:a9d6b3c98b0faa88d8fd5dd0cf945f4ea"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a089c790a0d27ac80481d5415f207cd0e"><td class="memItemLeft" align="right" valign="top"><a id="a089c790a0d27ac80481d5415f207cd0e" name="a089c790a0d27ac80481d5415f207cd0e"></a>
-static final double&#160;</td><td class="memItemRight" valign="bottom"><b>lowGearRatio</b> = 12.9</td></tr>
-<tr class="separator:a089c790a0d27ac80481d5415f207cd0e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a12f61fb4325a6ad566c278eef87bd004"><td class="memItemLeft" align="right" valign="top"><a id="a12f61fb4325a6ad566c278eef87bd004" name="a12f61fb4325a6ad566c278eef87bd004"></a>
-static final double&#160;</td><td class="memItemRight" valign="bottom"><b>kTrackWidth</b> = 0.381 * 2</td></tr>
-<tr class="separator:a12f61fb4325a6ad566c278eef87bd004"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac29eb8f1e425dcd5edee4618c75d4a7d"><td class="memItemLeft" align="right" valign="top"><a id="ac29eb8f1e425dcd5edee4618c75d4a7d" name="ac29eb8f1e425dcd5edee4618c75d4a7d"></a>
-static final double&#160;</td><td class="memItemRight" valign="bottom"><b>kWheelRadius</b> = 0.0508</td></tr>
-<tr class="separator:ac29eb8f1e425dcd5edee4618c75d4a7d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa7b155208d046c04e060a9c842de7839"><td class="memItemLeft" align="right" valign="top"><a id="aa7b155208d046c04e060a9c842de7839" name="aa7b155208d046c04e060a9c842de7839"></a>
-static final int&#160;</td><td class="memItemRight" valign="bottom"><b>kEncoderResolution</b> = 2048</td></tr>
-<tr class="separator:aa7b155208d046c04e060a9c842de7839"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae005c218395b30fee5e52df715f312e5"><td class="memItemLeft" align="right" valign="top"><a id="ae005c218395b30fee5e52df715f312e5" name="ae005c218395b30fee5e52df715f312e5"></a>
-static final double&#160;</td><td class="memItemRight" valign="bottom"><b>kMaxVolts</b> = 12.0</td></tr>
-<tr class="separator:ae005c218395b30fee5e52df715f312e5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa4131ee9581e54357e2106beb61c22d2"><td class="memItemLeft" align="right" valign="top"><a id="aa4131ee9581e54357e2106beb61c22d2" name="aa4131ee9581e54357e2106beb61c22d2"></a>
+static final double&#160;</td><td class="memItemRight" valign="bottom"><b>MAX_ANGULAR_SPEED</b> = Math.PI</td></tr>
+<tr class="separator:aa4131ee9581e54357e2106beb61c22d2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab348abf763818d62b938381625a58b38"><td class="memItemLeft" align="right" valign="top"><a id="ab348abf763818d62b938381625a58b38" name="ab348abf763818d62b938381625a58b38"></a>
+static final double&#160;</td><td class="memItemRight" valign="bottom"><b>HIGH_GEAR_RATIO</b> = 6.3</td></tr>
+<tr class="separator:ab348abf763818d62b938381625a58b38"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad42dbef92c4267fe7e4e91e0512968b4"><td class="memItemLeft" align="right" valign="top"><a id="ad42dbef92c4267fe7e4e91e0512968b4" name="ad42dbef92c4267fe7e4e91e0512968b4"></a>
+static final double&#160;</td><td class="memItemRight" valign="bottom"><b>LOW_GEAR_RATIO</b> = 12.9</td></tr>
+<tr class="separator:ad42dbef92c4267fe7e4e91e0512968b4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8d589c6282a017604cefdea3217a7770"><td class="memItemLeft" align="right" valign="top"><a id="a8d589c6282a017604cefdea3217a7770" name="a8d589c6282a017604cefdea3217a7770"></a>
+static final double&#160;</td><td class="memItemRight" valign="bottom"><b>TRACK_WIDTH</b> = 0.381 * 2</td></tr>
+<tr class="separator:a8d589c6282a017604cefdea3217a7770"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8813bc8d098eebf8b89c1566d165e0b1"><td class="memItemLeft" align="right" valign="top"><a id="a8813bc8d098eebf8b89c1566d165e0b1" name="a8813bc8d098eebf8b89c1566d165e0b1"></a>
+static final double&#160;</td><td class="memItemRight" valign="bottom"><b>WHEEL_RADIUS</b> = Units.inchesToMeters(3.875 / 2)</td></tr>
+<tr class="separator:a8813bc8d098eebf8b89c1566d165e0b1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a119543777f6301595967804b39b2f3fb"><td class="memItemLeft" align="right" valign="top"><a id="a119543777f6301595967804b39b2f3fb" name="a119543777f6301595967804b39b2f3fb"></a>
+static final int&#160;</td><td class="memItemRight" valign="bottom"><b>FALCON_ENCODER_RESOLUTION</b> = 2048</td></tr>
+<tr class="separator:a119543777f6301595967804b39b2f3fb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a29752893478a73fd7312977bc56c5121"><td class="memItemLeft" align="right" valign="top"><a id="a29752893478a73fd7312977bc56c5121" name="a29752893478a73fd7312977bc56c5121"></a>
+static final double&#160;</td><td class="memItemRight" valign="bottom"><b>MAX_VOLTS</b> = 11.0</td></tr>
+<tr class="separator:a29752893478a73fd7312977bc56c5121"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a75f2691eec13298cf2b2440fc84b25af"><td class="memItemLeft" align="right" valign="top">static final double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem.html#a75f2691eec13298cf2b2440fc84b25af">DRIVETRAIN_MAX_FREE_SPEED_LOW</a></td></tr>
 <tr class="separator:a75f2691eec13298cf2b2440fc84b25af"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a70866d2e8fb337727ec0cad224c1e1db"><td class="memItemLeft" align="right" valign="top">static final double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem.html#a70866d2e8fb337727ec0cad224c1e1db">DRIVETRAIN_MAX_FREE_SPEED_HIGH</a></td></tr>
@@ -213,10 +205,7 @@ static final double&#160;</td><td class="memItemRight" valign="bottom"><b>kMaxVo
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><h3><a class="el" href="classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem.html">DriveSubsystem</a></h3>
-<p ><a class="el" href="classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem.html">DriveSubsystem</a> represents the drivetrain to our code</p>
-<dl class="section author"><dt>Author</dt><dd>Alexander Taylor </dd></dl>
-<dl class="section since"><dt>Since</dt><dd>22 January 2022 </dd></dl>
-<dl class="section version"><dt>Version</dt><dd>1.0 </dd></dl>
+<p ><a class="el" href="classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem.html">DriveSubsystem</a> represents the drivetrain to our code </p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="ab640a1a26d8e4b2b259b0918d6670a9e" name="ab640a1a26d8e4b2b259b0918d6670a9e"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ab640a1a26d8e4b2b259b0918d6670a9e">&#9670;&nbsp;</a></span>DriveSubsystem()</h2>
@@ -255,7 +244,17 @@ static final double&#160;</td><td class="memItemRight" valign="bottom"><b>kMaxVo
         </tr>
       </table>
 </div><div class="memdoc">
-<p >Constructs a differential drive object. Sets the encoder distance per pulse and resets the gyro. </p>
+<p >Constructs a differential drive object. Sets the encoder distance per pulse and resets the gyro. </p><h3><a class="el" href="classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem.html">DriveSubsystem</a></h3>
+<p >Constructs a differential drive object. Sets the encoder distance per pulse and resets the gyro.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">leftMotorLeaderID</td><td>the ID of the left motor leader </td></tr>
+    <tr><td class="paramname">leftMotorFollowerID</td><td>the ID of the left motor follower </td></tr>
+    <tr><td class="paramname">rightMotorLeaderID</td><td>the ID of the right motor leader </td></tr>
+    <tr><td class="paramname">rightMotorFollowerID</td><td>the ID of the right motor follower </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
@@ -282,7 +281,7 @@ static final double&#160;</td><td class="memItemRight" valign="bottom"><b>kMaxVo
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>the feedforward modified velocity </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>the output of the feedforward controller (in volts) </dd></dl>
 
 </div>
 </div>
@@ -318,7 +317,7 @@ static final double&#160;</td><td class="memItemRight" valign="bottom"><b>kMaxVo
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>the feedforward modified </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>the output of the feedforward contoller (in volts) </dd></dl>
 
 </div>
 </div>
@@ -381,7 +380,7 @@ static final double&#160;</td><td class="memItemRight" valign="bottom"><b>kMaxVo
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>the feedforward modified velocity </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>the output of the feedforward controller (in volts) </dd></dl>
 
 </div>
 </div>
@@ -417,7 +416,7 @@ static final double&#160;</td><td class="memItemRight" valign="bottom"><b>kMaxVo
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>the feedforward modified </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>the output of the feedforward controller (in volts) </dd></dl>
 
 </div>
 </div>
@@ -525,9 +524,7 @@ static final double&#160;</td><td class="memItemRight" valign="bottom"><b>kMaxVo
 <p >Returns the heading of the gyro.</p>
 <dl class="section return"><dt>Returns</dt><dd>the heading of the gyro. </dd></dl>
 
-<p class="reference">References <a class="el" href="classfrc_1_1robot_1_1utilities_1_1_gyro_utility.html#add2e30e9701767a6a0a9ac072eaf3755">frc.robot.utilities.GyroUtility.getInstance()</a>.</p>
-
-<p class="reference">Referenced by <a class="el" href="classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem.html#a942cc181c6efa9fd7707fe7609edc2b6">frc.robot.subsystems.DriveSubsystem.hardReset()</a>, and <a class="el" href="classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem.html#a26a6c9968485adb03f2b4a7efca0f5d8">frc.robot.subsystems.DriveSubsystem.softReset()</a>.</p>
+<p class="reference">References <a class="el" href="classfrc_1_1robot_1_1utilities_1_1_gyro_utility.html#a0bc6ebef67c41e17c3cfd614085f05ab">frc.robot.utilities.GyroUtility.getGyro()</a>, and <a class="el" href="classfrc_1_1robot_1_1utilities_1_1_gyro_utility.html#add2e30e9701767a6a0a9ac072eaf3755">frc.robot.utilities.GyroUtility.getInstance()</a>.</p>
 <div id="dynsection-3" onclick="return toggleVisibility(this)" class="dynheader closed" style="cursor:pointer;">
   <img id="dynsection-3-trigger" src="closed.png" alt="+"/> Here is the call graph for this function:</div>
 <div id="dynsection-3-summary" class="dynsummary" style="display:block;">
@@ -535,8 +532,9 @@ static final double&#160;</td><td class="memItemRight" valign="bottom"><b>kMaxVo
 <div id="dynsection-3-content" class="dyncontent" style="display:none;">
 <div class="center"><img src="classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem_acec37fb31fc920ee2f00f162f11cfe69_cgraph.png" border="0" usemap="#aclassfrc_1_1robot_1_1subsystems_1_1_drive_subsystem_acec37fb31fc920ee2f00f162f11cfe69_cgraph" alt=""/></div>
 <map name="aclassfrc_1_1robot_1_1subsystems_1_1_drive_subsystem_acec37fb31fc920ee2f00f162f11cfe69_cgraph" id="aclassfrc_1_1robot_1_1subsystems_1_1_drive_subsystem_acec37fb31fc920ee2f00f162f11cfe69_cgraph">
-<area shape="rect" title=" " alt="" coords="5,5,181,47"/>
-<area shape="rect" href="classfrc_1_1robot_1_1utilities_1_1_gyro_utility.html#add2e30e9701767a6a0a9ac072eaf3755" title=" " alt="" coords="229,5,376,47"/>
+<area shape="rect" title=" " alt="" coords="5,39,181,80"/>
+<area shape="rect" href="classfrc_1_1robot_1_1utilities_1_1_gyro_utility.html#a0bc6ebef67c41e17c3cfd614085f05ab" title=" " alt="" coords="229,5,376,47"/>
+<area shape="rect" href="classfrc_1_1robot_1_1utilities_1_1_gyro_utility.html#add2e30e9701767a6a0a9ac072eaf3755" title=" " alt="" coords="229,71,376,112"/>
 </map>
 </div>
 
@@ -557,9 +555,10 @@ static final double&#160;</td><td class="memItemRight" valign="bottom"><b>kMaxVo
       </table>
 </div><div class="memdoc">
 <h3>getKinematics</h3>
-<p >Gets the kinematics </p>
+<p >Gets the kinematics</p>
+<dl class="section return"><dt>Returns</dt><dd>the kinematics used by the drivetrain </dd></dl>
 
-<p class="reference">Referenced by <a class="el" href="classfrc_1_1robot_1_1commands_1_1autocommands_1_1paths_1_1_auto_test1.html#add58eeafe0c2e7bfe86b6770ab8c43cf">frc.robot.commands.autocommands.paths.AutoTest1.AutoTest1()</a>, <a class="el" href="classfrc_1_1robot_1_1commands_1_1autocommands_1_1paths_1_1_auto_test2.html#a87c2d0fdb6ebd6eae2529e9548828dda">frc.robot.commands.autocommands.paths.AutoTest2.AutoTest2()</a>, <a class="el" href="classfrc_1_1robot_1_1commands_1_1autocommands_1_1paths_1_1_auto_test_full.html#ad1a8564a16fb20086cf35432dc345410">frc.robot.commands.autocommands.paths.AutoTestFull.AutoTestFull()</a>, <a class="el" href="classfrc_1_1robot_1_1commands_1_1autocommands_1_1paths_1_1_comp_path1.html#a8d6456595f91b50fab705aa41ce4d3da">frc.robot.commands.autocommands.paths.CompPath1.CompPath1()</a>, <a class="el" href="classfrc_1_1robot_1_1commands_1_1autocommands_1_1paths_1_1_default_auto_path_command.html#aa508774ffb4cf8367d7239e0a1778f5d">frc.robot.commands.autocommands.paths.DefaultAutoPathCommand.DefaultAutoPathCommand()</a>, <a class="el" href="classfrc_1_1robot_1_1commands_1_1autocommands_1_1paths_1_1_shoot_move_shoot.html#a56187508c62febe26059e7a8ab557f9e">frc.robot.commands.autocommands.paths.ShootMoveShoot.ShootMoveShoot()</a>, and <a class="el" href="classfrc_1_1robot_1_1commands_1_1autocommands_1_1paths_1_1_terminal_pickup.html#ad4266a3c187a53e18df92204cedb71f0">frc.robot.commands.autocommands.paths.TerminalPickup.TerminalPickup()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="classfrc_1_1robot_1_1commands_1_1autocommands_1_1paths_1_1_taxi_one_ball.html#a3a03ddfbbea09f6e99424e8d0bbf2c62">frc.robot.commands.autocommands.paths.TaxiOneBall.TaxiOneBall()</a>.</p>
 
 </div>
 </div>
@@ -599,18 +598,19 @@ static final double&#160;</td><td class="memItemRight" valign="bottom"><b>kMaxVo
       </table>
 </div><div class="memdoc">
 <h3>getLeftVoltage</h3>
-<p >Gets the voltage of the left motor </p>
+<p >Gets the voltage of the left motor</p>
+<dl class="section return"><dt>Returns</dt><dd>the left motor output voltage </dd></dl>
 
 </div>
 </div>
-<a id="acbaccc5ca3773a09906eb83fb2d59112" name="acbaccc5ca3773a09906eb83fb2d59112"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#acbaccc5ca3773a09906eb83fb2d59112">&#9670;&nbsp;</a></span>getOdometry()</h2>
+<a id="a6c7503061e455512eb7edeab06af8483" name="a6c7503061e455512eb7edeab06af8483"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6c7503061e455512eb7edeab06af8483">&#9670;&nbsp;</a></span>getOdometry()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classfrc_1_1robot_1_1utilities_1_1_differential_drive_odometry930.html">DifferentialDriveOdometry930</a> frc.robot.subsystems.DriveSubsystem.getOdometry </td>
+          <td class="memname">DifferentialDriveOdometry frc.robot.subsystems.DriveSubsystem.getOdometry </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
@@ -620,26 +620,7 @@ static final double&#160;</td><td class="memItemRight" valign="bottom"><b>kMaxVo
 <p >Drives the robot with the given linear velocity and angular velocity.</p>
 <dl class="section return"><dt>Returns</dt><dd>m_odometry . </dd></dl>
 
-<p class="reference">Referenced by <a class="el" href="classfrc_1_1robot_1_1commands_1_1autocommands_1_1paths_1_1_auto_test1.html#add58eeafe0c2e7bfe86b6770ab8c43cf">frc.robot.commands.autocommands.paths.AutoTest1.AutoTest1()</a>, <a class="el" href="classfrc_1_1robot_1_1commands_1_1autocommands_1_1paths_1_1_auto_test2.html#a87c2d0fdb6ebd6eae2529e9548828dda">frc.robot.commands.autocommands.paths.AutoTest2.AutoTest2()</a>, <a class="el" href="classfrc_1_1robot_1_1commands_1_1autocommands_1_1paths_1_1_auto_test_full.html#ad1a8564a16fb20086cf35432dc345410">frc.robot.commands.autocommands.paths.AutoTestFull.AutoTestFull()</a>, <a class="el" href="classfrc_1_1robot_1_1commands_1_1autocommands_1_1paths_1_1_comp_path1.html#a8d6456595f91b50fab705aa41ce4d3da">frc.robot.commands.autocommands.paths.CompPath1.CompPath1()</a>, <a class="el" href="classfrc_1_1robot_1_1commands_1_1autocommands_1_1paths_1_1_default_auto_path_command.html#aa508774ffb4cf8367d7239e0a1778f5d">frc.robot.commands.autocommands.paths.DefaultAutoPathCommand.DefaultAutoPathCommand()</a>, <a class="el" href="classfrc_1_1robot_1_1commands_1_1autocommands_1_1paths_1_1_shoot_move_shoot.html#a56187508c62febe26059e7a8ab557f9e">frc.robot.commands.autocommands.paths.ShootMoveShoot.ShootMoveShoot()</a>, and <a class="el" href="classfrc_1_1robot_1_1commands_1_1autocommands_1_1paths_1_1_terminal_pickup.html#ad4266a3c187a53e18df92204cedb71f0">frc.robot.commands.autocommands.paths.TerminalPickup.TerminalPickup()</a>.</p>
-
-</div>
-</div>
-<a id="a8c6b75995cdfc3a4da6416b58c7256c0" name="a8c6b75995cdfc3a4da6416b58c7256c0"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8c6b75995cdfc3a4da6416b58c7256c0">&#9670;&nbsp;</a></span>getPistonState()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">boolean frc.robot.subsystems.DriveSubsystem.getPistonState </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p >Gets the state of the shifter</p>
-<dl class="section return"><dt>Returns</dt><dd>the state of the shifter </dd></dl>
+<p class="reference">Referenced by <a class="el" href="classfrc_1_1robot_1_1commands_1_1autocommands_1_1_reset_autonomous_command.html#a2ec01438dc1399f69a3e45c44e75ce04">frc.robot.commands.autocommands.ResetAutonomousCommand.ResetAutonomousCommand()</a>, and <a class="el" href="classfrc_1_1robot_1_1commands_1_1autocommands_1_1paths_1_1_taxi_one_ball.html#a3a03ddfbbea09f6e99424e8d0bbf2c62">frc.robot.commands.autocommands.paths.TaxiOneBall.TaxiOneBall()</a>.</p>
 
 </div>
 </div>
@@ -660,7 +641,9 @@ static final double&#160;</td><td class="memItemRight" valign="bottom"><b>kMaxVo
 <h3>getRawLeftSensorPosition</h3>
 <p >This method gets the position of the right encoder</p>
 <dl class="section return"><dt>Returns</dt><dd>the position of the right encoder in raw encoder units </dd></dl>
-<dl class="section see"><dt>See also</dt><dd><code><a class="el" href="">getIntegratedSensorPosition()</a></code> </dd></dl>
+<dl class="section see"><dt>See also</dt><dd><code><a class="el" href="">getSelectedSensorPosition()</a></code> </dd></dl>
+
+<p class="reference">Referenced by <a class="el" href="classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem.html#a30edf9031c28862c5c09ce3f762e7a71">frc.robot.subsystems.DriveSubsystem.periodic()</a>.</p>
 
 </div>
 </div>
@@ -681,7 +664,9 @@ static final double&#160;</td><td class="memItemRight" valign="bottom"><b>kMaxVo
 <h3>getRawRightSensorPosition</h3>
 <p >This method gets the position of the right encoder</p>
 <dl class="section return"><dt>Returns</dt><dd>the position of the left encoder in raw encoder units </dd></dl>
-<dl class="section see"><dt>See also</dt><dd><code><a class="el" href="">getIntegratedSensorPosition()</a></code> </dd></dl>
+<dl class="section see"><dt>See also</dt><dd><code><a class="el" href="">getSelectedSensorPosition()</a></code> </dd></dl>
+
+<p class="reference">Referenced by <a class="el" href="classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem.html#a30edf9031c28862c5c09ce3f762e7a71">frc.robot.subsystems.DriveSubsystem.periodic()</a>.</p>
 
 </div>
 </div>
@@ -721,7 +706,30 @@ static final double&#160;</td><td class="memItemRight" valign="bottom"><b>kMaxVo
       </table>
 </div><div class="memdoc">
 <h3>getRightVoltage</h3>
-<p >Gets the voltage of the right motor </p>
+<p >Gets the voltage of the right motor</p>
+<dl class="section return"><dt>Returns</dt><dd>the right motor output voltage </dd></dl>
+
+</div>
+</div>
+<a id="a0a4cb0335db0073a98b104d7bbb3ace3" name="a0a4cb0335db0073a98b104d7bbb3ace3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0a4cb0335db0073a98b104d7bbb3ace3">&#9670;&nbsp;</a></span>getVoltageContraint()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">DifferentialDriveVoltageConstraint frc.robot.subsystems.DriveSubsystem.getVoltageContraint </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<h3>getVoltageConstraint</h3>
+<p >Get the voltage constraint used for autonomous</p>
+<dl class="section return"><dt>Returns</dt><dd>the autonomous voltage constraint </dd></dl>
+
+<p class="reference">Referenced by <a class="el" href="classfrc_1_1robot_1_1commands_1_1autocommands_1_1paths_1_1_taxi_one_ball.html#a3a03ddfbbea09f6e99424e8d0bbf2c62">frc.robot.commands.autocommands.paths.TaxiOneBall.TaxiOneBall()</a>.</p>
 
 </div>
 </div>
@@ -795,43 +803,61 @@ static final double&#160;</td><td class="memItemRight" valign="bottom"><b>kMaxVo
 
 </div>
 </div>
-<a id="a942cc181c6efa9fd7707fe7609edc2b6" name="a942cc181c6efa9fd7707fe7609edc2b6"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a942cc181c6efa9fd7707fe7609edc2b6">&#9670;&nbsp;</a></span>hardReset()</h2>
+<a id="a30edf9031c28862c5c09ce3f762e7a71" name="a30edf9031c28862c5c09ce3f762e7a71"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a30edf9031c28862c5c09ce3f762e7a71">&#9670;&nbsp;</a></span>periodic()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void frc.robot.subsystems.DriveSubsystem.hardReset </td>
+          <td class="memname">void frc.robot.subsystems.DriveSubsystem.periodic </td>
           <td>(</td>
-          <td class="paramtype">Pose2d&#160;</td>
-          <td class="paramname"><em>pose</em></td><td>)</td>
+          <td class="paramname"></td><td>)</td>
           <td></td>
         </tr>
       </table>
 </div><div class="memdoc">
-<p >Resets everything on the odometry.</p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">pose</td><td>position of the robot. </td></tr>
-  </table>
-  </dd>
-</dl>
+<h3>periodic</h3>
+<p >Called every loop iteration when the scheduler runs. </p>
+<p >This will update the odometry for automous</p>
+<dl class="section see"><dt>See also</dt><dd>super <code><a class="el" href="">periodic</a></code> method </dd></dl>
 
-<p class="reference">References <a class="el" href="classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem.html#acec37fb31fc920ee2f00f162f11cfe69">frc.robot.subsystems.DriveSubsystem.getHeading()</a>, <a class="el" href="classfrc_1_1robot_1_1utilities_1_1_gyro_utility.html#add2e30e9701767a6a0a9ac072eaf3755">frc.robot.utilities.GyroUtility.getInstance()</a>, and <a class="el" href="classfrc_1_1robot_1_1utilities_1_1_differential_drive_odometry930.html#aa1b7032316144cf796ffd5a13fa174a9">frc.robot.utilities.DifferentialDriveOdometry930.resetPosition()</a>.</p>
+<p class="reference">References <a class="el" href="classfrc_1_1robot_1_1utilities_1_1_gyro_utility.html#a0bc6ebef67c41e17c3cfd614085f05ab">frc.robot.utilities.GyroUtility.getGyro()</a>, <a class="el" href="classfrc_1_1robot_1_1utilities_1_1_gyro_utility.html#add2e30e9701767a6a0a9ac072eaf3755">frc.robot.utilities.GyroUtility.getInstance()</a>, <a class="el" href="classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem.html#ad4bba4ef2990e858b9efa9dd389f8338">frc.robot.subsystems.DriveSubsystem.getRawLeftSensorPosition()</a>, and <a class="el" href="classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem.html#a6a0f5f700b76fa87359d01509a95591d">frc.robot.subsystems.DriveSubsystem.getRawRightSensorPosition()</a>.</p>
 <div id="dynsection-5" onclick="return toggleVisibility(this)" class="dynheader closed" style="cursor:pointer;">
   <img id="dynsection-5-trigger" src="closed.png" alt="+"/> Here is the call graph for this function:</div>
 <div id="dynsection-5-summary" class="dynsummary" style="display:block;">
 </div>
 <div id="dynsection-5-content" class="dyncontent" style="display:none;">
-<div class="center"><img src="classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem_a942cc181c6efa9fd7707fe7609edc2b6_cgraph.png" border="0" usemap="#aclassfrc_1_1robot_1_1subsystems_1_1_drive_subsystem_a942cc181c6efa9fd7707fe7609edc2b6_cgraph" alt=""/></div>
-<map name="aclassfrc_1_1robot_1_1subsystems_1_1_drive_subsystem_a942cc181c6efa9fd7707fe7609edc2b6_cgraph" id="aclassfrc_1_1robot_1_1subsystems_1_1_drive_subsystem_a942cc181c6efa9fd7707fe7609edc2b6_cgraph">
-<area shape="rect" title=" " alt="" coords="5,64,181,105"/>
-<area shape="rect" href="classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem.html#acec37fb31fc920ee2f00f162f11cfe69" title=" " alt="" coords="245,5,421,47"/>
-<area shape="rect" href="classfrc_1_1robot_1_1utilities_1_1_gyro_utility.html#add2e30e9701767a6a0a9ac072eaf3755" title=" " alt="" coords="485,35,632,76"/>
-<area shape="rect" href="classfrc_1_1robot_1_1utilities_1_1_differential_drive_odometry930.html#aa1b7032316144cf796ffd5a13fa174a9" title=" " alt="" coords="229,123,437,164"/>
+<div class="center"><img src="classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem_a30edf9031c28862c5c09ce3f762e7a71_cgraph.png" border="0" usemap="#aclassfrc_1_1robot_1_1subsystems_1_1_drive_subsystem_a30edf9031c28862c5c09ce3f762e7a71_cgraph" alt=""/></div>
+<map name="aclassfrc_1_1robot_1_1subsystems_1_1_drive_subsystem_a30edf9031c28862c5c09ce3f762e7a71_cgraph" id="aclassfrc_1_1robot_1_1subsystems_1_1_drive_subsystem_a30edf9031c28862c5c09ce3f762e7a71_cgraph">
+<area shape="rect" title=" " alt="" coords="5,104,181,145"/>
+<area shape="rect" href="classfrc_1_1robot_1_1utilities_1_1_gyro_utility.html#a0bc6ebef67c41e17c3cfd614085f05ab" title=" " alt="" coords="283,5,429,47"/>
+<area shape="rect" href="classfrc_1_1robot_1_1utilities_1_1_gyro_utility.html#add2e30e9701767a6a0a9ac072eaf3755" title=" " alt="" coords="283,71,429,112"/>
+<area shape="rect" href="classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem.html#ad4bba4ef2990e858b9efa9dd389f8338" title=" " alt="" coords="234,136,478,177"/>
+<area shape="rect" href="classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem.html#a6a0f5f700b76fa87359d01509a95591d" title=" " alt="" coords="229,201,483,243"/>
 </map>
 </div>
+
+</div>
+</div>
+<a id="a7f4a59dd423cfd7f5bab9c5676b8cec4" name="a7f4a59dd423cfd7f5bab9c5676b8cec4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7f4a59dd423cfd7f5bab9c5676b8cec4">&#9670;&nbsp;</a></span>resetEncoders()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void frc.robot.subsystems.DriveSubsystem.resetEncoders </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<h3>resetEncoders</h3>
+<p >Resets the encoders to zero. This will affect the selected sensor position, but not the absolute position </p>
+
+<p class="reference">Referenced by <a class="el" href="classfrc_1_1robot_1_1commands_1_1autocommands_1_1_reset_autonomous_command.html#a30a4a8b09e8907e7ddde12c3123498c6">frc.robot.commands.autocommands.ResetAutonomousCommand.initialize()</a>.</p>
 
 </div>
 </div>
@@ -850,7 +876,7 @@ static final double&#160;</td><td class="memItemRight" valign="bottom"><b>kMaxVo
       </table>
 </div><div class="memdoc">
 <h3>resetLeftPID</h3>
-<p >This method resets the left PID controller </p>
+<p >This method resets the left PID controller (only useful when using integral and derivative) </p>
 
 <p class="reference">Referenced by <a class="el" href="classfrc_1_1robot_1_1commands_1_1_ramsete930_command.html#abde0e5de271a8e2241a868ef72a9d933">frc.robot.commands.Ramsete930Command.initialize()</a>.</p>
 
@@ -871,7 +897,7 @@ static final double&#160;</td><td class="memItemRight" valign="bottom"><b>kMaxVo
       </table>
 </div><div class="memdoc">
 <h3>resetRightPID</h3>
-<p >This method resets the right PID controller </p>
+<p >This method resets the right PID controller (only useful when using integral and derivative) </p>
 
 <p class="reference">Referenced by <a class="el" href="classfrc_1_1robot_1_1commands_1_1_ramsete930_command.html#abde0e5de271a8e2241a868ef72a9d933">frc.robot.commands.Ramsete930Command.initialize()</a>.</p>
 
@@ -893,39 +919,15 @@ static final double&#160;</td><td class="memItemRight" valign="bottom"><b>kMaxVo
       </table>
 </div><div class="memdoc">
 <h3>setMototBreakMode</h3>
-<p >Sets left and right motors to a certain breakmode: auto is brake; teleop is coast </p><dl class="params"><dt>Parameters</dt><dd>
+<p >Sets left and right motors to a certain breakmode: auto is brake; teleop is coast</p>
+<dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">brakeMode</td><td></td></tr>
   </table>
   </dd>
 </dl>
 
-<p class="reference">Referenced by <a class="el" href="classfrc_1_1robot_1_1_robot_container.html#a3f2d487ab46df802d2edc35108482806">frc.robot.RobotContainer.beginTeleopRunCommands()</a>.</p>
-
-</div>
-</div>
-<a id="a3756a0deffc832e0d7fbd0d2db877afa" name="a3756a0deffc832e0d7fbd0d2db877afa"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a3756a0deffc832e0d7fbd0d2db877afa">&#9670;&nbsp;</a></span>setPistonState()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void frc.robot.subsystems.DriveSubsystem.setPistonState </td>
-          <td>(</td>
-          <td class="paramtype">boolean&#160;</td>
-          <td class="paramname"><em>state</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p >Set the shifting piston state</p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">state</td><td>the state to set </td></tr>
-  </table>
-  </dd>
-</dl>
+<p class="reference">Referenced by <a class="el" href="classfrc_1_1robot_1_1_robot_container.html#ab24d04a29aa2b7082f04741cfb640917">frc.robot.RobotContainer.beginAutoRunCommands()</a>, and <a class="el" href="classfrc_1_1robot_1_1_robot_container.html#a3f2d487ab46df802d2edc35108482806">frc.robot.RobotContainer.beginTeleopRunCommands()</a>.</p>
 
 </div>
 </div>
@@ -1004,48 +1006,7 @@ static final double&#160;</td><td class="memItemRight" valign="bottom"><b>kMaxVo
   </dd>
 </dl>
 
-<p class="reference">Referenced by <a class="el" href="classfrc_1_1robot_1_1commands_1_1autocommands_1_1paths_1_1_auto_test1.html#add58eeafe0c2e7bfe86b6770ab8c43cf">frc.robot.commands.autocommands.paths.AutoTest1.AutoTest1()</a>, <a class="el" href="classfrc_1_1robot_1_1commands_1_1autocommands_1_1paths_1_1_auto_test2.html#a87c2d0fdb6ebd6eae2529e9548828dda">frc.robot.commands.autocommands.paths.AutoTest2.AutoTest2()</a>, <a class="el" href="classfrc_1_1robot_1_1commands_1_1autocommands_1_1paths_1_1_auto_test_full.html#ad1a8564a16fb20086cf35432dc345410">frc.robot.commands.autocommands.paths.AutoTestFull.AutoTestFull()</a>, <a class="el" href="classfrc_1_1robot_1_1commands_1_1autocommands_1_1paths_1_1_comp_path1.html#a8d6456595f91b50fab705aa41ce4d3da">frc.robot.commands.autocommands.paths.CompPath1.CompPath1()</a>, <a class="el" href="classfrc_1_1robot_1_1commands_1_1autocommands_1_1paths_1_1_default_auto_path_command.html#aa508774ffb4cf8367d7239e0a1778f5d">frc.robot.commands.autocommands.paths.DefaultAutoPathCommand.DefaultAutoPathCommand()</a>, <a class="el" href="classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem.html#a18ee6a49a45138ef34f0770b25b420ff">frc.robot.subsystems.DriveSubsystem.setSpeeds()</a>, <a class="el" href="classfrc_1_1robot_1_1commands_1_1autocommands_1_1paths_1_1_shoot_move_shoot.html#a56187508c62febe26059e7a8ab557f9e">frc.robot.commands.autocommands.paths.ShootMoveShoot.ShootMoveShoot()</a>, and <a class="el" href="classfrc_1_1robot_1_1commands_1_1autocommands_1_1paths_1_1_terminal_pickup.html#ad4266a3c187a53e18df92204cedb71f0">frc.robot.commands.autocommands.paths.TerminalPickup.TerminalPickup()</a>.</p>
-
-</div>
-</div>
-<a id="a26a6c9968485adb03f2b4a7efca0f5d8" name="a26a6c9968485adb03f2b4a7efca0f5d8"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a26a6c9968485adb03f2b4a7efca0f5d8">&#9670;&nbsp;</a></span>softReset()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void frc.robot.subsystems.DriveSubsystem.softReset </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p >Resets everything on the odometry except the position.</p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">rotation</td><td>the rotational angle of the robot. </td></tr>
-  </table>
-  </dd>
-</dl>
-
-<p class="reference">References <a class="el" href="classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem.html#acec37fb31fc920ee2f00f162f11cfe69">frc.robot.subsystems.DriveSubsystem.getHeading()</a>, and <a class="el" href="classfrc_1_1robot_1_1utilities_1_1_differential_drive_odometry930.html#a84b08a40e676e928b6e8820b15da7d29">frc.robot.utilities.DifferentialDriveOdometry930.resetRotation()</a>.</p>
-
-<p class="reference">Referenced by <a class="el" href="classfrc_1_1robot_1_1_robot_container.html#a3f2d487ab46df802d2edc35108482806">frc.robot.RobotContainer.beginTeleopRunCommands()</a>.</p>
-<div id="dynsection-7" onclick="return toggleVisibility(this)" class="dynheader closed" style="cursor:pointer;">
-  <img id="dynsection-7-trigger" src="closed.png" alt="+"/> Here is the call graph for this function:</div>
-<div id="dynsection-7-summary" class="dynsummary" style="display:block;">
-</div>
-<div id="dynsection-7-content" class="dyncontent" style="display:none;">
-<div class="center"><img src="classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem_a26a6c9968485adb03f2b4a7efca0f5d8_cgraph.png" border="0" usemap="#aclassfrc_1_1robot_1_1subsystems_1_1_drive_subsystem_a26a6c9968485adb03f2b4a7efca0f5d8_cgraph" alt=""/></div>
-<map name="aclassfrc_1_1robot_1_1subsystems_1_1_drive_subsystem_a26a6c9968485adb03f2b4a7efca0f5d8_cgraph" id="aclassfrc_1_1robot_1_1subsystems_1_1_drive_subsystem_a26a6c9968485adb03f2b4a7efca0f5d8_cgraph">
-<area shape="rect" title=" " alt="" coords="5,39,181,80"/>
-<area shape="rect" href="classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem.html#acec37fb31fc920ee2f00f162f11cfe69" title=" " alt="" coords="246,5,422,47"/>
-<area shape="rect" href="classfrc_1_1robot_1_1utilities_1_1_differential_drive_odometry930.html#a84b08a40e676e928b6e8820b15da7d29" title=" " alt="" coords="229,71,439,112"/>
-<area shape="rect" href="classfrc_1_1robot_1_1utilities_1_1_gyro_utility.html#add2e30e9701767a6a0a9ac072eaf3755" title=" " alt="" coords="487,5,633,47"/>
-</map>
-</div>
+<p class="reference">Referenced by <a class="el" href="classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem.html#a18ee6a49a45138ef34f0770b25b420ff">frc.robot.subsystems.DriveSubsystem.setSpeeds()</a>, <a class="el" href="classfrc_1_1robot_1_1_robot_container.html#a07ffd9faa13902ab7152ed7422b6ab61">frc.robot.RobotContainer.stopSubsystems()</a>, and <a class="el" href="classfrc_1_1robot_1_1commands_1_1autocommands_1_1paths_1_1_taxi_one_ball.html#a3a03ddfbbea09f6e99424e8d0bbf2c62">frc.robot.commands.autocommands.paths.TaxiOneBall.TaxiOneBall()</a>.</p>
 
 </div>
 </div>
@@ -1095,8 +1056,13 @@ static final double&#160;</td><td class="memItemRight" valign="bottom"><b>kMaxVo
   </tr>
 </table>
 </div><div class="memdoc">
-<b>Initial value:</b><div class="fragment"><div class="line">= 6380.0 / 60.0 / highGearRatio</div>
-<div class="line">            * (kWheelRadius * 2 * Math.PI)</div>
+<b>Initial value:</b><div class="fragment"><div class="line">= 6380.0</div>
+<div class="line">            </div>
+<div class="line">            / 60.0</div>
+<div class="line">            </div>
+<div class="line">            / HIGH_GEAR_RATIO</div>
+<div class="line">            </div>
+<div class="line">            * (WHEEL_RADIUS * 2 * Math.PI)</div>
 </div><!-- fragment -->
 </div>
 </div>
@@ -1119,8 +1085,13 @@ static final double&#160;</td><td class="memItemRight" valign="bottom"><b>kMaxVo
   </tr>
 </table>
 </div><div class="memdoc">
-<b>Initial value:</b><div class="fragment"><div class="line">= 6380.0 / 60.0 / lowGearRatio</div>
-<div class="line">            * (kWheelRadius * 2 * Math.PI)</div>
+<b>Initial value:</b><div class="fragment"><div class="line">= 6380.0</div>
+<div class="line">            </div>
+<div class="line">            / 60.0</div>
+<div class="line">            </div>
+<div class="line">            / LOW_GEAR_RATIO</div>
+<div class="line">            </div>
+<div class="line">            * (WHEEL_RADIUS * 2 * Math.PI)</div>
 </div><!-- fragment -->
 </div>
 </div>
@@ -1133,7 +1104,7 @@ static final double&#160;</td><td class="memItemRight" valign="bottom"><b>kMaxVo
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><b>frc</b></li><li class="navelem"><b>robot</b></li><li class="navelem"><b>subsystems</b></li><li class="navelem"><a class="el" href="classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem.html">DriveSubsystem</a></li>
-    <li class="footer">Generated on Sat Feb 19 2022 21:11:39 for Robot2022 by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.3 </li>
+    <li class="footer">Generated on Wed Mar 23 2022 08:07:10 for Robot2022 by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.3 </li>
   </ul>
 </div>
 </body>

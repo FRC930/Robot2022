@@ -1,0 +1,6 @@
+<map id="frc.robot.RobotContainer.autoSimInit" name="frc.robot.RobotContainer.autoSimInit">
+<area shape="rect" id="node1" title=" " alt="" coords="5,39,196,80"/>
+<area shape="rect" id="node2" href="$classfrc_1_1robot_1_1commands_1_1autocommands_1_1_auto_command_manager.html#a8a65f7d577a66c1605a980331a072ec3" title=" " alt="" coords="244,39,556,80"/>
+<area shape="rect" id="node3" href="$classfrc_1_1robot_1_1utilities_1_1_shuffleboard_utility.html#a0fbc22ec0554d158dc76531a2e592e3f" title=" " alt="" coords="604,5,793,47"/>
+<area shape="rect" id="node4" href="$classfrc_1_1robot_1_1utilities_1_1_shuffleboard_utility.html#a4b1c4d3ecaa5b859dafd34fe6b6fb300" title=" " alt="" coords="604,71,793,112"/>
+</map>

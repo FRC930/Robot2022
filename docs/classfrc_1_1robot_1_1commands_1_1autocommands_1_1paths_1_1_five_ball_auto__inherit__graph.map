@@ -1,0 +1,5 @@
+<map id="frc.robot.commands.autocommands.paths.FiveBallAuto" name="frc.robot.commands.autocommands.paths.FiveBallAuto">
+<area shape="rect" id="node1" title=" " alt="" coords="5,184,276,225"/>
+<area shape="rect" id="node2" href="$classfrc_1_1robot_1_1utilities_1_1_path_planner_sequential_command_group_utility.html" title=" " alt="" coords="30,80,251,136"/>
+<area shape="rect" id="node3" title=" " alt="" coords="52,5,229,32"/>
+</map>

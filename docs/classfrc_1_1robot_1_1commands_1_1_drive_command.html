@@ -84,7 +84,6 @@ $(document).ready(function(){initNavTree('classfrc_1_1robot_1_1commands_1_1_driv
 
 <div class="header">
   <div class="summary">
-<a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="classfrc_1_1robot_1_1commands_1_1_drive_command-members.html">List of all members</a>  </div>
   <div class="headertitle"><div class="title">frc.robot.commands.DriveCommand Class Reference</div></div>
 </div><!--header-->
@@ -111,76 +110,13 @@ $(document).ready(function(){initNavTree('classfrc_1_1robot_1_1commands_1_1_driv
 <area shape="rect" title=" " alt="" coords="35,5,145,32"/>
 </map>
 <center><span class="legend">[<a target="top" href="graph_legend.html">legend</a>]</span></center></div>
-<table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
-Public Member Functions</h2></td></tr>
-<tr class="memitem:a965753b751cb23e1a1bfdfa2d45abe35"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfrc_1_1robot_1_1commands_1_1_drive_command.html#a965753b751cb23e1a1bfdfa2d45abe35">DriveCommand</a> (<a class="el" href="classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem.html">DriveSubsystem</a> dSubsystem, <a class="el" href="classfrc_1_1robot_1_1subsystems_1_1_vision_camera_subsystem.html">VisionCameraSubsystem</a> reflectSubsystem, <a class="el" href="classfrc_1_1robot_1_1subsystems_1_1_vision_camera_subsystem.html">VisionCameraSubsystem</a> ballCamera, XboxController dController)</td></tr>
-<tr class="separator:a965753b751cb23e1a1bfdfa2d45abe35"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7b982f9dea912fab85f3e75a403733d4"><td class="memItemLeft" align="right" valign="top"><a id="a7b982f9dea912fab85f3e75a403733d4" name="a7b982f9dea912fab85f3e75a403733d4"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>execute</b> ()</td></tr>
-<tr class="separator:a7b982f9dea912fab85f3e75a403733d4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa5c7270ce53965b9ce2f6b8ab2b9933a"><td class="memItemLeft" align="right" valign="top"><a id="aa5c7270ce53965b9ce2f6b8ab2b9933a" name="aa5c7270ce53965b9ce2f6b8ab2b9933a"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>end</b> (boolean interrupted)</td></tr>
-<tr class="separator:aa5c7270ce53965b9ce2f6b8ab2b9933a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><h3><a class="el" href="classfrc_1_1robot_1_1commands_1_1_drive_command.html">DriveCommand</a></h3>
 <p ><a class="el" href="classfrc_1_1robot_1_1commands_1_1_drive_command.html">DriveCommand</a> takes care of driving during teleop. When the right stick button is pressed, the robot will automatically take over aiming using the PhotonCamera passed in the constructor</p>
 <dl class="section author"><dt>Author</dt><dd>Alexander Taylor, Jack LaFreniere, and Anthony Witt </dd></dl>
 <dl class="section since"><dt>Since</dt><dd>22 January 2022 </dd></dl>
 <dl class="section version"><dt>Version</dt><dd>1.0 </dd></dl>
-</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a id="a965753b751cb23e1a1bfdfa2d45abe35" name="a965753b751cb23e1a1bfdfa2d45abe35"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a965753b751cb23e1a1bfdfa2d45abe35">&#9670;&nbsp;</a></span>DriveCommand()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">frc.robot.commands.DriveCommand.DriveCommand </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem.html">DriveSubsystem</a>&#160;</td>
-          <td class="paramname"><em>dSubsystem</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="classfrc_1_1robot_1_1subsystems_1_1_vision_camera_subsystem.html">VisionCameraSubsystem</a>&#160;</td>
-          <td class="paramname"><em>reflectSubsystem</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="classfrc_1_1robot_1_1subsystems_1_1_vision_camera_subsystem.html">VisionCameraSubsystem</a>&#160;</td>
-          <td class="paramname"><em>ballCamera</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">XboxController&#160;</td>
-          <td class="paramname"><em>dController</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p >Initializes a new <code><a class="el" href="">DriveCommand</a></code> with the passed variables</p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">dSubsystem</td><td>the drive subsystem to control </td></tr>
-    <tr><td class="paramname">eSubsystem</td><td>where to get the pigeon for odometry </td></tr>
-    <tr><td class="paramname">reflectSubsystem</td><td>the camera subsystem to use to autmatically aim </td></tr>
-    <tr><td class="paramname">dController</td><td>the driver's controller </td></tr>
-  </table>
-  </dd>
-</dl>
-
-</div>
-</div>
-<hr/>The documentation for this class was generated from the following file:<ul>
+</div><hr/>The documentation for this class was generated from the following file:<ul>
 <li>src/main/java/frc/robot/commands/DriveCommand.java</li>
 </ul>
 </div><!-- contents -->
@@ -189,7 +125,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>end</b> (boolean inte
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><b>frc</b></li><li class="navelem"><b>robot</b></li><li class="navelem"><b>commands</b></li><li class="navelem"><a class="el" href="classfrc_1_1robot_1_1commands_1_1_drive_command.html">DriveCommand</a></li>
-    <li class="footer">Generated on Sat Feb 19 2022 21:11:39 for Robot2022 by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.3 </li>
+    <li class="footer">Generated on Wed Mar 23 2022 08:07:10 for Robot2022 by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.3 </li>
   </ul>
 </div>
 </body>

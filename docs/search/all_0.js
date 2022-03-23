@@ -2,10 +2,14 @@ var searchData=
 [
   ['addautonoptions_0',['addAutonOptions',['../classfrc_1_1robot_1_1utilities_1_1_shuffleboard_utility.html#a042264dbe7304c26404b3369dd52b1d8',1,'frc::robot::utilities::ShuffleboardUtility']]],
   ['additem_1',['addItem',['../classfrc_1_1robot_1_1utilities_1_1_vision_smoothing_stack.html#a4f9cd72b18214f2ffdc5c3a16921d599',1,'frc::robot::utilities::VisionSmoothingStack']]],
-  ['autocommandmanager_2',['AutoCommandManager',['../classfrc_1_1robot_1_1commands_1_1autocommands_1_1_auto_command_manager.html',1,'frc::robot::commands::autocommands']]],
-  ['autonomousperiodic_3',['autonomousPeriodic',['../classfrc_1_1robot_1_1_robot.html#a7dcfe7d0d65d1051eb095b8eb1aebd72',1,'frc::robot::Robot']]],
-  ['autotest1_4',['AutoTest1',['../classfrc_1_1robot_1_1commands_1_1autocommands_1_1paths_1_1_auto_test1.html#add58eeafe0c2e7bfe86b6770ab8c43cf',1,'frc.robot.commands.autocommands.paths.AutoTest1.AutoTest1()'],['../classfrc_1_1robot_1_1commands_1_1autocommands_1_1paths_1_1_auto_test1.html',1,'frc.robot.commands.autocommands.paths.AutoTest1']]],
-  ['autotest2_5',['AutoTest2',['../classfrc_1_1robot_1_1commands_1_1autocommands_1_1paths_1_1_auto_test2.html#a87c2d0fdb6ebd6eae2529e9548828dda',1,'frc.robot.commands.autocommands.paths.AutoTest2.AutoTest2()'],['../classfrc_1_1robot_1_1commands_1_1autocommands_1_1paths_1_1_auto_test2.html',1,'frc.robot.commands.autocommands.paths.AutoTest2']]],
-  ['autotestfull_6',['AutoTestFull',['../classfrc_1_1robot_1_1commands_1_1autocommands_1_1paths_1_1_auto_test_full.html#ad1a8564a16fb20086cf35432dc345410',1,'frc.robot.commands.autocommands.paths.AutoTestFull.AutoTestFull()'],['../classfrc_1_1robot_1_1commands_1_1autocommands_1_1paths_1_1_auto_test_full.html',1,'frc.robot.commands.autocommands.paths.AutoTestFull']]],
-  ['axistrigger_7',['AxisTrigger',['../classfrc_1_1robot_1_1triggers_1_1_axis_trigger.html',1,'frc::robot::triggers']]]
+  ['addpipelinechooser_2',['addPipelineChooser',['../classfrc_1_1robot_1_1utilities_1_1_shuffleboard_utility.html#ae6e237a2873edf478fb041c6e47cdd59',1,'frc::robot::utilities::ShuffleboardUtility']]],
+  ['addsubsystem_3',['addSubsystem',['../classfrc_1_1robot_1_1commands_1_1autocommands_1_1_auto_command_manager.html#ad9644653f037d97df807da754023edc3',1,'frc::robot::commands::autocommands::AutoCommandManager']]],
+  ['adjusthoodcommand_4',['AdjustHoodCommand',['../classfrc_1_1robot_1_1commands_1_1shootercommands_1_1_adjust_hood_command.html#a890ae60fcb5c4eeff267cd7326767b35',1,'frc.robot.commands.shootercommands.AdjustHoodCommand.AdjustHoodCommand(ShooterHoodSubsystem shooterHood, double pos)'],['../classfrc_1_1robot_1_1commands_1_1shootercommands_1_1_adjust_hood_command.html#a01e9a299747c3b59c10b65b33ac98543',1,'frc.robot.commands.shootercommands.AdjustHoodCommand.AdjustHoodCommand(ShooterHoodSubsystem shooterHood)'],['../classfrc_1_1robot_1_1commands_1_1shootercommands_1_1_adjust_hood_command.html',1,'frc.robot.commands.shootercommands.AdjustHoodCommand']]],
+  ['aimstatusutility_5',['AimStatusUtility',['../classfrc_1_1robot_1_1utilities_1_1_aim_status_utility.html',1,'frc::robot::utilities']]],
+  ['autocommandmanager_6',['AutoCommandManager',['../classfrc_1_1robot_1_1commands_1_1autocommands_1_1_auto_command_manager.html',1,'frc::robot::commands::autocommands']]],
+  ['autonomousperiodic_7',['autonomousPeriodic',['../classfrc_1_1robot_1_1_robot.html#a7dcfe7d0d65d1051eb095b8eb1aebd72',1,'frc::robot::Robot']]],
+  ['autoshootcargo_8',['AutoShootCargo',['../classfrc_1_1robot_1_1commands_1_1autocommands_1_1_sequential_commands_1_1_auto_shoot_cargo.html',1,'frc::robot::commands::autocommands::SequentialCommands']]],
+  ['autosiminit_9',['autoSimInit',['../classfrc_1_1robot_1_1_robot_container.html#ab95d4cc22e05ed5c417d1fd8da0fe749',1,'frc::robot::RobotContainer']]],
+  ['autosimperiodic_10',['autoSimPeriodic',['../classfrc_1_1robot_1_1_robot_container.html#a52e5b7a9ef2daa3513e58b4d69156ccf',1,'frc::robot::RobotContainer']]],
+  ['axistrigger_11',['AxisTrigger',['../classfrc_1_1robot_1_1triggers_1_1_axis_trigger.html',1,'frc::robot::triggers']]]
 ];

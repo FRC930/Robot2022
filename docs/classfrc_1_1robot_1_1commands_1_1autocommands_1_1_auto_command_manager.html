@@ -109,16 +109,121 @@ Classes</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:ad9644653f037d97df807da754023edc3"><td class="memItemLeft" align="right" valign="top"><a id="ad9644653f037d97df807da754023edc3" name="ad9644653f037d97df807da754023edc3"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>addSubsystem</b> (subNames SubNames, Subsystem subsystem)</td></tr>
+<tr class="memitem:ad9644653f037d97df807da754023edc3"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfrc_1_1robot_1_1commands_1_1autocommands_1_1_auto_command_manager.html#ad9644653f037d97df807da754023edc3">addSubsystem</a> (subNames SubNames, Subsystem subsystem)</td></tr>
 <tr class="separator:ad9644653f037d97df807da754023edc3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a433f2c424944e22a8a5fa5a9954a2cc0"><td class="memItemLeft" align="right" valign="top"><a id="a433f2c424944e22a8a5fa5a9954a2cc0" name="a433f2c424944e22a8a5fa5a9954a2cc0"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>initCommands</b> ()</td></tr>
+<tr class="memitem:a433f2c424944e22a8a5fa5a9954a2cc0"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfrc_1_1robot_1_1commands_1_1autocommands_1_1_auto_command_manager.html#a433f2c424944e22a8a5fa5a9954a2cc0">initCommands</a> ()</td></tr>
 <tr class="separator:a433f2c424944e22a8a5fa5a9954a2cc0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8a65f7d577a66c1605a980331a072ec3"><td class="memItemLeft" align="right" valign="top"><a id="a8a65f7d577a66c1605a980331a072ec3" name="a8a65f7d577a66c1605a980331a072ec3"></a>
-Command&#160;</td><td class="memItemRight" valign="bottom"><b>getAutonomousCommand</b> ()</td></tr>
+<tr class="memitem:a8a65f7d577a66c1605a980331a072ec3"><td class="memItemLeft" align="right" valign="top">Command&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfrc_1_1robot_1_1commands_1_1autocommands_1_1_auto_command_manager.html#a8a65f7d577a66c1605a980331a072ec3">getAutonomousCommand</a> ()</td></tr>
 <tr class="separator:a8a65f7d577a66c1605a980331a072ec3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><h3>AutonomouseCommandManager</h3>
+<p >Manages the autonomous paths by creating an instance of them and putting them into the Shuffleboard. </p>
+</div><h2 class="groupheader">Member Function Documentation</h2>
+<a id="ad9644653f037d97df807da754023edc3" name="ad9644653f037d97df807da754023edc3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad9644653f037d97df807da754023edc3">&#9670;&nbsp;</a></span>addSubsystem()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void frc.robot.commands.autocommands.AutoCommandManager.addSubsystem </td>
+          <td>(</td>
+          <td class="paramtype">subNames&#160;</td>
+          <td class="paramname"><em>SubNames</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Subsystem&#160;</td>
+          <td class="paramname"><em>subsystem</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p >Adds a subbsystem to the subystem map</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">SubNames</td><td></td></tr>
+    <tr><td class="paramname">subsbystem</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a8a65f7d577a66c1605a980331a072ec3" name="a8a65f7d577a66c1605a980331a072ec3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8a65f7d577a66c1605a980331a072ec3">&#9670;&nbsp;</a></span>getAutonomousCommand()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">Command frc.robot.commands.autocommands.AutoCommandManager.getAutonomousCommand </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p >Gets the autonomous path that is selected in the Shuffleboard</p>
+<dl class="section return"><dt>Returns</dt><dd>The selected autonomous commandl </dd></dl>
+
+<p class="reference">References <a class="el" href="classfrc_1_1robot_1_1utilities_1_1_shuffleboard_utility.html#a0fbc22ec0554d158dc76531a2e592e3f">frc.robot.utilities.ShuffleboardUtility.getInstance()</a>, and <a class="el" href="classfrc_1_1robot_1_1utilities_1_1_shuffleboard_utility.html#a4b1c4d3ecaa5b859dafd34fe6b6fb300">frc.robot.utilities.ShuffleboardUtility.getSelectedAutonPath()</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="classfrc_1_1robot_1_1_robot_container.html#ab95d4cc22e05ed5c417d1fd8da0fe749">frc.robot.RobotContainer.autoSimInit()</a>, and <a class="el" href="classfrc_1_1robot_1_1_robot_container.html#ac61d2476e65873e263f844c1c721a82e">frc.robot.RobotContainer.getAutonomousCommand()</a>.</p>
+<div id="dynsection-1" onclick="return toggleVisibility(this)" class="dynheader closed" style="cursor:pointer;">
+  <img id="dynsection-1-trigger" src="closed.png" alt="+"/> Here is the call graph for this function:</div>
+<div id="dynsection-1-summary" class="dynsummary" style="display:block;">
+</div>
+<div id="dynsection-1-content" class="dyncontent" style="display:none;">
+<div class="center"><img src="classfrc_1_1robot_1_1commands_1_1autocommands_1_1_auto_command_manager_a8a65f7d577a66c1605a980331a072ec3_cgraph.png" border="0" usemap="#aclassfrc_1_1robot_1_1commands_1_1autocommands_1_1_auto_command_manager_a8a65f7d577a66c1605a980331a072ec3_cgraph" alt=""/></div>
+<map name="aclassfrc_1_1robot_1_1commands_1_1autocommands_1_1_auto_command_manager_a8a65f7d577a66c1605a980331a072ec3_cgraph" id="aclassfrc_1_1robot_1_1commands_1_1autocommands_1_1_auto_command_manager_a8a65f7d577a66c1605a980331a072ec3_cgraph">
+<area shape="rect" title=" " alt="" coords="5,39,317,80"/>
+<area shape="rect" href="classfrc_1_1robot_1_1utilities_1_1_shuffleboard_utility.html#a0fbc22ec0554d158dc76531a2e592e3f" title=" " alt="" coords="365,5,555,47"/>
+<area shape="rect" href="classfrc_1_1robot_1_1utilities_1_1_shuffleboard_utility.html#a4b1c4d3ecaa5b859dafd34fe6b6fb300" title=" " alt="" coords="365,71,555,112"/>
+</map>
+</div>
+
+</div>
+</div>
+<a id="a433f2c424944e22a8a5fa5a9954a2cc0" name="a433f2c424944e22a8a5fa5a9954a2cc0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a433f2c424944e22a8a5fa5a9954a2cc0">&#9670;&nbsp;</a></span>initCommands()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void frc.robot.commands.autocommands.AutoCommandManager.initCommands </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p >Creates instances of each autonomous path command </p>
+
+<p class="reference">References <a class="el" href="classfrc_1_1robot_1_1utilities_1_1_shuffleboard_utility.html#a042264dbe7304c26404b3369dd52b1d8">frc.robot.utilities.ShuffleboardUtility.addAutonOptions()</a>, <a class="el" href="classfrc_1_1robot_1_1utilities_1_1_shuffleboard_utility.html#a0fbc22ec0554d158dc76531a2e592e3f">frc.robot.utilities.ShuffleboardUtility.getInstance()</a>, and <a class="el" href="classfrc_1_1robot_1_1utilities_1_1_shuffleboard_utility.html#a96c72b888d44ef10bb2c2e8437c99ca1">frc.robot.utilities.ShuffleboardUtility.setDefaultAutonOptions()</a>.</p>
+<div id="dynsection-2" onclick="return toggleVisibility(this)" class="dynheader closed" style="cursor:pointer;">
+  <img id="dynsection-2-trigger" src="closed.png" alt="+"/> Here is the call graph for this function:</div>
+<div id="dynsection-2-summary" class="dynsummary" style="display:block;">
+</div>
+<div id="dynsection-2-content" class="dyncontent" style="display:none;">
+<div class="center"><img src="classfrc_1_1robot_1_1commands_1_1autocommands_1_1_auto_command_manager_a433f2c424944e22a8a5fa5a9954a2cc0_cgraph.png" border="0" usemap="#aclassfrc_1_1robot_1_1commands_1_1autocommands_1_1_auto_command_manager_a433f2c424944e22a8a5fa5a9954a2cc0_cgraph" alt=""/></div>
+<map name="aclassfrc_1_1robot_1_1commands_1_1autocommands_1_1_auto_command_manager_a433f2c424944e22a8a5fa5a9954a2cc0_cgraph" id="aclassfrc_1_1robot_1_1commands_1_1autocommands_1_1_auto_command_manager_a433f2c424944e22a8a5fa5a9954a2cc0_cgraph">
+<area shape="rect" title=" " alt="" coords="5,71,251,112"/>
+<area shape="rect" href="classfrc_1_1robot_1_1utilities_1_1_shuffleboard_utility.html#a042264dbe7304c26404b3369dd52b1d8" title=" " alt="" coords="302,5,491,47"/>
+<area shape="rect" href="classfrc_1_1robot_1_1utilities_1_1_shuffleboard_utility.html#a0fbc22ec0554d158dc76531a2e592e3f" title=" " alt="" coords="302,71,491,112"/>
+<area shape="rect" href="classfrc_1_1robot_1_1utilities_1_1_shuffleboard_utility.html#a96c72b888d44ef10bb2c2e8437c99ca1" title=" " alt="" coords="299,136,495,177"/>
+</map>
+</div>
+
+</div>
+</div>
 <hr/>The documentation for this class was generated from the following file:<ul>
 <li>src/main/java/frc/robot/commands/autocommands/AutoCommandManager.java</li>
 </ul>
@@ -128,7 +233,7 @@ Command&#160;</td><td class="memItemRight" valign="bottom"><b>getAutonomousComma
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><b>frc</b></li><li class="navelem"><b>robot</b></li><li class="navelem"><b>commands</b></li><li class="navelem"><b>autocommands</b></li><li class="navelem"><a class="el" href="classfrc_1_1robot_1_1commands_1_1autocommands_1_1_auto_command_manager.html">AutoCommandManager</a></li>
-    <li class="footer">Generated on Sat Feb 19 2022 21:11:39 for Robot2022 by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.3 </li>
+    <li class="footer">Generated on Wed Mar 23 2022 08:07:10 for Robot2022 by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.3 </li>
   </ul>
 </div>
 </body>
