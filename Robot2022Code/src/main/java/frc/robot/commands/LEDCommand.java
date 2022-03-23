@@ -2,7 +2,6 @@ package frc.robot.commands;
 
 import frc.robot.ControllerManager;
 import frc.robot.subsystems.LEDSubsystem;
-import frc.robot.utilities.AimStatusUtility;
 import frc.robot.utilities.BallSensorUtility;
 import frc.robot.utilities.ShuffleboardUtility;
 import frc.robot.utilities.ShuffleboardUtility.ShuffleboardKeys;
