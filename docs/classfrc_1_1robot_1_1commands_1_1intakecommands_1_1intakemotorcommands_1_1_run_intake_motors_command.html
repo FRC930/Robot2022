@@ -114,18 +114,37 @@ $(document).ready(function(){initNavTree('classfrc_1_1robot_1_1commands_1_1intak
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a986f7731d85c0d4fd77f9c2fef7afe7c"><td class="memItemLeft" align="right" valign="top"><a id="a986f7731d85c0d4fd77f9c2fef7afe7c" name="a986f7731d85c0d4fd77f9c2fef7afe7c"></a>
-*&lt; h3 &gt; CounterclockwiseIntakeMotorsCommand&lt;/h3 &gt; **This class contols the counter clockwise intake motors **iMotors Intake motors subsystem *&#160;</td><td class="memItemRight" valign="bottom"><b>RunIntakeMotorsCommand</b> (<a class="el" href="classfrc_1_1robot_1_1subsystems_1_1_intake_motor_subsystem.html">IntakeMotorSubsystem</a> iMotors, boolean isReversed)</td></tr>
-<tr class="separator:a986f7731d85c0d4fd77f9c2fef7afe7c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5946eb3b3e1ab0af7e3cbf532ceb9d33"><td class="memItemLeft" align="right" valign="top"><a id="a5946eb3b3e1ab0af7e3cbf532ceb9d33" name="a5946eb3b3e1ab0af7e3cbf532ceb9d33"></a>
+*&lt; h3 &gt; <a class="el" href="classfrc_1_1robot_1_1commands_1_1intakecommands_1_1intakemotorcommands_1_1_run_intake_motors_command.html">RunIntakeMotorsCommand</a>&lt;/h3 &gt; **This class contols the intake motors **iMotors Intake motors subsystem *isReversed *&#160;</td><td class="memItemRight" valign="bottom"><b>RunIntakeMotorsCommand</b> (<a class="el" href="classfrc_1_1robot_1_1subsystems_1_1_intake_motor_subsystem.html">IntakeMotorSubsystem</a> iMotors, boolean isReversed)</td></tr>
+<tr class="separator:a5946eb3b3e1ab0af7e3cbf532ceb9d33"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5a3f803ce92e5bd1532cad920569da52"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfrc_1_1robot_1_1commands_1_1intakecommands_1_1intakemotorcommands_1_1_run_intake_motors_command.html#a5a3f803ce92e5bd1532cad920569da52">initialize</a> ()</td></tr>
 <tr class="separator:a5a3f803ce92e5bd1532cad920569da52"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aaadabc70d9551ae051fbe3cb10cba673"><td class="memItemLeft" align="right" valign="top">boolean&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfrc_1_1robot_1_1commands_1_1intakecommands_1_1intakemotorcommands_1_1_run_intake_motors_command.html#aaadabc70d9551ae051fbe3cb10cba673">isFinished</a> ()</td></tr>
 <tr class="separator:aaadabc70d9551ae051fbe3cb10cba673"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7349cc94c7124b2769b5ab1ae53cc713"><td class="memItemLeft" align="right" valign="top"><a id="a7349cc94c7124b2769b5ab1ae53cc713" name="a7349cc94c7124b2769b5ab1ae53cc713"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>end</b> (boolean interrupted)</td></tr>
+<tr class="memitem:a7349cc94c7124b2769b5ab1ae53cc713"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfrc_1_1robot_1_1commands_1_1intakecommands_1_1intakemotorcommands_1_1_run_intake_motors_command.html#a7349cc94c7124b2769b5ab1ae53cc713">end</a> (boolean interrupted)</td></tr>
 <tr class="separator:a7349cc94c7124b2769b5ab1ae53cc713"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Member Function Documentation</h2>
+<a id="a7349cc94c7124b2769b5ab1ae53cc713" name="a7349cc94c7124b2769b5ab1ae53cc713"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7349cc94c7124b2769b5ab1ae53cc713">&#9670;&nbsp;</a></span>end()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void frc.robot.commands.intakecommands.intakemotorcommands.RunIntakeMotorsCommand.end </td>
+          <td>(</td>
+          <td class="paramtype">boolean&#160;</td>
+          <td class="paramname"><em>interrupted</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<h3>end</h3>
+<p >Sets the motor speed for the intake to zero once the command ends. </p>
+
+</div>
+</div>
 <a id="a5a3f803ce92e5bd1532cad920569da52" name="a5a3f803ce92e5bd1532cad920569da52"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a5a3f803ce92e5bd1532cad920569da52">&#9670;&nbsp;</a></span>initialize()</h2>
 
@@ -140,20 +159,9 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>end</b> (boolean inte
         </tr>
       </table>
 </div><div class="memdoc">
-<p >Called when the command is initially scheduled. </p>
-
-<p class="reference">References <a class="el" href="classfrc_1_1robot_1_1subsystems_1_1_intake_motor_subsystem.html#af6ac3c8ce7994e36e576bc9ed18e8956">frc.robot.subsystems.IntakeMotorSubsystem.setMotorSpeed()</a>.</p>
-<div id="dynsection-2" onclick="return toggleVisibility(this)" class="dynheader closed" style="cursor:pointer;">
-  <img id="dynsection-2-trigger" src="closed.png" alt="+"/> Here is the call graph for this function:</div>
-<div id="dynsection-2-summary" class="dynsummary" style="display:block;">
-</div>
-<div id="dynsection-2-content" class="dyncontent" style="display:none;">
-<div class="center"><img src="classfrc_1_1robot_1_1commands_1_1intakecommands_1_1intakemotorcommands_1_1_run_intake_motors_command_a5a3f803ce92e5bd1532cad920569da52_cgraph.png" border="0" usemap="#aclassfrc_1_1robot_1_1commands_1_1intakecommands_1_1intakemotorcommands_1_1_run_intake_motors_command_a5a3f803ce92e5bd1532cad920569da52_cgraph" alt=""/></div>
-<map name="aclassfrc_1_1robot_1_1commands_1_1intakecommands_1_1intakemotorcommands_1_1_run_intake_motors_command_a5a3f803ce92e5bd1532cad920569da52_cgraph" id="aclassfrc_1_1robot_1_1commands_1_1intakecommands_1_1intakemotorcommands_1_1_run_intake_motors_command_a5a3f803ce92e5bd1532cad920569da52_cgraph">
-<area shape="rect" title=" " alt="" coords="5,5,385,47"/>
-<area shape="rect" href="classfrc_1_1robot_1_1subsystems_1_1_intake_motor_subsystem.html#af6ac3c8ce7994e36e576bc9ed18e8956" title=" " alt="" coords="433,5,647,47"/>
-</map>
-</div>
+<h3>initialize</h3>
+<p >Called when the command is initially scheduled</p>
+<p >Sets the motor speed based on if its in reverse mode or not. </p>
 
 </div>
 </div>
@@ -171,7 +179,9 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>end</b> (boolean inte
         </tr>
       </table>
 </div><div class="memdoc">
-<p >Returns true when the command should end. </p>
+<h3>isFinished</h3>
+<p >Returns true when the command should end.</p>
+<dl class="section return"><dt>Returns</dt><dd>False </dd></dl>
 
 </div>
 </div>
@@ -184,7 +194,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>end</b> (boolean inte
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><b>frc</b></li><li class="navelem"><b>robot</b></li><li class="navelem"><b>commands</b></li><li class="navelem"><b>intakecommands</b></li><li class="navelem"><b>intakemotorcommands</b></li><li class="navelem"><a class="el" href="classfrc_1_1robot_1_1commands_1_1intakecommands_1_1intakemotorcommands_1_1_run_intake_motors_command.html">RunIntakeMotorsCommand</a></li>
-    <li class="footer">Generated on Sat Feb 19 2022 21:11:39 for Robot2022 by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.3 </li>
+    <li class="footer">Generated on Wed Mar 23 2022 08:07:10 for Robot2022 by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.3 </li>
   </ul>
 </div>
 </body>

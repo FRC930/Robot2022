@@ -4,28 +4,25 @@ package frc.robot.commands.autocommands.paths;
 
 import com.pathplanner.lib.PathPlanner;
 
-import frc.robot.commands.BallHolderCommand;
-import frc.robot.commands.CatapultCommand;
-import frc.robot.commands.OpenBallHolderCommand;
 import frc.robot.commands.Ramsete930Command;
-import frc.robot.commands.CatapultCommand.CatapultPower;
-import frc.robot.commands.autocommands.AutonomousAimCommand;
 import frc.robot.commands.autocommands.ResetAutonomousCommand;
-import frc.robot.commands.intakecommands.intakePistonCommands.EngageIntakePistonsCommand;
-import frc.robot.commands.intakecommands.intakemotorcommands.RunIntakeMotorsCommand;
+import frc.robot.commands.autocommands.SequentialCommands.AutoShootCargo;
+import frc.robot.commands.autocommands.SequentialCommands.CombinedIntake;
+import frc.robot.commands.autocommands.SequentialCommands.StopDrive;
+import frc.robot.commands.autovisioncommands.PhotonAimCommand;
+import frc.robot.commands.shootercommands.ShootCargoCommand;
 import edu.wpi.first.math.controller.RamseteController;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
+import frc.robot.utilities.CurrentToHubDistanceUtility;
 import frc.robot.utilities.PathPlannerSequentialCommandGroupUtility;
-import frc.robot.subsystems.CatapultSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.ShooterSubsystem;
+import frc.robot.subsystems.IndexerMotorSubsystem;
 import frc.robot.subsystems.IntakeMotorSubsystem;
 import frc.robot.subsystems.IntakePistonSubsystem;
-import frc.robot.subsystems.VisionCameraSubsystem;
+import frc.robot.subsystems.ShooterHoodSubsystem;
 
 //----- CLASS -----\\
 /**
@@ -48,6 +45,7 @@ public class TaxiTwoBall extends PathPlannerSequentialCommandGroupUtility {
     //----- ODOMETRY -----\\
 
     private final DifferentialDriveOdometry m_odometry;
+    private final CurrentToHubDistanceUtility currentToHubDistanceUtility;
 
     //----- CONSTRUCTOR -----\\
     /**
@@ -65,9 +63,11 @@ public class TaxiTwoBall extends PathPlannerSequentialCommandGroupUtility {
         DriveSubsystem driveSubsystem,
         IntakePistonSubsystem intakePistonSubsystem,
         IntakeMotorSubsystem intakeMotorSubsystem,
-        VisionCameraSubsystem visionCameraSubsystem,
-        CatapultSubsystem catapultSubsystem
+        ShooterSubsystem shooterSubsystem,
+        ShooterHoodSubsystem shooterHoodSubsystem,
+        IndexerMotorSubsystem indexerMotorSubsystem
     ) {
+        currentToHubDistanceUtility = new CurrentToHubDistanceUtility();
 
         // initializing gyro for pose2d
         m_odometry = driveSubsystem.getOdometry();
@@ -101,34 +101,17 @@ public class TaxiTwoBall extends PathPlannerSequentialCommandGroupUtility {
         // the wait command ends
 
         addCommands(
-            new InstantCommand(catapultSubsystem::setShortShot),
             new ResetAutonomousCommand(t_exitTarmac.getInitialPose(), driveSubsystem),
-            new ParallelRaceGroup(
-                new EngageIntakePistonsCommand(intakePistonSubsystem),
-                new RunIntakeMotorsCommand(intakeMotorSubsystem, false),
+            new CombinedIntake(
+                intakePistonSubsystem,
+                intakeMotorSubsystem,
+                indexerMotorSubsystem,
                 r_exitTarmac
             ),
             new StopDrive(driveSubsystem),
-            new ParallelRaceGroup(
-                new AutonomousAimCommand(visionCameraSubsystem, driveSubsystem),
-                new WaitCommand(1)
-            ),
-            new CatapultCommand(catapultSubsystem, CatapultPower.AllPistons)
-                .withTimeout(CatapultSubsystem.SHOOT_TIMEOUT),
-
-            
-            //new WaitCommand(1.25),//idea 2 sec
-            new WaitCommand(1.0),
-            new ParallelRaceGroup(                                
-                new BallHolderCommand(catapultSubsystem, true),
-                new WaitCommand(2)
-            ),
-            new WaitCommand(2.0),
-            new OpenBallHolderCommand(catapultSubsystem).withTimeout(0.5),
-
-            new CatapultCommand(catapultSubsystem, CatapultPower.AllPistons)
-                .withTimeout(CatapultSubsystem.SHOOT_TIMEOUT)
-        );
+            new PhotonAimCommand(driveSubsystem),
+            new AutoShootCargo(shooterHoodSubsystem, shooterSubsystem, indexerMotorSubsystem, currentToHubDistanceUtility.getDistanceToHub(driveSubsystem.getOdometry().getPoseMeters()), intakeMotorSubsystem, intakePistonSubsystem, ShootCargoCommand.SHOOT_TIME));
+        
 
     } // End of Constructor
 } // End of Class

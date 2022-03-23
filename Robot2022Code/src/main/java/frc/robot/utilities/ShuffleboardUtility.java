@@ -2,9 +2,19 @@
 
 package frc.robot.utilities;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Scanner;
+
+import edu.wpi.first.networktables.EntryListenerFlags;
+import edu.wpi.first.networktables.EntryNotification;
+import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -16,7 +26,7 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
  * <h3>ShuffleboardUtility</h3>
  * 
  * ShuffleboardUtility represents the shuffleboard to our code
- * cheese
+ * 
  * @author Alexander Taylor
  * @since 26 January 2022
  * @version 1.0
@@ -24,12 +34,13 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 public class ShuffleboardUtility {
 
     // ----- VARIABLES -----\\
-    
+
     private static ShuffleboardUtility instance;
 
     private Map<ShuffleboardKeys, MapData> shuffleboardMap;
 
     private SendableChooser<Command> autonChooser;
+    private SendableChooser<Integer> pipelineChooser;
 
     private final boolean IS_DEBUGGING = false;
 
@@ -38,16 +49,87 @@ public class ShuffleboardUtility {
     public static final ShuffleboardTab driverTab = Shuffleboard.getTab("Driver Tab");
     public static final ShuffleboardTab testingTab = Shuffleboard.getTab("Testing Tab");
 
+    private NetworkTableInstance inst = NetworkTableInstance.getDefault();
+    private NetworkTable driverTable = inst.getTable("Shuffleboard");
+    private NetworkTableEntry currentChooserValue = driverTable.getEntry("Driver Tab/Pipeline Selector/selected");
+    private HashMap<String, Integer> pipelineMap = new HashMap<>();
+
     // ----- CONSTRUCTOR -----\\
 
     private ShuffleboardUtility() {
         shuffleboardMap = new HashMap<>();
 
         autonChooser = new SendableChooser<>();
-        
-        
-        driverTab.add("Auton Path Selector", autonChooser);
+
+        pipelineChooser = new SendableChooser<>();
+
+        {
+            // Get the current pipeline file so we can reset it from what it was last time we ran
+            File currentPipeline = new File(
+                    Filesystem.getOperatingDirectory().getAbsolutePath() + "/currentPipeline.txt");
+
+            // Check to make sure that the file exists
+            if (currentPipeline.exists()) {
+                // Start reading the file
+                try (Scanner reader = new Scanner(currentPipeline)) {
+                    String pipelineName = reader.nextLine();
+                    int pipelineIndex = Integer.parseInt(reader.nextLine());
+                    // Set the default options for the pipeline chooser
+                    pipelineChooser.setDefaultOption(pipelineName, pipelineIndex);
+                } catch (IOException e) {
+                    System.out.println("****** COULDN\'T FIND CURRENT PIPELINE FILE ******");
+                }
+            } else {
+                try {
+                    // Create a new file to write data
+                    currentPipeline.createNewFile();
+
+                    // Write the default settings
+                    FileWriter writer = new FileWriter(currentPipeline);
+                    writer.write("(Default)\n");
+                    writer.write("0");
+                    writer.close();
+                } catch (IOException e) {
+                }
+
+                pipelineChooser.setDefaultOption("(Default)", 0);
+            }
         }
+
+        // Set up the listener for the network table entry
+        driverTable.getEntry("Driver Tab/Pipeline Selector/selected").addListener((EntryNotification notif) -> {
+            // Get the file in which we stored the current pipeline
+            File currentPipeline = new File(
+                    Filesystem.getOperatingDirectory().getAbsolutePath() + "/currentPipeline.txt");
+
+            // Make sure the file is empty
+            if (currentPipeline.exists()) {
+                currentPipeline.delete();
+                try {
+                    currentPipeline.createNewFile();
+                } catch (IOException e) {
+                }
+            }
+
+            // Set up the file writer
+            FileWriter writer;
+            try {
+                // Write the pipeline that on the Shuffleboard to the file
+                writer = new FileWriter(currentPipeline);
+                String pipelineName = currentChooserValue.getString("(Default)");
+                writer.write(pipelineName + "\n");
+                writer.write(Integer.toString(pipelineMap.get(pipelineName)));
+                writer.close();
+
+                PhotonVisionUtility.getInstance().setPiCameraPipeline(pipelineMap.get(pipelineName));
+            } catch (IOException e) {
+            }
+        }, EntryListenerFlags.kUpdate);
+
+        driverTab.add("Auton Path Selector", autonChooser);
+
+        driverTab.add("Pipeline Selector", pipelineChooser);
+    }
 
     // ----- METHOD(S) -----\\
 
@@ -89,6 +171,22 @@ public class ShuffleboardUtility {
     }
 
     /**
+     * <h3>getFromShuffleboard</h3>
+     * 
+     * This method gets a value from the shuffleboard
+     * 
+     * @param key the value to get from the shuffleboard
+     * @return the value that the shuffleboard has for the key
+     */
+    public ShuffleBoardData<?> getFromShuffleboard(ShuffleboardKeys key) {
+        if (shuffleboardMap.containsKey(key)) {
+            return shuffleboardMap.get(key).m_dataContainer;
+        } else {
+            return null;
+        }
+    }
+
+    /**
      * <h3>update</h3>
      * 
      * Updates all of the entries on shuffleboard
@@ -103,6 +201,30 @@ public class ShuffleboardUtility {
             data.m_entry.setValue(data.m_dataContainer.m_data);
         }
 
+    }
+
+    /**
+     * <h3>addPipelineChooser</h3>
+     * 
+     * Add a value to the pipeline chooser
+     * 
+     * @param displayName the name to display
+     * @param value the index of the pipeline
+     */
+    public void addPipelineChooser(String displayName, int value) {
+        pipelineChooser.addOption(displayName, value);
+        pipelineMap.put(displayName, value);
+    }
+
+    /**
+     * <h3>getSelectedPipelineChooser</h3>
+     * 
+     * Gets the pipeline that we have selected in the shuffleboard
+     * 
+     * @return the index of the wanted pipeline
+     */
+    public int getSelectedPipelineChooser() {
+        return pipelineChooser.getSelected();
     }
 
     /**
@@ -148,15 +270,19 @@ public class ShuffleboardUtility {
      */
     public static enum ShuffleboardKeys {
 
+        // SHOOTER MANAGEMENT
+        SHOOTER_TOP_SPEED("Shooter Top Speed"),
+        SHOOTER_BOTTOM_SPEED("Shooter Bottom Speed"),
+        SHOOTER_HOOD_POSITION("Hood Position"),
+
         // BALL MANAGEMENT
-        CATAPULT_SENSOR("Catapult Sensor"),
+        LOADED_SENSOR("Loaded Sensor"),
         ALLIANCE_COLOR("Alliance Color"),
         LED_PATTERNS("LED Patterns"),
         AUTONOMOUS_PATH("Autonomous Paths"),
         INTAKE_SENSOR("Intake Sensor"),
         INTAKE_POSITIONING("Intake Positioning"),
         INTAKE_DIRECTION("Intake Direction"),
-        // CATAPULT_LOADED("Catapult loaded"),
         INTAKE_DOWN("Intake down"),
 
         // ENDGAME
@@ -165,7 +291,6 @@ public class ShuffleboardUtility {
         ENDGAME_SENSOR3("Endgame Sensor 3"),
         ENDGAME_SENSOR4("Endgame Sensor 4"),
         ENDGAME_ENCODER("Endgame Encoder"),
-        PISTON_SENSOR("Piston Sensor"),
 
         // DRIVE TRAIN
         LEFT_SPEED("Speed of left drivetrain"),
@@ -175,8 +300,10 @@ public class ShuffleboardUtility {
         // MISCELLANEOUS
         CAMERA_STREAM("Camera stream"),
         DISTANCE_FROM_GOAL("Distance from goal"),
+        PHOTON_READY("Photon Ready?"),
 
-        AIMED("Is Aimed?");
+        AIMED("Is Aimed?"),
+        PHOTON_YAW("Photon Angle");
 
         final String m_name;
 
@@ -198,6 +325,10 @@ public class ShuffleboardUtility {
 
         public ShuffleBoardData(T data) {
             m_data = data;
+        }
+
+        public T getData() {
+            return m_data;
         }
     }
 

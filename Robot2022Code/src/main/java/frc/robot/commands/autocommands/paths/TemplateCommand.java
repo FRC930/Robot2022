@@ -6,13 +6,11 @@ import com.pathplanner.lib.PathPlanner;
 
 import frc.robot.commands.Ramsete930Command;
 import frc.robot.commands.autocommands.ResetAutonomousCommand;
+import frc.robot.commands.autocommands.SequentialCommands.StopDrive;
 import edu.wpi.first.math.controller.RamseteController;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.trajectory.Trajectory;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.utilities.PathPlannerSequentialCommandGroupUtility;
-import frc.robot.subsystems.CatapultSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 
 //----- CLASS -----\\
@@ -46,7 +44,7 @@ public class TemplateCommand extends PathPlannerSequentialCommandGroupUtility {
      * @param driveSubsystem
      * @param catapultSubsystem
      */
-    public TemplateCommand(DriveSubsystem driveSubsystem, CatapultSubsystem catapultSubsystem) {
+    public TemplateCommand(DriveSubsystem driveSubsystem) {
 
         // initializing gyro for pose2d
         m_odometry = driveSubsystem.getOdometry();
@@ -76,8 +74,6 @@ public class TemplateCommand extends PathPlannerSequentialCommandGroupUtility {
         //----- AUTO SEQUENCE -----\\
 
         addCommands(
-            new InstantCommand(catapultSubsystem::setShortShot),
-            new WaitCommand(0.5),
             new ResetAutonomousCommand(t_nameYourTrajectoryHere.getInitialPose(), driveSubsystem),
             r_nameYourTrajectoryHere,
             new StopDrive(driveSubsystem)

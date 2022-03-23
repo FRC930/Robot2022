@@ -249,12 +249,12 @@ public class LEDCommand extends CommandBase {
      * Sets the starting pattern based on current number of balls.
      */
     private void ballStatusInit() {
-        if (BallSensorUtility.getInstance().catapultIsTripped()
-                && BallSensorUtility.getInstance().indexerIsTripped()) {
+        if (BallSensorUtility.getInstance().intakeIsTripped()
+                && BallSensorUtility.getInstance().loadedIsTripped()) {
             lastBallStatus = 2;
             solidAllianceLEDs();
-        } else if (BallSensorUtility.getInstance().catapultIsTripped()
-                || BallSensorUtility.getInstance().indexerIsTripped()) {
+        } else if (BallSensorUtility.getInstance().intakeIsTripped()
+                || BallSensorUtility.getInstance().loadedIsTripped()) {
             lastBallStatus = 1;
             halfSolidAllianceLEDs();
         } else {
@@ -268,20 +268,20 @@ public class LEDCommand extends CommandBase {
      * manages active pattern based off ball sensors
      */
     private void ballStatus() {
-        if (BallSensorUtility.getInstance().catapultIsTripped()
-                && BallSensorUtility.getInstance().indexerIsTripped()) {
+        if (BallSensorUtility.getInstance().intakeIsTripped()
+                && BallSensorUtility.getInstance().loadedIsTripped()) {
             if (lastBallStatus != 2) {
                 flashLEDHighPattern();
             }
-        } else if (BallSensorUtility.getInstance().catapultIsTripped()
-                || BallSensorUtility.getInstance().indexerIsTripped()) {
+        } else if (BallSensorUtility.getInstance().intakeIsTripped()
+                || BallSensorUtility.getInstance().loadedIsTripped()) {
             if (lastBallStatus == 2) {
                 retractTopLEDs();
             } else if (lastBallStatus == 0) {
                 flashLEDLowPattern();
             }
-        } else if (!BallSensorUtility.getInstance().catapultIsTripped()
-                && !BallSensorUtility.getInstance().indexerIsTripped()) {
+        } else if (!BallSensorUtility.getInstance().intakeIsTripped()
+                && !BallSensorUtility.getInstance().loadedIsTripped()) {
             if (lastBallStatus != 0) {
                 retractBottomLEDs();
             }

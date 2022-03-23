@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['hubaimingcommand_0',['HubAimingCommand',['../classfrc_1_1robot_1_1commands_1_1autovisioncommands_1_1_hub_aiming_command.html',1,'frc::robot::commands::autovisioncommands']]]
+  ['gyroutility_0',['GyroUtility',['../classfrc_1_1robot_1_1utilities_1_1_gyro_utility.html',1,'frc::robot::utilities']]]
 ];

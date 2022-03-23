@@ -1,44 +1,49 @@
+//----- IMPORTS -----\\
+
 package frc.robot;
 
-import edu.wpi.first.wpilibj2.command.Command;
 import java.util.List;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 
-import edu.wpi.first.cameraserver.CameraServer;
+import org.photonvision.common.hardware.VisionLEDMode;
+
+import edu.wpi.first.cscore.MjpegServer;
 import edu.wpi.first.cscore.UsbCamera;
+import edu.wpi.first.cscore.VideoMode.PixelFormat;
 import edu.wpi.first.math.controller.RamseteController;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.Trajectory;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.util.net.PortForwarder;
+import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.PneumaticsModuleType;
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
-import frc.robot.commands.BallHolderCommand;
-import frc.robot.commands.CatapultCommand;
-import frc.robot.commands.CatapultCommandGroup;
 import frc.robot.commands.DriveCommand;
 import frc.robot.commands.IndexerForwardCommand;
 import frc.robot.commands.LEDCommand;
-import frc.robot.commands.ToggleShifterCommand;
-import frc.robot.commands.CatapultCommand.CatapultPower;
 import frc.robot.commands.LEDCommand.LEDPatterns;
+import frc.robot.commands.ToggleShifterCommand;
 import frc.robot.commands.autocommands.AutoCommandManager;
 import frc.robot.commands.autocommands.AutoCommandManager.subNames;
-import frc.robot.commands.autovisioncommands.HubAimingCommand;
+import frc.robot.commands.autovisioncommands.PhotonAimCommand;
+import frc.robot.commands.autovisioncommands.PigeonAimCommand;
 import frc.robot.commands.endgamecommands.EndgameArmCommand;
 import frc.robot.commands.endgamecommands.EndgameArmRevCommand;
-import frc.robot.commands.endgamecommands.EndgameCloseClawSingleCommand;
+import frc.robot.commands.endgamecommands.EndgameCloseClawCommand;
 import frc.robot.commands.endgamecommands.EndgameManagerCommand;
-import frc.robot.commands.intakecommands.intakePistonCommands.*;
-import frc.robot.commands.intakecommands.intakemotorcommands.*;
-import frc.robot.subsystems.CatapultSubsystem;
+import frc.robot.commands.intakecommands.intakePistonCommands.DisengageIntakePistonsCommand;
+import frc.robot.commands.intakecommands.intakePistonCommands.EngageIntakePistonsCommand;
+import frc.robot.commands.intakecommands.intakemotorcommands.RunIntakeMotorsCommand;
+import frc.robot.commands.intakecommands.intakemotorcommands.StopIntakeMotorsCommand;
+import frc.robot.commands.shootercommands.ShootCargoCommand;
+import frc.robot.commands.shootercommands.AdjustHoodCommand;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.EndgameMotorSubsystem;
 import frc.robot.subsystems.EndgamePistonSubsystem;
@@ -47,193 +52,191 @@ import frc.robot.subsystems.IntakeMotorSubsystem;
 import frc.robot.subsystems.IntakePistonSubsystem;
 import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.ShifterSubsystem;
-import frc.robot.subsystems.VisionCameraSubsystem;
+import frc.robot.subsystems.ShooterHoodSubsystem;
+import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.utilities.SimulatedDrivetrain;
 import frc.robot.utilities.PathPlannerSequentialCommandGroupUtility;
 import frc.robot.utilities.BallSensorUtility;
 import frc.robot.utilities.DriveCameraUtility;
-import frc.robot.utilities.EndgameSensorUtility;
 import frc.robot.utilities.DriveCameraUtility.BallColor;
+import frc.robot.utilities.EndgameSensorUtility;
+import frc.robot.utilities.PhotonVisionUtility;
+import frc.robot.utilities.ShooterUtility;
 
+//----- CLASS -----\\
+/**
+ * <h3>RobotContainer</h3>
+ * 
+ * Manages all robot hardware and software.
+ */
 public class RobotContainer {
 
-    // ----- XBOX CONTROLLER(S) -----\\
+    //----- XBOX CONTROLLER(S) -----\\
 
     // Driver Controller
-    private final ControllerManager driverController = new ControllerManager(0);
-    // Codriver Controllerd
-    private final ControllerManager codriverController = new ControllerManager(1);
-    /*
-     * // Left Joystick
-     * public static final int XB_AXIS_LEFT_X = 0;
-     * public static final int XB_AXIS_LEFT_Y = 1;
-     * // Triggers
-     * public static final int XB_AXIS_LT = 2;
-     * public static final int XB_AXIS_RT = 3;
-     * // Right Joystick
-     * public static final int XB_AXIS_RIGHT_X = 4;
-     * public static final int XB_AXIS_RIGHT_Y = 5;
-     * 
-     * // Buttons
-     * public static final int XB_A = 1;
-     * public static final int XB_B = 2;
-     * public static final int XB_X = 3;
-     * public static final int XB_Y = 4;
-     * public static final int XB_LB = 5;
-     * public static final int XB_RB = 6;
-     * public static final int XB_BACK = 7;
-     * public static final int XB_START = 8;
-     * public static final int XB_LEFTSTICK_BUTTON = 9;
-     * public static final int XB_RIGHTSTICK_BUTTON = 10;
-     */
-    // ----- CAMERA -----\\
+    private final ControllerManager m_driverController = new ControllerManager(0);
+    // Codriver Controller
+    private final ControllerManager m_codriverController = new ControllerManager(1);
 
-    // Camera subsystem for reflective tape
-    private final VisionCameraSubsystem reflectiveTapeCameraSubsystem;
-    // Camera subsystem for cargo balls
-    private final VisionCameraSubsystem cargoCameraSubsystem;
-
-    // ----- CAMERA CONSTANTS -----\\
+    //----- CAMERA CONSTANTS -----\\
 
     public static final int CAMERA_WIDTH = 160;
     public static final int CAMERA_HEIGHT = 120;
     public static final int CAMERA_FPS = 30;
 
-    // ----- INTAKE -----\\
+    //----- INTAKE -----\\
 
     // Intake Motor Subsystem
-    private final IntakeMotorSubsystem intakeMotorSubsystem;
+    private final IntakeMotorSubsystem m_intakeMotorSubsystem;
     // Intake Piston Subsystem
-    private final IntakePistonSubsystem intakePistonSubsystem;
+    private final IntakePistonSubsystem m_intakePistonSubsystem;
 
     // Intake Motor Commands
-    private final RunIntakeMotorsCommand runIntakeMotorsCommand;
-    private final RunIntakeMotorsCommand reverseIntakeMotorsCommand;
-    private final StopIntakeMotorsCommand stopIntakeMotorsCommand;
+    private final RunIntakeMotorsCommand m_runIntakeMotorsCommand;
+    private final RunIntakeMotorsCommand m_reverseIntakeMotorsCommand;
+    private final StopIntakeMotorsCommand m_stopIntakeMotorsCommand;
 
     // Intake Piston Commands
-    private final EngageIntakePistonsCommand engageIntakePistonsCommand;
-    private final DisengageIntakePistonsCommand disengageIntakePistonsCommand;
+    private final EngageIntakePistonsCommand m_engageIntakePistonsCommand;
+    private final DisengageIntakePistonsCommand m_disengageIntakePistonsCommand;
 
-    // ----- DRIVETRAIN -----\\
+    //----- DRIVETRAIN MOTORS -----\\
 
     // Drive Subsystem
-    private final DriveSubsystem driveSubsystem;
+    private final DriveSubsystem m_driveSubsystem;
     // Drive Command
-    private final DriveCommand driveCommand;
+    private final DriveCommand m_driveCommand;
 
-    // ----- DRIVETRAIN SHIFTER -----\\
+    //----- DRIVETRAIN SHIFTER -----\\
 
     // Drivetrain Shifter Subsystem
-    private final ShifterSubsystem shifterSubsystem;
+    private final ShifterSubsystem m_shifterSubsystem;
     // Drivetrain Shifter Command
-    private final ToggleShifterCommand toggleShifterCommand;
+    private final ToggleShifterCommand m_toggleShifterCommand;
 
-    // ----- CATAPULT -----\\
+    //----- SHOOTER -----\\
 
-    // Catapult Subsystem
-    private final CatapultSubsystem catapultSubsystem;
-    private final IndexerMotorSubsystem indexerMotorSubsystem;
-    private final BallHolderCommand ballHolderCommand;
+    // Indexer subsystem
+    private final IndexerMotorSubsystem m_indexerMotorSubsystem;
+    // Shooter subsystems
+    private final ShooterSubsystem m_shooterSubsystem;
+    private final ShooterHoodSubsystem m_shooterHoodSubsystem;
 
-    // ----- ENDGAME -----\\
-    private final EndgameManagerCommand endgameManager;
-    // Endgame Arm Commands
-    private final EndgameMotorSubsystem endgameMotorSubsystem;
-    private final EndgameArmCommand endgameArmCommand;
-    private final EndgameArmRevCommand endgameArmRevCommand;
+    //----- ENDGAME -----\\
 
-    // Endgame Piston Subsystems
-    private final EndgamePistonSubsystem endgamePiston1;
-    private final EndgamePistonSubsystem endgamePiston2;
-    private final EndgamePistonSubsystem endgamePistonL3;
-    private final EndgamePistonSubsystem endgamePistonR3;
-    private final EndgamePistonSubsystem endgamePiston4;
+    // Endgame Sequence
+    private final EndgameManagerCommand m_endgameManagerCommand;
 
-    private final HubAimingCommand hubAimingCommand;
+    // Endgame Motors
+    private final EndgameMotorSubsystem m_endgameMotorSubsystem;
+    private final EndgameArmCommand m_endgameArmCommand;
+    private final EndgameArmRevCommand m_endgameArmRevCommand;
+
+    // Endgame Solenoids
+    private final EndgamePistonSubsystem m_endgamePiston1;
+    private final EndgamePistonSubsystem m_endgamePiston2;
+    private final EndgamePistonSubsystem m_endgamePiston3;
+    private final EndgamePistonSubsystem m_endgamePiston4;
+
+    //----- LEDS -----\\
 
     // LED commands
-    private final LEDCommand autonPatternCommand;
-    private final LEDCommand idlePatternCommand;
-    private final LEDCommand endgamePatternCommand;
 
-    private final LEDSubsystem ledSubsystem;
-    // ----- AUTONOMOUS -----\\
-    private final AutoCommandManager autoManager;
+    private final LEDSubsystem m_LEDSubsystem;
 
-    // ----- CONSTRUCTOR -----\\
+    private final LEDCommand m_autonPatternCommand;
+    private final LEDCommand m_idlePatternCommand;
+    private final LEDCommand m_endgamePatternCommand;
 
+    //----- AUTONOMOUS -----\\
+
+    private final AutoCommandManager m_autoManager;
+
+    //----- VISION -----\\
+
+    UsbCamera m_driverCamera = new UsbCamera("Driver Camera", 0);
+    MjpegServer m_mjpegServer = new MjpegServer("Drive Camera Stream", "", 1185);
+
+    //----- AIMING -----\\
+
+    private final PhotonAimCommand m_photonAimCommand;
+    private final PigeonAimCommand m_pigeonAimCommand;
+
+    //----- PRESSURE MANAGEMENT -----\\
+
+    private final Compressor compressor = new Compressor(PneumaticsModuleType.REVPH);
+
+    //----- CONSTRUCTOR -----\\
     /**
      * <h3>RobotContainer</h3>
      * 
-     * Initializes the robot
+     * Manages all robot hardware and software.
      */
     public RobotContainer() {
+
         /*
          * -----------------------------------------------------------------------------
-         * ---
          * SUBSYSTEM INITIALIZATIONS
          * -----------------------------------------------------------------------------
-         * ---
          */
 
-        // ----- LED SUBSYSTEM INITS -----\\
-        ledSubsystem = new LEDSubsystem(0);
+        //----- LED SUBSYSTEM INITS -----\\
 
-        // ----- CAMERA SUBSYSTEM INITS -----\\
-        // Camera subsystem for reflective tape
-        reflectiveTapeCameraSubsystem = new VisionCameraSubsystem(
-                VisionCameraSubsystem.CameraType.REFLECTIVE_TAPE);
-        // Camera subsystem for cargo balls
-        cargoCameraSubsystem = new VisionCameraSubsystem(
-                VisionCameraSubsystem.CameraType.BALL_DETECTOR);
+        m_LEDSubsystem = new LEDSubsystem(0);
+
+        //------ PORT FORWARDING ------- \\
+
         PortForwarder.add(5800, "10.9.30.25", 5800);
         PortForwarder.add(1181, "10.9.30.25", 1181);
         PortForwarder.add(1182, "10.9.30.25", 1182);
         PortForwarder.add(1183, "10.9.30.25", 1183);
         PortForwarder.add(1184, "10.9.30.25", 1184);
 
-        // ----- INTAKE SUBSYSTEM INITS -----\\
-        // Intake has to be instantiated before drive subsystem because we need to
-        // initialize the gyro
-        intakeMotorSubsystem = new IntakeMotorSubsystem(5, 9);
-        intakePistonSubsystem = new IntakePistonSubsystem(1, 12);
+        //----- INTAKE SUBSYSTEM INITS -----\\
 
-        // ----- DRIVETRAIN SUBSYSTEM INITS -----\\
+        m_intakeMotorSubsystem = new IntakeMotorSubsystem(5);
+        m_intakePistonSubsystem = new IntakePistonSubsystem(1);
 
-        shifterSubsystem = new ShifterSubsystem(0);
-        driveSubsystem = new DriveSubsystem(1, 8, 2, 7);
+        //----- DRIVETRAIN SUBSYSTEM INITS -----\\
 
-        // ----- CATAPULT SUBSYSTEM INITS -----\\
-        // TODO:ADD SOLENOID ID 7 FOR HARD-STOP
-        catapultSubsystem = new CatapultSubsystem(2, 3, 4, 5, 6, 7, 13);
-        indexerMotorSubsystem = new IndexerMotorSubsystem(6);
-        ballHolderCommand = new BallHolderCommand(catapultSubsystem);
+        m_shifterSubsystem = new ShifterSubsystem(0);
+        m_driveSubsystem = new DriveSubsystem(1, 8, 2, 7);
 
-        // ----- ENDGAME SUBSYSTEM INITS -----\\
+        //----- SHOOTER SUBSYSTEM INITS -----\\
+
+        m_indexerMotorSubsystem = new IndexerMotorSubsystem(14, 13);
+        m_shooterHoodSubsystem = new ShooterHoodSubsystem(12);
+        m_shooterSubsystem = new ShooterSubsystem(10, 6, 11);
+
+        //----- ENDGAME SUBSYSTEM INITS -----\\
+
         // Endgame Motor Subsystems
-        endgameMotorSubsystem = new EndgameMotorSubsystem(3, 4);
+        m_endgameMotorSubsystem = new EndgameMotorSubsystem(3, 4);
         // Endgame Piston Subsystems
-        endgamePiston1 = new EndgamePistonSubsystem(8);
-        endgamePiston2 = new EndgamePistonSubsystem(9);
-        endgamePistonL3 = new EndgamePistonSubsystem(10);
-        endgamePistonR3 = new EndgamePistonSubsystem(14);
-        endgamePiston4 = new EndgamePistonSubsystem(11);
+        m_endgamePiston1 = new EndgamePistonSubsystem(8);
+        m_endgamePiston2 = new EndgamePistonSubsystem(9);
+        m_endgamePiston3 = new EndgamePistonSubsystem(10);
+        m_endgamePiston4 = new EndgamePistonSubsystem(11);
 
         /*
          * -----------------------------------------------------------------------------
-         * ---
          * CONSTRUCT COMMAND MANAGER
          * -----------------------------------------------------------------------------
-         * ---
          */
-        autoManager = new AutoCommandManager();
-        autoManager.addSubsystem(subNames.DriveSubsystem, driveSubsystem);
-        autoManager.addSubsystem(subNames.CatapultSubsystem, catapultSubsystem);
-        autoManager.addSubsystem(subNames.IntakeMotorSubsystem, intakeMotorSubsystem);
-        autoManager.addSubsystem(subNames.IntakePistonSubsystem, intakePistonSubsystem);
-        autoManager.addSubsystem(subNames.VisionCameraSubsystem, reflectiveTapeCameraSubsystem);
-        autoManager.addSubsystem(subNames.CatapultSubsystem, catapultSubsystem);
+
+        m_autoManager = new AutoCommandManager();
+        m_autoManager.addSubsystem(subNames.DriveSubsystem, m_driveSubsystem);
+        m_autoManager.addSubsystem(subNames.IntakeMotorSubsystem, m_intakeMotorSubsystem);
+        m_autoManager.addSubsystem(subNames.IntakePistonSubsystem, m_intakePistonSubsystem);
+        m_autoManager.addSubsystem(subNames.ShooterSubsystem, m_shooterSubsystem);
+        m_autoManager.addSubsystem(subNames.ShooterHoodSubsystem, m_shooterHoodSubsystem);
+        m_autoManager.addSubsystem(subNames.IndexerMotorSubsystem, m_indexerMotorSubsystem);
+
+        /*
+         * -----------------------------------------------------------------------------
+         * SENSOR SINGLETON INITIALIZATIONS
+         * -----------------------------------------------------------------------------
+         */
 
         // Create instance for sensor singletons-needed for simulation to work properly.
         BallSensorUtility.getInstance();
@@ -241,44 +244,48 @@ public class RobotContainer {
 
         /*
          * -----------------------------------------------------------------------------
-         * ---
          * COMMAND INITIALIZATIONS
          * -----------------------------------------------------------------------------
-         * ---
          */
 
-        // ----- AUTO COMMAND INITS -----\\
-        autoManager.initCommands();
+        //----- AUTO COMMAND INITS -----\\
 
-        // ----- INTAKE COMMAND INITS -----\\
+        m_autoManager.initCommands();
+
+        //----- INTAKE COMMAND INITS -----\\
+        
         // Intake Motor Commandss
-        runIntakeMotorsCommand = new RunIntakeMotorsCommand(intakeMotorSubsystem, false);
-        reverseIntakeMotorsCommand = new RunIntakeMotorsCommand(intakeMotorSubsystem, true);
-        stopIntakeMotorsCommand = new StopIntakeMotorsCommand(intakeMotorSubsystem);
+        m_runIntakeMotorsCommand = new RunIntakeMotorsCommand(m_intakeMotorSubsystem, false);
+        m_reverseIntakeMotorsCommand = new RunIntakeMotorsCommand(m_intakeMotorSubsystem, true);
+        m_stopIntakeMotorsCommand = new StopIntakeMotorsCommand(m_intakeMotorSubsystem);
         // Intake Piston Commands
-        engageIntakePistonsCommand = new EngageIntakePistonsCommand(intakePistonSubsystem);
-        disengageIntakePistonsCommand = new DisengageIntakePistonsCommand(intakePistonSubsystem);
+        m_engageIntakePistonsCommand = new EngageIntakePistonsCommand(m_intakePistonSubsystem);
+        m_disengageIntakePistonsCommand = new DisengageIntakePistonsCommand(m_intakePistonSubsystem);
 
-        // ----- DRIVETRAIN COMMAND INITS -----\\
-        driveCommand = new DriveCommand(
-                driveSubsystem,
-                reflectiveTapeCameraSubsystem,
-                cargoCameraSubsystem,
-                driverController.getController());
+        //----- DRIVETRAIN COMMAND INITS -----\\
 
-        // ----- DRIVETRAIN SHIFTER COMMAND INITS -----\\
-        toggleShifterCommand = new ToggleShifterCommand(shifterSubsystem);
+        m_driveCommand = new DriveCommand(
+                m_driveSubsystem,
+                m_driverController.getController());
 
-        // ----- ENDGAME COMMAND INITS -----\\
+        //----- DRIVETRAIN SHIFTER COMMAND INITS -----\\
+
+        m_toggleShifterCommand = new ToggleShifterCommand(m_shifterSubsystem);
+
+        //----- ENDGAME COMMAND INITS -----\\
+
         // Endgame Arm Commands
-        endgameArmCommand = new EndgameArmCommand(endgameMotorSubsystem);
-        endgameArmRevCommand = new EndgameArmRevCommand(endgameMotorSubsystem);
-        endgameManager = new EndgameManagerCommand(endgameMotorSubsystem,
-                endgamePiston1, endgamePiston2, endgamePistonL3, endgamePistonR3, endgamePiston4);
+        m_endgameArmCommand = new EndgameArmCommand(m_endgameMotorSubsystem);
+        m_endgameArmRevCommand = new EndgameArmRevCommand(m_endgameMotorSubsystem);
+        m_endgameManagerCommand = new EndgameManagerCommand(m_endgameMotorSubsystem,
+                m_endgamePiston1, m_endgamePiston2, m_endgamePiston3, m_endgamePiston4);
 
-        hubAimingCommand = new HubAimingCommand(reflectiveTapeCameraSubsystem, driveSubsystem);
+        m_pigeonAimCommand = new PigeonAimCommand(m_driveSubsystem);
+        m_photonAimCommand = new PhotonAimCommand(m_driveSubsystem, m_driverController.getController(),
+                m_codriverController.getController());
 
-        // ----- SETTING BALL COLOR -----\\
+        //----- SETTING BALL COLOR -----\\
+
         if (DriverStation.getAlliance() == Alliance.Blue) {
             DriveCameraUtility.getInstance().setBallColor(BallColor.BLUE);
         } else {
@@ -286,207 +293,313 @@ public class RobotContainer {
 
         }
 
-        // ----- LED COMMAND INITS-----\\
-        autonPatternCommand = new LEDCommand(ledSubsystem, LEDPatterns.AutonPattern);
-        endgamePatternCommand = new LEDCommand(ledSubsystem, LEDPatterns.EndgamePatten);
-        idlePatternCommand = new LEDCommand(ledSubsystem, LEDPatterns.TeleopIdle);
+        //----- LED COMMAND INITS-----\\
+
+        m_autonPatternCommand = new LEDCommand(m_LEDSubsystem, LEDPatterns.AutonPattern);
+        m_endgamePatternCommand = new LEDCommand(m_LEDSubsystem, LEDPatterns.EndgamePatten);
+        m_idlePatternCommand = new LEDCommand(m_LEDSubsystem, LEDPatterns.TeleopIdle);
 
         // calls the method that configures the buttons
         configureButtonBindings();
+
+        /*
+         * -----------------------------------------------------------------------------
+         * COMMAND SCHEDULER AND DEFAULTS
+         * -----------------------------------------------------------------------------
+         */
 
         // Manages commands via stacking
         CommandScheduler scheduler = CommandScheduler.getInstance();
 
         // DRIVETRAIN DEFAULTS
-        scheduler.setDefaultCommand(driveSubsystem, driveCommand);
+        scheduler.setDefaultCommand(m_driveSubsystem, m_driveCommand);
 
         // INTAKE DEFAULTS
-        scheduler.setDefaultCommand(intakeMotorSubsystem, stopIntakeMotorsCommand);
-        scheduler.setDefaultCommand(intakePistonSubsystem, disengageIntakePistonsCommand);
+        scheduler.setDefaultCommand(m_intakeMotorSubsystem, m_stopIntakeMotorsCommand);
+        scheduler.setDefaultCommand(m_intakePistonSubsystem, m_disengageIntakePistonsCommand);
 
         // ENDGAME DEFAULTS
         // scheduler.setDefaultCommand(endgameMotorSubsystem, new
         // EndgameRotateHorizonalCommand(endgameMotorSubsystem)); // -GET ENCODER
         // WORKING
-        scheduler.setDefaultCommand(endgamePiston1, new EndgameCloseClawSingleCommand(endgamePiston1));
-        scheduler.setDefaultCommand(endgamePiston2, new EndgameCloseClawSingleCommand(endgamePiston2));
-        scheduler.setDefaultCommand(endgamePistonL3, new EndgameCloseClawSingleCommand(endgamePistonL3));
-        scheduler.setDefaultCommand(endgamePistonR3, new EndgameCloseClawSingleCommand(endgamePistonR3));
-        scheduler.setDefaultCommand(endgamePiston4, new EndgameCloseClawSingleCommand(endgamePiston4));
-        scheduler.setDefaultCommand(indexerMotorSubsystem, new IndexerForwardCommand(indexerMotorSubsystem, false));
-        scheduler.setDefaultCommand(catapultSubsystem, new BallHolderCommand(catapultSubsystem));
+        scheduler.setDefaultCommand(m_endgamePiston1, new EndgameCloseClawCommand(m_endgamePiston1));
+        scheduler.setDefaultCommand(m_endgamePiston2, new EndgameCloseClawCommand(m_endgamePiston2));
+        scheduler.setDefaultCommand(m_endgamePiston3, new EndgameCloseClawCommand(m_endgamePiston3));
+        scheduler.setDefaultCommand(m_endgamePiston4, new EndgameCloseClawCommand(m_endgamePiston4));
+        scheduler.setDefaultCommand(m_indexerMotorSubsystem, new IndexerForwardCommand(m_indexerMotorSubsystem, false));
+
+        compressor.enableAnalog(100, 115);
     }
 
     /**
-     * configureButtonBindings
+     * <h3>configureButtonBindings</h3> 
+     * 
      * contains the controller binds and button Bindings
      * defines button->command mappings
      * 
      */
     private void configureButtonBindings() {
-        // DRIVER CONTROLLER BINDS
-        /*
-         * AxisTrigger shifterTrigger = new AxisTrigger(driverController, XB_AXIS_RT);
-         * 
-         * JoystickButton launchButton = new JoystickButton(driverController, XB_LB);
-         * JoystickButton rotateArmButton = new JoystickButton(driverController, XB_Y);
-         * JoystickButton rotateArmRevButton = new JoystickButton(driverController,
-         * XB_A);
-         * JoystickButton endgameSensorCloseButton = new
-         * JoystickButton(driverController, XB_X);
-         * JoystickButton rotateUntilTouchingButton = new
-         * JoystickButton(driverController, XB_B);
-         * JoystickButton endgameComplete = new JoystickButton(driverController,
-         * XB_START);
-         * JoystickButton indexerButton = new JoystickButton(codriverController, XB_RB);
-         * 
-         * // CODRIVER CONTROLLER BINDS
-         * JoystickButton intakeButton = new JoystickButton(codriverController, XB_LB);
-         * JoystickButton reverseIntakeButton = new JoystickButton(codriverController,
-         * XB_B);
-         */
+
+        //----- DRIVER CONTROLLER -----\\
 
         // Shifts the drivetrain when shifter trigger is pulled
-        driverController.getRightTrigger().whileActiveOnce(toggleShifterCommand);
+        m_driverController.getRightTrigger().whileActiveOnce(
+            m_toggleShifterCommand
+        );
 
-        SmartDashboard.putNumber("Catapult Timeout", 0.25);
-        Timer timeout = new Timer();
-        timeout.start();
-        /*
-         * Launches a cargo ball when the launch button is pressed. The delay is needed
-         * in order to give the ball holder time to open before firing. Catapult command
-         * interrupts default and end() opens the ball holder.
-         */
-        driverController.getLeftBumper().whileActiveOnce(new InstantCommand(() -> {
-            if (timeout.get() > 0.75) {
-                CommandScheduler.getInstance().schedule(new CatapultCommandGroup(catapultSubsystem,
-                        CatapultPower.AllPistons, SmartDashboard.getNumber("Catapult Timeout", 0.25)));
-                timeout.reset();
-                timeout.start();
-            }
-        }));
-        driverController.getPOVUpTrigger().whileActiveOnce(
-                new InstantCommand(catapultSubsystem::setLongShot));
-        driverController.getPOVDownTrigger().whileActiveOnce(
-                new InstantCommand(catapultSubsystem::setShortShot));
+        m_driverController.getLeftBumper().whileActiveOnce(
+            new SequentialCommandGroup(
+                new PhotonAimCommand(m_driveSubsystem),
+                new AdjustHoodCommand(m_shooterHoodSubsystem),
+                new ShootCargoCommand(m_shooterSubsystem, m_indexerMotorSubsystem)
+                        .withTimeout(ShootCargoCommand.SHOOT_TIME)
+            )
+        );
+
+        m_driverController.getRightBumper().whileActiveOnce(
+            new ShootCargoCommand(m_shooterSubsystem, m_indexerMotorSubsystem)
+        );
+
+        //----- CODRIVER CONTROLLER -----\\
+
         // Checks if LB is pressed, then it will engage the intake pistons
-        codriverController.getLeftBumper().whileActiveOnce(
-                new ParallelCommandGroup(engageIntakePistonsCommand));
+        m_codriverController.getLeftBumper().whileActiveOnce(
+            new ParallelCommandGroup(m_engageIntakePistonsCommand)
+        );
+
         // Checks if LB is pressed and B isn't pressed, then it will run intake
-        codriverController.getLeftBumper().and(
-                codriverController.getBButton().negate()).whileActiveOnce(runIntakeMotorsCommand);
+        m_codriverController.getLeftBumper().and(m_codriverController.getBButton().negate()).whileActiveOnce(
+            m_runIntakeMotorsCommand
+        );
+
         // Checks if LB and B is pressed, then it will reverse the intake
-        codriverController.getLeftBumper().and(codriverController.getBButton())
-                .whileActiveOnce(new ParallelCommandGroup(reverseIntakeMotorsCommand,
-                        new IndexerForwardCommand(indexerMotorSubsystem, true)));
+        m_codriverController.getLeftBumper().and(m_codriverController.getBButton()).whileActiveOnce(
+            new ParallelCommandGroup(
+                m_reverseIntakeMotorsCommand,
+                new IndexerForwardCommand(m_indexerMotorSubsystem, true)
+            )
+        );
 
         // Manually rotates the endgame arms while pressed
-        codriverController.getYButton().whileActiveOnce(endgameArmCommand);
+        m_codriverController.getYButton().whileActiveOnce(
+            m_endgameArmCommand
+        );
 
         // Manually rotates the endgame arms in reverse while pressed
-        codriverController.getAButton().whileActiveOnce(endgameArmRevCommand);
+        m_codriverController.getAButton().whileActiveOnce(
+            m_endgameArmRevCommand
+        );
 
-        codriverController.getStartButton()
-                .whileActiveOnce(new ParallelCommandGroup(endgameManager, endgamePatternCommand));
+        m_codriverController.getPOVLeftTrigger().whileActiveOnce(
+            new ParallelCommandGroup(
+                new AdjustHoodCommand(m_shooterHoodSubsystem,
+                    ShooterUtility.calculateHoodPos(8.5)
+                ),
+                new ShootCargoCommand(m_shooterSubsystem, m_indexerMotorSubsystem,
+                    ShooterUtility.calculateTopSpeed(8.5),
+                    ShooterUtility.calculateBottomSpeed(8.5)
+                )
+            ).withTimeout(0.1)
+        );
 
-        driverController.getRightBumper().whileActiveContinuous(hubAimingCommand);
+        m_codriverController.getPOVUpTrigger().whileActiveOnce(
+            new ParallelCommandGroup(
+                new AdjustHoodCommand(m_shooterHoodSubsystem,
+                    ShooterUtility.calculateHoodPos(17)
+                ),
+                new ShootCargoCommand(m_shooterSubsystem, m_indexerMotorSubsystem,
+                    ShooterUtility.calculateTopSpeed(17),
+                    ShooterUtility.calculateBottomSpeed(17)
+                )
+            ).withTimeout(0.1)
+        );
 
-        //Manual Commands
-        codriverController.getRightBumper().whileActiveOnce(ballHolderCommand);
+        m_codriverController.getPOVDownTrigger().whileActiveOnce(
+            new ParallelCommandGroup(
+                new AdjustHoodCommand(m_shooterHoodSubsystem,
+                    ShooterUtility.calculateHoodPos(19 / 12)
+                ),
+                new ShootCargoCommand(m_shooterSubsystem, m_indexerMotorSubsystem,
+                    ShooterUtility.calculateTopSpeed(19 / 12),
+                    ShooterUtility.calculateBottomSpeed(19 / 12)
+                )
+            ).withTimeout(0.1)
+        );
+
+        m_codriverController.getStartButton().whileActiveOnce(new SequentialCommandGroup(
+            new AdjustHoodCommand(m_shooterHoodSubsystem, -1),
+            new ParallelCommandGroup(
+                m_endgameManagerCommand, 
+                m_endgamePatternCommand
+            ))
+        );
+
+        /*
+         * codriverController.getXButton().whileActiveOnce(new
+         * InstantCommand(shooterHoodSubsystem::setSlowSpeed, shooterHoodSubsystem));
+         * codriverController.getXButton().negate().whileActiveOnce(new
+         * InstantCommand(shooterHoodSubsystem::stopHood, shooterHoodSubsystem));
+         * codriverController.getBButton().whileActiveOnce(new
+         * InstantCommand(shooterHoodSubsystem::setSlowRevSpeed, shooterHoodSubsystem));
+         * codriverController.getBButton().negate().whileActiveOnce(new
+         * InstantCommand(shooterHoodSubsystem::stopHood, shooterHoodSubsystem));
+         */
     }
 
     /**
      * <h3>beginTeleopRunCommands</h3>
      * 
-     * <p>
      * Runs when the robot is enabled in teleop mode.
-     * </p>
-     * <p>
+     * 
      * This gets the command scheduler and sets up buttons
-     * </p>
      */
     public void beginTeleopRunCommands() {
+
         // Sets the brake mode to coast
-        driveSubsystem.setMotorBrakeMode(NeutralMode.Brake);
-        resheduleAutononmousLEDS(false);
+        m_driveSubsystem.setMotorBrakeMode(NeutralMode.Brake);
+
+
+        // rescheduleAutonomousLEDs(false);
+        CommandScheduler.getInstance().unregisterSubsystem(m_LEDSubsystem);
+        CommandScheduler.getInstance().setDefaultCommand(m_LEDSubsystem, m_idlePatternCommand);
+
+        PhotonVisionUtility.getInstance().getHubTrackingCamera().setDriverMode(false);
+        PhotonVisionUtility.getInstance().getHubTrackingCamera().setLED(VisionLEDMode.kOff);
+
+        PhotonVisionUtility.getInstance().setPiCameraExposure();
     }
 
+    /**
+     * <h3>startCamera</h3>
+     * 
+     * Starts up the driver camera.
+     */
     public void startCamera() {
-        UsbCamera camera = CameraServer.startAutomaticCapture(0);
-        if (camera != null) {
-            camera.setResolution(CAMERA_WIDTH, CAMERA_HEIGHT);
-            camera.setFPS(CAMERA_FPS);
+
+        // Set the video mode for the camera. This will tell the camera that we want a
+        // color stream with resolution 160x120
+        m_driverCamera.setVideoMode(PixelFormat.kMJPEG, 160, 120, 30);
+
+        // Set the source of the stream to the USB camera
+        m_mjpegServer.setSource(m_driverCamera);
+        // Set the compression. This gives us an OK quality stream while not chewing
+        // bandwidth
+        m_mjpegServer.setCompression(37);
+
+        // Get the network table instance
+        var currentNTInstance = NetworkTableInstance.getDefault();
+        // Get the camera publisher table so we can write our camera data
+        var cameraPublisherTable = currentNTInstance.getTable("CameraPublisher");
+        // Set our camera data in the publisher table
+        // This will cause the camera server to recognize the stream
+        cameraPublisherTable.getEntry("Driver Camera/connected").setBoolean(true);
+        cameraPublisherTable.getEntry("Driver Camera/description").setString("Driver Camera");
+        cameraPublisherTable.getEntry("Driver Camera/streams")
+                .setStringArray(new String[] { "mjpg:http://10.9.30.2:1185/?action=stream",
+                        "mjpg:http://172.22.11.2:1185/?action=stream" });
+
+    }
+
+    /**
+     * <h3>getAutonomousCommand</h3>
+     * 
+     * Gets the selected autonomous command.
+     */
+    public Command getAutonomousCommand() {
+        return m_autoManager.getAutonomousCommand();
+    }
+
+    /**
+     * <h3>beginAutoRunCommands</h3>
+     * 
+     * Prepares the robot for autonomous.
+     */
+    public void beginAutoRunCommands() {
+        // Sets the brake mode to brake
+        m_driveSubsystem.setMotorBrakeMode(NeutralMode.Brake);
+        // rescheduleAutonomousLEDs(true);
+        CommandScheduler.getInstance().unregisterSubsystem(m_LEDSubsystem);
+        CommandScheduler.getInstance().setDefaultCommand(m_LEDSubsystem, m_autonPatternCommand);
+
+        PhotonVisionUtility.getInstance().getHubTrackingCamera().setDriverMode(false);
+        PhotonVisionUtility.getInstance().getHubTrackingCamera().setLED(VisionLEDMode.kOff);
+
+        PhotonVisionUtility.getInstance().setPiCameraExposure();
+    }
+
+    /**
+     * <h3>testInit</h3>
+     * 
+     * Initializes the robot for test mode.
+     */
+    public void testInit() {
+        stopSubsystems();
+        m_endgameMotorSubsystem.refollowEndgameMotors();
+    }
+
+    /**
+     * <h3>testPeriodic</h3>
+     * 
+     * Test mode periodic.
+     */
+    public void testPeriodic() {
+        // TODO: figure out why we need this-need to repair
+        m_endgameMotorSubsystem.refollowEndgameMotors();
+        if (m_driverController.getLeftBumper().get()) {
+            if (m_driverController.getYButton().get()) {
+                m_endgamePiston1.open();
+            } else {
+                m_endgamePiston1.closed();
+            }
+            if (m_driverController.getAButton().get()) {
+                m_endgamePiston2.open();
+            } else {
+                m_endgamePiston2.closed();
+            }
+            if (m_driverController.getBButton().get()) {
+                m_endgamePiston3.open();
+            } else {
+                m_endgamePiston3.closed();
+            }
+            if (m_driverController.getXButton().get()) {
+                m_endgamePiston4.open();
+            } else {
+                m_endgamePiston4.closed();
+            }
+        } else {
+            if (m_driverController.getYButton().get()) {
+                m_endgameMotorSubsystem.setMotorSpeed(0.2);
+            } else if (m_driverController.getAButton().get()) {
+                m_endgameMotorSubsystem.setMotorSpeed(-0.2);
+            } else {
+                m_endgameMotorSubsystem.setMotorSpeed(0.0);
+            }
         }
     }
 
     /**
-    *
-    */
-    public Command getAutonomousCommand() {
-        return autoManager.getAutonomousCommand();
-    }
-
-    public void beginAutoRunCommands() {
-        // Sets the brake mode to brake
-        driveSubsystem.setMotorBrakeMode(NeutralMode.Brake);
-        resheduleAutononmousLEDS(true);
-
-    }
-
-    public void testInit() {
-        stopSubsystems();
-        endgameMotorSubsystem.refollowEndgameMotors();
-    }
-
-    public void testPeriodic() {
-        // TODO: figure out why we need this-need to repair
-        endgameMotorSubsystem.refollowEndgameMotors();
-        if (driverController.getLeftBumper().get()) {
-            if (driverController.getYButton().get()) {
-                endgamePiston1.open();
-            } else {
-                endgamePiston1.closed();
-            }
-            if (driverController.getAButton().get()) {
-                endgamePiston2.open();
-            } else {
-                endgamePiston2.closed();
-            }
-            if (driverController.getBButton().get()) {
-                endgamePistonL3.open();
-            } else {
-                endgamePistonL3.closed();
-            }
-            if (driverController.getXButton().get()) {
-                endgamePistonR3.open();
-            } else {
-                endgamePistonR3.closed();
-            }
-            if (driverController.getRightBumper().get()) {
-                endgamePiston4.open();
-            } else {
-                endgamePiston4.closed();
-            }
-        } else {
-            if (driverController.getYButton().get()) {
-                endgameMotorSubsystem.setMotorSpeed(0.2);
-            } else if (driverController.getAButton().get()) {
-                endgameMotorSubsystem.setMotorSpeed(-0.2);
-            } else {
-                endgameMotorSubsystem.setMotorSpeed(0.0);
-            }
-        }
-    }
-
+     * <h3>testExit</h3>
+     * 
+     * Runs when robot exits test mode.
+     */
     public void testExit() {
-        driveSubsystem.refollowDriveMotors();
-        endgameMotorSubsystem.refollowEndgameMotors();
+        m_driveSubsystem.refollowDriveMotors();
+        m_shooterSubsystem.refollowShooterMotors();
+        m_endgameMotorSubsystem.refollowEndgameMotors();
     }
 
+    /**
+     * <h3>stopSubsystems</h3>
+     * 
+     * Sets the intake and drive motors to 0.
+     */
     public void stopSubsystems() {
-        intakeMotorSubsystem.setMotorSpeed(0.0);
-        driveSubsystem.setVoltages(0.0, 0.0);
+        m_intakeMotorSubsystem.setMotorSpeed(0.0);
+        m_driveSubsystem.setVoltages(0.0, 0.0);
+        m_indexerMotorSubsystem.stopMotors();
     }
+
+    //----- ROBOT SIMULATION -----\\
 
     private final RamseteController m_ramsete = new RamseteController();
     private final SimulatedDrivetrain m_simDrive = new SimulatedDrivetrain();
@@ -497,6 +610,11 @@ public class RobotContainer {
     private Command m_autocmd = null;
 
     // This begins the robot sim and sets our a trajectory and paths.
+    /**
+     * <h3>robotSimInit</h3>
+     * 
+     * Runs when the robot is initialized in simulation.
+     */
     public void robotSimInit() {
         /*
          * String trajectoryJSON = Filesystem.getDeployDirectory() +
@@ -517,10 +635,14 @@ public class RobotContainer {
          */
     }
 
-    // Begins autonomous simulation. Resets position and timer.
+    /**
+     * <h3>autoSimInit</h3>
+     * 
+     * Begins autonomous simulation. Resets position and timer.
+     */
     public void autoSimInit() {
-        resheduleAutononmousLEDS(true);
-        m_autocmd = autoManager.getAutonomousCommand();
+        // rescheduleAutonomousLEDs(true);
+        m_autocmd = m_autoManager.getAutonomousCommand();
         if (m_autocmd != null) {
             if (m_autocmd instanceof PathPlannerSequentialCommandGroupUtility) {
                 List<Trajectory> list = ((PathPlannerSequentialCommandGroupUtility) m_autocmd).getTrajectories();
@@ -550,23 +672,33 @@ public class RobotContainer {
         }
     }
 
-    private void resheduleAutononmousLEDS(boolean useAutonomousLEDCmd) {
-        LEDCommand ledCommand = (useAutonomousLEDCmd) ? autonPatternCommand : idlePatternCommand;
-        LEDCommand endledCommand = (useAutonomousLEDCmd) ? idlePatternCommand : autonPatternCommand;
-        CommandScheduler scheduler = CommandScheduler.getInstance();
-        scheduler.unregisterSubsystem(ledSubsystem);
-        endledCommand.cancel();
-        scheduler.setDefaultCommand(ledSubsystem, ledCommand);
-    }
+    // private void rescheduleAutonomousLEDs(boolean useAutonomousLEDCmd) {
+    // LEDCommand ledCommand = (useAutonomousLEDCmd) ? autonPatternCommand :
+    // idlePatternCommand;
+    // LEDCommand endledCommand = (useAutonomousLEDCmd) ? idlePatternCommand :
+    // autonPatternCommand;
+    // CommandScheduler scheduler = CommandScheduler.getInstance();
+    // scheduler.unregisterSubsystem(ledSubsystem);
+    // endledCommand.cancel();
+    // scheduler.setDefaultCommand(ledSubsystem, ledCommand);
+    // }
 
-    // Updates simulated robot periodically.
+    /**
+     * <h3>robotSimPeriodic</h3>
+     * 
+     * Updates simulated robot periodically.
+     */
     public void robotSimPeriodic() {
         if (m_autocmd != null) {
             m_simDrive.periodic();
         }
     }
 
-    // Updates the position of the simulated robot autonomous periodically.
+    /**
+     * <h3>autoSimPeriodic</h3>
+     * 
+     * Updates the position of the simulated robot autonomous periodically.
+     */
     public void autoSimPeriodic() {
         if (m_autocmd != null) {
             double elapsed = m_timer.get();
@@ -576,14 +708,28 @@ public class RobotContainer {
         }
     }
 
-    // Updates simulation
+    /**
+     * <h3>simPeriodic</h3>
+     * 
+     * Updates simulation
+     */
     public void simPeriodic() {
         if (m_autocmd != null) {
             m_simDrive.simulationPeriodic();
         }
     }
 
+    //----- DISABLED -----\\
+
+    /**
+     * <h3>disabledInit</h3>
+     * 
+     * Robot initialization when disabled.
+     */
     public void disabledInit() {
-        idlePatternCommand.solidYellowLEDs();
+        m_idlePatternCommand.solidYellowLEDs();
+        PhotonVisionUtility.getInstance().getHubTrackingCamera().setDriverMode(true);
+        PhotonVisionUtility.getInstance().getHubTrackingCamera().setLED(VisionLEDMode.kDefault);
     }
+
 } // End of RobotContainer

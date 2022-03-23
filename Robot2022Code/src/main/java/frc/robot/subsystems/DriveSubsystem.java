@@ -15,6 +15,7 @@ import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.math.trajectory.constraint.DifferentialDriveVoltageConstraint;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.utilities.GyroUtility;
 import frc.robot.utilities.ShifterUtility;
@@ -32,10 +33,8 @@ public class DriveSubsystem extends SubsystemBase {
     // wheel circumference times the rotations per second : 0.1016(wheel dimention)
     // * pi * 16.678 = 5.32
 
-    //----- CONSTANTS -----\\
+    // ----- CONSTANTS -----\\
 
-    // Max linear speed of the robot
-    public static final double MAX_SPEED = 5.32; // meters per second
     // Max angular speed of the robot
     public static final double MAX_ANGULAR_SPEED = Math.PI; // 1 rotation per second
 
@@ -47,7 +46,7 @@ public class DriveSubsystem extends SubsystemBase {
     // The width of the drive base
     public static final double TRACK_WIDTH = 0.381 * 2; // meters // 26.5 inch
     // The radius of the wheels on the robot
-    public static final double WHEEL_RADIUS = 0.0508; // meters // 2 inch
+    public static final double WHEEL_RADIUS = Units.inchesToMeters(3.875 / 2);
     // The amount of internal encoder units in one motor revolution
     public static final int FALCON_ENCODER_RESOLUTION = 2048; // 2048 CPR
     // The maximum voltage we can send to the motors
@@ -75,28 +74,28 @@ public class DriveSubsystem extends SubsystemBase {
     // KS is static voltage to add to the speed input
     // KV is speed-to-voltage converter basically
     // KA is the acceleration constant
-    private final double m_RIGHT_KS = 0.7409;
-    private final double m_RIGHT_KV = 2.1937;
-    private final double m_RIGHT_KA = 0.17827;
-    private final double m_LEFT_KS = 0.73751;
-    private final double m_LEFT_KV = 2.1942;
-    private final double m_LEFT_KA = 0.18147;
-    private final double m_COMBINED_KS = 0.74177;
-    private final double m_COMBINED_KV = 2.1936;
-    private final double m_COMBINED_KA = 0.34666;
+    private final double m_RIGHT_KS = 0.72894;
+    private final double m_RIGHT_KV = 2.1981;
+    private final double m_RIGHT_KA = 0.39618;
+    private final double m_LEFT_KS = 0.73198;
+    private final double m_LEFT_KV = 2.2081;
+    private final double m_LEFT_KA = 0.20989;
+    private final double m_COMBINED_KS = 0.72074;
+    private final double m_COMBINED_KV = 2.1866;
+    private final double m_COMBINED_KA = 0.20704;
 
     // PID Constants
     // P is the proportional error gain
     // I is the integral error gain
     // D is the derivative error gain
-    private final double m_LEFT_P = 2.464;
+    private final double m_LEFT_P = 3.1442;
     private final double m_LEFT_I = 0.0;
     private final double m_LEFT_D = 0.0;
-    private final double m_RIGHT_P = 2.4833;
+    private final double m_RIGHT_P = 2.7313;
     private final double m_RIGHT_I = 0.0;
     private final double m_RIGHT_D = 0.0;
 
-    //----- TALONS -----\\
+    // ----- TALONS -----\\
 
     // Our Falcon 500s
     private final WPI_TalonFX m_leftLeader;
@@ -104,12 +103,12 @@ public class DriveSubsystem extends SubsystemBase {
     private final WPI_TalonFX m_rightLeader;
     private final WPI_TalonFX m_rightFollower;
 
-    //----- KINEMATICS -----\\
+    // ----- KINEMATICS -----\\
 
     // Kinematics to keep track of our wheel speeds
     private final DifferentialDriveKinematics m_kinematics = new DifferentialDriveKinematics(TRACK_WIDTH);
 
-    //----- FEED FORWARD -----\\
+    // ----- FEED FORWARD -----\\
 
     // The feedforward gains for our motors
     private final SimpleMotorFeedforward m_leftMotorFeedforward = new SimpleMotorFeedforward(m_LEFT_KS, m_LEFT_KV,
@@ -119,13 +118,13 @@ public class DriveSubsystem extends SubsystemBase {
     private final SimpleMotorFeedforward m_constraintFeedforward = new SimpleMotorFeedforward(m_COMBINED_KS,
             m_COMBINED_KV, m_COMBINED_KA);
 
-    //----- PID -----\\
+    // ----- PID -----\\
 
     // PID controllers for autonomous
     private final PIDController m_leftPIDController = new PIDController(m_LEFT_P, m_LEFT_I, m_LEFT_D);
     private final PIDController m_rightPIDController = new PIDController(m_RIGHT_P, m_RIGHT_I, m_RIGHT_D);
 
-    //----- ODOMETRY -----\\
+    // ----- ODOMETRY -----\\
 
     // Set up the voltage constraint for autonomous
     private final DifferentialDriveVoltageConstraint m_voltageConstraint = new DifferentialDriveVoltageConstraint(
@@ -133,13 +132,13 @@ public class DriveSubsystem extends SubsystemBase {
 
     // Set up odometry for calculating robot position
     private final DifferentialDriveOdometry m_odometry = new DifferentialDriveOdometry(
-            new Rotation2d(Math.toRadians(GyroUtility.getInstance().getGyro().getFusedHeading())));
+            new Rotation2d(Math.toRadians(GyroUtility.getInstance().getGyro().getYaw())));
 
-    //----- VARIABLES -----\\
+    // ----- VARIABLES -----\\
 
     private double m_yawPitchRollValues[] = new double[3];
 
-    //----- CONSTRUCTOR -----\\
+    // ----- CONSTRUCTOR -----\\
 
     /**
      * Constructs a differential drive object. Sets the encoder distance per pulse
@@ -191,7 +190,7 @@ public class DriveSubsystem extends SubsystemBase {
         m_rightFollower.setNeutralMode(NeutralMode.Brake);
     }
 
-    //----- METHODS -----\\
+    // ----- METHODS -----\\
 
     // Needed to overcome stopMotor() calls by CTRE's WPI motor controls
     // See https://github.com/CrossTheRoadElec/Phoenix-Releases/issues/28
@@ -373,9 +372,9 @@ public class DriveSubsystem extends SubsystemBase {
     public void setSpeeds(DifferentialDriveWheelSpeeds speeds) {
         // Convert speeds to volts
         double leftOutput = speeds.leftMetersPerSecond * MAX_VOLTS /
-                DriveSubsystem.MAX_SPEED;
+                DRIVETRAIN_MAX_FREE_SPEED_HIGH;
         double rightOutput = speeds.rightMetersPerSecond * MAX_VOLTS /
-                DriveSubsystem.MAX_SPEED;
+                DRIVETRAIN_MAX_FREE_SPEED_HIGH;
 
         setVoltages(leftOutput, rightOutput);
     }
@@ -524,7 +523,7 @@ public class DriveSubsystem extends SubsystemBase {
         // Update odometry using the gyro and the wheel rotations
         m_odometry.update(
                 // Create a new Rotation2d object with the reading from the pigeon
-                new Rotation2d(Math.toRadians(GyroUtility.getInstance().getGyro().getFusedHeading())),
+                new Rotation2d(Math.toRadians(GyroUtility.getInstance().getGyro().getYaw())),
                 // Convert raw sensor units to meters
                 getRawLeftSensorPosition()
                         // Convert raw sensor units to wheel rotations

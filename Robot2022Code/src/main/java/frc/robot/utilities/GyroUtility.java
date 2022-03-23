@@ -1,38 +1,16 @@
 package frc.robot.utilities;
 
-import frc.robot.subsystems.IntakeMotorSubsystem;
-
-import com.ctre.phoenix.sensors.PigeonIMU;
+import com.ctre.phoenix.sensors.Pigeon2;
 
 public class GyroUtility {
     private static GyroUtility instance;
-    private static PigeonIMU m_gyro; 
-
+    private Pigeon2 m_gyro;
 
     private GyroUtility() {
+        m_gyro = new Pigeon2(9);
+        m_gyro.setYaw(0.0);
+    }
 
-    }
-    /**
-    * <h3>setGyro</h3>
-    * Sets the gyro
-    */
-    
-    /**
-    * <h3>getGyro</h3
-    * Gets the gyro
-     */
-
-    public void setGyro(IntakeMotorSubsystem eSubsystem){
-        m_gyro = new PigeonIMU(eSubsystem.getIntakeMotor());
-    }
-    public PigeonIMU getGyro(){
-        // if m_gyro not set return error
-        if (m_gyro == null){
-            throw new RuntimeException("Tried to get gyro but not yet initialized. Make sure" +
-            " intake subsystem in insantiated before drive subsystem.");
-        }
-        return m_gyro;
-    }
     /**
      * <h3>getInstance</h3>
      * 
@@ -48,4 +26,11 @@ public class GyroUtility {
         return instance;
     }
 
+    /**
+     * <h3>getGyro</h3
+     * Gets the gyro
+     */
+    public Pigeon2 getGyro() {
+        return m_gyro;
+    }
 }

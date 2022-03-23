@@ -1,5 +1,4 @@
 <map id="frc.robot.subsystems.EndgamePistonSubsystem" name="frc.robot.subsystems.EndgamePistonSubsystem">
-<area shape="rect" id="node1" title=" " alt="" coords="23,95,226,136"/>
-<area shape="rect" id="node2" title=" " alt="" coords="5,5,124,32"/>
-<area shape="rect" id="node3" title=" " alt="" coords="149,5,221,32"/>
+<area shape="rect" id="node1" title=" " alt="" coords="5,80,208,121"/>
+<area shape="rect" id="node2" title=" " alt="" coords="47,5,166,32"/>
 </map>

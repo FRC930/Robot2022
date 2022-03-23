@@ -18,16 +18,16 @@ public class AutoCommandManager {
     HashMap<String, Subsystem> subsystemMap = new HashMap<String, Subsystem>();
 
     public static enum subNames {
-        CatapultSensorSubsystem("Catapult Sensor"),
-        CatapultSubsystem("Catapult"),
+        ShooterSubsystem("Shooter"),
+        ShooterHoodSubsystem("Shooter Hood"),
         DriveSubsystem("Drive"),
         EndgameMotorSubsystem("Endgame Motor"),
         EndgamePistonSubsystem("Endgame Piston"),
-        EndgameSensorSubsystem("Endgame Sensor"),
         IntakeMotorSubsystem("Intake Motor"),
         IntakePistonSubsystem("Intake Piston"),
         ShifterSubsystem("Shifter"),
-        VisionCameraSubsystem("Vision Camera");
+        VisionCameraSubsystem("Vision Camera"),
+        IndexerMotorSubsystem("Indexer Motor");
 
         final String m_name;
 
@@ -51,43 +51,75 @@ public class AutoCommandManager {
      */
     public void initCommands() {
 
-        TarmacTaxi defaultAutoPathCommand = new TarmacTaxi(
+        TarmacTaxi TarmacTaxi = new TarmacTaxi(
                 (DriveSubsystem) subsystemMap.get(subNames.DriveSubsystem.toString()));
 
-        TaxiOneBall defaultShoot = new TaxiOneBall(
-                (DriveSubsystem) subsystemMap.get(subNames.DriveSubsystem.toString()),
-                (CatapultSubsystem) subsystemMap.get(subNames.CatapultSubsystem.toString()));
-
-        TaxiTwoBall TwoBallAuto = new TaxiTwoBall(
+        TaxiOneBall TaxiOneBall = new TaxiOneBall(
                 (DriveSubsystem) subsystemMap.get(subNames.DriveSubsystem.toString()),
                 (IntakePistonSubsystem) subsystemMap.get(subNames.IntakePistonSubsystem.toString()),
                 (IntakeMotorSubsystem) subsystemMap.get(subNames.IntakeMotorSubsystem.toString()),
-                (VisionCameraSubsystem) subsystemMap.get(subNames.VisionCameraSubsystem.toString()),
-                (CatapultSubsystem) subsystemMap.get(subNames.CatapultSubsystem.toString()));
+                (ShooterSubsystem) subsystemMap.get(subNames.ShooterSubsystem.toString()),
+                (ShooterHoodSubsystem) subsystemMap.get(subNames.ShooterHoodSubsystem.toString()),
+                (IndexerMotorSubsystem) subsystemMap.get(subNames.IndexerMotorSubsystem.toString())
+                );
 
-        ShootMoveShoot ShootMoveShoot = new ShootMoveShoot(
+        TaxiTwoBall TaxiTwoBall = new TaxiTwoBall(
                 (DriveSubsystem) subsystemMap.get(subNames.DriveSubsystem.toString()),
-                (CatapultSubsystem) subsystemMap.get(subNames.CatapultSubsystem.toString()),
                 (IntakePistonSubsystem) subsystemMap.get(subNames.IntakePistonSubsystem.toString()),
                 (IntakeMotorSubsystem) subsystemMap.get(subNames.IntakeMotorSubsystem.toString()),
-                (VisionCameraSubsystem) subsystemMap.get(subNames.VisionCameraSubsystem.toString()));
+                (ShooterSubsystem) subsystemMap.get(subNames.ShooterSubsystem.toString()),
+                (ShooterHoodSubsystem) subsystemMap.get(subNames.ShooterHoodSubsystem.toString()),
+                (IndexerMotorSubsystem) subsystemMap.get(subNames.IndexerMotorSubsystem.toString())
+                );
 
         TerminalPickup TerminalPickup = new TerminalPickup(
                 (DriveSubsystem) subsystemMap.get(subNames.DriveSubsystem.toString()),
                 (IntakePistonSubsystem) subsystemMap.get(subNames.IntakePistonSubsystem.toString()),
                 (IntakeMotorSubsystem) subsystemMap.get(subNames.IntakeMotorSubsystem.toString()),
-                (VisionCameraSubsystem) subsystemMap.get(subNames.VisionCameraSubsystem.toString()),
-                (CatapultSubsystem) subsystemMap.get(subNames.CatapultSubsystem.toString()));
+                (ShooterSubsystem) subsystemMap.get(subNames.ShooterSubsystem.toString()),
+                (ShooterHoodSubsystem) subsystemMap.get(subNames.ShooterHoodSubsystem.toString()),
+                (IndexerMotorSubsystem) subsystemMap.get(subNames.IndexerMotorSubsystem.toString())
+                );
+
+        FiveBallAuto FiveBallAuto = new FiveBallAuto(
+            (DriveSubsystem) subsystemMap.get(subNames.DriveSubsystem.toString()),
+            (IntakePistonSubsystem) subsystemMap.get(subNames.IntakePistonSubsystem.toString()),
+            (IntakeMotorSubsystem) subsystemMap.get(subNames.IntakeMotorSubsystem.toString()),
+            (ShooterSubsystem) subsystemMap.get(subNames.ShooterSubsystem.toString()),
+            (ShooterHoodSubsystem) subsystemMap.get(subNames.ShooterHoodSubsystem.toString()),
+            (IndexerMotorSubsystem) subsystemMap.get(subNames.IndexerMotorSubsystem.toString())
+            );
+
+        DefensiveThreeBall DefensiveThreeBall = new DefensiveThreeBall(
+                (DriveSubsystem) subsystemMap.get(subNames.DriveSubsystem.toString()),
+                (IntakePistonSubsystem) subsystemMap.get(subNames.IntakePistonSubsystem.toString()),
+                (IntakeMotorSubsystem) subsystemMap.get(subNames.IntakeMotorSubsystem.toString()),
+                (ShooterSubsystem) subsystemMap.get(subNames.ShooterSubsystem.toString()),
+                (ShooterHoodSubsystem) subsystemMap.get(subNames.ShooterHoodSubsystem.toString()),
+                (IndexerMotorSubsystem) subsystemMap.get(subNames.IndexerMotorSubsystem.toString())
+                );
+
+        DefensiveHangarCleanup DefensiveHangarCleanup = new DefensiveHangarCleanup(
+            (DriveSubsystem) subsystemMap.get(subNames.DriveSubsystem.toString()),
+            (IntakePistonSubsystem) subsystemMap.get(subNames.IntakePistonSubsystem.toString()),
+            (IntakeMotorSubsystem) subsystemMap.get(subNames.IntakeMotorSubsystem.toString()),
+            (ShooterSubsystem) subsystemMap.get(subNames.ShooterSubsystem.toString()),
+            (ShooterHoodSubsystem) subsystemMap.get(subNames.ShooterHoodSubsystem.toString()),
+            (IndexerMotorSubsystem) subsystemMap.get(subNames.IndexerMotorSubsystem.toString())
+            );
 
         // Adding auto paths to the Shuffleboard
         ShuffleboardUtility.getInstance().setDefaultAutonOptions("(None)", null);
-        ShuffleboardUtility.getInstance().addAutonOptions("defaultAutoPathCommand", defaultAutoPathCommand);
-        ShuffleboardUtility.getInstance().addAutonOptions("defaultShootingCommand", defaultShoot);
+        ShuffleboardUtility.getInstance().addAutonOptions("defaultAutoPathCommand", TarmacTaxi);
 
-        ShuffleboardUtility.getInstance().addAutonOptions("TwoBallAuto", TwoBallAuto);
+        ShuffleboardUtility.getInstance().addAutonOptions("TaxiTwoBall", TaxiTwoBall);
+        ShuffleboardUtility.getInstance().addAutonOptions("TaxiOneBall", TaxiOneBall);
         // ShuffleboardUtility.getInstance().addAutonOptions("ShootMoveShoot",
         // ShootMoveShoot);
         ShuffleboardUtility.getInstance().addAutonOptions("TerminalPickup", TerminalPickup);
+        ShuffleboardUtility.getInstance().addAutonOptions("DefensiveThreeBall", DefensiveThreeBall);
+        ShuffleboardUtility.getInstance().addAutonOptions("DefensiveHangarCleanup", DefensiveHangarCleanup);
+        ShuffleboardUtility.getInstance().addAutonOptions("FiveBallAuto", FiveBallAuto);
     }
 
     /**
