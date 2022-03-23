@@ -596,6 +596,7 @@ public class RobotContainer {
     public void stopSubsystems() {
         m_intakeMotorSubsystem.setMotorSpeed(0.0);
         m_driveSubsystem.setVoltages(0.0, 0.0);
+        m_indexerMotorSubsystem.stopMotors();
     }
 
     //----- ROBOT SIMULATION -----\\
