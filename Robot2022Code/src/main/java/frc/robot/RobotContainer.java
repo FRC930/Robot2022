@@ -26,7 +26,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.DriveCommand;
-import frc.robot.commands.IndexerForwardCommand;
+import frc.robot.commands.IndexerMotorCommand;
 import frc.robot.commands.LEDCommand;
 import frc.robot.commands.LEDCommand.LEDPatterns;
 import frc.robot.commands.ToggleShifterCommand;
@@ -121,6 +121,13 @@ public class RobotContainer {
     // Shooter subsystems
     private final ShooterSubsystem m_shooterSubsystem;
     private final ShooterHoodSubsystem m_shooterHoodSubsystem;
+
+    private final AdjustHoodCommand m_adjustHoodCommand;
+
+    private final ShootCargoCommand m_shootCargoCommand;
+
+    private final IndexerMotorCommand m_indexerMotorForwardCommand;
+    private final IndexerMotorCommand m_indexerMotorReverseCommand;
 
     //----- ENDGAME -----\\
 
@@ -264,25 +271,42 @@ public class RobotContainer {
 
         //----- DRIVETRAIN COMMAND INITS -----\\
 
-        m_driveCommand = new DriveCommand(
-                m_driveSubsystem,
-                m_driverController.getController());
+        m_driveCommand = new DriveCommand(m_driveSubsystem,m_driverController.getController());
 
         //----- DRIVETRAIN SHIFTER COMMAND INITS -----\\
 
         m_toggleShifterCommand = new ToggleShifterCommand(m_shifterSubsystem);
+
+        //----- SHOOTER COMMAND INITS -----\\
+
+        m_adjustHoodCommand = new AdjustHoodCommand(m_shooterHoodSubsystem);
+
+        m_shootCargoCommand = new ShootCargoCommand(m_shooterSubsystem, m_indexerMotorSubsystem);
+
+        m_indexerMotorForwardCommand = new IndexerMotorCommand(m_indexerMotorSubsystem, false);
+        m_indexerMotorReverseCommand = new IndexerMotorCommand(m_indexerMotorSubsystem, true);
 
         //----- ENDGAME COMMAND INITS -----\\
 
         // Endgame Arm Commands
         m_endgameArmCommand = new EndgameArmCommand(m_endgameMotorSubsystem);
         m_endgameArmRevCommand = new EndgameArmRevCommand(m_endgameMotorSubsystem);
-        m_endgameManagerCommand = new EndgameManagerCommand(m_endgameMotorSubsystem,
-                m_endgamePiston1, m_endgamePiston2, m_endgamePiston3, m_endgamePiston4);
+        m_endgameManagerCommand = new EndgameManagerCommand(
+            m_endgameMotorSubsystem,
+            m_endgamePiston1, 
+            m_endgamePiston2, 
+            m_endgamePiston3, 
+            m_endgamePiston4
+        );
+
+        //----- AIMING COMMANDS -----\\
 
         m_pigeonAimCommand = new PigeonAimCommand(m_driveSubsystem);
-        m_photonAimCommand = new PhotonAimCommand(m_driveSubsystem, m_driverController.getController(),
-                m_codriverController.getController());
+        m_photonAimCommand = new PhotonAimCommand(
+            m_driveSubsystem, 
+            m_driverController.getController(),
+            m_codriverController.getController()
+        );
 
         //----- SETTING BALL COLOR -----\\
 
@@ -326,7 +350,7 @@ public class RobotContainer {
         scheduler.setDefaultCommand(m_endgamePiston2, new EndgameCloseClawCommand(m_endgamePiston2));
         scheduler.setDefaultCommand(m_endgamePiston3, new EndgameCloseClawCommand(m_endgamePiston3));
         scheduler.setDefaultCommand(m_endgamePiston4, new EndgameCloseClawCommand(m_endgamePiston4));
-        scheduler.setDefaultCommand(m_indexerMotorSubsystem, new IndexerForwardCommand(m_indexerMotorSubsystem, false));
+        scheduler.setDefaultCommand(m_indexerMotorSubsystem, m_indexerMotorForwardCommand);
 
         compressor.enableAnalog(100, 115);
     }
@@ -349,22 +373,21 @@ public class RobotContainer {
 
         m_driverController.getLeftBumper().whileActiveOnce(
             new SequentialCommandGroup(
-                new PhotonAimCommand(m_driveSubsystem),
-                new AdjustHoodCommand(m_shooterHoodSubsystem),
-                new ShootCargoCommand(m_shooterSubsystem, m_indexerMotorSubsystem)
-                        .withTimeout(ShootCargoCommand.SHOOT_TIME)
+                m_photonAimCommand,
+                m_adjustHoodCommand,
+                m_shootCargoCommand.withTimeout(ShootCargoCommand.SHOOT_TIME)
             )
         );
 
         m_driverController.getRightBumper().whileActiveOnce(
-            new ShootCargoCommand(m_shooterSubsystem, m_indexerMotorSubsystem)
+            m_shootCargoCommand
         );
 
         //----- CODRIVER CONTROLLER -----\\
 
         // Checks if LB is pressed, then it will engage the intake pistons
         m_codriverController.getLeftBumper().whileActiveOnce(
-            new ParallelCommandGroup(m_engageIntakePistonsCommand)
+            m_engageIntakePistonsCommand
         );
 
         // Checks if LB is pressed and B isn't pressed, then it will run intake
@@ -376,7 +399,7 @@ public class RobotContainer {
         m_codriverController.getLeftBumper().and(m_codriverController.getBButton()).whileActiveOnce(
             new ParallelCommandGroup(
                 m_reverseIntakeMotorsCommand,
-                new IndexerForwardCommand(m_indexerMotorSubsystem, true)
+                m_indexerMotorReverseCommand
             )
         );
 
@@ -392,10 +415,13 @@ public class RobotContainer {
 
         m_codriverController.getPOVLeftTrigger().whileActiveOnce(
             new ParallelCommandGroup(
-                new AdjustHoodCommand(m_shooterHoodSubsystem,
+                new AdjustHoodCommand(
+                    m_shooterHoodSubsystem,
                     ShooterUtility.calculateHoodPos(8.5)
                 ),
-                new ShootCargoCommand(m_shooterSubsystem, m_indexerMotorSubsystem,
+                new ShootCargoCommand(
+                    m_shooterSubsystem, 
+                    m_indexerMotorSubsystem,
                     ShooterUtility.calculateTopSpeed(8.5),
                     ShooterUtility.calculateBottomSpeed(8.5)
                 )
@@ -404,10 +430,13 @@ public class RobotContainer {
 
         m_codriverController.getPOVUpTrigger().whileActiveOnce(
             new ParallelCommandGroup(
-                new AdjustHoodCommand(m_shooterHoodSubsystem,
+                new AdjustHoodCommand(
+                    m_shooterHoodSubsystem,
                     ShooterUtility.calculateHoodPos(17)
                 ),
-                new ShootCargoCommand(m_shooterSubsystem, m_indexerMotorSubsystem,
+                new ShootCargoCommand(
+                    m_shooterSubsystem, 
+                    m_indexerMotorSubsystem,
                     ShooterUtility.calculateTopSpeed(17),
                     ShooterUtility.calculateBottomSpeed(17)
                 )
@@ -416,22 +445,30 @@ public class RobotContainer {
 
         m_codriverController.getPOVDownTrigger().whileActiveOnce(
             new ParallelCommandGroup(
-                new AdjustHoodCommand(m_shooterHoodSubsystem,
+                new AdjustHoodCommand(
+                    m_shooterHoodSubsystem,
                     ShooterUtility.calculateHoodPos(19 / 12)
                 ),
-                new ShootCargoCommand(m_shooterSubsystem, m_indexerMotorSubsystem,
+                new ShootCargoCommand(
+                    m_shooterSubsystem, 
+                    m_indexerMotorSubsystem,
                     ShooterUtility.calculateTopSpeed(19 / 12),
                     ShooterUtility.calculateBottomSpeed(19 / 12)
                 )
             ).withTimeout(0.1)
         );
 
-        m_codriverController.getStartButton().whileActiveOnce(new SequentialCommandGroup(
-            new AdjustHoodCommand(m_shooterHoodSubsystem, -1),
-            new ParallelCommandGroup(
-                m_endgameManagerCommand, 
-                m_endgamePatternCommand
-            ))
+        m_codriverController.getStartButton().whileActiveOnce(
+            new SequentialCommandGroup(
+                new AdjustHoodCommand(
+                    m_shooterHoodSubsystem, 
+                    -1
+                ),
+                new ParallelCommandGroup(
+                    m_endgameManagerCommand, 
+                    m_endgamePatternCommand
+                )
+            )
         );
 
         /*

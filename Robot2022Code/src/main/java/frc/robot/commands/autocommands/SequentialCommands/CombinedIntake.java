@@ -1,7 +1,7 @@
 package frc.robot.commands.autocommands.SequentialCommands;
 
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
-import frc.robot.commands.IndexerForwardCommand;
+import frc.robot.commands.IndexerMotorCommand;
 import frc.robot.commands.Ramsete930Command;
 import frc.robot.commands.intakecommands.intakePistonCommands.EngageIntakePistonsCommand;
 import frc.robot.commands.intakecommands.intakemotorcommands.RunIntakeMotorsCommand;
@@ -20,7 +20,7 @@ public class CombinedIntake extends ParallelRaceGroup{
         addCommands(
             new EngageIntakePistonsCommand(intakePistonSubsystem),
             new RunIntakeMotorsCommand(intakeMotorSubsystem, false),
-            new IndexerForwardCommand(indexerMotorSubsystem, false),
+            new IndexerMotorCommand(indexerMotorSubsystem, false),
             path
         );
     }
@@ -33,7 +33,7 @@ public class CombinedIntake extends ParallelRaceGroup{
         addCommands(
             new EngageIntakePistonsCommand(intakePistonSubsystem),
             new RunIntakeMotorsCommand(intakeMotorSubsystem, false),
-            new IndexerForwardCommand(indexerMotorSubsystem, false)
+            new IndexerMotorCommand(indexerMotorSubsystem, false)
         );
     }
 }

@@ -19,7 +19,7 @@ import frc.robot.utilities.BallSensorUtility;
  * 
  * Sets the motor speed of the indexer
  */
-public class IndexerForwardCommand extends CommandBase {
+public class IndexerMotorCommand extends CommandBase {
 
     // -------- CONSTANTS --------\\
     private final double INTAKE_MOTOR_SPEED = 0.75;
@@ -42,7 +42,7 @@ public class IndexerForwardCommand extends CommandBase {
      *
      * @param indexer The motor on the indexer
      */
-    public IndexerForwardCommand(IndexerMotorSubsystem indexer, boolean isReversed) {
+    public IndexerMotorCommand(IndexerMotorSubsystem indexer, boolean isReversed) {
         indexerMotor = indexer;
         reversed = isReversed;
         addRequirements(indexer);
