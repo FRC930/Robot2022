@@ -129,6 +129,8 @@ public class RobotContainer {
     private final IndexerMotorCommand m_indexerMotorForwardCommand;
     private final IndexerMotorCommand m_indexerMotorReverseCommand;
 
+    private final SequentialCommandGroup m_teleopShootSequence;
+
     //----- ENDGAME -----\\
 
     // Endgame Sequence
@@ -286,6 +288,19 @@ public class RobotContainer {
         m_indexerMotorForwardCommand = new IndexerMotorCommand(m_indexerMotorSubsystem, false);
         m_indexerMotorReverseCommand = new IndexerMotorCommand(m_indexerMotorSubsystem, true);
 
+        m_teleopShootSequence = new SequentialCommandGroup(
+            new PhotonAimCommand(
+                m_driveSubsystem, 
+                m_driverController.getController(),
+                m_codriverController.getController()
+            ),
+            new AdjustHoodCommand(m_shooterHoodSubsystem),
+            new ShootCargoCommand(
+                m_shooterSubsystem, 
+                m_indexerMotorSubsystem
+            ).withTimeout(ShootCargoCommand.SHOOT_TIME)
+        );
+
         //----- ENDGAME COMMAND INITS -----\\
 
         // Endgame Arm Commands
@@ -372,11 +387,7 @@ public class RobotContainer {
         );
 
         m_driverController.getLeftBumper().whileActiveOnce(
-            new SequentialCommandGroup(
-                m_photonAimCommand,
-                m_adjustHoodCommand,
-                m_shootCargoCommand.withTimeout(ShootCargoCommand.SHOOT_TIME)
-            )
+            m_teleopShootSequence
         );
 
         m_driverController.getRightBumper().whileActiveOnce(
@@ -401,6 +412,10 @@ public class RobotContainer {
                 m_reverseIntakeMotorsCommand,
                 m_indexerMotorReverseCommand
             )
+        );
+
+        m_codriverController.getRightBumper().whileActiveOnce(
+            m_teleopShootSequence
         );
 
         // Manually rotates the endgame arms while pressed
