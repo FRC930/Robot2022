@@ -100,8 +100,7 @@ public class EndgameManagerCommand extends CommandBase {
                         // Then closes the #2 claws and stops the motor
                         new ParallelRaceGroup(
                                 new EndgameArmCommand(endgameMotorSubsystem),
-                                new SequentialCommandGroup(new EndgameCloseWhenTouching(endgamePiston1, 2),
-                                        new WaitCommand(0.5))),
+                                new EndgameCloseWhenTouching(endgamePiston1, 2)),
                         new WaitCommand(ENDGAME_PISTON_DELAY),
                         new EndgameIncrementStateCommand(this)));
         // Opens #3 and #4 claws, waits extra before letting go
@@ -111,7 +110,7 @@ public class EndgameManagerCommand extends CommandBase {
                         new ParallelRaceGroup(
                                 new EndgameOpenClawCommand(endgamePiston3),
                                 new EndgameOpenClawCommand(endgamePiston4),
-                                new WaitCommand(0.01)),
+                                new WaitCommand(ENDGAME_PISTON_DELAY * 2)),
                         new EndgameIncrementStateCommand(this)));
         // Opens #3 claw and closes #4
         // Rotates arm until both #4 sensor triggers
@@ -119,40 +118,30 @@ public class EndgameManagerCommand extends CommandBase {
         commands.put(5,
                 new SequentialCommandGroup(
                         // Opens #3 claw and closes #4
-                        // new ParallelRaceGroup(
-                        // new EndgameCloseClawCommand(endgamePiston4),
-                        // new EndgameOpenClawCommand(endgamePiston3),
-                        // new WaitCommand(ENDGAME_PISTON_DELAY)),
+                        new ParallelRaceGroup(
+                                new EndgameCloseClawCommand(endgamePiston4),
+                                new EndgameOpenClawCommand(endgamePiston3),
+                                new WaitCommand(ENDGAME_PISTON_DELAY)),
                         // Rotates arm until both #4 sensor triggers
                         // Then closes #3 claws and stops motor
                         new ParallelRaceGroup(
                                 new EndgameArmCommand(endgameMotorSubsystem),
                                 new SequentialCommandGroup(
-                                        new ParallelRaceGroup(
-                                                new WaitCommand(0.5),
-                                                new EndgameOpenClawCommand(endgamePiston3),
-                                                new EndgameOpenClawCommand(endgamePiston4)),
-                                        new EndgameCloseClawCommand(endgamePiston4).withTimeout(0.01))),
-                        new EndgameIncrementStateCommand(this)));
-        commands.put(6,
-                new SequentialCommandGroup(
-                        new ParallelRaceGroup(
-                                new EndgameArmCommand(endgameMotorSubsystem),
-                                new SequentialCommandGroup(
-                                        new EndgameOpenClawCommand(endgamePiston3).withTimeout(0.01),
-                                        new EndgameCloseClawCommand(endgamePiston4).withTimeout(0.01),
                                         new EndgameCloseWhenTouching(endgamePiston3, 4),
-                                        new WaitCommand(0.5))),
-                        new EndgameIncrementStateCommand(this)));
+                                        new WaitCommand(ENDGAME_PISTON_DELAY * 2)
+                                )
+                        ),
+                        new EndgameIncrementStateCommand(this))
+                );
         // Opens #2 claws
         // NOTE:Claws close automatically after the final stage ends due to default
         // commands
-        commands.put(7,
+        commands.put(6,
                 new SequentialCommandGroup(
                         // Opens #2 claws
                         new ParallelRaceGroup(
                                 new EndgameOpenClawCommand(endgamePiston2),
-                                new WaitCommand(ENDGAME_PISTON_DELAY * 2)),
+                                new WaitCommand(ENDGAME_PISTON_DELAY)),
                         new EndgameIncrementStateCommand(this)));
     }
 

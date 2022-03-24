@@ -109,8 +109,8 @@ public class TaxiTwoBall extends PathPlannerSequentialCommandGroupUtility {
                 r_exitTarmac
             ),
             new StopDrive(driveSubsystem),
-            new PhotonAimCommand(driveSubsystem),
-            new AutoShootCargo(shooterHoodSubsystem, shooterSubsystem, indexerMotorSubsystem, currentToHubDistanceUtility.getDistanceToHub(driveSubsystem.getOdometry().getPoseMeters()), intakeMotorSubsystem, intakePistonSubsystem, ShootCargoCommand.SHOOT_TIME));
+            new PhotonAimCommand(driveSubsystem).withTimeout(2),
+            new AutoShootCargo(shooterHoodSubsystem, shooterSubsystem, indexerMotorSubsystem, 11.62 , intakeMotorSubsystem, intakePistonSubsystem, ShootCargoCommand.SHOOT_TIME));
         
 
     } // End of Constructor

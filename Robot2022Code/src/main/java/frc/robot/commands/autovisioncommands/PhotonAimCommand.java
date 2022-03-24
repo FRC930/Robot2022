@@ -138,7 +138,7 @@ public class PhotonAimCommand extends CommandBase {
             range = Math.sqrt(Math.pow(range, 2) - Math.pow(HEIGHT_DIFFERENCE_METERS, 2))
                     // Adjusted to measure from front of the robot to hub stand wall.
                     // This distance is in meters ~43.307 inches
-                    -0.2;
+                    - 0.2;
 
             ShuffleboardUtility.getInstance().putToShuffleboard(ShuffleboardUtility.driverTab,
                     ShuffleboardKeys.DISTANCE_FROM_GOAL, new ShuffleBoardData<Double>(range));
@@ -209,6 +209,14 @@ public class PhotonAimCommand extends CommandBase {
         // that we don't think that we are aimed when we aren't
         ShuffleboardUtility.getInstance().putToShuffleboard(ShuffleboardUtility.driverTab,
                 ShuffleboardKeys.AIMED, new ShuffleBoardData<Boolean>(false));
+
+        // Turn off rumble for both controllers
+        if (m_driverController != null && m_codriverController != null) {
+            m_driverController.setRumble(RumbleType.kLeftRumble, 0);
+            m_driverController.setRumble(RumbleType.kRightRumble, 0);
+            m_codriverController.setRumble(RumbleType.kLeftRumble, 0);
+            m_codriverController.setRumble(RumbleType.kRightRumble, 0);
+        }
     }
 
     @Override
