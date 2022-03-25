@@ -23,6 +23,7 @@ import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.DriveCommand;
@@ -121,8 +122,6 @@ public class RobotContainer {
     // Shooter subsystems
     private final ShooterSubsystem m_shooterSubsystem;
     private final ShooterHoodSubsystem m_shooterHoodSubsystem;
-
-    private final AdjustHoodCommand m_adjustHoodCommand;
 
     private final ShootCargoCommand m_shootCargoCommand;
 
@@ -281,8 +280,6 @@ public class RobotContainer {
 
         //----- SHOOTER COMMAND INITS -----\\
 
-        m_adjustHoodCommand = new AdjustHoodCommand(m_shooterHoodSubsystem);
-
         m_shootCargoCommand = new ShootCargoCommand(m_shooterSubsystem, m_indexerMotorSubsystem);
 
         m_indexerMotorForwardCommand = new IndexerMotorCommand(m_indexerMotorSubsystem, false);
@@ -311,7 +308,9 @@ public class RobotContainer {
             m_endgamePiston1, 
             m_endgamePiston2, 
             m_endgamePiston3, 
-            m_endgamePiston4
+            m_endgamePiston4,
+            m_indexerMotorSubsystem,
+            compressor
         );
 
         //----- AIMING COMMANDS -----\\
@@ -480,12 +479,18 @@ public class RobotContainer {
                     m_shooterHoodSubsystem, 
                     -1
                 ),
+                new InstantCommand(() -> {
+                    PhotonVisionUtility.getInstance().getHubTrackingCamera().setDriverMode(true);
+                }),
                 new ParallelCommandGroup(
                     m_endgameManagerCommand, 
                     m_endgamePatternCommand
                 )
             )
         );
+
+        m_codriverController.getBackButton().whileActiveOnce(
+           new InstantCommand(m_endgameManagerCommand::resetState, m_endgameMotorSubsystem));
 
         /*
          * codriverController.getXButton().whileActiveOnce(new

@@ -127,19 +127,19 @@ public class DefensiveThreeBall extends PathPlannerSequentialCommandGroupUtility
                 r_exitTarmac
             ),
             new StopDrive(driveSubsystem),
-            new ParallelRaceGroup(
-                new HubAimCommand(driveSubsystem),
-                new WaitCommand(1)
-            ),
-            new AutoShootCargo(shooterHoodSubsystem, shooterSubsystem, indexerMotorSubsystem, currentToHubDistanceUtility.getDistanceToHub(driveSubsystem.getOdometry().getPoseMeters()), intakeMotorSubsystem, intakePistonSubsystem, ShootCargoCommand.SHOOT_TIME),
+            // new ParallelRaceGroup(
+            //     new HubAimCommand(driveSubsystem),
+            //     new WaitCommand(1)
+            // ),
+            new AutoShootCargo(shooterHoodSubsystem, shooterSubsystem, indexerMotorSubsystem, 11.68 , intakeMotorSubsystem, intakePistonSubsystem, ShootCargoCommand.SHOOT_TIME),
             new CombinedIntake(
                 intakePistonSubsystem,
                 intakeMotorSubsystem,
                 indexerMotorSubsystem,
                 r_adjacentEnemyCargo
             ),
-            new StopDrive(driveSubsystem),
-            new AutoShootCargo(shooterHoodSubsystem, shooterSubsystem, indexerMotorSubsystem, currentToHubDistanceUtility.getDistanceToHub(driveSubsystem.getOdometry().getPoseMeters()), intakeMotorSubsystem, intakePistonSubsystem, ShootCargoCommand.SHOOT_TIME)
+            new StopDrive(driveSubsystem),                                                 // hangar point for manual calculation should be around x:1.65 y:6.55
+            new AutoShootCargo(shooterHoodSubsystem, shooterSubsystem, indexerMotorSubsystem, 8.0 , intakeMotorSubsystem, intakePistonSubsystem, ShootCargoCommand.SHOOT_TIME)
         );
 
     } // End of Constructor

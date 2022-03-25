@@ -55,7 +55,7 @@ public class EndgameArmCommand extends CommandBase {
    * @param speed           - Speed of arm rotation, currently set to 0.5 by default (use overload to specify speed)
    */
   public EndgameArmCommand(EndgameMotorSubsystem motorSubsystem) {
-    this(motorSubsystem, 0.6);
+    this(motorSubsystem, 0.8);
   }
 
   // -------- METHODS --------\\

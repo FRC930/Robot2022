@@ -11,6 +11,7 @@ package frc.robot.commands.endgamecommands;
 
 import java.util.HashMap;
 
+import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
@@ -21,6 +22,7 @@ import frc.robot.Robot;
 import frc.robot.commands.endgamecommands.EndgameRotateVerticalCommand.EndgamePosition;
 import frc.robot.subsystems.EndgameMotorSubsystem;
 import frc.robot.subsystems.EndgamePistonSubsystem;
+import frc.robot.subsystems.IndexerMotorSubsystem;
 
 //-------- COMMAND CLASS --------\\
 /**
@@ -42,6 +44,8 @@ public class EndgameManagerCommand extends CommandBase {
     // State flag for updatable state
     private int newState;
 
+    private Compressor m_compressor;
+
     // -------- CONSTRUCTOR --------\\
     /**
      * <h3>EndgameManagerCommand</h3>
@@ -56,7 +60,10 @@ public class EndgameManagerCommand extends CommandBase {
      */
     public EndgameManagerCommand(EndgameMotorSubsystem endgameMotorSubsystem, EndgamePistonSubsystem endgamePiston1,
             EndgamePistonSubsystem endgamePiston2, EndgamePistonSubsystem endgamePiston3,
-            EndgamePistonSubsystem endgamePiston4) {
+            EndgamePistonSubsystem endgamePiston4, IndexerMotorSubsystem indexerMotorSubsystem, Compressor compressor) {
+
+        m_compressor = compressor;
+
         // Starts at the beginning of the map sequence
         // Simulation cannot rotate arm, need to start at step 2
         if (Robot.isReal()) {
@@ -99,9 +106,14 @@ public class EndgameManagerCommand extends CommandBase {
                         // Rotates arm until both #2 sensors trigger
                         // Then closes the #2 claws and stops the motor
                         new ParallelRaceGroup(
-                                new EndgameArmCommand(endgameMotorSubsystem),
-                                new EndgameCloseWhenTouching(endgamePiston1, 2)),
-                        new WaitCommand(ENDGAME_PISTON_DELAY),
+                                new EndgameArmCommand(endgameMotorSubsystem, 1.0),
+                                new SequentialCommandGroup(
+                                        new EndgameEndWhenTouching(2),
+                                        new WaitCommand(ENDGAME_PISTON_DELAY),
+                                        new EndgameCloseWhenTouching(
+                                                endgamePiston1, 2),
+                                        new WaitCommand(ENDGAME_PISTON_DELAY))),
+                        new WaitCommand(1.0),
                         new EndgameIncrementStateCommand(this)));
         // Opens #3 and #4 claws, waits extra before letting go
         commands.put(4,
@@ -110,8 +122,10 @@ public class EndgameManagerCommand extends CommandBase {
                         new ParallelRaceGroup(
                                 new EndgameOpenClawCommand(endgamePiston3),
                                 new EndgameOpenClawCommand(endgamePiston4),
-                                new WaitCommand(ENDGAME_PISTON_DELAY * 2)),  // REDUCE this wait since next step is to step for detecting the bar
-                        new WaitCommand(4.0),
+                                new WaitCommand(ENDGAME_PISTON_DELAY * 2)), // REDUCE
+                                                // this wait since next step is to
+                                                // step for detecting the bar
+                        new WaitCommand(1.5),
                         new EndgameIncrementStateCommand(this)));
         // Opens #3 claw and closes #4
         // Rotates arm until both #4 sensor triggers
@@ -122,22 +136,29 @@ public class EndgameManagerCommand extends CommandBase {
                         new ParallelRaceGroup(
                                 new EndgameCloseClawCommand(endgamePiston4),
                                 new EndgameOpenClawCommand(endgamePiston3),
-                                new WaitCommand(ENDGAME_PISTON_DELAY)),  // WHY wait to start moving while we are swing??
+                                new WaitCommand(ENDGAME_PISTON_DELAY)), // WHY wait to
+                                                // start moving while we are swing??
                         // Rotates arm until both #4 sensor triggers
                         // Then closes #3 claws and stops motor
                         new ParallelRaceGroup(
-                                new EndgameArmCommand(endgameMotorSubsystem),
+                                new EndgameArmCommand(endgameMotorSubsystem, 1.0),
                                 new SequentialCommandGroup(
-                                        new EndgameCloseWhenTouching(endgamePiston3, 4),
-                                        new WaitCommand(ENDGAME_PISTON_DELAY * 2)
-                                        // ,
-                                        // new EndgameCloseWhenTouching(endgamePiston3, 4),
-                                        // new WaitCommand(ENDGAME_PISTON_DELAY * 2)
-                                )
-                        ),
-                        new WaitCommand(10),  // TODO REMOVE AFTER TEST PRACTICE FIELD
-                        new EndgameIncrementStateCommand(this))
-                );
+                                        new EndgameEndWhenTouching(4),
+                                        new WaitCommand(ENDGAME_PISTON_DELAY),
+                                        new EndgameCloseWhenTouching(
+                                                endgamePiston3, 4),
+                                        new WaitCommand(ENDGAME_PISTON_DELAY))),
+                        // new SequentialCommandGroup(
+                        // new EndgameCloseWhenTouching(
+                        // endgamePiston3, 4),
+                        // new WaitCommand(ENDGAME_PISTON_DELAY
+                        // * 2)
+                        // // ,
+                        // // new EndgameCloseWhenTouching(endgamePiston3, 4),
+                        // // new WaitCommand(ENDGAME_PISTON_DELAY * 2)
+                        // )),
+                        new WaitCommand(1),
+                        new EndgameIncrementStateCommand(this)));
         // Opens #2 claws
         // NOTE:Claws close automatically after the final stage ends due to default
         // commands
@@ -148,6 +169,8 @@ public class EndgameManagerCommand extends CommandBase {
                                 new EndgameOpenClawCommand(endgamePiston2),
                                 new WaitCommand(ENDGAME_PISTON_DELAY)),
                         new EndgameIncrementStateCommand(this)));
+
+        // addRequirements(indexerMotorSubsystem);
     }
 
     /**
@@ -157,9 +180,18 @@ public class EndgameManagerCommand extends CommandBase {
         newState++;
     }
 
+    /**
+     * Resets the state machine back to zero.
+     */
+    public void resetState() {
+        currentState = 1;
+        newState = 1;
+    }
+
     // Starts the first command
     @Override // Called when the command is initially scheduled.
     public void initialize() {
+        m_compressor.disable();
         CommandScheduler.getInstance().schedule(commands.get(currentState));
     }
 

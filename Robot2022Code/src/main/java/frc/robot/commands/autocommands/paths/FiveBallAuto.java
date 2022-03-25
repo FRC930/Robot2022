@@ -9,10 +9,7 @@ import frc.robot.commands.autocommands.ResetAutonomousCommand;
 import frc.robot.commands.autocommands.SequentialCommands.AutoShootCargo;
 import frc.robot.commands.autocommands.SequentialCommands.CombinedIntake;
 import frc.robot.commands.autocommands.SequentialCommands.StopDrive;
-import frc.robot.commands.autovisioncommands.HubAimCommand;
-import frc.robot.commands.autovisioncommands.PhotonAimCommand;
 import frc.robot.commands.intakecommands.intakePistonCommands.DisengageIntakePistonsCommand;
-import frc.robot.commands.shootercommands.ShootCargoCommand;
 import edu.wpi.first.math.controller.RamseteController;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.trajectory.Trajectory;
@@ -49,9 +46,9 @@ public class FiveBallAuto extends PathPlannerSequentialCommandGroupUtility {
     private final double RAMSETE_B = 2;
     private final double RAMSETE_ZETA = 0.7;
 
-    private final double SHOT_DISTANCE1 = 9.8;
-    private final double SHOT_DISTANCE2 = 9.85;
-    private final double SHOT_DISTANCE3 = 9.7;
+    private final double SHOT_DISTANCE1 = 10.23;
+    private final double SHOT_DISTANCE2 = 11.3;
+    private final double SHOT_DISTANCE3 = 11.3;
 
     
 
@@ -108,6 +105,10 @@ public class FiveBallAuto extends PathPlannerSequentialCommandGroupUtility {
         Trajectory t_path5 = PathPlanner.loadPath("FiveBallAuto5", MAX_SPEED, MAX_ACCELERATION, true);
 
         this.addTrajectory(t_path5);
+
+        Trajectory t_path4pt5 = PathPlanner.loadPath("FiveBallAuto4.5", MAX_SPEED, MAX_ACCELERATION, true);
+
+        this.addTrajectory(t_path4pt5);
         // ----- RAMSETE COMMANDS -----\\
         // Creates a command that can be added to the command scheduler in the
         // sequential command
@@ -165,6 +166,16 @@ public class FiveBallAuto extends PathPlannerSequentialCommandGroupUtility {
                         rightVoltage),
                 driveSubsystem);
 
+        Ramsete930Command r_path4pt5 = new Ramsete930Command(
+                t_path4pt5,
+                () -> m_odometry.getPoseMeters(),
+                new RamseteController(RAMSETE_B, RAMSETE_ZETA),
+                driveSubsystem.getKinematics(),
+                driveSubsystem::getWheelSpeeds,
+                (Double leftVoltage, Double rightVoltage) -> driveSubsystem.setVoltages(leftVoltage,
+                        rightVoltage),
+                driveSubsystem);
+
         // ----- AUTO SEQUENCE -----\\
 
         // Parallel Race Group ends these commands because they dont end, they end when
@@ -187,7 +198,7 @@ public class FiveBallAuto extends PathPlannerSequentialCommandGroupUtility {
                 new CombinedIntake(intakePistonSubsystem, intakeMotorSubsystem, indexerMotorSubsystem, r_path3),
                 new AutoShootCargo(shooterHoodSubsystem, shooterSubsystem, indexerMotorSubsystem, SHOT_DISTANCE2, intakeMotorSubsystem, intakePistonSubsystem, 0.75),
                 new CombinedIntake(intakePistonSubsystem, intakeMotorSubsystem, indexerMotorSubsystem, r_path4),
-                new ParallelRaceGroup(new CombinedIntake(intakePistonSubsystem, intakeMotorSubsystem, indexerMotorSubsystem),new WaitCommand(0.6)),
+                new ParallelRaceGroup(new CombinedIntake(intakePistonSubsystem, intakeMotorSubsystem, indexerMotorSubsystem), new WaitCommand(1.0)),//, r_path4pt5), new WaitCommand(0.6)),// r_path4pt5 temporary path to just move forward a little for human player
                 new CombinedIntake(intakePistonSubsystem, intakeMotorSubsystem, indexerMotorSubsystem, r_path5),
                 new StopDrive(driveSubsystem),
                 new DisengageIntakePistonsCommand(intakePistonSubsystem).withTimeout(0.1),
