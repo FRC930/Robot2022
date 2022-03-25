@@ -368,6 +368,7 @@ public class RobotContainer {
         scheduler.setDefaultCommand(m_indexerMotorSubsystem, m_indexerMotorForwardCommand);
 
         compressor.enableAnalog(100, 115);
+        System.out.println("COMPRESSOR VALUE: " + compressor.getPressure());
     }
 
     /**
@@ -432,13 +433,13 @@ public class RobotContainer {
             new ParallelCommandGroup(
                 new AdjustHoodCommand(
                     m_shooterHoodSubsystem,
-                    ShooterUtility.calculateHoodPos(8.5)
+                    ShooterUtility.calculateHoodPos(9)
                 ),
                 new ShootCargoCommand(
                     m_shooterSubsystem, 
                     m_indexerMotorSubsystem,
-                    ShooterUtility.calculateTopSpeed(8.5),
-                    ShooterUtility.calculateBottomSpeed(8.5)
+                    ShooterUtility.calculateTopSpeed(9),
+                    ShooterUtility.calculateBottomSpeed(9)
                 )
             ).withTimeout(0.1)
         );
@@ -515,9 +516,6 @@ public class RobotContainer {
         CommandScheduler.getInstance().unregisterSubsystem(m_LEDSubsystem);
         CommandScheduler.getInstance().setDefaultCommand(m_LEDSubsystem, m_idlePatternCommand);
 
-        PhotonVisionUtility.getInstance().getHubTrackingCamera().setDriverMode(false);
-        PhotonVisionUtility.getInstance().getHubTrackingCamera().setLED(VisionLEDMode.kOff);
-
         PhotonVisionUtility.getInstance().setPiCameraExposure();
     }
 
@@ -572,9 +570,6 @@ public class RobotContainer {
         // rescheduleAutonomousLEDs(true);
         CommandScheduler.getInstance().unregisterSubsystem(m_LEDSubsystem);
         CommandScheduler.getInstance().setDefaultCommand(m_LEDSubsystem, m_autonPatternCommand);
-
-        PhotonVisionUtility.getInstance().getHubTrackingCamera().setDriverMode(false);
-        PhotonVisionUtility.getInstance().getHubTrackingCamera().setLED(VisionLEDMode.kOff);
 
         PhotonVisionUtility.getInstance().setPiCameraExposure();
     }
@@ -780,8 +775,6 @@ public class RobotContainer {
      */
     public void disabledInit() {
         m_idlePatternCommand.solidYellowLEDs();
-        PhotonVisionUtility.getInstance().getHubTrackingCamera().setDriverMode(true);
-        PhotonVisionUtility.getInstance().getHubTrackingCamera().setLED(VisionLEDMode.kDefault);
     }
 
 } // End of RobotContainer

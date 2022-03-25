@@ -110,7 +110,8 @@ public class EndgameManagerCommand extends CommandBase {
                         new ParallelRaceGroup(
                                 new EndgameOpenClawCommand(endgamePiston3),
                                 new EndgameOpenClawCommand(endgamePiston4),
-                                new WaitCommand(ENDGAME_PISTON_DELAY * 2)),
+                                new WaitCommand(ENDGAME_PISTON_DELAY * 2)),  // REDUCE this wait since next step is to step for detecting the bar
+                        new WaitCommand(4.0),
                         new EndgameIncrementStateCommand(this)));
         // Opens #3 claw and closes #4
         // Rotates arm until both #4 sensor triggers
@@ -121,7 +122,7 @@ public class EndgameManagerCommand extends CommandBase {
                         new ParallelRaceGroup(
                                 new EndgameCloseClawCommand(endgamePiston4),
                                 new EndgameOpenClawCommand(endgamePiston3),
-                                new WaitCommand(ENDGAME_PISTON_DELAY)),
+                                new WaitCommand(ENDGAME_PISTON_DELAY)),  // WHY wait to start moving while we are swing??
                         // Rotates arm until both #4 sensor triggers
                         // Then closes #3 claws and stops motor
                         new ParallelRaceGroup(
@@ -129,8 +130,12 @@ public class EndgameManagerCommand extends CommandBase {
                                 new SequentialCommandGroup(
                                         new EndgameCloseWhenTouching(endgamePiston3, 4),
                                         new WaitCommand(ENDGAME_PISTON_DELAY * 2)
+                                        // ,
+                                        // new EndgameCloseWhenTouching(endgamePiston3, 4),
+                                        // new WaitCommand(ENDGAME_PISTON_DELAY * 2)
                                 )
                         ),
+                        new WaitCommand(10),  // TODO REMOVE AFTER TEST PRACTICE FIELD
                         new EndgameIncrementStateCommand(this))
                 );
         // Opens #2 claws

@@ -98,9 +98,6 @@ public class PhotonAimCommand extends CommandBase {
 
     @Override
     public void initialize() {
-        // Set the LEDs to on to ensure that we can see the reflective tape
-        m_hubCamera.setLED(VisionLEDMode.kOn);
-
         // Make sure that any previous voltages are not recorded
         m_driveSubsystem.setVoltages(0, 0);
 
@@ -199,9 +196,6 @@ public class PhotonAimCommand extends CommandBase {
     public void end(boolean interrupted) {
         // Don't want any irregular signals being sent to drivetrain
         m_driveSubsystem.setVoltages(0, 0);
-
-        // Set the LEDs for the pi camera to off
-        m_hubCamera.setLED(VisionLEDMode.kOff);
 
         cyclesAimed = 0;
 

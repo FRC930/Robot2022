@@ -182,16 +182,16 @@ public class FiveBallAuto extends PathPlannerSequentialCommandGroupUtility {
                         indexerMotorSubsystem,
                         r_path1),
                 new StopDrive(driveSubsystem),
-                        new AutoShootCargo(shooterHoodSubsystem, shooterSubsystem, indexerMotorSubsystem, SHOT_DISTANCE1, intakeMotorSubsystem, intakePistonSubsystem, 0.75),
+                        new AutoShootCargo(shooterHoodSubsystem, shooterSubsystem, indexerMotorSubsystem, SHOT_DISTANCE1, intakeMotorSubsystem, intakePistonSubsystem, 1.0),
                 new CombinedIntake(intakePistonSubsystem, intakeMotorSubsystem, indexerMotorSubsystem, r_path2),
                 new CombinedIntake(intakePistonSubsystem, intakeMotorSubsystem, indexerMotorSubsystem, r_path3),
                 new AutoShootCargo(shooterHoodSubsystem, shooterSubsystem, indexerMotorSubsystem, SHOT_DISTANCE2, intakeMotorSubsystem, intakePistonSubsystem, 0.75),
                 new CombinedIntake(intakePistonSubsystem, intakeMotorSubsystem, indexerMotorSubsystem, r_path4),
-                new ParallelRaceGroup(new CombinedIntake(intakePistonSubsystem, intakeMotorSubsystem, indexerMotorSubsystem),new WaitCommand(1)),
+                new ParallelRaceGroup(new CombinedIntake(intakePistonSubsystem, intakeMotorSubsystem, indexerMotorSubsystem),new WaitCommand(0.6)),
                 new CombinedIntake(intakePistonSubsystem, intakeMotorSubsystem, indexerMotorSubsystem, r_path5),
                 new StopDrive(driveSubsystem),
                 new DisengageIntakePistonsCommand(intakePistonSubsystem).withTimeout(0.1),
-                new AutoShootCargo(shooterHoodSubsystem, shooterSubsystem, indexerMotorSubsystem, SHOT_DISTANCE3, intakeMotorSubsystem, intakePistonSubsystem, 0.75)
+                new AutoShootCargo(shooterHoodSubsystem, shooterSubsystem, indexerMotorSubsystem, SHOT_DISTANCE3, intakeMotorSubsystem, intakePistonSubsystem, 1.0)//
         );
     } // End of Constructor
 } // End of Class

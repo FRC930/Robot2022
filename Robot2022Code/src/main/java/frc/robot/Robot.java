@@ -42,7 +42,6 @@ public class Robot extends TimedRobot {
             m_robotContainer.robotSimInit();
         } else {
             m_robotContainer.startCamera();
-            PhotonVisionUtility.getInstance().getHubTrackingCamera().setLED(VisionLEDMode.kOff);
         }
     }
 
