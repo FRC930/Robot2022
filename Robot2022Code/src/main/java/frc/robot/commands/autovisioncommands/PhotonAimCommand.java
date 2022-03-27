@@ -4,7 +4,6 @@ package frc.robot.commands.autovisioncommands;
 
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonUtils;
-import org.photonvision.common.hardware.VisionLEDMode;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;

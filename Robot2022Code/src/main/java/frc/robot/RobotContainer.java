@@ -6,8 +6,6 @@ import java.util.List;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 
-import org.photonvision.common.hardware.VisionLEDMode;
-
 import edu.wpi.first.cscore.MjpegServer;
 import edu.wpi.first.cscore.UsbCamera;
 import edu.wpi.first.cscore.VideoMode.PixelFormat;
@@ -488,6 +486,9 @@ public class RobotContainer {
                 )
             )
         );
+        // .whenInactive(new InstantCommand(() -> {
+        //     PhotonVisionUtility.getInstance().getHubTrackingCamera().setLED(VisionLEDMode.kOn);
+        // }));
 
         m_codriverController.getBackButton().whileActiveOnce(
            new InstantCommand(m_endgameManagerCommand::resetState, m_endgameMotorSubsystem));

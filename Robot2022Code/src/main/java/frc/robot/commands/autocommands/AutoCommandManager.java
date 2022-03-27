@@ -63,6 +63,15 @@ public class AutoCommandManager {
                 (IndexerMotorSubsystem) subsystemMap.get(subNames.IndexerMotorSubsystem.toString())
                 );
 
+        TaxiOneBallAim TaxiOneBallAim = new TaxiOneBallAim(
+                (DriveSubsystem) subsystemMap.get(subNames.DriveSubsystem.toString()),
+                (IntakePistonSubsystem) subsystemMap.get(subNames.IntakePistonSubsystem.toString()),
+                (IntakeMotorSubsystem) subsystemMap.get(subNames.IntakeMotorSubsystem.toString()),
+                (ShooterSubsystem) subsystemMap.get(subNames.ShooterSubsystem.toString()),
+                (ShooterHoodSubsystem) subsystemMap.get(subNames.ShooterHoodSubsystem.toString()),
+                (IndexerMotorSubsystem) subsystemMap.get(subNames.IndexerMotorSubsystem.toString())
+                ); 
+
         TaxiTwoBall TaxiTwoBall = new TaxiTwoBall(
                 (DriveSubsystem) subsystemMap.get(subNames.DriveSubsystem.toString()),
                 (IntakePistonSubsystem) subsystemMap.get(subNames.IntakePistonSubsystem.toString()),
@@ -114,6 +123,7 @@ public class AutoCommandManager {
 
         ShuffleboardUtility.getInstance().addAutonOptions("TaxiTwoBall", TaxiTwoBall);
         ShuffleboardUtility.getInstance().addAutonOptions("TaxiOneBall", TaxiOneBall);
+        ShuffleboardUtility.getInstance().addAutonOptions("TaxiOneBallAim", TaxiOneBallAim);
         // ShuffleboardUtility.getInstance().addAutonOptions("ShootMoveShoot",
         // ShootMoveShoot);
         ShuffleboardUtility.getInstance().addAutonOptions("TerminalPickup", TerminalPickup);

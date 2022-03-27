@@ -7,6 +7,7 @@ import com.pathplanner.lib.PathPlanner;
 import frc.robot.commands.Ramsete930Command;
 import frc.robot.commands.autocommands.ResetAutonomousCommand;
 import frc.robot.commands.autocommands.SequentialCommands.AutoShootCargo;
+import frc.robot.commands.autovisioncommands.PhotonAimCommand;
 import frc.robot.commands.shootercommands.ShootCargoCommand;
 import edu.wpi.first.math.controller.RamseteController;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
@@ -28,7 +29,7 @@ import frc.robot.utilities.PathPlannerSequentialCommandGroupUtility;
  * 
  * Exits the tarmac and shoots.
  */
-public class TaxiOneBall extends PathPlannerSequentialCommandGroupUtility {
+public class TaxiOneBallAim extends PathPlannerSequentialCommandGroupUtility {
 
     //----- CONSTANTS -----\\
 
@@ -58,7 +59,7 @@ public class TaxiOneBall extends PathPlannerSequentialCommandGroupUtility {
      * @param intakePistonSubsystem
      * @param catapultSubsystem
      */
-    public TaxiOneBall(DriveSubsystem driveSubsystem, IntakePistonSubsystem intakePistonSubsystem, IntakeMotorSubsystem intakeMotorSubsystem, ShooterSubsystem shooterSubsystem, ShooterHoodSubsystem shooterHoodSubsystem, IndexerMotorSubsystem indexerMotorSubsystem) {
+    public TaxiOneBallAim(DriveSubsystem driveSubsystem, IntakePistonSubsystem intakePistonSubsystem, IntakeMotorSubsystem intakeMotorSubsystem, ShooterSubsystem shooterSubsystem, ShooterHoodSubsystem shooterHoodSubsystem, IndexerMotorSubsystem indexerMotorSubsystem) {
 
         // initializing gyro for pose2d
         m_odometry = driveSubsystem.getOdometry();
@@ -103,7 +104,7 @@ public class TaxiOneBall extends PathPlannerSequentialCommandGroupUtility {
             new ResetAutonomousCommand(t_exitTarmac.getInitialPose(), driveSubsystem),
             new WaitCommand(5.0),
             r_exitTarmac,
-            //new PhotonAimCommand(driveSubsystem),
+            new PhotonAimCommand(driveSubsystem),
             new AutoShootCargo(shooterHoodSubsystem, shooterSubsystem, indexerMotorSubsystem, currentToHubDistanceUtility.getDistanceToHub(driveSubsystem.getOdometry().getPoseMeters()), intakeMotorSubsystem, intakePistonSubsystem, ShootCargoCommand.SHOOT_TIME)
         );
 

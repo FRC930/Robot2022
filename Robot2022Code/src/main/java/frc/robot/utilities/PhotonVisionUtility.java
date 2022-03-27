@@ -263,7 +263,8 @@ public class PhotonVisionUtility {
                     // Use our method to set the picamera's exposure
                     setPiCameraExposure();
 
-                    PhotonVisionUtility.getInstance().hubTracking.setLED(VisionLEDMode.kOn);
+                    PhotonVisionUtility.getInstance().getHubTrackingCamera().setLED(VisionLEDMode.kOn);
+                    PhotonVisionUtility.getInstance().setPiCameraPipeline(0);
 
                     // Tell shuffleboard that photon is up and ready
                     ShuffleboardUtility.getInstance().putToShuffleboard(ShuffleboardUtility.driverTab,
