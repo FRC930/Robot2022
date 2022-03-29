@@ -333,9 +333,9 @@ public class RobotContainer {
 
         //----- LED COMMAND INITS-----\\
 
-        m_autonPatternCommand = new LEDCommand(m_LEDSubsystem, LEDPatterns.AutonPattern);
-        m_endgamePatternCommand = new LEDCommand(m_LEDSubsystem, LEDPatterns.EndgamePatten);
-        m_idlePatternCommand = new LEDCommand(m_LEDSubsystem, LEDPatterns.TeleopIdle);
+        m_autonPatternCommand = new LEDCommand(m_LEDSubsystem, m_driverController, LEDPatterns.AutonPattern);
+        m_endgamePatternCommand = new LEDCommand(m_LEDSubsystem, m_driverController, LEDPatterns.EndgamePatten);
+        m_idlePatternCommand = new LEDCommand(m_LEDSubsystem, m_driverController, LEDPatterns.TeleopIdle);
 
         // calls the method that configures the buttons
         configureButtonBindings();
@@ -522,9 +522,7 @@ public class RobotContainer {
         m_driveSubsystem.setMotorBrakeMode(NeutralMode.Brake);
 
 
-        // rescheduleAutonomousLEDs(false);
-        CommandScheduler.getInstance().unregisterSubsystem(m_LEDSubsystem);
-        CommandScheduler.getInstance().setDefaultCommand(m_LEDSubsystem, m_idlePatternCommand);
+        rescheduleAutonomousLEDs(false);
 
         PhotonVisionUtility.getInstance().setPiCameraExposure();
     }
@@ -577,9 +575,7 @@ public class RobotContainer {
     public void beginAutoRunCommands() {
         // Sets the brake mode to brake
         m_driveSubsystem.setMotorBrakeMode(NeutralMode.Brake);
-        // rescheduleAutonomousLEDs(true);
-        CommandScheduler.getInstance().unregisterSubsystem(m_LEDSubsystem);
-        CommandScheduler.getInstance().setDefaultCommand(m_LEDSubsystem, m_autonPatternCommand);
+        rescheduleAutonomousLEDs(true);
 
         PhotonVisionUtility.getInstance().setPiCameraExposure();
     }
@@ -698,7 +694,7 @@ public class RobotContainer {
      * Begins autonomous simulation. Resets position and timer.
      */
     public void autoSimInit() {
-        // rescheduleAutonomousLEDs(true);
+        rescheduleAutonomousLEDs(true);
         m_autocmd = m_autoManager.getAutonomousCommand();
         if (m_autocmd != null) {
             if (m_autocmd instanceof PathPlannerSequentialCommandGroupUtility) {
@@ -729,16 +725,16 @@ public class RobotContainer {
         }
     }
 
-    // private void rescheduleAutonomousLEDs(boolean useAutonomousLEDCmd) {
-    // LEDCommand ledCommand = (useAutonomousLEDCmd) ? autonPatternCommand :
-    // idlePatternCommand;
-    // LEDCommand endledCommand = (useAutonomousLEDCmd) ? idlePatternCommand :
-    // autonPatternCommand;
-    // CommandScheduler scheduler = CommandScheduler.getInstance();
-    // scheduler.unregisterSubsystem(ledSubsystem);
-    // endledCommand.cancel();
-    // scheduler.setDefaultCommand(ledSubsystem, ledCommand);
-    // }
+    private void rescheduleAutonomousLEDs(boolean useAutonomousLEDCmd) {
+        LEDCommand ledCommand = (useAutonomousLEDCmd) ? m_autonPatternCommand :
+            m_idlePatternCommand;
+        LEDCommand endledCommand = (useAutonomousLEDCmd) ? m_idlePatternCommand :
+        m_autonPatternCommand;
+        CommandScheduler scheduler = CommandScheduler.getInstance();
+        scheduler.unregisterSubsystem(m_LEDSubsystem);
+        endledCommand.cancel();
+        scheduler.setDefaultCommand(m_LEDSubsystem, ledCommand);
+    }
 
     /**
      * <h3>robotSimPeriodic</h3>

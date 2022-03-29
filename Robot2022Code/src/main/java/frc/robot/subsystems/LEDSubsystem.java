@@ -16,7 +16,7 @@ public class LEDSubsystem extends SubsystemBase {
 
       //----- CONSTANTS ----\\
 
-      private final int m_BUFFER_LENGTH = 299;
+      private final int m_BUFFER_LENGTH = 300;
 
       private final AddressableLED m_leds;
       private final AddressableLEDBuffer m_buffer;  // Creates a new buffer object
