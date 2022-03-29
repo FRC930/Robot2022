@@ -5,6 +5,7 @@ package frc.robot.commands.autocommands.paths;
 import com.pathplanner.lib.PathPlanner;
 
 import frc.robot.commands.Ramsete930Command;
+import frc.robot.commands.autocommands.AutoBase;
 import frc.robot.commands.autocommands.ResetAutonomousCommand;
 import frc.robot.commands.autocommands.SequentialCommands.AutoShootCargo;
 import frc.robot.commands.shootercommands.ShootCargoCommand;
@@ -28,13 +29,13 @@ import frc.robot.utilities.PathPlannerSequentialCommandGroupUtility;
  * 
  * Exits the tarmac and shoots.
  */
-public class TaxiOneBall extends PathPlannerSequentialCommandGroupUtility {
+public class TaxiOneBall extends AutoBase {
 
     //----- CONSTANTS -----\\
 
     // Movement Control
-    private final double MAX_SPEED = 0.5; // DriveSubsystem.DRIVETRAIN_MAX_FREE_SPEED_HIGH
-    private final double MAX_ACCELERATION = 2.5;
+    private final static double MAX_SPEED = 0.5; // DriveSubsystem.DRIVETRAIN_MAX_FREE_SPEED_HIGH
+    private final static double MAX_ACCELERATION = 2.5;
 
     private final CurrentToHubDistanceUtility currentToHubDistanceUtility;
 
@@ -59,6 +60,7 @@ public class TaxiOneBall extends PathPlannerSequentialCommandGroupUtility {
      * @param catapultSubsystem
      */
     public TaxiOneBall(DriveSubsystem driveSubsystem, IntakePistonSubsystem intakePistonSubsystem, IntakeMotorSubsystem intakeMotorSubsystem, ShooterSubsystem shooterSubsystem, ShooterHoodSubsystem shooterHoodSubsystem, IndexerMotorSubsystem indexerMotorSubsystem) {
+        super(driveSubsystem, PathPlanner.loadPath("TaxiOneBall", MAX_SPEED, MAX_ACCELERATION, true));
 
         // initializing gyro for pose2d
         m_odometry = driveSubsystem.getOdometry();
@@ -76,18 +78,14 @@ public class TaxiOneBall extends PathPlannerSequentialCommandGroupUtility {
             .addConstraint(driveSubsystem.getVoltageContraint());
 
         //----- TRAJECTORIES -----\\
-
-        // Generates a trajectory
-        Trajectory t_exitTarmac = PathPlanner.loadPath("TaxiOneBall", MAX_SPEED, MAX_ACCELERATION, true);
-
-        this.addTrajectory(t_exitTarmac);
+        this.addTrajectory(super.m_initialTrajectory);
 
         //----- RAMSETE COMMANDS -----\\
         // Creates a command that can be added to the command scheduler in the
         // sequential command
 
         Ramsete930Command r_exitTarmac = new Ramsete930Command(
-            t_exitTarmac,
+            super.m_initialTrajectory,
             () -> m_odometry.getPoseMeters(),
             new RamseteController(), // new RamseteController(RAMSETE_B, RAMSETE_ZETA)
             driveSubsystem.getKinematics(),
@@ -100,7 +98,6 @@ public class TaxiOneBall extends PathPlannerSequentialCommandGroupUtility {
         //----- AUTO SEQUENCE -----\\
 
         addCommands(
-            new ResetAutonomousCommand(t_exitTarmac.getInitialPose(), driveSubsystem),
             new WaitCommand(5.0),
             r_exitTarmac,
             //new PhotonAimCommand(driveSubsystem),

@@ -5,6 +5,7 @@ package frc.robot.commands.autocommands.paths;
 import com.pathplanner.lib.PathPlanner;
 
 import frc.robot.commands.Ramsete930Command;
+import frc.robot.commands.autocommands.AutoBase;
 import frc.robot.commands.autocommands.ResetAutonomousCommand;
 import frc.robot.commands.autocommands.SequentialCommands.AutoShootCargo;
 import frc.robot.commands.autocommands.SequentialCommands.CombinedIntake;
@@ -16,7 +17,6 @@ import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.utilities.CurrentToHubDistanceUtility;
-import frc.robot.utilities.PathPlannerSequentialCommandGroupUtility;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.IndexerMotorSubsystem;
@@ -31,7 +31,7 @@ import frc.robot.subsystems.ShooterHoodSubsystem;
  * Four ball auto. Starts near the center of the tarmac, intakes, shoots, moves
  * to terminal, intakes, moves back to tarmac, and shoots.
  */
-public class FiveBallAuto extends PathPlannerSequentialCommandGroupUtility {
+public class FiveBallAuto extends AutoBase {
 
     // ----- CONSTANTS -----\\
 
@@ -39,8 +39,8 @@ public class FiveBallAuto extends PathPlannerSequentialCommandGroupUtility {
 
     // Movement Control
     // MAKE SURE THERE IS LOTS OF SPACE BEHIND TERMINAL WHEN RUNNING IN FULL SPEED
-    private final double MAX_SPEED = 4; // Set to 3 when testing
-    private final double MAX_ACCELERATION = 2; // Set to 2 when testing
+    private final static double MAX_SPEED = 4; // Set to 3 when testing
+    private final static double MAX_ACCELERATION = 2; // Set to 2 when testing
 
     // Ramsete Controller Parameters
     private final double RAMSETE_B = 2;
@@ -49,8 +49,6 @@ public class FiveBallAuto extends PathPlannerSequentialCommandGroupUtility {
     private final double SHOT_DISTANCE1 = 10.23;
     private final double SHOT_DISTANCE2 = 11.3;
     private final double SHOT_DISTANCE3 = 11.3;
-
-    
 
     // ----- ODOMETRY -----\\
 
@@ -76,17 +74,16 @@ public class FiveBallAuto extends PathPlannerSequentialCommandGroupUtility {
             ShooterSubsystem shooterSubsystem,
             ShooterHoodSubsystem shooterHoodSubsystem,
             IndexerMotorSubsystem indexerMotorSubsystem) {
+        
+        super(driveSubsystem, PathPlanner.loadPath("FiveBallAuto1", MAX_SPEED, MAX_ACCELERATION));
+        
         currentToHubDistanceUtility = new CurrentToHubDistanceUtility();
 
         // initializing gyro for pose2d
         m_odometry = driveSubsystem.getOdometry();
 
         // ----- TRAJECTORIES -----\\
-
-        // Exits the tarmac for a taxi, intakes, and shoots.
-        Trajectory t_path1 = PathPlanner.loadPath("FiveBallAuto1", MAX_SPEED, MAX_ACCELERATION);
-
-        this.addTrajectory(t_path1);
+        this.addTrajectory(super.m_initialTrajectory);
 
         // Moves from tarmac to terminal to intake.
         Trajectory t_path2 = PathPlanner.loadPath("FiveBallAuto2", MAX_SPEED, MAX_ACCELERATION, true);
@@ -115,7 +112,7 @@ public class FiveBallAuto extends PathPlannerSequentialCommandGroupUtility {
 
         // Creates RAMSETE Command for first trajectory
         Ramsete930Command r_path1 = new Ramsete930Command(
-                t_path1,
+                super.m_initialTrajectory,
                 () -> m_odometry.getPoseMeters(),
                 new RamseteController(RAMSETE_B, RAMSETE_ZETA),
                 driveSubsystem.getKinematics(),
@@ -186,7 +183,6 @@ public class FiveBallAuto extends PathPlannerSequentialCommandGroupUtility {
         // engages the intake piston runs them at the same time
         // it stops driving.
         addCommands(
-                new ResetAutonomousCommand(t_path1.getInitialPose(), driveSubsystem),
                 new CombinedIntake(
                         intakePistonSubsystem,
                         intakeMotorSubsystem,

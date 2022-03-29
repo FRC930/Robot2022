@@ -5,6 +5,7 @@ package frc.robot.commands.autocommands.paths;
 import com.pathplanner.lib.PathPlanner;
 
 import frc.robot.commands.Ramsete930Command;
+import frc.robot.commands.autocommands.AutoBase;
 import frc.robot.commands.autocommands.ResetAutonomousCommand;
 import frc.robot.commands.autocommands.SequentialCommands.AutoShootCargo;
 import frc.robot.commands.autocommands.SequentialCommands.CombinedIntake;
@@ -29,13 +30,13 @@ import frc.robot.subsystems.ShooterHoodSubsystem;
  * 
  * Exits the tarmac, intakes, and shoots. Moves to adjacent enemy cargo, intakes it, and shoots it into the hangar zone.
  */
-public class DefensiveThreeBall extends PathPlannerSequentialCommandGroupUtility {
+public class DefensiveThreeBall extends AutoBase {
 
     //----- CONSTANTS -----\\
 
     // Movement Control
-    private final double MAX_SPEED = 1.0;
-    private final double MAX_ACCELERATION = 1.0;
+    private final static double MAX_SPEED = 1.0;
+    private final static double MAX_ACCELERATION = 1.0;
 
     // Ramsete Controller Parameters
     private final double RAMSETE_B = 2;
@@ -66,6 +67,8 @@ public class DefensiveThreeBall extends PathPlannerSequentialCommandGroupUtility
         ShooterHoodSubsystem shooterHoodSubsystem,
         IndexerMotorSubsystem indexerMotorSubsystem
     ) {
+        super(driveSubsystem, PathPlanner.loadPath("DefensiveThreeBall1", MAX_SPEED, MAX_ACCELERATION));
+
 
         // initializing gyro for pose2d
         m_odometry = driveSubsystem.getOdometry();
@@ -73,15 +76,14 @@ public class DefensiveThreeBall extends PathPlannerSequentialCommandGroupUtility
         //----- TRAJECTORIES -----\\
 
         // Robot exits the tarmac, intakes, and shoots
-        Trajectory t_exitTarmac = PathPlanner.loadPath("DefensiveThreeBall1", MAX_SPEED, MAX_ACCELERATION);
-
+      
         // Robot approaches the adjacent enemy cargo and shoots it into the hangar zone.
         Trajectory t_adjacentEnemyCargo = PathPlanner.loadPath("DefensiveThreeBall2", MAX_SPEED, MAX_ACCELERATION);
 
-        this.addTrajectory(t_exitTarmac);
+        this.addTrajectory(super.m_initialTrajectory);
         this.addTrajectory(t_adjacentEnemyCargo);
 
-        SmartDashboard.putString("Pos1", t_exitTarmac.getInitialPose().toString());
+        SmartDashboard.putString("Pos1", super.m_initialTrajectory.getInitialPose().toString());
         SmartDashboard.putString("current Gyro Position", m_odometry.getPoseMeters().toString());
 
         //----- RAMSETE COMMMANDS -----\\
@@ -91,7 +93,7 @@ public class DefensiveThreeBall extends PathPlannerSequentialCommandGroupUtility
 
         // Creates RAMSETE Command for first trajectory
         Ramsete930Command r_exitTarmac = new Ramsete930Command(
-            t_exitTarmac,
+            super.m_initialTrajectory,
             () -> m_odometry.getPoseMeters(),
             new RamseteController(RAMSETE_B, RAMSETE_ZETA),
             driveSubsystem.getKinematics(),
@@ -116,7 +118,6 @@ public class DefensiveThreeBall extends PathPlannerSequentialCommandGroupUtility
         // Line up left side of the robot with middle of the tarmac, front right bumper is on the end of the tarmac
 
         addCommands(
-            new ResetAutonomousCommand(t_exitTarmac.getInitialPose(), driveSubsystem),
             new CombinedIntake(
                 intakePistonSubsystem,
                 intakeMotorSubsystem,

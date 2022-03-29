@@ -5,7 +5,7 @@ package frc.robot.commands.autocommands.paths;
 import com.pathplanner.lib.PathPlanner;
 
 import frc.robot.commands.Ramsete930Command;
-import frc.robot.commands.autocommands.ResetAutonomousCommand;
+import frc.robot.commands.autocommands.AutoBase;
 import frc.robot.commands.autocommands.SequentialCommands.AutoShootCargo;
 import frc.robot.commands.autocommands.SequentialCommands.CombinedIntake;
 import frc.robot.commands.autocommands.SequentialCommands.StopDrive;
@@ -15,8 +15,6 @@ import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
-import frc.robot.utilities.CurrentToHubDistanceUtility;
-import frc.robot.utilities.PathPlannerSequentialCommandGroupUtility;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.IndexerMotorSubsystem;
@@ -30,13 +28,13 @@ import frc.robot.subsystems.ShooterHoodSubsystem;
  * 
  * Exits the tarmac, intakes, and shoots. Moves to adjacent enemy cargo, intakes it, and shoots it into the hangar zone.
  */
-public class DefensiveHangarCleanup extends PathPlannerSequentialCommandGroupUtility {
+public class DefensiveHangarCleanup extends AutoBase {
 
     //----- CONSTANTS -----\\
 
     // Movement Control
-    private final double MAX_SPEED = 3.0;
-    private final double MAX_ACCELERATION = 2.5;
+    private final static double MAX_SPEED = 3.0;
+    private final static double MAX_ACCELERATION = 2.5;
 
     // Ramsete Controller Parameters
     private final double RAMSETE_B = 2;
@@ -45,8 +43,7 @@ public class DefensiveHangarCleanup extends PathPlannerSequentialCommandGroupUti
     //----- ODOMETRY -----\\
 
     private final DifferentialDriveOdometry m_odometry;
-    private final CurrentToHubDistanceUtility currentToHubDistanceUtility;
-
+    
     //----- CONSTRUCTOR -----\\
     /**
      * <h3>DefensiveTwoBall</h3>
@@ -67,14 +64,11 @@ public class DefensiveHangarCleanup extends PathPlannerSequentialCommandGroupUti
         ShooterHoodSubsystem shooterHoodSubsystem,
         IndexerMotorSubsystem indexerMotorSubsystem
     ) {
+        super(driveSubsystem, PathPlanner.loadPath("DefensiveHangarCleanup1", MAX_SPEED, MAX_ACCELERATION));
 
         // initializing gyro for pose2d
         m_odometry = driveSubsystem.getOdometry();
-        currentToHubDistanceUtility = new CurrentToHubDistanceUtility();
         //----- TRAJECTORIES -----\\
-
-        // Robot exits the tarmac, intakes, and shoots
-        Trajectory t_exitTarmac = PathPlanner.loadPath("DefensiveHangarCleanup1", MAX_SPEED, MAX_ACCELERATION);
 
         // Robot approaches the adjacent enemy cargo and shoots it into the hangar zone.
         Trajectory t_adjacentEnemyCargo = PathPlanner.loadPath("DefensiveHangarCleanup2", MAX_SPEED, MAX_ACCELERATION);
@@ -82,11 +76,11 @@ public class DefensiveHangarCleanup extends PathPlannerSequentialCommandGroupUti
         // Robot approaches the adjacent enemy cargo and shoots it into the hangar zone.
         Trajectory t_farEnemyCargo = PathPlanner.loadPath("DefensiveHangarCleanup3", MAX_SPEED, MAX_ACCELERATION);
 
-        this.addTrajectory(t_exitTarmac);
+        this.addTrajectory(super.m_initialTrajectory);
         this.addTrajectory(t_adjacentEnemyCargo);
         this.addTrajectory(t_farEnemyCargo);
 
-        SmartDashboard.putString("Pos1", t_exitTarmac.getInitialPose().toString());
+        SmartDashboard.putString("Pos1", super.m_initialTrajectory.getInitialPose().toString());
         SmartDashboard.putString("current Gyro Position", m_odometry.getPoseMeters().toString());
 
         //----- RAMSETE COMMMANDS -----\\
@@ -96,7 +90,7 @@ public class DefensiveHangarCleanup extends PathPlannerSequentialCommandGroupUti
 
         // Creates RAMSETE Command for first trajectory
         Ramsete930Command r_exitTarmac = new Ramsete930Command(
-            t_exitTarmac,
+            super.m_initialTrajectory,
             () -> m_odometry.getPoseMeters(),
             new RamseteController(RAMSETE_B, RAMSETE_ZETA),
             driveSubsystem.getKinematics(),
@@ -132,7 +126,6 @@ public class DefensiveHangarCleanup extends PathPlannerSequentialCommandGroupUti
 
         addCommands(
             // new InstantCommand(catapultSubsystem::setShortShot),
-            new ResetAutonomousCommand(t_exitTarmac.getInitialPose(), driveSubsystem),
             new CombinedIntake(
                 intakePistonSubsystem,
                 intakeMotorSubsystem,

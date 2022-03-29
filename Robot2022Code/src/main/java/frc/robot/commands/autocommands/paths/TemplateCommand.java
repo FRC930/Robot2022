@@ -5,12 +5,10 @@ package frc.robot.commands.autocommands.paths;
 import com.pathplanner.lib.PathPlanner;
 
 import frc.robot.commands.Ramsete930Command;
-import frc.robot.commands.autocommands.ResetAutonomousCommand;
+import frc.robot.commands.autocommands.AutoBase;
 import frc.robot.commands.autocommands.SequentialCommands.StopDrive;
 import edu.wpi.first.math.controller.RamseteController;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
-import edu.wpi.first.math.trajectory.Trajectory;
-import frc.robot.utilities.PathPlannerSequentialCommandGroupUtility;
 import frc.robot.subsystems.DriveSubsystem;
 
 //----- CLASS -----\\
@@ -19,13 +17,13 @@ import frc.robot.subsystems.DriveSubsystem;
  * 
  * A template for auto paths.
  */
-public class TemplateCommand extends PathPlannerSequentialCommandGroupUtility {
+public class TemplateCommand extends AutoBase {
 
     //----- CONSTANTS -----\\
 
     // Movement Control
-    private final double MAX_SPEED = 0.0;
-    private final double MAX_ACCELERATION = 0.0;
+    private final static double MAX_SPEED = 0.0;
+    private final static double MAX_ACCELERATION = 0.0;
 
     // Ramsete Controller Parameters
     private final double RAMSETE_B = 0.0;
@@ -45,16 +43,13 @@ public class TemplateCommand extends PathPlannerSequentialCommandGroupUtility {
      * @param catapultSubsystem
      */
     public TemplateCommand(DriveSubsystem driveSubsystem) {
+        super(driveSubsystem, PathPlanner.loadPath("<ENTER PATHPLANNER PATH NAME HERE>", MAX_SPEED, MAX_ACCELERATION));
 
         // initializing gyro for pose2d
         m_odometry = driveSubsystem.getOdometry();
 
         //----- TRAJECTORIES -----\\
-
-        // Describe your trajectory here
-        Trajectory t_nameYourTrajectoryHere = PathPlanner.loadPath("<ENTER PATHPLANNER PATH NAME HERE>", MAX_SPEED, MAX_ACCELERATION);
-
-        this.addTrajectory(t_nameYourTrajectoryHere);
+        this.addTrajectory(m_initialTrajectory);
 
         //----- RAMSETE COMMANDS -----\\
         // Creates a command that can be added to the command scheduler in the
@@ -62,7 +57,7 @@ public class TemplateCommand extends PathPlannerSequentialCommandGroupUtility {
 
         // Creates RAMSETE Command for first trajectory
         Ramsete930Command r_nameYourTrajectoryHere = new Ramsete930Command(
-            t_nameYourTrajectoryHere,
+            m_initialTrajectory,
             () -> m_odometry.getPoseMeters(),
             new RamseteController(RAMSETE_B, RAMSETE_ZETA),
             driveSubsystem.getKinematics(),
@@ -74,7 +69,6 @@ public class TemplateCommand extends PathPlannerSequentialCommandGroupUtility {
         //----- AUTO SEQUENCE -----\\
 
         addCommands(
-            new ResetAutonomousCommand(t_nameYourTrajectoryHere.getInitialPose(), driveSubsystem),
             r_nameYourTrajectoryHere,
             new StopDrive(driveSubsystem)
         );
