@@ -42,6 +42,9 @@ public class DefensiveThreeBall extends AutoBase {
     private final double RAMSETE_B = 2;
     private final double RAMSETE_ZETA = 0.7;
 
+    private double SHOT_DISTANCE_1 = 11.68;
+    private double SHOT_DISTANCE_2 = 8.0;
+
     //----- ODOMETRY -----\\
 
     private final DifferentialDriveOdometry m_odometry;
@@ -125,7 +128,7 @@ public class DefensiveThreeBall extends AutoBase {
                 r_exitTarmac
             ),
             new StopDrive(driveSubsystem),
-            new AutoShootCargo(shooterHoodSubsystem, shooterSubsystem, indexerMotorSubsystem, 11.68 , intakeMotorSubsystem, intakePistonSubsystem, ShootCargoCommand.SHOOT_TIME),
+            new AutoShootCargo(shooterHoodSubsystem, shooterSubsystem, indexerMotorSubsystem, SHOT_DISTANCE_1 , intakeMotorSubsystem, intakePistonSubsystem, ShootCargoCommand.SHOOT_TIME),
             new CombinedIntake(
                 intakePistonSubsystem,
                 intakeMotorSubsystem,
@@ -133,7 +136,7 @@ public class DefensiveThreeBall extends AutoBase {
                 r_adjacentEnemyCargo
             ),
             new StopDrive(driveSubsystem),                                                 // hangar point for manual calculation should be around x:1.65 y:6.55
-            new AutoShootCargo(shooterHoodSubsystem, shooterSubsystem, indexerMotorSubsystem, 8.0 , intakeMotorSubsystem, intakePistonSubsystem, ShootCargoCommand.SHOOT_TIME)
+            new AutoShootCargo(shooterHoodSubsystem, shooterSubsystem, indexerMotorSubsystem, SHOT_DISTANCE_2 , intakeMotorSubsystem, intakePistonSubsystem, ShootCargoCommand.SHOOT_TIME)
         );
 
     } // End of Constructor

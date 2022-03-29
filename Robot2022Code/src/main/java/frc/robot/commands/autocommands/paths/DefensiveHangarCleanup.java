@@ -40,6 +40,11 @@ public class DefensiveHangarCleanup extends AutoBase {
     private final double RAMSETE_B = 2;
     private final double RAMSETE_ZETA = 0.7;
 
+    //Put all at 2 when testing in room 42
+    private double SHOT_DISTANCE_1 = 2;//11.68;
+    private double SHOT_DISTANCE_2 = 2;//8.0;
+    private double SHOT_DISTANCE_3 = 2;//8.0;
+
     //----- ODOMETRY -----\\
 
     private final DifferentialDriveOdometry m_odometry;
@@ -132,7 +137,7 @@ public class DefensiveHangarCleanup extends AutoBase {
                 r_exitTarmac
             ),
             new StopDrive(driveSubsystem),
-            new AutoShootCargo(shooterHoodSubsystem, shooterSubsystem, indexerMotorSubsystem, 11.68 , intakeMotorSubsystem, intakePistonSubsystem, ShootCargoCommand.SHOOT_TIME),
+            new AutoShootCargo(shooterHoodSubsystem, shooterSubsystem, indexerMotorSubsystem, SHOT_DISTANCE_1 , intakeMotorSubsystem, intakePistonSubsystem, ShootCargoCommand.SHOOT_TIME),
             new CombinedIntake(
                 intakePistonSubsystem,
                 intakeMotorSubsystem,
@@ -140,7 +145,7 @@ public class DefensiveHangarCleanup extends AutoBase {
                 r_adjacentEnemyCargo
             ),
             new StopDrive(driveSubsystem),
-            new AutoShootCargo(shooterHoodSubsystem, shooterSubsystem, indexerMotorSubsystem, 8.0 , intakeMotorSubsystem, intakePistonSubsystem, ShootCargoCommand.SHOOT_TIME),
+            new AutoShootCargo(shooterHoodSubsystem, shooterSubsystem, indexerMotorSubsystem, SHOT_DISTANCE_2 , intakeMotorSubsystem, intakePistonSubsystem, ShootCargoCommand.SHOOT_TIME),
             new CombinedIntake(
                 intakePistonSubsystem,
                 intakeMotorSubsystem,
@@ -148,7 +153,7 @@ public class DefensiveHangarCleanup extends AutoBase {
                 r_farEnemyCargo
             ),
             new WaitCommand(0.25),
-            new AutoShootCargo(shooterHoodSubsystem, shooterSubsystem, indexerMotorSubsystem, 8.0 , intakeMotorSubsystem, intakePistonSubsystem, ShootCargoCommand.SHOOT_TIME)
+            new AutoShootCargo(shooterHoodSubsystem, shooterSubsystem, indexerMotorSubsystem, SHOT_DISTANCE_3 , intakeMotorSubsystem, intakePistonSubsystem, ShootCargoCommand.SHOOT_TIME)
         );
 
     } // End of Constructor

@@ -37,6 +37,8 @@ public class TaxiOneBall extends AutoBase {
     private final static double MAX_SPEED = 0.5; // DriveSubsystem.DRIVETRAIN_MAX_FREE_SPEED_HIGH
     private final static double MAX_ACCELERATION = 2.5;
 
+    private double SHOT_DISTANCE_1 = 11.68;//figure out distance
+
     private final CurrentToHubDistanceUtility currentToHubDistanceUtility;
 
     // Ramsete Controller Parameters
@@ -60,7 +62,7 @@ public class TaxiOneBall extends AutoBase {
      * @param catapultSubsystem
      */
     public TaxiOneBall(DriveSubsystem driveSubsystem, IntakePistonSubsystem intakePistonSubsystem, IntakeMotorSubsystem intakeMotorSubsystem, ShooterSubsystem shooterSubsystem, ShooterHoodSubsystem shooterHoodSubsystem, IndexerMotorSubsystem indexerMotorSubsystem) {
-        super(driveSubsystem, PathPlanner.loadPath("TaxiOneBall", MAX_SPEED, MAX_ACCELERATION, true));
+        super(driveSubsystem, PathPlanner.loadPath("TaxiOneBall", MAX_SPEED, MAX_ACCELERATION));
 
         // initializing gyro for pose2d
         m_odometry = driveSubsystem.getOdometry();
@@ -98,10 +100,10 @@ public class TaxiOneBall extends AutoBase {
         //----- AUTO SEQUENCE -----\\
 
         addCommands(
-            new WaitCommand(5.0),
+            //new WaitCommand(5.0),
             r_exitTarmac,
             //new PhotonAimCommand(driveSubsystem),
-            new AutoShootCargo(shooterHoodSubsystem, shooterSubsystem, indexerMotorSubsystem, currentToHubDistanceUtility.getDistanceToHub(driveSubsystem.getOdometry().getPoseMeters()), intakeMotorSubsystem, intakePistonSubsystem, ShootCargoCommand.SHOOT_TIME)
+            new AutoShootCargo(shooterHoodSubsystem, shooterSubsystem, indexerMotorSubsystem, SHOT_DISTANCE_1 , intakeMotorSubsystem, intakePistonSubsystem, ShootCargoCommand.SHOOT_TIME)
         );
 
     } // End of Constructor

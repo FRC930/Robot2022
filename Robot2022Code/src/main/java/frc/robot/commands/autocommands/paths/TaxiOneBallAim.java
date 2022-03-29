@@ -38,6 +38,8 @@ public class TaxiOneBallAim extends AutoBase {
     private final static double MAX_SPEED = 0.5; // DriveSubsystem.DRIVETRAIN_MAX_FREE_SPEED_HIGH
     private final static double MAX_ACCELERATION = 2.5;
 
+    private double SHOT_DISTANCE_1 = 2;//Figure out distance;
+
     private final CurrentToHubDistanceUtility currentToHubDistanceUtility;
 
     // Ramsete Controller Parameters
@@ -102,7 +104,7 @@ public class TaxiOneBallAim extends AutoBase {
             new WaitCommand(5.0),
             r_exitTarmac,
             new PhotonAimCommand(driveSubsystem),
-            new AutoShootCargo(shooterHoodSubsystem, shooterSubsystem, indexerMotorSubsystem, currentToHubDistanceUtility.getDistanceToHub(driveSubsystem.getOdometry().getPoseMeters()), intakeMotorSubsystem, intakePistonSubsystem, ShootCargoCommand.SHOOT_TIME)
+            new AutoShootCargo(shooterHoodSubsystem, shooterSubsystem, indexerMotorSubsystem, SHOT_DISTANCE_1, intakeMotorSubsystem, intakePistonSubsystem, ShootCargoCommand.SHOOT_TIME)
         );
 
     } // End of Constructor

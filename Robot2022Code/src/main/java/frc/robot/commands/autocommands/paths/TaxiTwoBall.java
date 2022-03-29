@@ -35,6 +35,8 @@ public class TaxiTwoBall extends AutoBase {
     private final static double MAX_SPEED = 1.0;
     private final static double MAX_ACCELERATION = 1.0;
 
+    private double SHOT_DISTANCE_1 = 2;//11.62;
+
     // Ramsete Controller Parameters
     private final double RAMSETE_B = 2;
     private final double RAMSETE_ZETA = 0.7;
@@ -103,7 +105,7 @@ public class TaxiTwoBall extends AutoBase {
             ),
             new StopDrive(driveSubsystem),
             new PhotonAimCommand(driveSubsystem).withTimeout(2),
-            new AutoShootCargo(shooterHoodSubsystem, shooterSubsystem, indexerMotorSubsystem, 11.62 , intakeMotorSubsystem, intakePistonSubsystem, ShootCargoCommand.SHOOT_TIME));
+            new AutoShootCargo(shooterHoodSubsystem, shooterSubsystem, indexerMotorSubsystem, SHOT_DISTANCE_1  , intakeMotorSubsystem, intakePistonSubsystem, ShootCargoCommand.SHOOT_TIME));
         
 
     } // End of Constructor
