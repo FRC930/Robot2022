@@ -25,7 +25,7 @@ public class EndgameCloseWhenTouching extends CommandBase {
 
     // -------- VARIABLES --------\\
     private final EndgamePistonSubsystem endgamePiston;
-    private final int sensor;
+    private final EndgameSensorPairs sensor;
     private Debouncer debouncer = null;
     private final EndgameSensorUtility sensorUtility = EndgameSensorUtility.getInstance();
 
@@ -37,10 +37,10 @@ public class EndgameCloseWhenTouching extends CommandBase {
      * Closes a claw when the sensor is active. Will not use a debouncer
      * 
      * @param _endgamePiston piston of claw to be closed
-     * @param _endgameSensor sensor used to detect
+     * @param sensorPair     sensor pair used to detect
      */
-    public EndgameCloseWhenTouching(EndgamePistonSubsystem _endgamePiston, int sensorSet) {
-        this(_endgamePiston, sensorSet, 0.0);
+    public EndgameCloseWhenTouching(EndgamePistonSubsystem _endgamePiston, EndgameSensorPairs sensorPair) {
+        this(_endgamePiston, sensorPair, 0.0);
     }
 
     /**
@@ -49,11 +49,13 @@ public class EndgameCloseWhenTouching extends CommandBase {
      * Closes a claw when the sensor is active. Can set a debouncer.
      * 
      * @param _endgamePiston piston of claw to be closed
-     * @param _endgameSensor sensor used to detect
-     * @param debounceTime   time to apply to debouncer. Use 0 to not use the debouncer.
+     * @param sensorPair     sensor pair used to detect
+     * @param debounceTime   time to apply to debouncer. Use 0 to not use the
+     *                       debouncer.
      */
-    public EndgameCloseWhenTouching(EndgamePistonSubsystem _endgamePiston, int sensorSet, double debounceTime) {
-        sensor = sensorSet;
+    public EndgameCloseWhenTouching(EndgamePistonSubsystem _endgamePiston, EndgameSensorPairs sensorPair,
+            double debounceTime) {
+        sensor = sensorPair;
         endgamePiston = _endgamePiston;
         if (debounceTime > 0) {
             debouncer = new Debouncer(debounceTime, DebounceType.kRising);
@@ -65,9 +67,9 @@ public class EndgameCloseWhenTouching extends CommandBase {
 
     @Override
     public boolean isFinished() { // returns true when the sensor is active
-        if (sensor == 2) {
+        if (sensor == EndgameSensorPairs.SensorPair2) {
             return getSensorPair2Touching();
-        } else if (sensor == 4) {
+        } else if (sensor == EndgameSensorPairs.SensorPair4) {
             return getSensorPair4Touching();
         } else {
             return true;
@@ -89,6 +91,11 @@ public class EndgameCloseWhenTouching extends CommandBase {
     @Override // Interrupted when button is released
     public void end(boolean interuppted) { // closes the claw
         endgamePiston.closed();
+    }
+
+    // Enum for endgame positions
+    public static enum EndgameSensorPairs {
+        SensorPair2, SensorPair4;
     }
 
 } // End of class EndgameCloseWhenTouching

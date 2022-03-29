@@ -22,11 +22,10 @@ import frc.robot.subsystems.EndgameMotorSubsystem;
 public class EndgameArmCommand extends CommandBase {
 
   // -------- CONSTANTS --------\\
-
-  private double armSpeed;
+  private static final double PRESET_ARM_SPEED = -0.2;
 
   // -------- VARIABLES --------\\
-
+  private double armSpeed;
   private final EndgameMotorSubsystem m_MotorSubsystem;
 
   // -------- CONSTRUCTOR --------\\
@@ -49,13 +48,12 @@ public class EndgameArmCommand extends CommandBase {
   /**
    * <h3>EndgameArmCommand</h3>
    * 
-   * Rotates the endgame arm forward to climb the hangar
+   * Rotates the endgame arm forward to climb the hangar. Uses default speed of 0.2
    * 
    * @param motorSubsystem  - Arm motors
-   * @param speed           - Speed of arm rotation, currently set to 0.5 by default (use overload to specify speed)
    */
   public EndgameArmCommand(EndgameMotorSubsystem motorSubsystem) {
-    this(motorSubsystem, 0.8);
+    this(motorSubsystem, PRESET_ARM_SPEED);
   }
 
   // -------- METHODS --------\\

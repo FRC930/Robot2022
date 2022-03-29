@@ -99,8 +99,6 @@ public class ShooterHoodSubsystem extends SubsystemBase {
             error = hoodMotor.configAllSettings(config, 500);
             System.out.println("Trying!");
         } while (error != ErrorCode.OK);
-
-        SmartDashboard.putNumber("Hoodmotor Error: ", 0);
     }
 
     /**

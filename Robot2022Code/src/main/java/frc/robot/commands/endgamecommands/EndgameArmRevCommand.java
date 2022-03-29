@@ -22,8 +22,6 @@ import frc.robot.subsystems.EndgameMotorSubsystem;
 public class EndgameArmRevCommand extends CommandBase {
 
   // -------- CONSTANTS --------\\
-
-  // TODO: Establish speed for endgame arm
   private final double ARM_SPEED = -0.2;
 
   // -------- DECLARATIONS --------\\
@@ -50,10 +48,6 @@ public class EndgameArmRevCommand extends CommandBase {
   public void initialize() {
     m_MotorSubsystem.setMotorSpeed(ARM_SPEED);
 
-  }
-
-  @Override
-  public void execute() {
   }
 
   @Override

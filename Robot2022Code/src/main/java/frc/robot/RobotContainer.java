@@ -37,6 +37,8 @@ import frc.robot.commands.endgamecommands.EndgameArmCommand;
 import frc.robot.commands.endgamecommands.EndgameArmRevCommand;
 import frc.robot.commands.endgamecommands.EndgameCloseClawCommand;
 import frc.robot.commands.endgamecommands.EndgameManagerCommand;
+import frc.robot.commands.endgamecommands.EndgameRotateArmCommand;
+import frc.robot.commands.endgamecommands.EndgameRotateArmCommand.EndgamePosition;
 import frc.robot.commands.intakecommands.intakePistonCommands.DisengageIntakePistonsCommand;
 import frc.robot.commands.intakecommands.intakePistonCommands.EngageIntakePistonsCommand;
 import frc.robot.commands.intakecommands.intakemotorcommands.RunIntakeMotorsCommand;
@@ -491,7 +493,9 @@ public class RobotContainer {
         // }));
 
         m_codriverController.getBackButton().whileActiveOnce(
-           new InstantCommand(m_endgameManagerCommand::resetState, m_endgameMotorSubsystem));
+            new SequentialCommandGroup(
+                new InstantCommand(m_endgameManagerCommand::resetState, m_endgameMotorSubsystem),
+                new EndgameRotateArmCommand(m_endgameMotorSubsystem, EndgamePosition.ResetPosition)));
 
         /*
          * codriverController.getXButton().whileActiveOnce(new
