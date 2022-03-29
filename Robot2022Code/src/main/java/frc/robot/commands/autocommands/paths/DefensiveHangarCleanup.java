@@ -43,7 +43,6 @@ public class DefensiveHangarCleanup extends AutoBase {
     //----- ODOMETRY -----\\
 
     private final DifferentialDriveOdometry m_odometry;
-    
     //----- CONSTRUCTOR -----\\
     /**
      * <h3>DefensiveTwoBall</h3>
@@ -133,10 +132,6 @@ public class DefensiveHangarCleanup extends AutoBase {
                 r_exitTarmac
             ),
             new StopDrive(driveSubsystem),
-            // new ParallelRaceGroup(
-            //     new HubAimCommand(driveSubsystem),
-            //     new WaitCommand(1)
-            // ),
             new AutoShootCargo(shooterHoodSubsystem, shooterSubsystem, indexerMotorSubsystem, 11.68 , intakeMotorSubsystem, intakePistonSubsystem, ShootCargoCommand.SHOOT_TIME),
             new CombinedIntake(
                 intakePistonSubsystem,

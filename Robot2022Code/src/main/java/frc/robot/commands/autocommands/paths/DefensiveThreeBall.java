@@ -125,10 +125,6 @@ public class DefensiveThreeBall extends AutoBase {
                 r_exitTarmac
             ),
             new StopDrive(driveSubsystem),
-            // new ParallelRaceGroup(
-            //     new HubAimCommand(driveSubsystem),
-            //     new WaitCommand(1)
-            // ),
             new AutoShootCargo(shooterHoodSubsystem, shooterSubsystem, indexerMotorSubsystem, 11.68 , intakeMotorSubsystem, intakePistonSubsystem, ShootCargoCommand.SHOOT_TIME),
             new CombinedIntake(
                 intakePistonSubsystem,

@@ -9,7 +9,6 @@ import frc.robot.commands.autocommands.AutoBase;
 import frc.robot.commands.autocommands.SequentialCommands.AutoShootCargo;
 import frc.robot.commands.autocommands.SequentialCommands.CombinedIntake;
 import frc.robot.commands.autocommands.SequentialCommands.StopDrive;
-import frc.robot.commands.autovisioncommands.HubAimCommand;
 import frc.robot.commands.shootercommands.ShootCargoCommand;
 import edu.wpi.first.math.controller.RamseteController;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
@@ -146,7 +145,6 @@ public class TerminalPickup extends AutoBase {
                         indexerMotorSubsystem,
                         r_taxi),
                 new StopDrive(driveSubsystem),
-                        new HubAimCommand(driveSubsystem).withTimeout(0.5),
                         new AutoShootCargo(shooterHoodSubsystem, shooterSubsystem, indexerMotorSubsystem, currentToHubDistanceUtility.getDistanceToHub(driveSubsystem.getOdometry().getPoseMeters()), intakeMotorSubsystem, intakePistonSubsystem, ShootCargoCommand.SHOOT_TIME),
                 new ParallelRaceGroup(
                         new CombinedIntake(
@@ -160,7 +158,6 @@ public class TerminalPickup extends AutoBase {
                                 r_tarmac)),
                 new StopDrive(driveSubsystem),
                 new ParallelRaceGroup(
-                        new HubAimCommand(driveSubsystem),
                         new WaitCommand(0.5)),
                         new AutoShootCargo(shooterHoodSubsystem, shooterSubsystem, indexerMotorSubsystem, currentToHubDistanceUtility.getDistanceToHub(driveSubsystem.getOdometry().getPoseMeters()), intakeMotorSubsystem, intakePistonSubsystem, ShootCargoCommand.SHOOT_TIME));
     } // End of Constructor
