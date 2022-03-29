@@ -263,7 +263,7 @@ public class PhotonVisionUtility {
                     // Use our method to set the picamera's exposure
                     setPiCameraExposure();
 
-                    PhotonVisionUtility.getInstance().getHubTrackingCamera().setLED(VisionLEDMode.kOn);
+                    PhotonVisionUtility.getInstance().getHubTrackingCamera().setLED(VisionLEDMode.kOff);
                     PhotonVisionUtility.getInstance().setPiCameraPipeline(0);
 
                     // Tell shuffleboard that photon is up and ready
@@ -431,6 +431,11 @@ public class PhotonVisionUtility {
             if (ws == null) {
                 throw new RuntimeException("Websocket not initialized");
             }
+
+            if (pipeline >= exposureValues.size()) {
+                throw new RuntimeException("Tried to set an invalid pipeline");
+            }
+
             // Set up the map to set the pipeline
             LinkedHashMap<String, Object> pipelineSetMap = new LinkedHashMap<>();
             pipelineSetMap.put("currentPipeline", pipeline);

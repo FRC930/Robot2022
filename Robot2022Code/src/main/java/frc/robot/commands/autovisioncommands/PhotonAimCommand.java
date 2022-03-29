@@ -4,6 +4,7 @@ package frc.robot.commands.autovisioncommands;
 
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonUtils;
+import org.photonvision.common.hardware.VisionLEDMode;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
@@ -108,6 +109,8 @@ public class PhotonAimCommand extends CommandBase {
         // shuffleboard
         PhotonVisionUtility.getInstance()
                 .setPiCameraPipeline(ShuffleboardUtility.getInstance().getSelectedPipelineChooser());
+
+        m_hubCamera.setLED(VisionLEDMode.kOn);
     }
 
     @Override
@@ -210,6 +213,8 @@ public class PhotonAimCommand extends CommandBase {
             m_codriverController.setRumble(RumbleType.kLeftRumble, 0);
             m_codriverController.setRumble(RumbleType.kRightRumble, 0);
         }
+
+        m_hubCamera.setLED(VisionLEDMode.kOff);
     }
 
     @Override
