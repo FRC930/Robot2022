@@ -1,0 +1,6 @@
+<map id="frc.robot.commands.autocommands.paths.TaxiOneBallAim.TaxiOneBallAim" name="frc.robot.commands.autocommands.paths.TaxiOneBallAim.TaxiOneBallAim">
+<area shape="rect" id="node1" title=" " alt="" coords="5,71,276,112"/>
+<area shape="rect" id="node2" href="$classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem.html#ab134acd7025b20101237a808259921aa" title=" " alt="" coords="324,5,500,47"/>
+<area shape="rect" id="node3" href="$classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem.html#a6c7503061e455512eb7edeab06af8483" title=" " alt="" coords="324,71,500,112"/>
+<area shape="rect" id="node4" href="$classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem.html#ad55ff101390932755974b445c1b58c02" title=" " alt="" coords="324,136,500,177"/>
+</map>

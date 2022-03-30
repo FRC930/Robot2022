@@ -1,6 +1,6 @@
 <map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="node1" title=" " alt="" coords="5,755,116,781"/>
-<area shape="rect" id="node2" href="$class_indexer_forward_command.html" title=" " alt="" coords="269,5,439,32"/>
+<area shape="rect" id="node1" title=" " alt="" coords="5,723,116,749"/>
+<area shape="rect" id="node2" href="$class_indexer_motor_command.html" title=" " alt="" coords="276,5,432,32"/>
 <area shape="rect" id="node3" href="$classfrc_1_1robot_1_1commands_1_1_drive_command.html" title=" " alt="" coords="269,57,439,98"/>
 <area shape="rect" id="node4" href="$classfrc_1_1robot_1_1commands_1_1_l_e_d_command.html" title=" " alt="" coords="241,123,467,149"/>
 <area shape="rect" id="node5" href="$classfrc_1_1robot_1_1commands_1_1_new_l_e_d_command.html" title=" " alt="" coords="229,173,479,200"/>
@@ -17,12 +17,11 @@
 <area shape="rect" id="node16" href="$classfrc_1_1robot_1_1commands_1_1endgamecommands_1_1_endgame_increment_state_command.html" title=" " alt="" coords="223,878,485,919"/>
 <area shape="rect" id="node17" href="$classfrc_1_1robot_1_1commands_1_1endgamecommands_1_1_endgame_manager_command.html" title=" " alt="" coords="223,943,485,985"/>
 <area shape="rect" id="node18" href="$classfrc_1_1robot_1_1commands_1_1endgamecommands_1_1_endgame_open_claw_command.html" title=" " alt="" coords="223,1009,485,1050"/>
-<area shape="rect" id="node19" href="$classfrc_1_1robot_1_1commands_1_1endgamecommands_1_1_endgame_rotate_horizonal_command.html" title=" " alt="" coords="223,1074,485,1115"/>
-<area shape="rect" id="node20" href="$classfrc_1_1robot_1_1commands_1_1endgamecommands_1_1_endgame_rotate_vertical_command.html" title=" " alt="" coords="223,1139,485,1181"/>
-<area shape="rect" id="node21" href="$classfrc_1_1robot_1_1commands_1_1intakecommands_1_1intake_piston_commands_1_1_disengage_intake_pistons_command.html" title=" " alt="" coords="190,1205,518,1246"/>
-<area shape="rect" id="node22" href="$classfrc_1_1robot_1_1commands_1_1intakecommands_1_1intake_piston_commands_1_1_engage_intake_pistons_command.html" title=" " alt="" coords="199,1270,509,1311"/>
-<area shape="rect" id="node23" href="$classfrc_1_1robot_1_1commands_1_1intakecommands_1_1intakemotorcommands_1_1_run_intake_motors_command.html" title=" " alt="" coords="164,1335,544,1377"/>
-<area shape="rect" id="node24" href="$classfrc_1_1robot_1_1commands_1_1intakecommands_1_1intakemotorcommands_1_1_stop_intake_motors_command.html" title=" " alt="" coords="164,1401,544,1442"/>
-<area shape="rect" id="node25" href="$classfrc_1_1robot_1_1commands_1_1shootercommands_1_1_adjust_hood_command.html" title=" " alt="" coords="228,1466,480,1507"/>
-<area shape="rect" id="node26" href="$classfrc_1_1robot_1_1commands_1_1shootercommands_1_1_shoot_cargo_command.html" title=" " alt="" coords="228,1531,480,1573"/>
+<area shape="rect" id="node19" href="$classfrc_1_1robot_1_1commands_1_1endgamecommands_1_1_endgame_rotate_arm_command.html" title=" " alt="" coords="223,1074,485,1115"/>
+<area shape="rect" id="node20" href="$classfrc_1_1robot_1_1commands_1_1intakecommands_1_1intake_piston_commands_1_1_disengage_intake_pistons_command.html" title=" " alt="" coords="190,1139,518,1181"/>
+<area shape="rect" id="node21" href="$classfrc_1_1robot_1_1commands_1_1intakecommands_1_1intake_piston_commands_1_1_engage_intake_pistons_command.html" title=" " alt="" coords="199,1205,509,1246"/>
+<area shape="rect" id="node22" href="$classfrc_1_1robot_1_1commands_1_1intakecommands_1_1intakemotorcommands_1_1_run_intake_motors_command.html" title=" " alt="" coords="164,1270,544,1311"/>
+<area shape="rect" id="node23" href="$classfrc_1_1robot_1_1commands_1_1intakecommands_1_1intakemotorcommands_1_1_stop_intake_motors_command.html" title=" " alt="" coords="164,1335,544,1377"/>
+<area shape="rect" id="node24" href="$classfrc_1_1robot_1_1commands_1_1shootercommands_1_1_adjust_hood_command.html" title=" " alt="" coords="228,1401,480,1442"/>
+<area shape="rect" id="node25" href="$classfrc_1_1robot_1_1commands_1_1shootercommands_1_1_shoot_cargo_command.html" title=" " alt="" coords="228,1466,480,1507"/>
 </map>

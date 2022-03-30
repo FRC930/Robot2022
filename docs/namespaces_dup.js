@@ -10,6 +10,7 @@ var namespaces_dup =
               [ "FiveBallAuto", "classfrc_1_1robot_1_1commands_1_1autocommands_1_1paths_1_1_five_ball_auto.html", null ],
               [ "TarmacTaxi", "classfrc_1_1robot_1_1commands_1_1autocommands_1_1paths_1_1_tarmac_taxi.html", null ],
               [ "TaxiOneBall", "classfrc_1_1robot_1_1commands_1_1autocommands_1_1paths_1_1_taxi_one_ball.html", "classfrc_1_1robot_1_1commands_1_1autocommands_1_1paths_1_1_taxi_one_ball" ],
+              [ "TaxiOneBallAim", "classfrc_1_1robot_1_1commands_1_1autocommands_1_1paths_1_1_taxi_one_ball_aim.html", "classfrc_1_1robot_1_1commands_1_1autocommands_1_1paths_1_1_taxi_one_ball_aim" ],
               [ "TaxiTwoBall", "classfrc_1_1robot_1_1commands_1_1autocommands_1_1paths_1_1_taxi_two_ball.html", null ],
               [ "TemplateCommand", "classfrc_1_1robot_1_1commands_1_1autocommands_1_1paths_1_1_template_command.html", null ],
               [ "TerminalPickup", "classfrc_1_1robot_1_1commands_1_1autocommands_1_1paths_1_1_terminal_pickup.html", null ]
@@ -19,6 +20,7 @@ var namespaces_dup =
               [ "CombinedIntake", "classfrc_1_1robot_1_1commands_1_1autocommands_1_1_sequential_commands_1_1_combined_intake.html", null ],
               [ "StopDrive", "classfrc_1_1robot_1_1commands_1_1autocommands_1_1_sequential_commands_1_1_stop_drive.html", "classfrc_1_1robot_1_1commands_1_1autocommands_1_1_sequential_commands_1_1_stop_drive" ]
             ] ],
+            [ "AutoBase", "classfrc_1_1robot_1_1commands_1_1autocommands_1_1_auto_base.html", null ],
             [ "AutoCommandManager", "classfrc_1_1robot_1_1commands_1_1autocommands_1_1_auto_command_manager.html", "classfrc_1_1robot_1_1commands_1_1autocommands_1_1_auto_command_manager" ],
             [ "ResetAutonomousCommand", "classfrc_1_1robot_1_1commands_1_1autocommands_1_1_reset_autonomous_command.html", "classfrc_1_1robot_1_1commands_1_1autocommands_1_1_reset_autonomous_command" ]
           ] ],
@@ -32,12 +34,11 @@ var namespaces_dup =
             [ "EndgameArmCommand", "classfrc_1_1robot_1_1commands_1_1endgamecommands_1_1_endgame_arm_command.html", "classfrc_1_1robot_1_1commands_1_1endgamecommands_1_1_endgame_arm_command" ],
             [ "EndgameArmRevCommand", "classfrc_1_1robot_1_1commands_1_1endgamecommands_1_1_endgame_arm_rev_command.html", null ],
             [ "EndgameCloseClawCommand", "classfrc_1_1robot_1_1commands_1_1endgamecommands_1_1_endgame_close_claw_command.html", null ],
-            [ "EndgameCloseWhenTouching", "classfrc_1_1robot_1_1commands_1_1endgamecommands_1_1_endgame_close_when_touching.html", null ],
+            [ "EndgameCloseWhenTouching", "classfrc_1_1robot_1_1commands_1_1endgamecommands_1_1_endgame_close_when_touching.html", "classfrc_1_1robot_1_1commands_1_1endgamecommands_1_1_endgame_close_when_touching" ],
             [ "EndgameIncrementStateCommand", "classfrc_1_1robot_1_1commands_1_1endgamecommands_1_1_endgame_increment_state_command.html", "classfrc_1_1robot_1_1commands_1_1endgamecommands_1_1_endgame_increment_state_command" ],
             [ "EndgameManagerCommand", "classfrc_1_1robot_1_1commands_1_1endgamecommands_1_1_endgame_manager_command.html", "classfrc_1_1robot_1_1commands_1_1endgamecommands_1_1_endgame_manager_command" ],
             [ "EndgameOpenClawCommand", "classfrc_1_1robot_1_1commands_1_1endgamecommands_1_1_endgame_open_claw_command.html", null ],
-            [ "EndgameRotateHorizonalCommand", "classfrc_1_1robot_1_1commands_1_1endgamecommands_1_1_endgame_rotate_horizonal_command.html", null ],
-            [ "EndgameRotateVerticalCommand", "classfrc_1_1robot_1_1commands_1_1endgamecommands_1_1_endgame_rotate_vertical_command.html", null ]
+            [ "EndgameRotateArmCommand", "classfrc_1_1robot_1_1commands_1_1endgamecommands_1_1_endgame_rotate_arm_command.html", null ]
           ] ],
           [ "intakecommands", null, [
             [ "intakemotorcommands", null, [

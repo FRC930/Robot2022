@@ -6,10 +6,11 @@ var searchData=
   ['addsubsystem_3',['addSubsystem',['../classfrc_1_1robot_1_1commands_1_1autocommands_1_1_auto_command_manager.html#ad9644653f037d97df807da754023edc3',1,'frc::robot::commands::autocommands::AutoCommandManager']]],
   ['adjusthoodcommand_4',['AdjustHoodCommand',['../classfrc_1_1robot_1_1commands_1_1shootercommands_1_1_adjust_hood_command.html#a890ae60fcb5c4eeff267cd7326767b35',1,'frc.robot.commands.shootercommands.AdjustHoodCommand.AdjustHoodCommand(ShooterHoodSubsystem shooterHood, double pos)'],['../classfrc_1_1robot_1_1commands_1_1shootercommands_1_1_adjust_hood_command.html#a01e9a299747c3b59c10b65b33ac98543',1,'frc.robot.commands.shootercommands.AdjustHoodCommand.AdjustHoodCommand(ShooterHoodSubsystem shooterHood)'],['../classfrc_1_1robot_1_1commands_1_1shootercommands_1_1_adjust_hood_command.html',1,'frc.robot.commands.shootercommands.AdjustHoodCommand']]],
   ['aimstatusutility_5',['AimStatusUtility',['../classfrc_1_1robot_1_1utilities_1_1_aim_status_utility.html',1,'frc::robot::utilities']]],
-  ['autocommandmanager_6',['AutoCommandManager',['../classfrc_1_1robot_1_1commands_1_1autocommands_1_1_auto_command_manager.html',1,'frc::robot::commands::autocommands']]],
-  ['autonomousperiodic_7',['autonomousPeriodic',['../classfrc_1_1robot_1_1_robot.html#a7dcfe7d0d65d1051eb095b8eb1aebd72',1,'frc::robot::Robot']]],
-  ['autoshootcargo_8',['AutoShootCargo',['../classfrc_1_1robot_1_1commands_1_1autocommands_1_1_sequential_commands_1_1_auto_shoot_cargo.html',1,'frc::robot::commands::autocommands::SequentialCommands']]],
-  ['autosiminit_9',['autoSimInit',['../classfrc_1_1robot_1_1_robot_container.html#ab95d4cc22e05ed5c417d1fd8da0fe749',1,'frc::robot::RobotContainer']]],
-  ['autosimperiodic_10',['autoSimPeriodic',['../classfrc_1_1robot_1_1_robot_container.html#a52e5b7a9ef2daa3513e58b4d69156ccf',1,'frc::robot::RobotContainer']]],
-  ['axistrigger_11',['AxisTrigger',['../classfrc_1_1robot_1_1triggers_1_1_axis_trigger.html',1,'frc::robot::triggers']]]
+  ['autobase_6',['AutoBase',['../classfrc_1_1robot_1_1commands_1_1autocommands_1_1_auto_base.html',1,'frc::robot::commands::autocommands']]],
+  ['autocommandmanager_7',['AutoCommandManager',['../classfrc_1_1robot_1_1commands_1_1autocommands_1_1_auto_command_manager.html',1,'frc::robot::commands::autocommands']]],
+  ['autonomousperiodic_8',['autonomousPeriodic',['../classfrc_1_1robot_1_1_robot.html#a7dcfe7d0d65d1051eb095b8eb1aebd72',1,'frc::robot::Robot']]],
+  ['autoshootcargo_9',['AutoShootCargo',['../classfrc_1_1robot_1_1commands_1_1autocommands_1_1_sequential_commands_1_1_auto_shoot_cargo.html',1,'frc::robot::commands::autocommands::SequentialCommands']]],
+  ['autosiminit_10',['autoSimInit',['../classfrc_1_1robot_1_1_robot_container.html#ab95d4cc22e05ed5c417d1fd8da0fe749',1,'frc::robot::RobotContainer']]],
+  ['autosimperiodic_11',['autoSimPeriodic',['../classfrc_1_1robot_1_1_robot_container.html#a52e5b7a9ef2daa3513e58b4d69156ccf',1,'frc::robot::RobotContainer']]],
+  ['axistrigger_12',['AxisTrigger',['../classfrc_1_1robot_1_1triggers_1_1_axis_trigger.html',1,'frc::robot::triggers']]]
 ];
