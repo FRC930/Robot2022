@@ -432,13 +432,13 @@ public class RobotContainer {
             new ParallelCommandGroup(
                 new AdjustHoodCommand(
                     m_shooterHoodSubsystem,
-                    ShooterUtility.calculateHoodPos(17)
+                    ShooterUtility.calculateHoodPos(16.5)
                 ),
                 new ShootCargoCommand(
                     m_shooterSubsystem, 
                     m_indexerMotorSubsystem,
-                    ShooterUtility.calculateTopSpeed(17),
-                    ShooterUtility.calculateBottomSpeed(17)
+                    ShooterUtility.calculateTopSpeed(16.5),
+                    ShooterUtility.calculateBottomSpeed(16.5)
                 )
             ).withTimeout(0.1)
         );
