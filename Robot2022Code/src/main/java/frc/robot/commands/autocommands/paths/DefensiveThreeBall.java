@@ -6,7 +6,6 @@ import com.pathplanner.lib.PathPlanner;
 
 import frc.robot.commands.Ramsete930Command;
 import frc.robot.commands.autocommands.AutoBase;
-import frc.robot.commands.autocommands.ResetAutonomousCommand;
 import frc.robot.commands.autocommands.SequentialCommands.AutoShootCargo;
 import frc.robot.commands.autocommands.SequentialCommands.CombinedIntake;
 import frc.robot.commands.autocommands.SequentialCommands.StopDrive;
@@ -15,8 +14,6 @@ import edu.wpi.first.math.controller.RamseteController;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.utilities.CurrentToHubDistanceUtility;
-import frc.robot.utilities.PathPlannerSequentialCommandGroupUtility;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.IndexerMotorSubsystem;
@@ -48,7 +45,7 @@ public class DefensiveThreeBall extends AutoBase {
     //----- ODOMETRY -----\\
 
     private final DifferentialDriveOdometry m_odometry;
-    private final CurrentToHubDistanceUtility currentToHubDistanceUtility;
+    //private final CurrentToHubDistanceUtility currentToHubDistanceUtility;
 
     //----- CONSTRUCTOR -----\\
     /**
@@ -75,7 +72,7 @@ public class DefensiveThreeBall extends AutoBase {
 
         // initializing gyro for pose2d
         m_odometry = driveSubsystem.getOdometry();
-        currentToHubDistanceUtility = new CurrentToHubDistanceUtility();
+        //currentToHubDistanceUtility = new CurrentToHubDistanceUtility();
         //----- TRAJECTORIES -----\\
 
         // Robot exits the tarmac, intakes, and shoots

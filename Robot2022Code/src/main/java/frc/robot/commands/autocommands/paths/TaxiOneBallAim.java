@@ -6,14 +6,11 @@ import com.pathplanner.lib.PathPlanner;
 
 import frc.robot.commands.Ramsete930Command;
 import frc.robot.commands.autocommands.AutoBase;
-import frc.robot.commands.autocommands.ResetAutonomousCommand;
 import frc.robot.commands.autocommands.SequentialCommands.AutoShootCargo;
 import frc.robot.commands.autovisioncommands.PhotonAimCommand;
 import frc.robot.commands.shootercommands.ShootCargoCommand;
 import edu.wpi.first.math.controller.RamseteController;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
-import edu.wpi.first.math.trajectory.Trajectory;
-import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
@@ -21,9 +18,6 @@ import frc.robot.subsystems.IndexerMotorSubsystem;
 import frc.robot.subsystems.IntakeMotorSubsystem;
 import frc.robot.subsystems.IntakePistonSubsystem;
 import frc.robot.subsystems.ShooterHoodSubsystem;
-import frc.robot.utilities.CurrentToHubDistanceUtility;
-import frc.robot.utilities.PathPlannerSequentialCommandGroupUtility;
-
 //----- CLASS -----\\
 /**
  * <h3>TaxiOneBall</h3>
@@ -40,7 +34,7 @@ public class TaxiOneBallAim extends AutoBase {
 
     private double SHOT_DISTANCE_1 = 2;//Figure out distance;
 
-    private final CurrentToHubDistanceUtility currentToHubDistanceUtility;
+    //private final CurrentToHubDistanceUtility currentToHubDistanceUtility;
 
     // Ramsete Controller Parameters
     // private final double RAMSETE_B = 2;
@@ -67,18 +61,7 @@ public class TaxiOneBallAim extends AutoBase {
 
         // initializing gyro for pose2d
         m_odometry = driveSubsystem.getOdometry();
-        currentToHubDistanceUtility = new CurrentToHubDistanceUtility();
-
-        // Configurate the values of all trajectories for max velocity and acceleration
-        TrajectoryConfig config = new TrajectoryConfig(
-            MAX_SPEED,
-            MAX_ACCELERATION
-        )
-            // Add kinematics to ensure max speed is actually obeyed
-            // -- setEndVelocity stops the auto path at the end
-            .setKinematics(driveSubsystem.getKinematics()).setEndVelocity(0.0)
-            // Apply the voltage constraint
-            .addConstraint(driveSubsystem.getVoltageContraint());
+        //currentToHubDistanceUtility = new CurrentToHubDistanceUtility();
 
         //----- TRAJECTORIES -----\\
         this.addTrajectory(super.m_initialTrajectory);

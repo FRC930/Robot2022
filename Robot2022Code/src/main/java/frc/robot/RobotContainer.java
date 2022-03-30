@@ -32,7 +32,6 @@ import frc.robot.commands.ToggleShifterCommand;
 import frc.robot.commands.autocommands.AutoCommandManager;
 import frc.robot.commands.autocommands.AutoCommandManager.subNames;
 import frc.robot.commands.autovisioncommands.PhotonAimCommand;
-import frc.robot.commands.autovisioncommands.PigeonAimCommand;
 import frc.robot.commands.endgamecommands.EndgameArmCommand;
 import frc.robot.commands.endgamecommands.EndgameArmRevCommand;
 import frc.robot.commands.endgamecommands.EndgameCloseClawCommand;
@@ -164,11 +163,6 @@ public class RobotContainer {
 
     UsbCamera m_driverCamera = new UsbCamera("Driver Camera", 0);
     MjpegServer m_mjpegServer = new MjpegServer("Drive Camera Stream", "", 1185);
-
-    //----- AIMING -----\\
-
-    private final PhotonAimCommand m_photonAimCommand;
-    private final PigeonAimCommand m_pigeonAimCommand;
 
     //----- PRESSURE MANAGEMENT -----\\
 
@@ -311,15 +305,6 @@ public class RobotContainer {
             m_endgamePiston4,
             m_indexerMotorSubsystem,
             compressor
-        );
-
-        //----- AIMING COMMANDS -----\\
-
-        m_pigeonAimCommand = new PigeonAimCommand(m_driveSubsystem);
-        m_photonAimCommand = new PhotonAimCommand(
-            m_driveSubsystem, 
-            m_driverController.getController(),
-            m_codriverController.getController()
         );
 
         //----- SETTING BALL COLOR -----\\
@@ -596,8 +581,9 @@ public class RobotContainer {
      * Test mode periodic.
      */
     public void testPeriodic() {
-        // TODO: figure out why we need this-need to repair
+        // NEED REFOLLOW TO KEEP MASTER-SLAVE PAIR WORKING
         m_endgameMotorSubsystem.refollowEndgameMotors();
+        
         if (m_driverController.getLeftBumper().get()) {
             if (m_driverController.getYButton().get()) {
                 m_endgamePiston1.open();

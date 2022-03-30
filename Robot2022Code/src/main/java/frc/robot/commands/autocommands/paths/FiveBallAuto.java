@@ -6,7 +6,6 @@ import com.pathplanner.lib.PathPlanner;
 
 import frc.robot.commands.Ramsete930Command;
 import frc.robot.commands.autocommands.AutoBase;
-import frc.robot.commands.autocommands.ResetAutonomousCommand;
 import frc.robot.commands.autocommands.SequentialCommands.AutoShootCargo;
 import frc.robot.commands.autocommands.SequentialCommands.CombinedIntake;
 import frc.robot.commands.autocommands.SequentialCommands.StopDrive;

@@ -30,16 +30,10 @@ public class LEDSubsystem extends SubsystemBase {
        * @param port PWM port on the roboRIO
        */
       public LEDSubsystem(int port) {
-
-            // TODO maybe pass in buffer length
             m_leds = new AddressableLED(port); // initialization of the AdressableLED
             m_leds.setLength(m_BUFFER_LENGTH); // Sets the LED Strip length once
             m_buffer = new AddressableLEDBuffer(m_BUFFER_LENGTH);
-
-            // TODO we start a starting color
             setBuffer(m_buffer);
-
-            //TODO:SEE IF WE NEED THIS LINE
             m_leds.start();
       }
 

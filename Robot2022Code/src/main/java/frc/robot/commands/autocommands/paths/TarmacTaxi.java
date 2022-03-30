@@ -2,22 +2,13 @@
 
 package frc.robot.commands.autocommands.paths;
 
-import java.util.List;
-
 import com.pathplanner.lib.PathPlanner;
 
 import frc.robot.commands.Ramsete930Command;
 import frc.robot.commands.autocommands.AutoBase;
 import edu.wpi.first.math.controller.RamseteController;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
-import edu.wpi.first.math.trajectory.Trajectory;
-import edu.wpi.first.math.trajectory.TrajectoryConfig;
-import edu.wpi.first.math.trajectory.TrajectoryGenerator;
-import edu.wpi.first.math.util.Units;
 import frc.robot.subsystems.DriveSubsystem;
-import frc.robot.utilities.PathPlannerSequentialCommandGroupUtility;
 
 //----- CLASS -----\\
 /**
@@ -54,19 +45,6 @@ public class TarmacTaxi extends AutoBase {
 
         // initializing gyro for pose2d
         m_odometry = driveSubsystem.getOdometry();
-
-        //----- CONFIGURATION -----\\
-
-        // Configurate the values of all trajectories for max velocity and acceleration
-        TrajectoryConfig config = new TrajectoryConfig(
-                MAX_SPEED,
-                MAX_ACCELERATION
-        )
-                        // Add kinematics to ensure max speed is actually obeyed
-                        // -- setEndVelocity stops the auto path at the end
-                        .setKinematics(driveSubsystem.getKinematics()).setEndVelocity(0.0)
-                        // Apply the voltage constraint
-                        .addConstraint(driveSubsystem.getVoltageContraint());
 
         //----- TRAJECTORIES -----\\
 
