@@ -32,7 +32,7 @@ public class TaxiOneBallAim extends AutoBase {
     private final static double MAX_SPEED = 0.5; // DriveSubsystem.DRIVETRAIN_MAX_FREE_SPEED_HIGH
     private final static double MAX_ACCELERATION = 2.5;
 
-    private double SHOT_DISTANCE_1 = 2;//Figure out distance;
+    private double SHOT_DISTANCE_1 = 11.68;//Figure out distance;
 
     //private final CurrentToHubDistanceUtility currentToHubDistanceUtility;
 
