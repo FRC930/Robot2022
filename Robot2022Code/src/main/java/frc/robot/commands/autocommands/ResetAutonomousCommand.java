@@ -13,9 +13,7 @@ import frc.robot.subsystems.DriveSubsystem;
 /**
  * <h3>ResetAutonomousCommand</h3>
  * 
- * Resets the gyro and resemtog
- * 
- * @author Ed Pilon, Hussain Mehdi, and Caden DeGlopper
+ * Resets the gyro and encoders
  */
 public class ResetAutonomousCommand extends CommandBase {
 

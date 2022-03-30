@@ -98,9 +98,6 @@ public class PhotonAimCommand extends CommandBase {
 
     @Override
     public void initialize() {
-        // Set the LEDs to on to ensure that we can see the reflective tape
-        m_hubCamera.setLED(VisionLEDMode.kOn);
-
         // Make sure that any previous voltages are not recorded
         m_driveSubsystem.setVoltages(0, 0);
 
@@ -112,6 +109,8 @@ public class PhotonAimCommand extends CommandBase {
         // shuffleboard
         PhotonVisionUtility.getInstance()
                 .setPiCameraPipeline(ShuffleboardUtility.getInstance().getSelectedPipelineChooser());
+
+        m_hubCamera.setLED(VisionLEDMode.kOn);
     }
 
     @Override
@@ -138,7 +137,7 @@ public class PhotonAimCommand extends CommandBase {
             range = Math.sqrt(Math.pow(range, 2) - Math.pow(HEIGHT_DIFFERENCE_METERS, 2))
                     // Adjusted to measure from front of the robot to hub stand wall.
                     // This distance is in meters ~43.307 inches
-                    -0.2;
+                    - 0.2;
 
             ShuffleboardUtility.getInstance().putToShuffleboard(ShuffleboardUtility.driverTab,
                     ShuffleboardKeys.DISTANCE_FROM_GOAL, new ShuffleBoardData<Double>(range));
@@ -200,15 +199,22 @@ public class PhotonAimCommand extends CommandBase {
         // Don't want any irregular signals being sent to drivetrain
         m_driveSubsystem.setVoltages(0, 0);
 
-        // Set the LEDs for the pi camera to off
-        m_hubCamera.setLED(VisionLEDMode.kOff);
-
         cyclesAimed = 0;
 
         // Tell shuffleboard utility that we are no longer aimed. This will make sure
         // that we don't think that we are aimed when we aren't
         ShuffleboardUtility.getInstance().putToShuffleboard(ShuffleboardUtility.driverTab,
                 ShuffleboardKeys.AIMED, new ShuffleBoardData<Boolean>(false));
+
+        // Turn off rumble for both controllers
+        if (m_driverController != null && m_codriverController != null) {
+            m_driverController.setRumble(RumbleType.kLeftRumble, 0);
+            m_driverController.setRumble(RumbleType.kRightRumble, 0);
+            m_codriverController.setRumble(RumbleType.kLeftRumble, 0);
+            m_codriverController.setRumble(RumbleType.kRightRumble, 0);
+        }
+
+        m_hubCamera.setLED(VisionLEDMode.kOff);
     }
 
     @Override

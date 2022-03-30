@@ -6,8 +6,6 @@ import java.util.List;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 
-import org.photonvision.common.hardware.VisionLEDMode;
-
 import edu.wpi.first.cscore.MjpegServer;
 import edu.wpi.first.cscore.UsbCamera;
 import edu.wpi.first.cscore.VideoMode.PixelFormat;
@@ -23,21 +21,23 @@ import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.DriveCommand;
-import frc.robot.commands.IndexerForwardCommand;
+import frc.robot.commands.IndexerMotorCommand;
 import frc.robot.commands.LEDCommand;
 import frc.robot.commands.LEDCommand.LEDPatterns;
 import frc.robot.commands.ToggleShifterCommand;
 import frc.robot.commands.autocommands.AutoCommandManager;
 import frc.robot.commands.autocommands.AutoCommandManager.subNames;
 import frc.robot.commands.autovisioncommands.PhotonAimCommand;
-import frc.robot.commands.autovisioncommands.PigeonAimCommand;
 import frc.robot.commands.endgamecommands.EndgameArmCommand;
 import frc.robot.commands.endgamecommands.EndgameArmRevCommand;
 import frc.robot.commands.endgamecommands.EndgameCloseClawCommand;
 import frc.robot.commands.endgamecommands.EndgameManagerCommand;
+import frc.robot.commands.endgamecommands.EndgameRotateArmCommand;
+import frc.robot.commands.endgamecommands.EndgameRotateArmCommand.EndgamePosition;
 import frc.robot.commands.intakecommands.intakePistonCommands.DisengageIntakePistonsCommand;
 import frc.robot.commands.intakecommands.intakePistonCommands.EngageIntakePistonsCommand;
 import frc.robot.commands.intakecommands.intakemotorcommands.RunIntakeMotorsCommand;
@@ -122,6 +122,13 @@ public class RobotContainer {
     private final ShooterSubsystem m_shooterSubsystem;
     private final ShooterHoodSubsystem m_shooterHoodSubsystem;
 
+    private final ShootCargoCommand m_shootCargoCommand;
+
+    private final IndexerMotorCommand m_indexerMotorForwardCommand;
+    private final IndexerMotorCommand m_indexerMotorReverseCommand;
+
+    private final SequentialCommandGroup m_teleopShootSequence;
+
     //----- ENDGAME -----\\
 
     // Endgame Sequence
@@ -156,11 +163,6 @@ public class RobotContainer {
 
     UsbCamera m_driverCamera = new UsbCamera("Driver Camera", 0);
     MjpegServer m_mjpegServer = new MjpegServer("Drive Camera Stream", "", 1185);
-
-    //----- AIMING -----\\
-
-    private final PhotonAimCommand m_photonAimCommand;
-    private final PigeonAimCommand m_pigeonAimCommand;
 
     //----- PRESSURE MANAGEMENT -----\\
 
@@ -264,25 +266,46 @@ public class RobotContainer {
 
         //----- DRIVETRAIN COMMAND INITS -----\\
 
-        m_driveCommand = new DriveCommand(
-                m_driveSubsystem,
-                m_driverController.getController());
+        m_driveCommand = new DriveCommand(m_driveSubsystem,m_driverController.getController());
 
         //----- DRIVETRAIN SHIFTER COMMAND INITS -----\\
 
         m_toggleShifterCommand = new ToggleShifterCommand(m_shifterSubsystem);
+
+        //----- SHOOTER COMMAND INITS -----\\
+
+        m_shootCargoCommand = new ShootCargoCommand(m_shooterSubsystem, m_indexerMotorSubsystem);
+
+        m_indexerMotorForwardCommand = new IndexerMotorCommand(m_indexerMotorSubsystem, false);
+        m_indexerMotorReverseCommand = new IndexerMotorCommand(m_indexerMotorSubsystem, true);
+
+        m_teleopShootSequence = new SequentialCommandGroup(
+            new PhotonAimCommand(
+                m_driveSubsystem, 
+                m_driverController.getController(),
+                m_codriverController.getController()
+            ),
+            new AdjustHoodCommand(m_shooterHoodSubsystem),
+            new ShootCargoCommand(
+                m_shooterSubsystem, 
+                m_indexerMotorSubsystem
+            ).withTimeout(ShootCargoCommand.SHOOT_TIME)
+        );
 
         //----- ENDGAME COMMAND INITS -----\\
 
         // Endgame Arm Commands
         m_endgameArmCommand = new EndgameArmCommand(m_endgameMotorSubsystem);
         m_endgameArmRevCommand = new EndgameArmRevCommand(m_endgameMotorSubsystem);
-        m_endgameManagerCommand = new EndgameManagerCommand(m_endgameMotorSubsystem,
-                m_endgamePiston1, m_endgamePiston2, m_endgamePiston3, m_endgamePiston4);
-
-        m_pigeonAimCommand = new PigeonAimCommand(m_driveSubsystem);
-        m_photonAimCommand = new PhotonAimCommand(m_driveSubsystem, m_driverController.getController(),
-                m_codriverController.getController());
+        m_endgameManagerCommand = new EndgameManagerCommand(
+            m_endgameMotorSubsystem,
+            m_endgamePiston1, 
+            m_endgamePiston2, 
+            m_endgamePiston3, 
+            m_endgamePiston4,
+            m_indexerMotorSubsystem,
+            compressor
+        );
 
         //----- SETTING BALL COLOR -----\\
 
@@ -295,9 +318,9 @@ public class RobotContainer {
 
         //----- LED COMMAND INITS-----\\
 
-        m_autonPatternCommand = new LEDCommand(m_LEDSubsystem, LEDPatterns.AutonPattern);
-        m_endgamePatternCommand = new LEDCommand(m_LEDSubsystem, LEDPatterns.EndgamePatten);
-        m_idlePatternCommand = new LEDCommand(m_LEDSubsystem, LEDPatterns.TeleopIdle);
+        m_autonPatternCommand = new LEDCommand(m_LEDSubsystem, m_driverController, LEDPatterns.AutonPattern);
+        m_endgamePatternCommand = new LEDCommand(m_LEDSubsystem, m_driverController, LEDPatterns.EndgamePatten);
+        m_idlePatternCommand = new LEDCommand(m_LEDSubsystem, m_driverController, LEDPatterns.TeleopIdle);
 
         // calls the method that configures the buttons
         configureButtonBindings();
@@ -326,9 +349,10 @@ public class RobotContainer {
         scheduler.setDefaultCommand(m_endgamePiston2, new EndgameCloseClawCommand(m_endgamePiston2));
         scheduler.setDefaultCommand(m_endgamePiston3, new EndgameCloseClawCommand(m_endgamePiston3));
         scheduler.setDefaultCommand(m_endgamePiston4, new EndgameCloseClawCommand(m_endgamePiston4));
-        scheduler.setDefaultCommand(m_indexerMotorSubsystem, new IndexerForwardCommand(m_indexerMotorSubsystem, false));
+        scheduler.setDefaultCommand(m_indexerMotorSubsystem, m_indexerMotorForwardCommand);
 
         compressor.enableAnalog(100, 115);
+        System.out.println("COMPRESSOR VALUE: " + compressor.getPressure());
     }
 
     /**
@@ -348,23 +372,18 @@ public class RobotContainer {
         );
 
         m_driverController.getLeftBumper().whileActiveOnce(
-            new SequentialCommandGroup(
-                new PhotonAimCommand(m_driveSubsystem),
-                new AdjustHoodCommand(m_shooterHoodSubsystem),
-                new ShootCargoCommand(m_shooterSubsystem, m_indexerMotorSubsystem)
-                        .withTimeout(ShootCargoCommand.SHOOT_TIME)
-            )
+            m_teleopShootSequence
         );
 
         m_driverController.getRightBumper().whileActiveOnce(
-            new ShootCargoCommand(m_shooterSubsystem, m_indexerMotorSubsystem)
+            m_shootCargoCommand
         );
 
         //----- CODRIVER CONTROLLER -----\\
 
         // Checks if LB is pressed, then it will engage the intake pistons
         m_codriverController.getLeftBumper().whileActiveOnce(
-            new ParallelCommandGroup(m_engageIntakePistonsCommand)
+            m_engageIntakePistonsCommand
         );
 
         // Checks if LB is pressed and B isn't pressed, then it will run intake
@@ -376,8 +395,12 @@ public class RobotContainer {
         m_codriverController.getLeftBumper().and(m_codriverController.getBButton()).whileActiveOnce(
             new ParallelCommandGroup(
                 m_reverseIntakeMotorsCommand,
-                new IndexerForwardCommand(m_indexerMotorSubsystem, true)
+                m_indexerMotorReverseCommand
             )
+        );
+
+        m_codriverController.getRightBumper().whileActiveOnce(
+            m_teleopShootSequence
         );
 
         // Manually rotates the endgame arms while pressed
@@ -392,22 +415,28 @@ public class RobotContainer {
 
         m_codriverController.getPOVLeftTrigger().whileActiveOnce(
             new ParallelCommandGroup(
-                new AdjustHoodCommand(m_shooterHoodSubsystem,
-                    ShooterUtility.calculateHoodPos(8.5)
+                new AdjustHoodCommand(
+                    m_shooterHoodSubsystem,
+                    ShooterUtility.calculateHoodPos(9)
                 ),
-                new ShootCargoCommand(m_shooterSubsystem, m_indexerMotorSubsystem,
-                    ShooterUtility.calculateTopSpeed(8.5),
-                    ShooterUtility.calculateBottomSpeed(8.5)
+                new ShootCargoCommand(
+                    m_shooterSubsystem, 
+                    m_indexerMotorSubsystem,
+                    ShooterUtility.calculateTopSpeed(9),
+                    ShooterUtility.calculateBottomSpeed(9)
                 )
             ).withTimeout(0.1)
         );
 
         m_codriverController.getPOVUpTrigger().whileActiveOnce(
             new ParallelCommandGroup(
-                new AdjustHoodCommand(m_shooterHoodSubsystem,
+                new AdjustHoodCommand(
+                    m_shooterHoodSubsystem,
                     ShooterUtility.calculateHoodPos(17)
                 ),
-                new ShootCargoCommand(m_shooterSubsystem, m_indexerMotorSubsystem,
+                new ShootCargoCommand(
+                    m_shooterSubsystem, 
+                    m_indexerMotorSubsystem,
                     ShooterUtility.calculateTopSpeed(17),
                     ShooterUtility.calculateBottomSpeed(17)
                 )
@@ -416,23 +445,42 @@ public class RobotContainer {
 
         m_codriverController.getPOVDownTrigger().whileActiveOnce(
             new ParallelCommandGroup(
-                new AdjustHoodCommand(m_shooterHoodSubsystem,
+                new AdjustHoodCommand(
+                    m_shooterHoodSubsystem,
                     ShooterUtility.calculateHoodPos(19 / 12)
                 ),
-                new ShootCargoCommand(m_shooterSubsystem, m_indexerMotorSubsystem,
+                new ShootCargoCommand(
+                    m_shooterSubsystem, 
+                    m_indexerMotorSubsystem,
                     ShooterUtility.calculateTopSpeed(19 / 12),
                     ShooterUtility.calculateBottomSpeed(19 / 12)
                 )
             ).withTimeout(0.1)
         );
 
-        m_codriverController.getStartButton().whileActiveOnce(new SequentialCommandGroup(
-            new AdjustHoodCommand(m_shooterHoodSubsystem, -1),
-            new ParallelCommandGroup(
-                m_endgameManagerCommand, 
-                m_endgamePatternCommand
-            ))
+        m_codriverController.getStartButton().whileActiveOnce(
+            new SequentialCommandGroup(
+                new AdjustHoodCommand(
+                    m_shooterHoodSubsystem, 
+                    -1
+                ),
+                new InstantCommand(() -> {
+                    PhotonVisionUtility.getInstance().getHubTrackingCamera().setDriverMode(true);
+                }),
+                new ParallelCommandGroup(
+                    m_endgameManagerCommand, 
+                    m_endgamePatternCommand
+                )
+            )
         );
+        // .whenInactive(new InstantCommand(() -> {
+        //     PhotonVisionUtility.getInstance().getHubTrackingCamera().setLED(VisionLEDMode.kOn);
+        // }));
+
+        m_codriverController.getBackButton().whileActiveOnce(
+            new SequentialCommandGroup(
+                new InstantCommand(m_endgameManagerCommand::resetState, m_endgameMotorSubsystem),
+                new EndgameRotateArmCommand(m_endgameMotorSubsystem, EndgamePosition.ResetPosition)));
 
         /*
          * codriverController.getXButton().whileActiveOnce(new
@@ -459,12 +507,7 @@ public class RobotContainer {
         m_driveSubsystem.setMotorBrakeMode(NeutralMode.Brake);
 
 
-        // rescheduleAutonomousLEDs(false);
-        CommandScheduler.getInstance().unregisterSubsystem(m_LEDSubsystem);
-        CommandScheduler.getInstance().setDefaultCommand(m_LEDSubsystem, m_idlePatternCommand);
-
-        PhotonVisionUtility.getInstance().getHubTrackingCamera().setDriverMode(false);
-        PhotonVisionUtility.getInstance().getHubTrackingCamera().setLED(VisionLEDMode.kOff);
+        rescheduleAutonomousLEDs(false);
 
         PhotonVisionUtility.getInstance().setPiCameraExposure();
     }
@@ -517,12 +560,7 @@ public class RobotContainer {
     public void beginAutoRunCommands() {
         // Sets the brake mode to brake
         m_driveSubsystem.setMotorBrakeMode(NeutralMode.Brake);
-        // rescheduleAutonomousLEDs(true);
-        CommandScheduler.getInstance().unregisterSubsystem(m_LEDSubsystem);
-        CommandScheduler.getInstance().setDefaultCommand(m_LEDSubsystem, m_autonPatternCommand);
-
-        PhotonVisionUtility.getInstance().getHubTrackingCamera().setDriverMode(false);
-        PhotonVisionUtility.getInstance().getHubTrackingCamera().setLED(VisionLEDMode.kOff);
+        rescheduleAutonomousLEDs(true);
 
         PhotonVisionUtility.getInstance().setPiCameraExposure();
     }
@@ -543,8 +581,9 @@ public class RobotContainer {
      * Test mode periodic.
      */
     public void testPeriodic() {
-        // TODO: figure out why we need this-need to repair
+        // NEED REFOLLOW TO KEEP MASTER-SLAVE PAIR WORKING
         m_endgameMotorSubsystem.refollowEndgameMotors();
+        
         if (m_driverController.getLeftBumper().get()) {
             if (m_driverController.getYButton().get()) {
                 m_endgamePiston1.open();
@@ -641,7 +680,7 @@ public class RobotContainer {
      * Begins autonomous simulation. Resets position and timer.
      */
     public void autoSimInit() {
-        // rescheduleAutonomousLEDs(true);
+        rescheduleAutonomousLEDs(true);
         m_autocmd = m_autoManager.getAutonomousCommand();
         if (m_autocmd != null) {
             if (m_autocmd instanceof PathPlannerSequentialCommandGroupUtility) {
@@ -672,16 +711,16 @@ public class RobotContainer {
         }
     }
 
-    // private void rescheduleAutonomousLEDs(boolean useAutonomousLEDCmd) {
-    // LEDCommand ledCommand = (useAutonomousLEDCmd) ? autonPatternCommand :
-    // idlePatternCommand;
-    // LEDCommand endledCommand = (useAutonomousLEDCmd) ? idlePatternCommand :
-    // autonPatternCommand;
-    // CommandScheduler scheduler = CommandScheduler.getInstance();
-    // scheduler.unregisterSubsystem(ledSubsystem);
-    // endledCommand.cancel();
-    // scheduler.setDefaultCommand(ledSubsystem, ledCommand);
-    // }
+    private void rescheduleAutonomousLEDs(boolean useAutonomousLEDCmd) {
+        LEDCommand ledCommand = (useAutonomousLEDCmd) ? m_autonPatternCommand :
+            m_idlePatternCommand;
+        LEDCommand endledCommand = (useAutonomousLEDCmd) ? m_idlePatternCommand :
+        m_autonPatternCommand;
+        CommandScheduler scheduler = CommandScheduler.getInstance();
+        scheduler.unregisterSubsystem(m_LEDSubsystem);
+        endledCommand.cancel();
+        scheduler.setDefaultCommand(m_LEDSubsystem, ledCommand);
+    }
 
     /**
      * <h3>robotSimPeriodic</h3>
@@ -728,8 +767,6 @@ public class RobotContainer {
      */
     public void disabledInit() {
         m_idlePatternCommand.solidYellowLEDs();
-        PhotonVisionUtility.getInstance().getHubTrackingCamera().setDriverMode(true);
-        PhotonVisionUtility.getInstance().getHubTrackingCamera().setLED(VisionLEDMode.kDefault);
     }
 
 } // End of RobotContainer

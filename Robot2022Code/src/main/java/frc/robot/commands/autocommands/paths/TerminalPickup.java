@@ -5,11 +5,10 @@ package frc.robot.commands.autocommands.paths;
 import com.pathplanner.lib.PathPlanner;
 
 import frc.robot.commands.Ramsete930Command;
-import frc.robot.commands.autocommands.ResetAutonomousCommand;
+import frc.robot.commands.autocommands.AutoBase;
 import frc.robot.commands.autocommands.SequentialCommands.AutoShootCargo;
 import frc.robot.commands.autocommands.SequentialCommands.CombinedIntake;
 import frc.robot.commands.autocommands.SequentialCommands.StopDrive;
-import frc.robot.commands.autovisioncommands.HubAimCommand;
 import frc.robot.commands.shootercommands.ShootCargoCommand;
 import edu.wpi.first.math.controller.RamseteController;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
@@ -18,7 +17,6 @@ import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.utilities.CurrentToHubDistanceUtility;
-import frc.robot.utilities.PathPlannerSequentialCommandGroupUtility;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.IndexerMotorSubsystem;
@@ -33,7 +31,7 @@ import frc.robot.subsystems.ShooterHoodSubsystem;
  * Four ball auto. Starts near the center of the tarmac, intakes, shoots, moves
  * to terminal, intakes, moves back to tarmac, and shoots.
  */
-public class TerminalPickup extends PathPlannerSequentialCommandGroupUtility {
+public class TerminalPickup extends AutoBase {
 
     // ----- CONSTANTS -----\\
 
@@ -41,12 +39,14 @@ public class TerminalPickup extends PathPlannerSequentialCommandGroupUtility {
 
     // Movement Control
     // MAKE SURE THERE IS LOTS OF SPACE BEHIND TERMINAL WHEN RUNNING IN FULL SPEED
-    private final double MAX_SPEED = 5; // Set to 3 when testing
-    private final double MAX_ACCELERATION = 4; // Set to 2 when testing
+    private final static double MAX_SPEED = 5; // Set to 3 when testing
+    private final static double MAX_ACCELERATION = 4; // Set to 2 when testing
 
     // Ramsete Controller Parameters
     private final double RAMSETE_B = 2;
     private final double RAMSETE_ZETA = 0.7;
+
+    private double SHOT_DISTANCE_1 = 2;//Figure out distance
 
 
     // ----- ODOMETRY -----\\
@@ -73,17 +73,16 @@ public class TerminalPickup extends PathPlannerSequentialCommandGroupUtility {
             ShooterSubsystem shooterSubsystem,
             ShooterHoodSubsystem shooterHoodSubsystem,
             IndexerMotorSubsystem indexerMotorSubsystem) {
+
+        super(driveSubsystem, PathPlanner.loadPath("TerminalPickup1", MAX_SPEED, MAX_ACCELERATION));
+        
         currentToHubDistanceUtility = new CurrentToHubDistanceUtility();
 
         // initializing gyro for pose2d
         m_odometry = driveSubsystem.getOdometry();
 
         // ----- TRAJECTORIES -----\\
-
-        // Exits the tarmac for a taxi, intakes, and shoots.
-        Trajectory t_taxi = PathPlanner.loadPath("TerminalPickup1", MAX_SPEED, MAX_ACCELERATION);
-
-        this.addTrajectory(t_taxi);
+        this.addTrajectory(super.m_initialTrajectory);
 
         // Moves from tarmac to terminal to intake.
         Trajectory t_terminal = PathPlanner.loadPath("TerminalPickup2", MAX_SPEED, MAX_ACCELERATION);
@@ -101,36 +100,36 @@ public class TerminalPickup extends PathPlannerSequentialCommandGroupUtility {
 
         // Creates RAMSETE Command for first trajectory
         Ramsete930Command r_taxi = new Ramsete930Command(
-                t_taxi,
-                () -> m_odometry.getPoseMeters(),
-                new RamseteController(RAMSETE_B, RAMSETE_ZETA),
-                driveSubsystem.getKinematics(),
-                driveSubsystem::getWheelSpeeds,
-                (Double leftVoltage, Double rightVoltage) -> driveSubsystem.setVoltages(leftVoltage,
-                        rightVoltage),
-                driveSubsystem);
+            super.m_initialTrajectory,
+            () -> m_odometry.getPoseMeters(),
+            new RamseteController(RAMSETE_B, RAMSETE_ZETA),
+            driveSubsystem.getKinematics(),
+            driveSubsystem::getWheelSpeeds,
+            (Double leftVoltage, Double rightVoltage) -> driveSubsystem.setVoltages(leftVoltage,
+                    rightVoltage),
+            driveSubsystem);
 
         // Creates RAMSETE Command for second trajectory
         Ramsete930Command r_terminal = new Ramsete930Command(
-                t_terminal,
-                () -> m_odometry.getPoseMeters(),
-                new RamseteController(RAMSETE_B, RAMSETE_ZETA),
-                driveSubsystem.getKinematics(),
-                driveSubsystem::getWheelSpeeds,
-                (Double leftVoltage, Double rightVoltage) -> driveSubsystem.setVoltages(leftVoltage,
-                        rightVoltage),
-                driveSubsystem);
+            t_terminal,
+            () -> m_odometry.getPoseMeters(),
+            new RamseteController(RAMSETE_B, RAMSETE_ZETA),
+            driveSubsystem.getKinematics(),
+            driveSubsystem::getWheelSpeeds,
+            (Double leftVoltage, Double rightVoltage) -> driveSubsystem.setVoltages(leftVoltage,
+                    rightVoltage),
+            driveSubsystem);
 
         // Creates RAMSETE Command for third trajectory
         Ramsete930Command r_tarmac = new Ramsete930Command(
-                t_tarmac,
-                () -> m_odometry.getPoseMeters(),
-                new RamseteController(RAMSETE_B, RAMSETE_ZETA),
-                driveSubsystem.getKinematics(),
-                driveSubsystem::getWheelSpeeds,
-                (Double leftVoltage, Double rightVoltage) -> driveSubsystem.setVoltages(leftVoltage,
-                        rightVoltage),
-                driveSubsystem);
+            t_tarmac,
+            () -> m_odometry.getPoseMeters(),
+            new RamseteController(RAMSETE_B, RAMSETE_ZETA),
+            driveSubsystem.getKinematics(),
+            driveSubsystem::getWheelSpeeds,
+            (Double leftVoltage, Double rightVoltage) -> driveSubsystem.setVoltages(leftVoltage,
+                    rightVoltage),
+            driveSubsystem);
 
         // ----- AUTO SEQUENCE -----\\
 
@@ -142,14 +141,12 @@ public class TerminalPickup extends PathPlannerSequentialCommandGroupUtility {
         // engages the intake piston runs them at the same time
         // it stops driving.
         addCommands(
-                new ResetAutonomousCommand(t_taxi.getInitialPose(), driveSubsystem),
                 new CombinedIntake(
                         intakePistonSubsystem,
                         intakeMotorSubsystem,
                         indexerMotorSubsystem,
                         r_taxi),
                 new StopDrive(driveSubsystem),
-                        new HubAimCommand(driveSubsystem).withTimeout(0.5),
                         new AutoShootCargo(shooterHoodSubsystem, shooterSubsystem, indexerMotorSubsystem, currentToHubDistanceUtility.getDistanceToHub(driveSubsystem.getOdometry().getPoseMeters()), intakeMotorSubsystem, intakePistonSubsystem, ShootCargoCommand.SHOOT_TIME),
                 new ParallelRaceGroup(
                         new CombinedIntake(
@@ -163,8 +160,7 @@ public class TerminalPickup extends PathPlannerSequentialCommandGroupUtility {
                                 r_tarmac)),
                 new StopDrive(driveSubsystem),
                 new ParallelRaceGroup(
-                        new HubAimCommand(driveSubsystem),
                         new WaitCommand(0.5)),
-                        new AutoShootCargo(shooterHoodSubsystem, shooterSubsystem, indexerMotorSubsystem, currentToHubDistanceUtility.getDistanceToHub(driveSubsystem.getOdometry().getPoseMeters()), intakeMotorSubsystem, intakePistonSubsystem, ShootCargoCommand.SHOOT_TIME));
+                        new AutoShootCargo(shooterHoodSubsystem, shooterSubsystem, indexerMotorSubsystem, SHOT_DISTANCE_1, intakeMotorSubsystem, intakePistonSubsystem, ShootCargoCommand.SHOOT_TIME));
     } // End of Constructor
 } // End of Class

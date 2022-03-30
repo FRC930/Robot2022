@@ -8,12 +8,13 @@ var searchData=
   ['resetencoders_5',['resetEncoders',['../classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem.html#a7f4a59dd423cfd7f5bab9c5676b8cec4',1,'frc::robot::subsystems::DriveSubsystem']]],
   ['resetleftpid_6',['resetLeftPID',['../classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem.html#a3fb207982f5a391a5a1783332f468896',1,'frc::robot::subsystems::DriveSubsystem']]],
   ['resetrightpid_7',['resetRightPID',['../classfrc_1_1robot_1_1subsystems_1_1_drive_subsystem.html#a2afbda98f15f51e515a1ad3fc17a36b3',1,'frc::robot::subsystems::DriveSubsystem']]],
-  ['right2istouching_8',['right2IsTouching',['../classfrc_1_1robot_1_1utilities_1_1_endgame_sensor_utility.html#a44ec6daee75da5a2ff3c5c9206d1fe99',1,'frc::robot::utilities::EndgameSensorUtility']]],
-  ['right4istouching_9',['right4IsTouching',['../classfrc_1_1robot_1_1utilities_1_1_endgame_sensor_utility.html#af93f62396ffd21f16d2dfd9322b8cdf1',1,'frc::robot::utilities::EndgameSensorUtility']]],
-  ['robot_10',['Robot',['../classfrc_1_1robot_1_1_robot.html',1,'frc::robot']]],
-  ['robotcontainer_11',['RobotContainer',['../classfrc_1_1robot_1_1_robot_container.html',1,'frc::robot']]],
-  ['robotsiminit_12',['robotSimInit',['../classfrc_1_1robot_1_1_robot_container.html#ab131652056e114b145e08736d5c82e70',1,'frc::robot::RobotContainer']]],
-  ['robotsimperiodic_13',['robotSimPeriodic',['../classfrc_1_1robot_1_1_robot_container.html#a837da8b5cca26b3de3f0d0646fc5b79b',1,'frc::robot::RobotContainer']]],
-  ['robottohubvectorutility_14',['RobotToHubVectorUtility',['../classfrc_1_1robot_1_1utilities_1_1_robot_to_hub_vector_utility.html',1,'frc::robot::utilities']]],
-  ['runintakemotorscommand_15',['RunIntakeMotorsCommand',['../classfrc_1_1robot_1_1commands_1_1intakecommands_1_1intakemotorcommands_1_1_run_intake_motors_command.html',1,'frc::robot::commands::intakecommands::intakemotorcommands']]]
+  ['resetstate_8',['resetState',['../classfrc_1_1robot_1_1commands_1_1endgamecommands_1_1_endgame_manager_command.html#aa233ae3ccb598e9b3e75adea53413383',1,'frc::robot::commands::endgamecommands::EndgameManagerCommand']]],
+  ['right2istouching_9',['right2IsTouching',['../classfrc_1_1robot_1_1utilities_1_1_endgame_sensor_utility.html#a44ec6daee75da5a2ff3c5c9206d1fe99',1,'frc::robot::utilities::EndgameSensorUtility']]],
+  ['right4istouching_10',['right4IsTouching',['../classfrc_1_1robot_1_1utilities_1_1_endgame_sensor_utility.html#af93f62396ffd21f16d2dfd9322b8cdf1',1,'frc::robot::utilities::EndgameSensorUtility']]],
+  ['robot_11',['Robot',['../classfrc_1_1robot_1_1_robot.html',1,'frc::robot']]],
+  ['robotcontainer_12',['RobotContainer',['../classfrc_1_1robot_1_1_robot_container.html',1,'frc::robot']]],
+  ['robotsiminit_13',['robotSimInit',['../classfrc_1_1robot_1_1_robot_container.html#ab131652056e114b145e08736d5c82e70',1,'frc::robot::RobotContainer']]],
+  ['robotsimperiodic_14',['robotSimPeriodic',['../classfrc_1_1robot_1_1_robot_container.html#a837da8b5cca26b3de3f0d0646fc5b79b',1,'frc::robot::RobotContainer']]],
+  ['robottohubvectorutility_15',['RobotToHubVectorUtility',['../classfrc_1_1robot_1_1utilities_1_1_robot_to_hub_vector_utility.html',1,'frc::robot::utilities']]],
+  ['runintakemotorscommand_16',['RunIntakeMotorsCommand',['../classfrc_1_1robot_1_1commands_1_1intakecommands_1_1intakemotorcommands_1_1_run_intake_motors_command.html',1,'frc::robot::commands::intakecommands::intakemotorcommands']]]
 ];

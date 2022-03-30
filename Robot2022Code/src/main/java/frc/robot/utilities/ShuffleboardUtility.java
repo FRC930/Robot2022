@@ -38,6 +38,7 @@ public class ShuffleboardUtility {
     private static ShuffleboardUtility instance;
 
     private Map<ShuffleboardKeys, MapData> shuffleboardMap;
+    private Map<ShuffleboardKeys, MapData> pastDataMap;
 
     private SendableChooser<Command> autonChooser;
     private SendableChooser<Integer> pipelineChooser;
@@ -58,13 +59,15 @@ public class ShuffleboardUtility {
 
     private ShuffleboardUtility() {
         shuffleboardMap = new HashMap<>();
+        pastDataMap = new HashMap<>();
 
         autonChooser = new SendableChooser<>();
 
         pipelineChooser = new SendableChooser<>();
 
         {
-            // Get the current pipeline file so we can reset it from what it was last time we ran
+            // Get the current pipeline file so we can reset it from what it was last time
+            // we ran
             File currentPipeline = new File(
                     Filesystem.getOperatingDirectory().getAbsolutePath() + "/currentPipeline.txt");
 
@@ -196,9 +199,17 @@ public class ShuffleboardUtility {
     public void update() {
         MapData data;
         for (ShuffleboardKeys currentKey : shuffleboardMap.keySet()) {
-            data = shuffleboardMap.get(currentKey);
-            // Sets the network table entry
-            data.m_entry.setValue(data.m_dataContainer.m_data);
+            if (pastDataMap.containsKey(currentKey)) {
+                if (!pastDataMap.get(currentKey).equals(shuffleboardMap.get(currentKey))) {
+                    data = shuffleboardMap.get(currentKey);
+                    // Sets the network table entry
+                    data.m_entry.setValue(data.m_dataContainer.m_data);
+
+                    pastDataMap.put(currentKey, data);
+                }
+            } else {
+                pastDataMap.put(currentKey, shuffleboardMap.get(currentKey));
+            }
         }
 
     }
@@ -209,7 +220,7 @@ public class ShuffleboardUtility {
      * Add a value to the pipeline chooser
      * 
      * @param displayName the name to display
-     * @param value the index of the pipeline
+     * @param value       the index of the pipeline
      */
     public void addPipelineChooser(String displayName, int value) {
         pipelineChooser.addOption(displayName, value);
@@ -346,6 +357,13 @@ public class ShuffleboardUtility {
         public MapData(ShuffleBoardData<?> data, NetworkTableEntry entry) {
             m_dataContainer = data;
             m_entry = entry;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            MapData compareData = (MapData) obj;
+
+            return compareData.m_dataContainer.getData().equals(m_dataContainer.getData());
         }
     }
 }

@@ -3,7 +3,6 @@ package frc.robot.commands.autocommands.SequentialCommands;
 import com.ctre.phoenix.sensors.Pigeon2;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import frc.robot.commands.shootercommands.AdjustHoodCommand;
 import frc.robot.commands.shootercommands.ShootCargoCommand;

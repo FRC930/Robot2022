@@ -1,0 +1,6 @@
+<map id="frc.robot.commands.autocommands.AutoBase" name="frc.robot.commands.autocommands.AutoBase">
+<area shape="rect" id="node1" title=" " alt="" coords="85,200,320,241"/>
+<area shape="rect" id="node2" href="$classfrc_1_1robot_1_1utilities_1_1_path_planner_sequential_command_group_utility.html" title=" " alt="" coords="5,81,227,137"/>
+<area shape="rect" id="node3" title=" " alt="" coords="27,5,205,32"/>
+<area shape="rect" id="node4" title=" " alt="" coords="251,96,330,123"/>
+</map>

@@ -1,0 +1,14 @@
+<map id="frc.robot.commands.autocommands.AutoBase" name="frc.robot.commands.autocommands.AutoBase">
+<area shape="rect" id="node1" title=" " alt="" coords="500,267,735,308"/>
+<area shape="rect" id="node4" href="$classfrc_1_1robot_1_1commands_1_1autocommands_1_1paths_1_1_defensive_hangar_cleanup.html" title=" " alt="" coords="783,5,1053,47"/>
+<area shape="rect" id="node5" href="$classfrc_1_1robot_1_1commands_1_1autocommands_1_1paths_1_1_defensive_three_ball.html" title=" " alt="" coords="783,71,1053,112"/>
+<area shape="rect" id="node6" href="$classfrc_1_1robot_1_1commands_1_1autocommands_1_1paths_1_1_five_ball_auto.html" title=" " alt="" coords="783,136,1053,177"/>
+<area shape="rect" id="node7" href="$classfrc_1_1robot_1_1commands_1_1autocommands_1_1paths_1_1_tarmac_taxi.html" title=" " alt="" coords="783,201,1053,243"/>
+<area shape="rect" id="node8" href="$classfrc_1_1robot_1_1commands_1_1autocommands_1_1paths_1_1_taxi_one_ball.html" title=" " alt="" coords="783,267,1053,308"/>
+<area shape="rect" id="node9" href="$classfrc_1_1robot_1_1commands_1_1autocommands_1_1paths_1_1_taxi_one_ball_aim.html" title=" " alt="" coords="783,332,1053,373"/>
+<area shape="rect" id="node10" href="$classfrc_1_1robot_1_1commands_1_1autocommands_1_1paths_1_1_taxi_two_ball.html" title=" " alt="" coords="783,397,1053,439"/>
+<area shape="rect" id="node11" href="$classfrc_1_1robot_1_1commands_1_1autocommands_1_1paths_1_1_template_command.html" title=" " alt="" coords="783,463,1053,504"/>
+<area shape="rect" id="node12" href="$classfrc_1_1robot_1_1commands_1_1autocommands_1_1paths_1_1_terminal_pickup.html" title=" " alt="" coords="783,528,1053,569"/>
+<area shape="rect" id="node2" href="$classfrc_1_1robot_1_1utilities_1_1_path_planner_sequential_command_group_utility.html" title=" " alt="" coords="231,259,452,315"/>
+<area shape="rect" id="node3" title=" " alt="" coords="5,274,183,301"/>
+</map>

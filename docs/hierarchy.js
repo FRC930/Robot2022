@@ -19,7 +19,7 @@ var hierarchy =
     [ "frc.robot.commands.autocommands.paths.TerminalPickup</h3 >", "classfrc_1_1robot_1_1commands_1_1autocommands_1_1paths_1_1_terminal_pickup.html", null ],
     [ "frc.robot.utilities.VisionSmoothingStack", "classfrc_1_1robot_1_1utilities_1_1_vision_smoothing_stack.html", null ],
     [ "CommandBase", null, [
-      [ "IndexerForwardCommand", "class_indexer_forward_command.html", null ],
+      [ "IndexerMotorCommand", "class_indexer_motor_command.html", null ],
       [ "frc.robot.commands.DriveCommand", "classfrc_1_1robot_1_1commands_1_1_drive_command.html", null ],
       [ "frc.robot.commands.LEDCommand", "classfrc_1_1robot_1_1commands_1_1_l_e_d_command.html", null ],
       [ "frc.robot.commands.NewLEDCommand", "classfrc_1_1robot_1_1commands_1_1_new_l_e_d_command.html", null ],
@@ -36,8 +36,7 @@ var hierarchy =
       [ "frc.robot.commands.endgamecommands.EndgameIncrementStateCommand", "classfrc_1_1robot_1_1commands_1_1endgamecommands_1_1_endgame_increment_state_command.html", null ],
       [ "frc.robot.commands.endgamecommands.EndgameManagerCommand", "classfrc_1_1robot_1_1commands_1_1endgamecommands_1_1_endgame_manager_command.html", null ],
       [ "frc.robot.commands.endgamecommands.EndgameOpenClawCommand", "classfrc_1_1robot_1_1commands_1_1endgamecommands_1_1_endgame_open_claw_command.html", null ],
-      [ "frc.robot.commands.endgamecommands.EndgameRotateHorizonalCommand", "classfrc_1_1robot_1_1commands_1_1endgamecommands_1_1_endgame_rotate_horizonal_command.html", null ],
-      [ "frc.robot.commands.endgamecommands.EndgameRotateVerticalCommand", "classfrc_1_1robot_1_1commands_1_1endgamecommands_1_1_endgame_rotate_vertical_command.html", null ],
+      [ "frc.robot.commands.endgamecommands.EndgameRotateArmCommand", "classfrc_1_1robot_1_1commands_1_1endgamecommands_1_1_endgame_rotate_arm_command.html", null ],
       [ "frc.robot.commands.intakecommands.intakePistonCommands.DisengageIntakePistonsCommand", "classfrc_1_1robot_1_1commands_1_1intakecommands_1_1intake_piston_commands_1_1_disengage_intake_pistons_command.html", null ],
       [ "frc.robot.commands.intakecommands.intakePistonCommands.EngageIntakePistonsCommand", "classfrc_1_1robot_1_1commands_1_1intakecommands_1_1intake_piston_commands_1_1_engage_intake_pistons_command.html", null ],
       [ "frc.robot.commands.intakecommands.intakemotorcommands.RunIntakeMotorsCommand", "classfrc_1_1robot_1_1commands_1_1intakecommands_1_1intakemotorcommands_1_1_run_intake_motors_command.html", null ],
@@ -52,15 +51,18 @@ var hierarchy =
       [ "frc.robot.commands.autovisioncommands.BallFollowCommand", "classfrc_1_1robot_1_1commands_1_1autovisioncommands_1_1_ball_follow_command.html", null ],
       [ "frc.robot.commands.autovisioncommands.HubAimCommand", "classfrc_1_1robot_1_1commands_1_1autovisioncommands_1_1_hub_aim_command.html", null ],
       [ "frc.robot.utilities.PathPlannerSequentialCommandGroupUtility", "classfrc_1_1robot_1_1utilities_1_1_path_planner_sequential_command_group_utility.html", [
-        [ "frc.robot.commands.autocommands.SequentialCommands.AutoShootCargo", "classfrc_1_1robot_1_1commands_1_1autocommands_1_1_sequential_commands_1_1_auto_shoot_cargo.html", null ],
-        [ "frc.robot.commands.autocommands.paths.DefensiveHangarCleanup", "classfrc_1_1robot_1_1commands_1_1autocommands_1_1paths_1_1_defensive_hangar_cleanup.html", null ],
-        [ "frc.robot.commands.autocommands.paths.DefensiveThreeBall", "classfrc_1_1robot_1_1commands_1_1autocommands_1_1paths_1_1_defensive_three_ball.html", null ],
-        [ "frc.robot.commands.autocommands.paths.FiveBallAuto", "classfrc_1_1robot_1_1commands_1_1autocommands_1_1paths_1_1_five_ball_auto.html", null ],
-        [ "frc.robot.commands.autocommands.paths.TarmacTaxi", "classfrc_1_1robot_1_1commands_1_1autocommands_1_1paths_1_1_tarmac_taxi.html", null ],
-        [ "frc.robot.commands.autocommands.paths.TaxiOneBall", "classfrc_1_1robot_1_1commands_1_1autocommands_1_1paths_1_1_taxi_one_ball.html", null ],
-        [ "frc.robot.commands.autocommands.paths.TaxiTwoBall", "classfrc_1_1robot_1_1commands_1_1autocommands_1_1paths_1_1_taxi_two_ball.html", null ],
-        [ "frc.robot.commands.autocommands.paths.TemplateCommand", "classfrc_1_1robot_1_1commands_1_1autocommands_1_1paths_1_1_template_command.html", null ],
-        [ "frc.robot.commands.autocommands.paths.TerminalPickup", "classfrc_1_1robot_1_1commands_1_1autocommands_1_1paths_1_1_terminal_pickup.html", null ]
+        [ "frc.robot.commands.autocommands.AutoBase", "classfrc_1_1robot_1_1commands_1_1autocommands_1_1_auto_base.html", [
+          [ "frc.robot.commands.autocommands.paths.DefensiveHangarCleanup", "classfrc_1_1robot_1_1commands_1_1autocommands_1_1paths_1_1_defensive_hangar_cleanup.html", null ],
+          [ "frc.robot.commands.autocommands.paths.DefensiveThreeBall", "classfrc_1_1robot_1_1commands_1_1autocommands_1_1paths_1_1_defensive_three_ball.html", null ],
+          [ "frc.robot.commands.autocommands.paths.FiveBallAuto", "classfrc_1_1robot_1_1commands_1_1autocommands_1_1paths_1_1_five_ball_auto.html", null ],
+          [ "frc.robot.commands.autocommands.paths.TarmacTaxi", "classfrc_1_1robot_1_1commands_1_1autocommands_1_1paths_1_1_tarmac_taxi.html", null ],
+          [ "frc.robot.commands.autocommands.paths.TaxiOneBall", "classfrc_1_1robot_1_1commands_1_1autocommands_1_1paths_1_1_taxi_one_ball.html", null ],
+          [ "frc.robot.commands.autocommands.paths.TaxiOneBallAim", "classfrc_1_1robot_1_1commands_1_1autocommands_1_1paths_1_1_taxi_one_ball_aim.html", null ],
+          [ "frc.robot.commands.autocommands.paths.TaxiTwoBall", "classfrc_1_1robot_1_1commands_1_1autocommands_1_1paths_1_1_taxi_two_ball.html", null ],
+          [ "frc.robot.commands.autocommands.paths.TemplateCommand", "classfrc_1_1robot_1_1commands_1_1autocommands_1_1paths_1_1_template_command.html", null ],
+          [ "frc.robot.commands.autocommands.paths.TerminalPickup", "classfrc_1_1robot_1_1commands_1_1autocommands_1_1paths_1_1_terminal_pickup.html", null ]
+        ] ],
+        [ "frc.robot.commands.autocommands.SequentialCommands.AutoShootCargo", "classfrc_1_1robot_1_1commands_1_1autocommands_1_1_sequential_commands_1_1_auto_shoot_cargo.html", null ]
       ] ]
     ] ],
     [ "SubsystemBase", null, [

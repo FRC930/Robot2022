@@ -15,52 +15,53 @@ import frc.robot.subsystems.EndgameMotorSubsystem;
 
 //-------- COMMAND CLASS --------\\
 /**
- * <h3> EndgameRotateHorizonalCommand </h3>
+ * <h3>EndgameRotateVerticalCommand</h3>
  * 
- * Rotates the endgame arm to be horizontal.
+ * Rotates the endgame arm to engage the Mid bar.
  */
-public class EndgameRotateHorizonalCommand extends CommandBase {
+public class EndgameRotateArmCommand extends CommandBase {
 
-  //-------- CONSTANTS --------\\
+  // -------- CONSTANTS --------\\
 
-  private final double ARM_SPEED = 0.2;
-  private final double HORIZONTAL_POSITION = 0;
-  private final double DEADBAND = 0.1;
+  private final double APPROACH_POSITION = -0.25;
+  private final double RESET_POSITION = 0;
+  private final double DEADBAND = 0.025;
 
-  //-------- VARIABLES --------\\
+  // -------- VARIABLES --------\\
 
   private final EndgameMotorSubsystem m_MotorSubsystem;
+  private final double target;
 
   // -------- CONSTRUCTOR --------\\
   /**
-   * <h3>EndgameRotateHorizontalCommand</h3>
+   * <h3>EndgameRotateVerticalCommand</h3>
    * 
-   * Rotates the endgame arm to be horizontal.
+   * Rotates the endgame arm to engage the Mid bar.
    * 
    * @param motorSubsystem motor subsystem to control
    */
-  public EndgameRotateHorizonalCommand(EndgameMotorSubsystem motorSubsystem) {
+  public EndgameRotateArmCommand(EndgameMotorSubsystem motorSubsystem, EndgamePosition position) {
     m_MotorSubsystem = motorSubsystem;
-
+    if (position == EndgamePosition.ApproachPosition) {
+      target = APPROACH_POSITION;
+    } else if (position == EndgamePosition.ResetPosition) {
+      target = RESET_POSITION;
+    } else {
+      target = 0;
+    }
     addRequirements(m_MotorSubsystem); // Use addRequirements() here to declare subsystem dependencies.
   }
 
-  //-------- METHODS --------\\
+  // -------- METHODS --------\\
 
   @Override // Called when the command is initially scheduled.
   public void initialize() {
-    if(m_MotorSubsystem.getArmRotation() < HORIZONTAL_POSITION){
-      m_MotorSubsystem.setMotorSpeed(ARM_SPEED);
-    }
-    else {
-      m_MotorSubsystem.setMotorSpeed(-ARM_SPEED);
-    }
-
+    m_MotorSubsystem.setArmPosition(target);
   }
 
   @Override
-  public boolean isFinished(){ // when true, ends command
-    return Math.abs(m_MotorSubsystem.getArmRotation() - HORIZONTAL_POSITION) < DEADBAND;
+  public boolean isFinished() { // when true, ends command
+    return Math.abs(m_MotorSubsystem.getArmRotation() - target) < DEADBAND;
   }
 
   @Override
@@ -68,4 +69,9 @@ public class EndgameRotateHorizonalCommand extends CommandBase {
     m_MotorSubsystem.setMotorSpeed(0.0);
   }
 
-} // End of class EndgameRotateHorizontalCommandCommand
+  // Enum for endgame positions
+  public static enum EndgamePosition {
+    ApproachPosition, ResetPosition;
+  }
+
+} // End of class EndgameRotateVerticalCommand

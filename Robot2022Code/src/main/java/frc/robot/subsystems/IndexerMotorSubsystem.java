@@ -64,8 +64,11 @@ public class IndexerMotorSubsystem extends SubsystemBase {
      * 
      * Stops both indexer motors.
      */
-    public void stopMotors(){
+    public void stopMotors() {
         m_stagedIndexer.stopMotor();
         m_loadedIndexer.stopMotor();
+        // Need to set voltages to zero because stop motor doesn't actually stop them?
+        m_stagedIndexer.setVoltage(0.0);
+        m_loadedIndexer.setVoltage(0.0);
     }
 }

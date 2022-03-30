@@ -27,7 +27,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class EndgameMotorSubsystem extends SubsystemBase {
 
     //-------- CONSTANTS --------\\
-    private static final double GEAR_RATIO = 125;
+    private static final double GEAR_RATIO = 300;
     private static final double TALON_CPR = 2048;
     private static final double MOTOR_KP = 0.03;
 

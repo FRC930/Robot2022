@@ -9,6 +9,8 @@
 
 package frc.robot.commands.endgamecommands;
 
+import edu.wpi.first.math.filter.Debouncer;
+import edu.wpi.first.math.filter.Debouncer.DebounceType;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.EndgamePistonSubsystem;
 import frc.robot.utilities.EndgameSensorUtility;
@@ -20,48 +22,80 @@ import frc.robot.utilities.EndgameSensorUtility;
  * Closes a claw when the sensor is active
  */
 public class EndgameCloseWhenTouching extends CommandBase {
-    
-    //-------- VARIABLES --------\\
-    
+
+    // -------- VARIABLES --------\\
     private final EndgamePistonSubsystem endgamePiston;
-    private final int sensor;
+    private final EndgameSensorPairs sensor;
+    private Debouncer debouncer = null;
     private final EndgameSensorUtility sensorUtility = EndgameSensorUtility.getInstance();
 
-    //-------- CONSTRUCTOR --------\\
+    // -------- CONSTRUCTOR --------\\
+
     /**
      * <h3>EndgameCloseWhenTouching</h3>
      * 
-     * Closes a claw when the sensor is active
+     * Closes a claw when the sensor is active. Will not use a debouncer
      * 
      * @param _endgamePiston piston of claw to be closed
-     * @param _endgameSensor sensor used to detect
+     * @param sensorPair     sensor pair used to detect
      */
-    public EndgameCloseWhenTouching(EndgamePistonSubsystem _endgamePiston, int sensorSet){
-        sensor = sensorSet;
+    public EndgameCloseWhenTouching(EndgamePistonSubsystem _endgamePiston, EndgameSensorPairs sensorPair) {
+        this(_endgamePiston, sensorPair, 0.0);
+    }
+
+    /**
+     * <h3>EndgameCloseWhenTouching</h3>
+     * 
+     * Closes a claw when the sensor is active. Can set a debouncer.
+     * 
+     * @param _endgamePiston piston of claw to be closed
+     * @param sensorPair     sensor pair used to detect
+     * @param debounceTime   time to apply to debouncer. Use 0 to not use the
+     *                       debouncer.
+     */
+    public EndgameCloseWhenTouching(EndgamePistonSubsystem _endgamePiston, EndgameSensorPairs sensorPair,
+            double debounceTime) {
+        sensor = sensorPair;
         endgamePiston = _endgamePiston;
+        if (debounceTime > 0) {
+            debouncer = new Debouncer(debounceTime, DebounceType.kRising);
+        }
         addRequirements(endgamePiston);
     }
 
-    //-------- METHODS --------\\
+    // -------- METHODS --------\\
 
     @Override
     public boolean isFinished() { // returns true when the sensor is active
-        if(sensor == 2){
-            return sensorUtility.left2IsTouching() && 
-            sensorUtility.right2IsTouching();
-        }
-        else if(sensor == 4){
-            return sensorUtility.left4IsTouching() && 
-            sensorUtility.right4IsTouching();
-        }
-        else{
+        if (sensor == EndgameSensorPairs.SensorPair2) {
+            return getSensorPair2Touching();
+        } else if (sensor == EndgameSensorPairs.SensorPair4) {
+            return getSensorPair4Touching();
+        } else {
             return true;
         }
+    }
+
+    private boolean getSensorPair2Touching() {
+        boolean state = sensorUtility.left2IsTouching() &&
+                sensorUtility.right2IsTouching();
+        return (debouncer != null) ? debouncer.calculate(state) : state;
+    }
+
+    private boolean getSensorPair4Touching() {
+        boolean state = sensorUtility.left4IsTouching() &&
+                sensorUtility.right4IsTouching();
+        return (debouncer != null) ? debouncer.calculate(state) : state;
     }
 
     @Override // Interrupted when button is released
     public void end(boolean interuppted) { // closes the claw
         endgamePiston.closed();
+    }
+
+    // Enum for endgame positions
+    public static enum EndgameSensorPairs {
+        SensorPair2, SensorPair4;
     }
 
 } // End of class EndgameCloseWhenTouching

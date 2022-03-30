@@ -2,29 +2,20 @@
 
 package frc.robot.commands.autocommands.paths;
 
-import java.util.List;
+import com.pathplanner.lib.PathPlanner;
 
 import frc.robot.commands.Ramsete930Command;
+import frc.robot.commands.autocommands.AutoBase;
 import frc.robot.commands.autocommands.SequentialCommands.AutoShootCargo;
-import frc.robot.commands.autovisioncommands.HubAimCommand;
-import frc.robot.commands.autovisioncommands.PhotonAimCommand;
 import frc.robot.commands.shootercommands.ShootCargoCommand;
 import edu.wpi.first.math.controller.RamseteController;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
-import edu.wpi.first.math.trajectory.Trajectory;
-import edu.wpi.first.math.trajectory.TrajectoryConfig;
-import edu.wpi.first.math.trajectory.TrajectoryGenerator;
-import edu.wpi.first.math.util.Units;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.IndexerMotorSubsystem;
 import frc.robot.subsystems.IntakeMotorSubsystem;
 import frc.robot.subsystems.IntakePistonSubsystem;
 import frc.robot.subsystems.ShooterHoodSubsystem;
-import frc.robot.utilities.CurrentToHubDistanceUtility;
-import frc.robot.utilities.PathPlannerSequentialCommandGroupUtility;
 
 //----- CLASS -----\\
 /**
@@ -32,15 +23,17 @@ import frc.robot.utilities.PathPlannerSequentialCommandGroupUtility;
  * 
  * Exits the tarmac and shoots.
  */
-public class TaxiOneBall extends PathPlannerSequentialCommandGroupUtility {
+public class TaxiOneBall extends AutoBase {
 
     //----- CONSTANTS -----\\
 
     // Movement Control
-    private final double MAX_SPEED = 0.5; // DriveSubsystem.DRIVETRAIN_MAX_FREE_SPEED_HIGH
-    private final double MAX_ACCELERATION = 2.5;
+    private final static double MAX_SPEED = 0.5; // DriveSubsystem.DRIVETRAIN_MAX_FREE_SPEED_HIGH
+    private final static double MAX_ACCELERATION = 2.5;
 
-    private final CurrentToHubDistanceUtility currentToHubDistanceUtility;
+    private double SHOT_DISTANCE_1 = 11.68;//figure out distance
+
+    //private final CurrentToHubDistanceUtility currentToHubDistanceUtility;
 
     // Ramsete Controller Parameters
     // private final double RAMSETE_B = 2;
@@ -63,43 +56,21 @@ public class TaxiOneBall extends PathPlannerSequentialCommandGroupUtility {
      * @param catapultSubsystem
      */
     public TaxiOneBall(DriveSubsystem driveSubsystem, IntakePistonSubsystem intakePistonSubsystem, IntakeMotorSubsystem intakeMotorSubsystem, ShooterSubsystem shooterSubsystem, ShooterHoodSubsystem shooterHoodSubsystem, IndexerMotorSubsystem indexerMotorSubsystem) {
+        super(driveSubsystem, PathPlanner.loadPath("TaxiOneBall", MAX_SPEED, MAX_ACCELERATION));
 
         // initializing gyro for pose2d
         m_odometry = driveSubsystem.getOdometry();
-        currentToHubDistanceUtility = new CurrentToHubDistanceUtility();
-
-        // Configurate the values of all trajectories for max velocity and acceleration
-        TrajectoryConfig config = new TrajectoryConfig(
-            MAX_SPEED,
-            MAX_ACCELERATION
-        )
-            // Add kinematics to ensure max speed is actually obeyed
-            // -- setEndVelocity stops the auto path at the end
-            .setKinematics(driveSubsystem.getKinematics()).setEndVelocity(0.0)
-            // Apply the voltage constraint
-            .addConstraint(driveSubsystem.getVoltageContraint());
+        //currentToHubDistanceUtility = new CurrentToHubDistanceUtility();
 
         //----- TRAJECTORIES -----\\
-
-        // Generates a trajectory
-        Trajectory t_exitTarmac = TrajectoryGenerator.generateTrajectory(
-            new Pose2d(Units.inchesToMeters(0), Units.inchesToMeters(0), new Rotation2d(0)),
-            List.of(
-            // Midpoints
-            ),
-            // End 5 feet infront of initiation line
-            new Pose2d(Units.inchesToMeters(60.0), Units.inchesToMeters(0), new Rotation2d(0)),
-            // Pass config
-            config
-        );
-        this.addTrajectory(t_exitTarmac);
+        this.addTrajectory(super.m_initialTrajectory);
 
         //----- RAMSETE COMMANDS -----\\
         // Creates a command that can be added to the command scheduler in the
         // sequential command
 
         Ramsete930Command r_exitTarmac = new Ramsete930Command(
-            t_exitTarmac,
+            super.m_initialTrajectory,
             () -> m_odometry.getPoseMeters(),
             new RamseteController(), // new RamseteController(RAMSETE_B, RAMSETE_ZETA)
             driveSubsystem.getKinematics(),
@@ -112,9 +83,10 @@ public class TaxiOneBall extends PathPlannerSequentialCommandGroupUtility {
         //----- AUTO SEQUENCE -----\\
 
         addCommands(
+            //new WaitCommand(5.0),
             r_exitTarmac,
-            new PhotonAimCommand(driveSubsystem),
-            new AutoShootCargo(shooterHoodSubsystem, shooterSubsystem, indexerMotorSubsystem, currentToHubDistanceUtility.getDistanceToHub(driveSubsystem.getOdometry().getPoseMeters()), intakeMotorSubsystem, intakePistonSubsystem, ShootCargoCommand.SHOOT_TIME)
+            //new PhotonAimCommand(driveSubsystem),
+            new AutoShootCargo(shooterHoodSubsystem, shooterSubsystem, indexerMotorSubsystem, SHOT_DISTANCE_1 , intakeMotorSubsystem, intakePistonSubsystem, ShootCargoCommand.SHOOT_TIME)
         );
 
     } // End of Constructor

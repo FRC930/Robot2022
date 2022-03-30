@@ -9,7 +9,6 @@
 
 package frc.robot.subsystems;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import com.ctre.phoenix.ErrorCode;
@@ -99,8 +98,6 @@ public class ShooterHoodSubsystem extends SubsystemBase {
             error = hoodMotor.configAllSettings(config, 500);
             System.out.println("Trying!");
         } while (error != ErrorCode.OK);
-
-        SmartDashboard.putNumber("Hoodmotor Error: ", 0);
     }
 
     /**

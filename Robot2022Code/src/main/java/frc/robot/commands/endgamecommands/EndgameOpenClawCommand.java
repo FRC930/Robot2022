@@ -42,10 +42,9 @@ public class EndgameOpenClawCommand extends CommandBase {
     public void initialize() { // Runs once when called
         piston.open();
     }
-       
-    //Leave false for default command
+
     public boolean isFinished() { // When true ends command
-        return false;
+        return true;
     }
 
 } // End of class EndgameOpenClawSingleCommand
