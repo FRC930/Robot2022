@@ -46,7 +46,8 @@ public class TerminalPickup extends AutoBase {
     private final double RAMSETE_B = 2;
     private final double RAMSETE_ZETA = 0.7;
 
-    private double SHOT_DISTANCE_1 = 2;//Figure out distance
+    private double SHOT_DISTANCE_1 = 10.61;//Figure out distance
+    private double SHOT_DISTANCE_2 = 10.68;
 
 
     // ----- ODOMETRY -----\\
@@ -147,7 +148,7 @@ public class TerminalPickup extends AutoBase {
                         indexerMotorSubsystem,
                         r_taxi),
                 new StopDrive(driveSubsystem),
-                        new AutoShootCargo(shooterHoodSubsystem, shooterSubsystem, indexerMotorSubsystem, currentToHubDistanceUtility.getDistanceToHub(driveSubsystem.getOdometry().getPoseMeters()), intakeMotorSubsystem, intakePistonSubsystem, ShootCargoCommand.SHOOT_TIME),
+                        new AutoShootCargo(shooterHoodSubsystem, shooterSubsystem, indexerMotorSubsystem, SHOT_DISTANCE_1, intakeMotorSubsystem, intakePistonSubsystem, ShootCargoCommand.SHOOT_TIME),
                 new ParallelRaceGroup(
                         new CombinedIntake(
                                 intakePistonSubsystem,
@@ -161,6 +162,6 @@ public class TerminalPickup extends AutoBase {
                 new StopDrive(driveSubsystem),
                 new ParallelRaceGroup(
                         new WaitCommand(0.5)),
-                        new AutoShootCargo(shooterHoodSubsystem, shooterSubsystem, indexerMotorSubsystem, SHOT_DISTANCE_1, intakeMotorSubsystem, intakePistonSubsystem, ShootCargoCommand.SHOOT_TIME));
+                        new AutoShootCargo(shooterHoodSubsystem, shooterSubsystem, indexerMotorSubsystem, SHOT_DISTANCE_2, intakeMotorSubsystem, intakePistonSubsystem, ShootCargoCommand.SHOOT_TIME));
     } // End of Constructor
 } // End of Class

@@ -41,9 +41,9 @@ public class DefensiveHangarCleanup extends AutoBase {
     private final double RAMSETE_ZETA = 0.7;
 
     //Put all at 2 when testing in room 42
-    private double SHOT_DISTANCE_1 = 2;//11.68;
-    private double SHOT_DISTANCE_2 = 2;//8.0;
-    private double SHOT_DISTANCE_3 = 2;//8.0;
+    private double SHOT_DISTANCE_1 = 11.68;
+    private double SHOT_DISTANCE_2 = 8.0;
+    private double SHOT_DISTANCE_3 = 8.0;
 
     //----- ODOMETRY -----\\
 
