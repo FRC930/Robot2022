@@ -9,7 +9,6 @@ import frc.robot.commands.autocommands.AutoBase;
 import frc.robot.commands.autocommands.SequentialCommands.AutoShootCargo;
 import frc.robot.commands.autocommands.SequentialCommands.CombinedIntake;
 import frc.robot.commands.autocommands.SequentialCommands.StopDrive;
-import frc.robot.commands.shootercommands.ShootCargoCommand;
 import edu.wpi.first.math.controller.RamseteController;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.trajectory.Trajectory;
@@ -25,11 +24,12 @@ import frc.robot.subsystems.ShooterHoodSubsystem;
 /**
  * <h3>DefensiveTwoBall</h3>
  * 
- * Exits the tarmac, intakes, and shoots. Moves to adjacent enemy cargo, intakes it, and shoots it into the hangar zone.
+ * Exits the tarmac, intakes, and shoots. Moves to adjacent enemy cargo, intakes
+ * it, and shoots it into the hangar zone.
  */
 public class DefensiveThreeBall extends AutoBase {
 
-    //----- CONSTANTS -----\\
+    // ----- CONSTANTS -----\\
 
     // Movement Control
     private final static double MAX_SPEED = 1.0;
@@ -42,16 +42,17 @@ public class DefensiveThreeBall extends AutoBase {
     private double SHOT_DISTANCE_1 = 11.68;
     private double SHOT_DISTANCE_2 = 8.0;
 
-    //----- ODOMETRY -----\\
+    // ----- ODOMETRY -----\\
 
     private final DifferentialDriveOdometry m_odometry;
-    //private final CurrentToHubDistanceUtility currentToHubDistanceUtility;
+    // private final CurrentToHubDistanceUtility currentToHubDistanceUtility;
 
-    //----- CONSTRUCTOR -----\\
+    // ----- CONSTRUCTOR -----\\
     /**
      * <h3>DefensiveTwoBall</h3>
      * 
-     * Exits the tarmac, intakes, and shoots. Moves to adjacent enemy cargo, intakes it, and shoots it into the hangar zone.
+     * Exits the tarmac, intakes, and shoots. Moves to adjacent enemy cargo, intakes
+     * it, and shoots it into the hangar zone.
      * 
      * @param driveSubsystem
      * @param intakePistonSubsystem
@@ -60,23 +61,21 @@ public class DefensiveThreeBall extends AutoBase {
      * @param catapultSubsystem
      */
     public DefensiveThreeBall(
-        DriveSubsystem driveSubsystem,
-        IntakePistonSubsystem intakePistonSubsystem,
-        IntakeMotorSubsystem intakeMotorSubsystem,
-        ShooterSubsystem shooterSubsystem,
-        ShooterHoodSubsystem shooterHoodSubsystem,
-        IndexerMotorSubsystem indexerMotorSubsystem
-    ) {
+            DriveSubsystem driveSubsystem,
+            IntakePistonSubsystem intakePistonSubsystem,
+            IntakeMotorSubsystem intakeMotorSubsystem,
+            ShooterSubsystem shooterSubsystem,
+            ShooterHoodSubsystem shooterHoodSubsystem,
+            IndexerMotorSubsystem indexerMotorSubsystem) {
         super(driveSubsystem, PathPlanner.loadPath("DefensiveThreeBall1", MAX_SPEED, MAX_ACCELERATION));
-
 
         // initializing gyro for pose2d
         m_odometry = driveSubsystem.getOdometry();
-        //currentToHubDistanceUtility = new CurrentToHubDistanceUtility();
-        //----- TRAJECTORIES -----\\
+        // currentToHubDistanceUtility = new CurrentToHubDistanceUtility();
+        // ----- TRAJECTORIES -----\\
 
         // Robot exits the tarmac, intakes, and shoots
-      
+
         // Robot approaches the adjacent enemy cargo and shoots it into the hangar zone.
         Trajectory t_adjacentEnemyCargo = PathPlanner.loadPath("DefensiveThreeBall2", MAX_SPEED, MAX_ACCELERATION);
 
@@ -86,55 +85,52 @@ public class DefensiveThreeBall extends AutoBase {
         SmartDashboard.putString("Pos1", super.m_initialTrajectory.getInitialPose().toString());
         SmartDashboard.putString("current Gyro Position", m_odometry.getPoseMeters().toString());
 
-        //----- RAMSETE COMMMANDS -----\\
+        // ----- RAMSETE COMMMANDS -----\\
         // Creates a command that can be added to the command scheduler in the
         // sequential command
 
-
         // Creates RAMSETE Command for first trajectory
         Ramsete930Command r_exitTarmac = new Ramsete930Command(
-            super.m_initialTrajectory,
-            () -> m_odometry.getPoseMeters(),
-            new RamseteController(RAMSETE_B, RAMSETE_ZETA),
-            driveSubsystem.getKinematics(),
-            driveSubsystem::getWheelSpeeds,
-            (Double leftVoltage, Double rightVoltage) -> driveSubsystem.setVoltages(leftVoltage, rightVoltage),
-            driveSubsystem
-        );
-        
-        Ramsete930Command r_adjacentEnemyCargo = new Ramsete930Command(
-            t_adjacentEnemyCargo,
-            () -> m_odometry.getPoseMeters(),
-            new RamseteController(RAMSETE_B, RAMSETE_ZETA),
-            driveSubsystem.getKinematics(),
-            driveSubsystem::getWheelSpeeds,
-            (Double leftVoltage, Double rightVoltage) -> driveSubsystem.setVoltages(leftVoltage, rightVoltage),
-            driveSubsystem
-        );
+                super.m_initialTrajectory,
+                () -> m_odometry.getPoseMeters(),
+                new RamseteController(RAMSETE_B, RAMSETE_ZETA),
+                driveSubsystem.getKinematics(),
+                driveSubsystem::getWheelSpeeds,
+                (Double leftVoltage, Double rightVoltage) -> driveSubsystem.setVoltages(leftVoltage, rightVoltage),
+                driveSubsystem);
 
-        //----- AUTO SEQUENCE -----\\
+        Ramsete930Command r_adjacentEnemyCargo = new Ramsete930Command(
+                t_adjacentEnemyCargo,
+                () -> m_odometry.getPoseMeters(),
+                new RamseteController(RAMSETE_B, RAMSETE_ZETA),
+                driveSubsystem.getKinematics(),
+                driveSubsystem::getWheelSpeeds,
+                (Double leftVoltage, Double rightVoltage) -> driveSubsystem.setVoltages(leftVoltage, rightVoltage),
+                driveSubsystem);
+
+        // ----- AUTO SEQUENCE -----\\
         // Parallel Race Group ends these commands because they dont end, they end when
         // the wait command ends
-        // Line up left side of the robot with middle of the tarmac, front right bumper is on the end of the tarmac
+        // Line up left side of the robot with middle of the tarmac, front right bumper
+        // is on the end of the tarmac
 
         addCommands(
-            new CombinedIntake(
-                intakePistonSubsystem,
-                intakeMotorSubsystem,
-                indexerMotorSubsystem,
-                r_exitTarmac
-            ),
-            new StopDrive(driveSubsystem),
-            new AutoShootCargo(shooterHoodSubsystem, shooterSubsystem, indexerMotorSubsystem, SHOT_DISTANCE_1 , intakeMotorSubsystem, intakePistonSubsystem, ShootCargoCommand.SHOOT_TIME),
-            new CombinedIntake(
-                intakePistonSubsystem,
-                intakeMotorSubsystem,
-                indexerMotorSubsystem,
-                r_adjacentEnemyCargo
-            ),
-            new StopDrive(driveSubsystem),                                                 // hangar point for manual calculation should be around x:1.65 y:6.55
-            new AutoShootCargo(shooterHoodSubsystem, shooterSubsystem, indexerMotorSubsystem, SHOT_DISTANCE_2 , intakeMotorSubsystem, intakePistonSubsystem, ShootCargoCommand.SHOOT_TIME)
-        );
+                new CombinedIntake(
+                        intakePistonSubsystem,
+                        intakeMotorSubsystem,
+                        indexerMotorSubsystem,
+                        r_exitTarmac),
+                new StopDrive(driveSubsystem),
+                new AutoShootCargo(shooterHoodSubsystem, shooterSubsystem, indexerMotorSubsystem, SHOT_DISTANCE_1,
+                        intakeMotorSubsystem, intakePistonSubsystem),
+                new CombinedIntake(
+                        intakePistonSubsystem,
+                        intakeMotorSubsystem,
+                        indexerMotorSubsystem,
+                        r_adjacentEnemyCargo),
+                new StopDrive(driveSubsystem), // hangar point for manual calculation should be around x:1.65 y:6.55
+                new AutoShootCargo(shooterHoodSubsystem, shooterSubsystem, indexerMotorSubsystem, SHOT_DISTANCE_2,
+                        intakeMotorSubsystem, intakePistonSubsystem));
 
     } // End of Constructor
 } // End of Class

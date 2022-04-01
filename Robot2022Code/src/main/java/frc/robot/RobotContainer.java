@@ -289,7 +289,7 @@ public class RobotContainer {
             new ShootCargoCommand(
                 m_shooterSubsystem, 
                 m_indexerMotorSubsystem
-            ).withTimeout(ShootCargoCommand.SHOOT_TIME)
+            ).withTimeout(ShootCargoCommand.TELEOP_SHOOT_TIME)
         );
 
         //----- ENDGAME COMMAND INITS -----\\
@@ -468,8 +468,8 @@ public class RobotContainer {
                     PhotonVisionUtility.getInstance().getHubTrackingCamera().setDriverMode(true);
                 }),
                 new ParallelCommandGroup(
-                    m_endgameManagerCommand, 
-                    m_endgamePatternCommand
+                    m_endgameManagerCommand//, 
+                    //m_endgamePatternCommand
                 )
             )
         );
@@ -507,7 +507,7 @@ public class RobotContainer {
         m_driveSubsystem.setMotorBrakeMode(NeutralMode.Brake);
 
 
-        rescheduleAutonomousLEDs(false);
+        //rescheduleAutonomousLEDs(false);
 
         PhotonVisionUtility.getInstance().setPiCameraExposure();
     }
@@ -521,13 +521,13 @@ public class RobotContainer {
 
         // Set the video mode for the camera. This will tell the camera that we want a
         // color stream with resolution 160x120
-        m_driverCamera.setVideoMode(PixelFormat.kMJPEG, 160, 120, 30);
+        m_driverCamera.setVideoMode(PixelFormat.kMJPEG, 160, 120, 15);
 
         // Set the source of the stream to the USB camera
         m_mjpegServer.setSource(m_driverCamera);
         // Set the compression. This gives us an OK quality stream while not chewing
         // bandwidth
-        m_mjpegServer.setCompression(37);
+        m_mjpegServer.setCompression(70);
 
         // Get the network table instance
         var currentNTInstance = NetworkTableInstance.getDefault();
@@ -560,7 +560,7 @@ public class RobotContainer {
     public void beginAutoRunCommands() {
         // Sets the brake mode to brake
         m_driveSubsystem.setMotorBrakeMode(NeutralMode.Brake);
-        rescheduleAutonomousLEDs(true);
+        //rescheduleAutonomousLEDs(true);
 
         PhotonVisionUtility.getInstance().setPiCameraExposure();
     }

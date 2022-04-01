@@ -115,8 +115,13 @@ public class EndgameManagerCommand extends CommandBase {
                         new WaitCommand(1.0),
                         new EndgameIncrementStateCommand(this)));
 
+        commands.put(4,  new SequentialCommandGroup(
+                new EndgameRotateArmCommand(endgameMotorSubsystem, EndgamePosition.ResetPosition),
+                new EndgameIncrementStateCommand(this)
+        ));
+
         // Opens #3 and #4 claws, waits extra before letting go
-        commands.put(4,
+        commands.put(5,
                 new SequentialCommandGroup(
                         // Opens #3 and #4 claws, waits extra before letting go
                         new ParallelCommandGroup(
@@ -124,13 +129,13 @@ public class EndgameManagerCommand extends CommandBase {
                                 new EndgameOpenClawCommand(endgamePiston4)),
                         // this wait since next step is to
                         // step for detecting the bar
-                        new WaitCommand(1.0),
+                        new WaitCommand(0.25),
                         new EndgameIncrementStateCommand(this)));
 
         // Opens #3 claw and closes #4
         // Rotates arm until both #4 sensor triggers
         // Then closes all arms and stops motor
-        commands.put(5,
+        commands.put(6,
                 new SequentialCommandGroup(
                         // Opens #3 claw and closes #4
                         new ParallelRaceGroup(
@@ -153,12 +158,12 @@ public class EndgameManagerCommand extends CommandBase {
         // Opens #2 claws
         // NOTE:Claws close automatically after the final stage ends due to default
         // commands
-        commands.put(6,
+        commands.put(7,
                 new SequentialCommandGroup(
                         // Opens #2 claws
                         new EndgameOpenClawCommand(endgamePiston2),
                         new EndgameArmCommand(endgameMotorSubsystem, ENDGAME_MOTOR_POWER)
-                                .withTimeout(1.0),
+                                .withTimeout(0.5),
                         new EndgameIncrementStateCommand(this)));
 
         // Start state machine values
@@ -222,6 +227,7 @@ public class EndgameManagerCommand extends CommandBase {
     @Override
     public void end(boolean interrupted) { // Interrupted is true when button is released
         // Ends the command currently running
+        m_compressor.enableAnalog(100, 115);
         CommandScheduler.getInstance().cancel(commands.get(currentState));
     }
 

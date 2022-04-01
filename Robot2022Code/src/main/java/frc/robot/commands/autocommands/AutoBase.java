@@ -44,7 +44,6 @@ public class AutoBase extends PathPlannerSequentialCommandGroupUtility {
         // engages the intake piston runs them at the same time
         // it stops driving.
         addCommands(
-            new ResetAutonomousCommand(m_initialTrajectory.getInitialPose(), driveSubsystem)
-        );
+                new ResetAutonomousCommand(m_initialTrajectory.getInitialPose(), driveSubsystem));
     } // End of Constructor
 } // End of Class

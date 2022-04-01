@@ -305,9 +305,7 @@ public class LEDCommand extends CommandBase {
      * manages active pattern based off ball sensors
      */
     private void teleopStatus() {
-        if (m_driverController.getRightBumper().get() 
-                && !m_driverController.getLeftBumper().get() && aimStatus()){
-            
+        if (m_driverController.getLeftBumper().get() && aimStatus()){
             m_lastBallStatus = BallStatus.noBall;
             aimIsPressed = true;
                
@@ -424,16 +422,13 @@ public class LEDCommand extends CommandBase {
      * 
      */
     private boolean aimStatus() {
-        if (ShuffleboardUtility.getInstance().getFromShuffleboard(ShuffleboardKeys.AIMED) == null) {
-            return false;
-        }
         if ((boolean) ShuffleboardUtility.getInstance().getFromShuffleboard(ShuffleboardKeys.AIMED).getData()) {
             solidGreenLEDs();
             return true;
         } else {
             clearStrip();
+            return false;
         }
-        return false;
     }
 
     public static enum LEDPatterns {

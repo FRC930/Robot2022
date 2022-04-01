@@ -31,7 +31,7 @@ public class PhotonAimCommand extends CommandBase {
     // ----- CONSTANTS -----\\
 
     // Target yaw offset in degrees
-    public static final double YAW_OFFSET = 2;
+    public static final double YAW_DEADBAND = 2;
 
     // The height of the camera
     private final double CAMERA_HEIGHT_METERS = Units.inchesToMeters(48);
@@ -91,6 +91,9 @@ public class PhotonAimCommand extends CommandBase {
         m_driverController = driverController;
         m_codriverController = codriverController;
 
+        ShuffleboardUtility.getInstance().putToShuffleboard(ShuffleboardUtility.driverTab,
+                ShuffleboardKeys.AIMED, new ShuffleBoardData<Boolean>(false));
+
         addRequirements(dSubsystem);
     }
 
@@ -149,7 +152,7 @@ public class PhotonAimCommand extends CommandBase {
             rotationSpeed = m_turnController.calculate(m_smoothingStack.getAverageYaw(), 0);
 
             // Put if we are locked onto the target to the Shuffleboard
-            if (Math.abs(m_smoothingStack.getAverageYaw()) < YAW_OFFSET) {
+            if (Math.abs(m_smoothingStack.getAverageYaw()) < YAW_DEADBAND) {
                 ShuffleboardUtility.getInstance().putToShuffleboard(ShuffleboardUtility.driverTab,
                         ShuffleboardKeys.AIMED, new ShuffleBoardData<Boolean>(true));
 

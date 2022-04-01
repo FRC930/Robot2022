@@ -45,7 +45,7 @@ public class FiveBallAuto extends AutoBase {
     private final double RAMSETE_B = 2;
     private final double RAMSETE_ZETA = 0.7;
 
-    private final double SHOT_DISTANCE1 = 10.23;
+    private final double SHOT_DISTANCE1 = 10.0;
     private final double SHOT_DISTANCE2 = 11.3;
     private final double SHOT_DISTANCE3 = 11.3;
 
@@ -73,9 +73,9 @@ public class FiveBallAuto extends AutoBase {
             ShooterSubsystem shooterSubsystem,
             ShooterHoodSubsystem shooterHoodSubsystem,
             IndexerMotorSubsystem indexerMotorSubsystem) {
-        
+
         super(driveSubsystem, PathPlanner.loadPath("FiveBallAuto1", MAX_SPEED, MAX_ACCELERATION));
-        
+
         currentToHubDistanceUtility = new CurrentToHubDistanceUtility();
 
         // initializing gyro for pose2d
@@ -188,16 +188,24 @@ public class FiveBallAuto extends AutoBase {
                         indexerMotorSubsystem,
                         r_path1),
                 new StopDrive(driveSubsystem),
-                        new AutoShootCargo(shooterHoodSubsystem, shooterSubsystem, indexerMotorSubsystem, SHOT_DISTANCE1, intakeMotorSubsystem, intakePistonSubsystem, 1.0),
-                new CombinedIntake(intakePistonSubsystem, intakeMotorSubsystem, indexerMotorSubsystem, r_path2),
-                new CombinedIntake(intakePistonSubsystem, intakeMotorSubsystem, indexerMotorSubsystem, r_path3),
-                new AutoShootCargo(shooterHoodSubsystem, shooterSubsystem, indexerMotorSubsystem, SHOT_DISTANCE2, intakeMotorSubsystem, intakePistonSubsystem, 0.75),
-                new CombinedIntake(intakePistonSubsystem, intakeMotorSubsystem, indexerMotorSubsystem, r_path4),
-                new ParallelRaceGroup(new CombinedIntake(intakePistonSubsystem, intakeMotorSubsystem, indexerMotorSubsystem), new WaitCommand(1.0)),//, r_path4pt5), new WaitCommand(0.6)),// r_path4pt5 temporary path to just move forward a little for human player
-                new CombinedIntake(intakePistonSubsystem, intakeMotorSubsystem, indexerMotorSubsystem, r_path5),
+                new AutoShootCargo(shooterHoodSubsystem, shooterSubsystem, indexerMotorSubsystem,
+                        SHOT_DISTANCE1, intakeMotorSubsystem, intakePistonSubsystem, 1.0),
+                new CombinedIntake(intakePistonSubsystem, intakeMotorSubsystem, indexerMotorSubsystem,
+                        r_path2),
+                new CombinedIntake(intakePistonSubsystem, intakeMotorSubsystem, indexerMotorSubsystem,
+                        r_path3),
+                new AutoShootCargo(shooterHoodSubsystem, shooterSubsystem, indexerMotorSubsystem,
+                        SHOT_DISTANCE2, intakeMotorSubsystem, intakePistonSubsystem, 0.75),
+                new CombinedIntake(intakePistonSubsystem, intakeMotorSubsystem, indexerMotorSubsystem,
+                        r_path4),
+                new ParallelRaceGroup(new CombinedIntake(intakePistonSubsystem, intakeMotorSubsystem,
+                        indexerMotorSubsystem), new WaitCommand(1.0)),
+                new CombinedIntake(intakePistonSubsystem, intakeMotorSubsystem, indexerMotorSubsystem,
+                        r_path5),
                 new StopDrive(driveSubsystem),
                 new DisengageIntakePistonsCommand(intakePistonSubsystem).withTimeout(0.1),
-                new AutoShootCargo(shooterHoodSubsystem, shooterSubsystem, indexerMotorSubsystem, SHOT_DISTANCE3, intakeMotorSubsystem, intakePistonSubsystem, 1.0)//
+                new AutoShootCargo(shooterHoodSubsystem, shooterSubsystem, indexerMotorSubsystem,
+                        SHOT_DISTANCE3, intakeMotorSubsystem, intakePistonSubsystem, 1.0)//
         );
     } // End of Constructor
 } // End of Class

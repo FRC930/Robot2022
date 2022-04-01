@@ -9,31 +9,29 @@ import frc.robot.subsystems.IndexerMotorSubsystem;
 import frc.robot.subsystems.IntakeMotorSubsystem;
 import frc.robot.subsystems.IntakePistonSubsystem;
 
-public class CombinedIntake extends ParallelRaceGroup{
+public class CombinedIntake extends ParallelRaceGroup {
 
     public CombinedIntake(
-        IntakePistonSubsystem intakePistonSubsystem,
-        IntakeMotorSubsystem intakeMotorSubsystem,
-        IndexerMotorSubsystem indexerMotorSubsystem,
-        Ramsete930Command path){
+            IntakePistonSubsystem intakePistonSubsystem,
+            IntakeMotorSubsystem intakeMotorSubsystem,
+            IndexerMotorSubsystem indexerMotorSubsystem,
+            Ramsete930Command path) {
 
         addCommands(
-            new EngageIntakePistonsCommand(intakePistonSubsystem),
-            new RunIntakeMotorsCommand(intakeMotorSubsystem, false),
-            new IndexerMotorCommand(indexerMotorSubsystem, false),
-            path
-        );
+                new EngageIntakePistonsCommand(intakePistonSubsystem),
+                new RunIntakeMotorsCommand(intakeMotorSubsystem, false),
+                new IndexerMotorCommand(indexerMotorSubsystem, false),
+                path);
     }
 
     public CombinedIntake(
-        IntakePistonSubsystem intakePistonSubsystem,
-        IntakeMotorSubsystem intakeMotorSubsystem,
-        IndexerMotorSubsystem indexerMotorSubsystem){
+            IntakePistonSubsystem intakePistonSubsystem,
+            IntakeMotorSubsystem intakeMotorSubsystem,
+            IndexerMotorSubsystem indexerMotorSubsystem) {
 
         addCommands(
-            new EngageIntakePistonsCommand(intakePistonSubsystem),
-            new RunIntakeMotorsCommand(intakeMotorSubsystem, false),
-            new IndexerMotorCommand(indexerMotorSubsystem, false)
-        );
+                new EngageIntakePistonsCommand(intakePistonSubsystem),
+                new RunIntakeMotorsCommand(intakeMotorSubsystem, false),
+                new IndexerMotorCommand(indexerMotorSubsystem, false));
     }
 }
