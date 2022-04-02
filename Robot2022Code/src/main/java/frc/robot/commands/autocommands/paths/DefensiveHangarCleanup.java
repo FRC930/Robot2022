@@ -33,8 +33,8 @@ public class DefensiveHangarCleanup extends AutoBase {
     // ----- CONSTANTS -----\\
 
     // Movement Control
-    private final static double MAX_SPEED = 3.0;
-    private final static double MAX_ACCELERATION = 2.5;
+    private final static double MAX_SPEED = 1.5;
+    private final static double MAX_ACCELERATION = 1.25;
 
     // Ramsete Controller Parameters
     private final double RAMSETE_B = 2;

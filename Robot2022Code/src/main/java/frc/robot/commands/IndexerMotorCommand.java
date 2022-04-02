@@ -70,12 +70,13 @@ public class IndexerMotorCommand extends CommandBase {
      */
     public void execute() {
         if (!reversed) {
-            if (sensorUtility.loadedIsTripped()) {
+            boolean isLoadedTripped = sensorUtility.loadedIsTripped();
+            if (isLoadedTripped) {
                 setLoadedSpeed(0.0);
             } else {
                 setLoadedSpeed(LOADED_MOTOR_SPEED);
             }
-            if (!sensorUtility.intakeIsTripped() || !sensorUtility.loadedIsTripped()) {
+            if (!sensorUtility.intakeIsTripped() || !isLoadedTripped) {
                 setIntakeSpeed(INTAKE_MOTOR_SPEED);
             } else {
                 setIntakeSpeed(0.0);

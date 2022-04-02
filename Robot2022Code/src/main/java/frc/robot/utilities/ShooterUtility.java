@@ -57,8 +57,11 @@ public class ShooterUtility {
                 return (SPEED_M * distance + TOP_SPEED_B) / 100;
             } else if (distance >= 5) {
                 return 0.76;
-            } else {
+            } else if (distance >= 2) {
                 return 0.74;
+            }
+            else{
+                return 1.0;
             }
         } else {
             return -1;
@@ -79,7 +82,7 @@ public class ShooterUtility {
             } else if (distance >= 5) {
                 return 0.26;
             } else {
-                return 0.24;
+                return 0.2;
             }
         } else {
             return -1;

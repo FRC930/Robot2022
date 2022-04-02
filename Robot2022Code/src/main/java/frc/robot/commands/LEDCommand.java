@@ -25,7 +25,7 @@ public class LEDCommand extends CommandBase {
     // (lost one at the beginning)
     // Order is as follows: Front Left, Back Left, Front Right, Back Right, Total #
     // of indexes
-    private static final int STRAND_STARTS[] = { 0, 75, 150, 225, 300 };
+    //private static final int STRAND_STARTS[] = { 0, 75, 150, 225, 300 };
     // Color presets
     private static final Color8Bit black = new Color8Bit(0, 0, 0);
     private static final Color8Bit white = new Color8Bit(80, 80, 80);
@@ -57,7 +57,7 @@ public class LEDCommand extends CommandBase {
     // Virtual placeholder for the LED strip
     // Compile data is sent to the LED strip through the subsystem
     private final AddressableLEDBuffer m_fullBuffer;
-    private final AddressableLEDBuffer m_singleStrandBuffer;
+    private final int m_SingleSideLength;
     // Precompiled buffers for solid patterns
     private final AddressableLEDBuffer m_OffBuffer;
     private final AddressableLEDBuffer m_YellowBuffer;
@@ -77,7 +77,7 @@ public class LEDCommand extends CommandBase {
         m_fullBuffer = m_LEDSubsystem.getBuffer();
         m_driverController = driverController;
         // Rounds up to the next integer
-        m_singleStrandBuffer = new AddressableLEDBuffer((int) Math.ceil(m_fullBuffer.getLength() / 4.0));
+        m_SingleSideLength = (int) Math.ceil(m_fullBuffer.getLength() / 4.0);
         m_OffBuffer = createClearStrip();
         m_YellowBuffer = createSolidYellowLEDs();
         m_GreenBuffer = createSolidGreenLEDs();
@@ -135,22 +135,19 @@ public class LEDCommand extends CommandBase {
      * <h3>applyBuffer</h3>
      * applys the single Buffer to the full Buffer 4 times
      */
-    private void applySingleBuffer() {
-        for (int j = 0; j < 4; j++) {
-            for (int i = 0; i < m_singleStrandBuffer.getLength(); i++) {
-                // Stop if beyond side
-                if ((i + STRAND_STARTS[j]) == STRAND_STARTS[j + 1]) {
-                    break;
-                }
-                // Use for back sides
-                if (j % 2 == 1) {
-                    m_fullBuffer.setLED(STRAND_STARTS[j + 1] - (i + 1), m_singleStrandBuffer.getLED8Bit(i));
-                } else {
-                    m_fullBuffer.setLED(STRAND_STARTS[j] + i, m_singleStrandBuffer.getLED8Bit(i));
-                }
-            }
-        }
-        m_LEDSubsystem.setBuffer(m_fullBuffer);
+    private void applyLEDValue(int initialPos, Color8Bit color) {
+            //
+            //  Right Rear LEDs run from positions (0 - 74)
+            m_fullBuffer.setLED(initialPos, color);
+            //
+            //  Right Front LEDs run from positions (149 - 75)
+            m_fullBuffer.setLED(((m_SingleSideLength*2) - 1) - initialPos, color);
+            //
+            //  Left Front LEDs run from positions (150 - 224)
+            m_fullBuffer.setLED((m_SingleSideLength*2) + initialPos, color);
+            //
+            //  Left Rear LEDs run from positions (299 - 225)
+            m_fullBuffer.setLED(((m_SingleSideLength*4) - 1) - initialPos, color);
     }
 
     /**
@@ -274,29 +271,31 @@ public class LEDCommand extends CommandBase {
      */
     private void movingSegmentPattern() {
         counter++;
-        if (counter >= m_singleStrandBuffer.getLength() * ENDGAME_TIMER) {
+        if (counter >= m_SingleSideLength * ENDGAME_TIMER) {
             counter = 0;
         }
         // Keeping track of animation speed.
         if (counter % ENDGAME_TIMER == 0) {
 
-            if (beamEndPosition >= m_singleStrandBuffer.getLength()) {
+            if (beamEndPosition >= m_SingleSideLength) {
                 beamEndPosition = 0;
             }
-            if (beamStartPosition >= m_singleStrandBuffer.getLength()) {
+            if (beamStartPosition >= m_SingleSideLength) {
                 beamStartPosition = 0;
             }
 
             if (beamStartPosition >= 0) {
-                m_singleStrandBuffer.setLED(beamStartPosition, black);
+                applyLEDValue(beamStartPosition, black);
             }
 
-            m_singleStrandBuffer.setLED(beamEndPosition, (allianceColor == Alliance.Blue) ? blue : red);
+            applyLEDValue(beamEndPosition, (allianceColor == Alliance.Blue) ? blue : red);
 
             beamStartPosition += 1;
             beamEndPosition += 1;
 
-            applySingleBuffer();
+            //
+            //  set buffer
+            m_LEDSubsystem.setBuffer(m_fullBuffer);
         }
     }
 
@@ -346,17 +345,19 @@ public class LEDCommand extends CommandBase {
             counter = 0;
         } else {
             if (counter % (FLASH_TIMER) == 0) {
-                for (int i = m_singleStrandBuffer.getLength() / 2; i < m_singleStrandBuffer.getLength(); i++) {
-                    m_singleStrandBuffer.setLED(i, (allianceColor == Alliance.Blue) ? blue : red); // blue or red based
+                for (int i = m_SingleSideLength / 2; i < m_SingleSideLength; i++) {
+                    applyLEDValue(i, (allianceColor == Alliance.Blue) ? blue : red); // blue or red based
                                                                                                    // on alliance
                 }
             } else if (counter % (FLASH_TIMER) == FLASH_TIMER / 2) {
-                for (int i = m_singleStrandBuffer.getLength() / 2; i < m_singleStrandBuffer.getLength(); i++) {
-                    m_singleStrandBuffer.setLED(i, black); // off
+                for (int i = m_SingleSideLength / 2; i < m_SingleSideLength; i++) {
+                   applyLEDValue(i, black); // off
                 }
             }
         }
-        applySingleBuffer();
+        //
+        //  set buffer
+        m_LEDSubsystem.setBuffer(m_fullBuffer);
     }
 
     /**
@@ -370,17 +371,20 @@ public class LEDCommand extends CommandBase {
             counter = 0; // alliance
         } else {
             if (counter % (FLASH_TIMER * 2) == 0) {
-                for (int i = 0; i < m_singleStrandBuffer.getLength() / 2; i++) {
-                    m_singleStrandBuffer.setLED(i, (allianceColor == Alliance.Blue) ? blue : red); // blue or red based
+                for (int i = 0; i < m_SingleSideLength / 2; i++) {
+                    applyLEDValue(i, (allianceColor == Alliance.Blue) ? blue : red); // blue or red based
                                                                                                    // on alliance
                 }
             } else if (counter % (FLASH_TIMER * 2) == FLASH_TIMER) {
-                for (int i = 0; i < m_singleStrandBuffer.getLength() / 2; i++) {
-                    m_singleStrandBuffer.setLED(i, black); // off
+                for (int i = 0; i < m_SingleSideLength / 2; i++) {
+                    applyLEDValue(i, black); // off
                 }
             }
         }
-        applySingleBuffer();
+
+        //
+        //  set buffer
+        m_LEDSubsystem.setBuffer(m_fullBuffer);
     }
 
     /**
@@ -388,13 +392,16 @@ public class LEDCommand extends CommandBase {
      * retracts LEDs one by one from full to half
      */
     private void retractTopLEDs() {
-        if (counter >= ENDGAME_TIMER * m_singleStrandBuffer.getLength() / 2) {
+        if (counter >= ENDGAME_TIMER * m_SingleSideLength / 2) {
             m_lastBallStatus = BallStatus.oneBall;
             counter = 0;
         } else {
             if (counter % ENDGAME_TIMER == 0) {
-                m_singleStrandBuffer.setLED(m_singleStrandBuffer.getLength() - (counter / ENDGAME_TIMER + 1), black);
-                applySingleBuffer();
+                applyLEDValue(m_SingleSideLength - (counter / ENDGAME_TIMER + 1), black);
+                
+                //
+                //  set buffer
+                m_LEDSubsystem.setBuffer(m_fullBuffer);
             }
             counter++;
         }
@@ -405,13 +412,16 @@ public class LEDCommand extends CommandBase {
      * retracts LEDs one by one from half to empty
      */
     private void retractBottomLEDs() {
-        if (counter >= ENDGAME_TIMER * m_singleStrandBuffer.getLength() / 2) {
+        if (counter >= ENDGAME_TIMER * m_SingleSideLength / 2) {
             m_lastBallStatus = BallStatus.noBall;
             counter = 0;
         } else {
             if (counter % ENDGAME_TIMER == 0) {
-                m_singleStrandBuffer.setLED(m_singleStrandBuffer.getLength() / 2 - (counter / ENDGAME_TIMER), black);
-                applySingleBuffer();
+                applyLEDValue(m_SingleSideLength / 2 - (counter / ENDGAME_TIMER), black);
+                
+                //
+                //  set buffer
+                m_LEDSubsystem.setBuffer(m_fullBuffer);
             }
             counter++;
         }

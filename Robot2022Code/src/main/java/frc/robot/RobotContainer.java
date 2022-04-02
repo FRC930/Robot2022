@@ -468,8 +468,8 @@ public class RobotContainer {
                     PhotonVisionUtility.getInstance().getHubTrackingCamera().setDriverMode(true);
                 }),
                 new ParallelCommandGroup(
-                    m_endgameManagerCommand//, 
-                    //m_endgamePatternCommand
+                    m_endgameManagerCommand, 
+                    m_endgamePatternCommand
                 )
             )
         );
@@ -507,7 +507,7 @@ public class RobotContainer {
         m_driveSubsystem.setMotorBrakeMode(NeutralMode.Brake);
 
 
-        //rescheduleAutonomousLEDs(false);
+        rescheduleAutonomousLEDs(false);
 
         PhotonVisionUtility.getInstance().setPiCameraExposure();
     }
@@ -560,7 +560,7 @@ public class RobotContainer {
     public void beginAutoRunCommands() {
         // Sets the brake mode to brake
         m_driveSubsystem.setMotorBrakeMode(NeutralMode.Brake);
-        //rescheduleAutonomousLEDs(true);
+        rescheduleAutonomousLEDs(true);
 
         PhotonVisionUtility.getInstance().setPiCameraExposure();
     }

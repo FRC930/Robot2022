@@ -152,7 +152,7 @@ public class EndgameManagerCommand extends CommandBase {
                                                 EndgameSensorPairs.SensorPair4,
                                                 SENSOR_DELAY_TIME),
                                         new WaitCommand(0.2))),
-                        new WaitCommand(2), // SHORTEN THIS
+                        new WaitCommand(1), // SHORTEN THIS
                         new EndgameIncrementStateCommand(this)));
 
         // Opens #2 claws
