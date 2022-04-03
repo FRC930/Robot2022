@@ -413,6 +413,7 @@ public class RobotContainer {
             m_endgameArmRevCommand
         );
 
+        // Tarmac
         m_codriverController.getPOVLeftTrigger().whileActiveOnce(
             new ParallelCommandGroup(
                 new AdjustHoodCommand(
@@ -428,21 +429,23 @@ public class RobotContainer {
             ).withTimeout(0.1)
         );
 
+        // Launchpad
         m_codriverController.getPOVUpTrigger().whileActiveOnce(
             new ParallelCommandGroup(
                 new AdjustHoodCommand(
                     m_shooterHoodSubsystem,
-                    ShooterUtility.calculateHoodPos(16.5)
+                    ShooterUtility.calculateHoodPos(14.5)
                 ),
                 new ShootCargoCommand(
                     m_shooterSubsystem, 
                     m_indexerMotorSubsystem,
-                    ShooterUtility.calculateTopSpeed(16.5),
-                    ShooterUtility.calculateBottomSpeed(16.5)
+                    ShooterUtility.calculateTopSpeed(14.5),
+                    ShooterUtility.calculateBottomSpeed(14.5)
                 )
             ).withTimeout(0.1)
         );
 
+        // Fender shot
         m_codriverController.getPOVDownTrigger().whileActiveOnce(
             new ParallelCommandGroup(
                 new AdjustHoodCommand(
