@@ -39,6 +39,7 @@ public class DefensiveThreeBall extends AutoBase {
     private final double RAMSETE_B = 2;
     private final double RAMSETE_ZETA = 0.7;
 
+    // Distance To The Center of The Hub
     private double SHOT_DISTANCE_1 = 11.68;
     private double SHOT_DISTANCE_2 = 8.0;
 
@@ -71,12 +72,9 @@ public class DefensiveThreeBall extends AutoBase {
 
         // initializing gyro for pose2d
         m_odometry = driveSubsystem.getOdometry();
-        // currentToHubDistanceUtility = new CurrentToHubDistanceUtility();
         // ----- TRAJECTORIES -----\\
+        // Reads path file and puts it into a command for the robot to run
 
-        // Robot exits the tarmac, intakes, and shoots
-
-        // Robot approaches the adjacent enemy cargo and shoots it into the hangar zone.
         Trajectory t_adjacentEnemyCargo = PathPlanner.loadPath("DefensiveThreeBall2", MAX_SPEED, MAX_ACCELERATION);
 
         this.addTrajectory(super.m_initialTrajectory);

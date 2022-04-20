@@ -32,14 +32,8 @@ public class TaxiOneBallAim extends AutoBase {
     private final static double MAX_SPEED = 0.5; // DriveSubsystem.DRIVETRAIN_MAX_FREE_SPEED_HIGH
     private final static double MAX_ACCELERATION = 2.5;
 
+    // Distance To The Center of The Hub
     private double SHOT_DISTANCE_1 = 11.68;// Figure out distance;
-
-    // private final CurrentToHubDistanceUtility currentToHubDistanceUtility;
-
-    // Ramsete Controller Parameters
-    // private final double RAMSETE_B = 2;
-    // private final double RAMSETE_ZETA = 0.7;
-
     // ----- ODOMETRY -----\\
 
     private final DifferentialDriveOdometry m_odometry;
@@ -63,9 +57,10 @@ public class TaxiOneBallAim extends AutoBase {
 
         // initializing gyro for pose2d
         m_odometry = driveSubsystem.getOdometry();
-        // currentToHubDistanceUtility = new CurrentToHubDistanceUtility();
 
         // ----- TRAJECTORIES -----\\
+        // Reads path file and puts it into a command for the robot to run
+
         this.addTrajectory(super.m_initialTrajectory);
 
         // ----- RAMSETE COMMANDS -----\\
@@ -75,7 +70,7 @@ public class TaxiOneBallAim extends AutoBase {
         Ramsete930Command r_exitTarmac = new Ramsete930Command(
                 super.m_initialTrajectory,
                 () -> m_odometry.getPoseMeters(),
-                new RamseteController(), // new RamseteController(RAMSETE_B, RAMSETE_ZETA)
+                new RamseteController(),
                 driveSubsystem.getKinematics(),
                 driveSubsystem::getWheelSpeeds,
                 (Double leftVoltage, Double rightVoltage) -> driveSubsystem.setVoltages(leftVoltage,

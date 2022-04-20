@@ -40,7 +40,7 @@ public class DefensiveHangarCleanup extends AutoBase {
     private final double RAMSETE_B = 2;
     private final double RAMSETE_ZETA = 0.7;
 
-    // Put all at 2 when testing in room 42
+    // Distance To The Center of The Hub
     private double SHOT_DISTANCE_1 = 11.68;
     private double SHOT_DISTANCE_2 = 8.0;
     private double SHOT_DISTANCE_3 = 8.0;
@@ -74,11 +74,10 @@ public class DefensiveHangarCleanup extends AutoBase {
         // initializing gyro for pose2d
         m_odometry = driveSubsystem.getOdometry();
         // ----- TRAJECTORIES -----\\
+        // Reads path file and puts it into a command for the robot to run
 
-        // Robot approaches the adjacent enemy cargo and shoots it into the hangar zone.
         Trajectory t_adjacentEnemyCargo = PathPlanner.loadPath("DefensiveHangarCleanup2", MAX_SPEED, MAX_ACCELERATION);
 
-        // Robot approaches the adjacent enemy cargo and shoots it into the hangar zone.
         Trajectory t_farEnemyCargo = PathPlanner.loadPath("DefensiveHangarCleanup3", MAX_SPEED, MAX_ACCELERATION);
 
         this.addTrajectory(super.m_initialTrajectory);
@@ -127,7 +126,6 @@ public class DefensiveHangarCleanup extends AutoBase {
         // is on the end of the tarmac
 
         addCommands(
-                // new InstantCommand(catapultSubsystem::setShortShot),
                 new CombinedIntake(
                         intakePistonSubsystem,
                         intakeMotorSubsystem,

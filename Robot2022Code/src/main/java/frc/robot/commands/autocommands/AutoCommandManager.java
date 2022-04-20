@@ -110,15 +110,12 @@ public class AutoCommandManager {
                 (ShooterHoodSubsystem) subsystemMap.get(subNames.ShooterHoodSubsystem.toString()),
                 (IndexerMotorSubsystem) subsystemMap.get(subNames.IndexerMotorSubsystem.toString()));
 
-        // Adding auto paths to the Shuffleboard
+        // Adding auto paths to the Shuffleboard to be used by the get autonomous command
         ShuffleboardUtility.getInstance().setDefaultAutonOptions("(None)", null);
         ShuffleboardUtility.getInstance().addAutonOptions("defaultAutoPathCommand", TarmacTaxi);
-
         ShuffleboardUtility.getInstance().addAutonOptions("TaxiTwoBall", TaxiTwoBall);
         ShuffleboardUtility.getInstance().addAutonOptions("TaxiOneBall", TaxiOneBall);
         ShuffleboardUtility.getInstance().addAutonOptions("TaxiOneBallAim", TaxiOneBallAim);
-        // ShuffleboardUtility.getInstance().addAutonOptions("ShootMoveShoot",
-        // ShootMoveShoot);
         ShuffleboardUtility.getInstance().addAutonOptions("TerminalPickup", TerminalPickup);
         ShuffleboardUtility.getInstance().addAutonOptions("DefensiveThreeBall", DefensiveThreeBall);
         ShuffleboardUtility.getInstance().addAutonOptions("DefensiveHangarCleanup", DefensiveHangarCleanup);
@@ -129,7 +126,7 @@ public class AutoCommandManager {
      *
      * Gets the autonomous path that is selected in the Shuffleboard
      *
-     * @return The selected autonomous commandl
+     * @return The selected autonomous command
      */
     public Command getAutonomousCommand() {
         return ShuffleboardUtility.getInstance().getSelectedAutonPath();

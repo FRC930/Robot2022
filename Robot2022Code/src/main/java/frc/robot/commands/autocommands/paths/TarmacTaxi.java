@@ -25,10 +25,6 @@ public class TarmacTaxi extends AutoBase {
     private final static double MAX_SPEED = 0.5;
     private final static double MAX_ACCELERATION = 2.5;
 
-    // Ramsete Controller Parameters
-    // private final double RAMSETE_B = 2;
-    // private final double RAMSETE_ZETA = 0.7;
-
     // ----- ODOMETRY -----\\
 
     private final DifferentialDriveOdometry m_odometry;
@@ -49,6 +45,8 @@ public class TarmacTaxi extends AutoBase {
         m_odometry = driveSubsystem.getOdometry();
 
         // ----- TRAJECTORIES -----\\
+        // Reads path file and puts it into a command for the robot to run
+
 
         // Forward 60 inches;
         this.addTrajectory(super.m_initialTrajectory);

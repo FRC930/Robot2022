@@ -30,13 +30,9 @@ public class TaxiOneBall extends AutoBase {
     private final static double MAX_SPEED = 0.5; // DriveSubsystem.DRIVETRAIN_MAX_FREE_SPEED_HIGH
     private final static double MAX_ACCELERATION = 2.5;
 
+    // Distance To The Center of The Hub
     private double SHOT_DISTANCE_1 = 11.68;// figure out distance
 
-    // private final CurrentToHubDistanceUtility currentToHubDistanceUtility;
-
-    // Ramsete Controller Parameters
-    // private final double RAMSETE_B = 2;
-    // private final double RAMSETE_ZETA = 0.7;
 
     // ----- ODOMETRY -----\\
 
@@ -64,6 +60,9 @@ public class TaxiOneBall extends AutoBase {
         // currentToHubDistanceUtility = new CurrentToHubDistanceUtility();
 
         // ----- TRAJECTORIES -----\\
+        // Reads path file and puts it into a command for the robot to run
+
+
         this.addTrajectory(super.m_initialTrajectory);
 
         // ----- RAMSETE COMMANDS -----\\

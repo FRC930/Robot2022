@@ -34,6 +34,7 @@ public class TaxiTwoBall extends AutoBase {
     private final static double MAX_SPEED = 1.0;
     private final static double MAX_ACCELERATION = 1.0;
 
+    // Distance To The Center of The Hub
     private double SHOT_DISTANCE_1 = 11.62;
 
     // Ramsete Controller Parameters
@@ -70,7 +71,8 @@ public class TaxiTwoBall extends AutoBase {
         m_odometry = driveSubsystem.getOdometry();
 
         // ----- TRAJECTORIES -----\\
-        // Robot exits the tarmac, intakes, and shoots
+        // Reads path file and puts it into a command for the robot to run
+        
         this.addTrajectory(super.m_initialTrajectory);
 
         SmartDashboard.putString("Pos1", super.m_initialTrajectory.getInitialPose().toString());

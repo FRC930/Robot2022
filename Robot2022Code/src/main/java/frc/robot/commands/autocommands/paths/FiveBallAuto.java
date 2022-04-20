@@ -45,6 +45,7 @@ public class FiveBallAuto extends AutoBase {
     private final double RAMSETE_B = 2;
     private final double RAMSETE_ZETA = 0.7;
 
+    // Distance To The Center of The Hub
     private final double SHOT_DISTANCE1 = 10.0;
     private final double SHOT_DISTANCE2 = 11.3;
     private final double SHOT_DISTANCE3 = 11.3;
@@ -55,7 +56,7 @@ public class FiveBallAuto extends AutoBase {
 
     // ----- CONSTRUCTOR -----\\
     /**
-     * <h3>TerminalPickup</h3>
+     * <h3>FiveBallAuto</h3>
      * 
      * Four ball auto. Starts near the center of the tarmac, intakes, shoots, moves
      * to terminal, intakes, moves back to tarmac, and shoots.
@@ -82,6 +83,8 @@ public class FiveBallAuto extends AutoBase {
         m_odometry = driveSubsystem.getOdometry();
 
         // ----- TRAJECTORIES -----\\
+        // Reads path file and puts it into a command for the robot to run      
+
         this.addTrajectory(super.m_initialTrajectory);
 
         // Moves from tarmac to terminal to intake.

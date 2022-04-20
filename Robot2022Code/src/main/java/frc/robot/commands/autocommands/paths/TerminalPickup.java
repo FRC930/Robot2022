@@ -45,6 +45,7 @@ public class TerminalPickup extends AutoBase {
     private final double RAMSETE_B = 2;
     private final double RAMSETE_ZETA = 0.7;
 
+    // Distance To The Center of The Hub
     private double SHOT_DISTANCE_1 = 10.61; // Figure out distance
     private double SHOT_DISTANCE_2 = 10.68;
 
@@ -81,6 +82,8 @@ public class TerminalPickup extends AutoBase {
         m_odometry = driveSubsystem.getOdometry();
 
         // ----- TRAJECTORIES -----\\
+        // Reads path file and puts it into a command for the robot to run
+        
         this.addTrajectory(super.m_initialTrajectory);
 
         // Moves from tarmac to terminal to intake.

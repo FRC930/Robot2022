@@ -8,10 +8,9 @@ import frc.robot.subsystems.DriveSubsystem;
 
 //----- CLASS -----\\
 /**
- * <h3>FiveBallAuto</h3>
+ * <h3>AutoBase</h3>
  * 
- * Four ball auto. Starts near the center of the tarmac, intakes, shoots, moves
- * to terminal, intakes, moves back to tarmac, and shoots.
+ * Adds commands to the start of the autonomous period before the path runs
  */
 public class AutoBase extends PathPlannerSequentialCommandGroupUtility {
 
@@ -21,10 +20,9 @@ public class AutoBase extends PathPlannerSequentialCommandGroupUtility {
 
     // ----- CONSTRUCTOR -----\\
     /**
-     * <h3>TerminalPickup</h3>
+     * <h3>AutoBase</h3>
      * 
-     * Four ball auto. Starts near the center of the tarmac, intakes, shoots, moves
-     * to terminal, intakes, moves back to tarmac, and shoots.
+     * Adds commands to the start of the autonomous period before the path runs
      * 
      * @param driveSubsystem
      * @param intakePistonSubsystem
@@ -34,15 +32,7 @@ public class AutoBase extends PathPlannerSequentialCommandGroupUtility {
      */
     public AutoBase(DriveSubsystem driveSubsystem, Trajectory initialTrajectory) {
         m_initialTrajectory = initialTrajectory;
-        // ----- AUTO SEQUENCE -----\\
-
-        // Parallel Race Group ends these commands because they dont end, they end when
-        // the wait command ends
-        // Sets catapult shot to short
-        // reset the encoders and odometry to where our path starts
-        // starts the path
-        // engages the intake piston runs them at the same time
-        // it stops driving.
+        // ----- Commands -----\\
         addCommands(
                 new ResetAutonomousCommand(m_initialTrajectory.getInitialPose(), driveSubsystem));
     } // End of Constructor
