@@ -25,11 +25,11 @@ import frc.robot.utilities.ShuffleboardUtility.ShuffleboardKeys;
  */
 public class DriveCommand extends CommandBase {
 
-    //-------- CONSTANTS --------\\
+    // -------- CONSTANTS --------\\
 
     private final double JOYSTICK_DEADBAND = 0.15;
 
-    //-------- VARIABLES --------\\
+    // -------- VARIABLES --------\\
 
     private DriveSubsystem driveSubsystem;
     private XboxController driverController;
@@ -37,15 +37,13 @@ public class DriveCommand extends CommandBase {
     private DoubleSupplier driveStick;
     private DoubleSupplier rotationStick;
 
-    //-------- CONSTRUCTOR --------\\
+    // -------- CONSTRUCTOR --------\\
     /**
      * Initializes a new {@link frc.robot.commands.DriveCommand DriveCommand} with
      * the passed variables
      * 
-     * @param dSubsystem       the drive subsystem to control
-     * @param eSubsystem       where to get the pigeon for odometry
-     * @param reflectSubsystem the camera subsystem to use to autmatically aim
-     * @param dController      the driver's controller
+     * @param dSubsystem  the drive subsystem to control
+     * @param dController the driver's controller
      */
     public DriveCommand(
             DriveSubsystem dSubsystem,
@@ -53,23 +51,22 @@ public class DriveCommand extends CommandBase {
         driveSubsystem = dSubsystem;
         driverController = dController;
 
-        driveStick = () -> -deadbandCube(driverController.getLeftY() * 0.85) * DriveSubsystem.DRIVETRAIN_MAX_FREE_SPEED_HIGH;
-                // * (ShifterUtility.getShifterState() ? DriveSubsystem.DRIVETRAIN_MAX_FREE_SPEED_LOW
-                //         : DriveSubsystem.DRIVETRAIN_MAX_FREE_SPEED_HIGH);
+        // The left joystick controls the forward power of the drivetrain
+        driveStick = () -> -deadbandCube(driverController.getLeftY() * 0.85)
+                * DriveSubsystem.DRIVETRAIN_MAX_FREE_SPEED_HIGH;
+        // The right joystick controls the rotation of the drivetrain
         rotationStick = () -> -deadbandCube(driverController.getRightX()) * DriveSubsystem.MAX_ANGULAR_SPEED;
 
-        // We are not adding endgame motor subsystem as a requirement because we are not
-        // using the subsystem in the command at all
         addRequirements(driveSubsystem);
     }
-    //-------- METHODS --------\\
+    // -------- METHODS --------\\
 
     @Override
     public void execute() {
-        double xStick = driveStick.getAsDouble();
+        double forwardSpeed = driveStick.getAsDouble();
         double rotationSpeed = rotationStick.getAsDouble();
 
-        DifferentialDriveWheelSpeeds wheelSpeeds = driveSubsystem.getWheelSpeeds(xStick,
+        DifferentialDriveWheelSpeeds wheelSpeeds = driveSubsystem.getWheelSpeeds(forwardSpeed,
                 rotationSpeed);
 
         ShuffleboardUtility.getInstance().putToShuffleboard(ShuffleboardUtility.testingTab, ShuffleboardKeys.LEFT_SPEED,
@@ -96,8 +93,21 @@ public class DriveCommand extends CommandBase {
         driveSubsystem.drive(0, 0);
     }
 
+    /**
+     * <h3>deadbandCube</h3>
+     * 
+     * This method takes in a double and returns the value cubed if it is greater
+     * than the deadband, or 0 if it is less than the deadband
+     * 
+     * A deadband is a small value that is used to prevent the robot from
+     * accidentally driving forward or backward
+     * 
+     * @param stickPos the stick position
+     * @return the cubed value of the stick position if it is greater than the
+     *         deadband, or 0 if it is less than the deadband
+     */
     private double deadbandCube(double stickPos) {
-        // Check that the value is stick value is outside the deadband
+        // Check that the stick value is outside the deadband
         if (stickPos < JOYSTICK_DEADBAND && stickPos > -JOYSTICK_DEADBAND) {
             // HAHAHA no bread for you
             return 0;

@@ -2,6 +2,7 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.InvertType;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.sensors.SensorVelocityMeasPeriod;
@@ -50,6 +51,8 @@ public class DriveSubsystem extends SubsystemBase {
     // The amount of internal encoder units in one motor revolution
     public static final int FALCON_ENCODER_RESOLUTION = 2048; // 2048 CPR
     // The maximum voltage we can send to the motors
+    // This is negative for a motor going backwards and positive for a motor going
+    // forwards
     public static final double MAX_VOLTS = 11.0;
 
     // 6380 is the max free speed (in rpms) of a Falcon 500
@@ -164,6 +167,7 @@ public class DriveSubsystem extends SubsystemBase {
 
         TalonFXConfiguration config = new TalonFXConfiguration();
         config.velocityMeasurementPeriod = SensorVelocityMeasPeriod.Period_10Ms;
+        config.statorCurrLimit = new StatorCurrentLimitConfiguration(true, 60, 50, 10);
 
         // Configures all settings on all motors to TalonFX configurations.
         m_leftLeader.configAllSettings(config);
@@ -205,8 +209,9 @@ public class DriveSubsystem extends SubsystemBase {
     /**
      * <h3>setMototBreakMode</h3>
      * 
-     * Sets left and right motors to a certain breakmode: auto is brake; teleop is
-     * coast
+     * Sets left and right motors to a certain breakmode.
+     * 
+     * Breakmode controls how the motor reacts to a neutral input.
      * 
      * @param brakeMode
      */
@@ -382,9 +387,10 @@ public class DriveSubsystem extends SubsystemBase {
     /**
      * Gets the reading from the left encoder
      * 
-     * @return the encoder speed
+     * @return the encoder speed in meters per second
      */
     public double getLeftEncoder() {
+        // This will return the sensor velocity in encoder ticks per 100 milliseconds
         return m_leftLeader.getSelectedSensorVelocity()
                 // Multiply by 10 to get encoder units per second
                 * 10
@@ -397,9 +403,10 @@ public class DriveSubsystem extends SubsystemBase {
     /**
      * Gets the reading from the right encoder
      * 
-     * @return the encoder speed
+     * @return the encoder speed in meters per second
      */
     public double getRightEncoder() {
+        // This will return the sensor velocity in encoder ticks per 100 milliseconds
         return m_rightLeader.getSelectedSensorVelocity()
                 // Multiply by 10 to get encoder units per second
                 * 10
@@ -419,6 +426,7 @@ public class DriveSubsystem extends SubsystemBase {
      *      getSelectedSensorPosition()}
      */
     public double getRawLeftSensorPosition() {
+        // This is the sensor position of the left encoder relative to startup
         return m_leftLeader.getSelectedSensorPosition();
     }
 
@@ -432,6 +440,7 @@ public class DriveSubsystem extends SubsystemBase {
      *      getSelectedSensorPosition()}
      */
     public double getRawRightSensorPosition() {
+        // This is the sensor position of the right encoder relative to startup
         return m_rightLeader.getSelectedSensorPosition();
     }
 
@@ -496,6 +505,8 @@ public class DriveSubsystem extends SubsystemBase {
      */
     public double getHeading() {
         GyroUtility.getInstance().getGyro().getYawPitchRoll(m_yawPitchRollValues);
+        // Math.IEEERemainder(m_yawPitchRollValues[0], 360) is the double version of
+        // m_yawPitchRollValues[0] % 360
         return Math.IEEEremainder(m_yawPitchRollValues[0], 360);
     }
 
