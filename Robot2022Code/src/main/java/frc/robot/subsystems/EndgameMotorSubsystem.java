@@ -78,7 +78,7 @@ public class EndgameMotorSubsystem extends SubsystemBase {
      */
     public void refollowEndgameMotors() {
 
-        // Sets slave to follow master and inverts slave
+        // Sets slave to follow master and inverts slave to make them work together clockwise and counter clockwise
         m_endgameMotorMaster.setInverted(InvertType.None);
         m_endgameMotorSlave.follow(m_endgameMotorMaster, FollowerType.PercentOutput);
         m_endgameMotorSlave.setInverted(InvertType.OpposeMaster);
@@ -89,7 +89,7 @@ public class EndgameMotorSubsystem extends SubsystemBase {
      * 
      * This method sets the endgame motor speed to the passed variable
      * 
-     * @param speed the speed at which to set the motor
+     * @param speed the speed at which to set the motor in percentage
      */
     public void setMotorSpeed(double speed) {
 

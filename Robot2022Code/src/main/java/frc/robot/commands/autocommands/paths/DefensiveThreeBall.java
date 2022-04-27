@@ -75,6 +75,9 @@ public class DefensiveThreeBall extends AutoBase {
         // ----- TRAJECTORIES -----\\
         // Reads path file and puts it into a command for the robot to run
 
+        // Robot exits the tarmac, intakes, and shoots
+
+        // Robot approaches the adjacent enemy cargo and shoots it into the hangar zone.
         Trajectory t_adjacentEnemyCargo = PathPlanner.loadPath("DefensiveThreeBall2", MAX_SPEED, MAX_ACCELERATION);
 
         this.addTrajectory(super.m_initialTrajectory);

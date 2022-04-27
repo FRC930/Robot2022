@@ -43,7 +43,7 @@ public class EndgameManagerCommand extends CommandBase {
     private final double ENDGAME_MOTOR_POWER = 1.0;
 
     // -------- VARIABLES --------\\
-    // Map of states for the sequence
+    // Map(key value pairs) of states for the sequence
     private HashMap<Integer, CommandBase> commands = new HashMap<Integer, CommandBase>();
     // State flag for currently used state command
     private int currentState;
@@ -114,7 +114,8 @@ public class EndgameManagerCommand extends CommandBase {
                                         new WaitCommand(0.2))),
                         new WaitCommand(1.0),
                         new EndgameIncrementStateCommand(this)));
-
+        
+        // resets the position of the endagame arms
         commands.put(4,  new SequentialCommandGroup(
                 new EndgameRotateArmCommand(endgameMotorSubsystem, EndgamePosition.ResetPosition),
                 new EndgameIncrementStateCommand(this)

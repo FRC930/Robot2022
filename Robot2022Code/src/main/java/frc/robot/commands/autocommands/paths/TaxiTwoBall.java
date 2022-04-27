@@ -73,6 +73,7 @@ public class TaxiTwoBall extends AutoBase {
         // ----- TRAJECTORIES -----\\
         // Reads path file and puts it into a command for the robot to run
         
+        // Robot exits the tarmac, intakes, and shoots
         this.addTrajectory(super.m_initialTrajectory);
 
         SmartDashboard.putString("Pos1", super.m_initialTrajectory.getInitialPose().toString());

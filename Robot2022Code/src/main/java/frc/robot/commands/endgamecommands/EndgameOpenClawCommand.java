@@ -39,7 +39,7 @@ public class EndgameOpenClawCommand extends CommandBase {
     
     //-------- METHODS --------\\
 
-    public void initialize() { // Runs once when called
+    public void initialize() { // Runs once when called, opens the claw
         piston.open();
     }
 

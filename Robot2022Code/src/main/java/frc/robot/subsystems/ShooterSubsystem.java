@@ -54,7 +54,7 @@ public class ShooterSubsystem extends SubsystemBase {
         bottomShooterMaster.configFactoryDefault();
         bottomShooterFollower.configFactoryDefault();
 
-        // Sets motors to coast so that they can move freely when neutral
+        // Sets motors to coast so that they can move freely when not being used
         topShooter.setNeutralMode(NeutralMode.Coast);
         bottomShooterMaster.setNeutralMode(NeutralMode.Coast);
         bottomShooterFollower.setNeutralMode(NeutralMode.Coast);
@@ -69,7 +69,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
     /**
      * <h3>refollowShooterMotors</h3>
-     * Refollows the bottom shooter motors.
+     * Makes the top shooter motor output the same speed as the bottom shooter motor
      */
     public void refollowShooterMotors() {
         bottomShooterMaster.setInverted(InvertType.None);

@@ -36,13 +36,16 @@ public class EndgameIncrementStateCommand extends CommandBase {
         managerCommand = mCommand;
     }
 
-    @Override // Called when the command is initially scheduled.
+    @Override
+    /**
+     * Called when the command is initially scheduled. Calls next state in the list.
+     */
     public void initialize() { 
         managerCommand.nextState();
     }
 
     @Override
-    public boolean isFinished() { // when true, ends command
+    public boolean isFinished() { 
         return true;
     }
 

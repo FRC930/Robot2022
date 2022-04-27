@@ -40,6 +40,7 @@ public class EndgameCloseClawCommand extends CommandBase{
     //-------- METHODS  --------\\
     
     public void initialize() { // runs once when called
+        // Closes claw
         piston.closed();
     }
     

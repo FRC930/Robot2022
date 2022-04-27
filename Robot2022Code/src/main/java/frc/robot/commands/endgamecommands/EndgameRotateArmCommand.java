@@ -64,7 +64,7 @@ public class EndgameRotateArmCommand extends CommandBase {
     return Math.abs(m_MotorSubsystem.getArmRotation() - target) < DEADBAND;
   }
 
-  @Override
+  @Override // Stops the endgame motors
   public void end(boolean interrupted) {
     m_MotorSubsystem.setMotorSpeed(0.0);
   }
