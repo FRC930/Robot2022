@@ -44,7 +44,7 @@ public class EndgameArmRevCommand extends CommandBase {
 
   // -------- METHODS --------\\
 
-  @Override // Called when the command is initially scheduled.
+  @Override // Called when the command is initially scheduled. Will set the arm speed to be reversed.
   public void initialize() {
     m_MotorSubsystem.setMotorSpeed(ARM_SPEED);
 

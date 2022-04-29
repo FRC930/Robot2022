@@ -5,6 +5,8 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
+//----- IMPORTS -----\\
+
 package frc.robot.commands.shootercommands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
@@ -14,26 +16,32 @@ import frc.robot.utilities.ShuffleboardUtility;
 import frc.robot.utilities.ShuffleboardUtility.ShuffleBoardData;
 import frc.robot.utilities.ShuffleboardUtility.ShuffleboardKeys;
 
+//----- CLASS -----\\
 /**
  * <h3>ShootCargoCommand</h3>
  * 
  * Complete shooting command.
  */
+
+ // Overloaded constructors
 public class ShootCargoCommand extends CommandBase {
 
     // -----CONSTANTS----\\
-    public static final Double SHOOT_TIME = 1.0;
-    // Number of cycles to wait before sending balls into shooter. (Cycles = time(in
-    // seconds) / 0.02)
+
+    public static final double TELEOP_SHOOT_TIME = 5.0;
+    // Number of cycles to wait before sending balls into shooter. (Cycles = time(in seconds) / 0.02)
     private final int INDEXER_DELAY = 20;
 
     // -----VARIABLES----\\
+
     private final ShooterSubsystem shooterSubsystem;
     private final IndexerMotorSubsystem indexerSubsystem;
     private boolean usingShuffleboard;
     private double bottomSpeed;
     private double topSpeed;
     private int counter;
+
+    //----- CONSTRUCTOR(S) -----\\
 
     /**
      * <h3>ShootCargoCommand</h3>
@@ -43,7 +51,6 @@ public class ShootCargoCommand extends CommandBase {
      * @param indexer The IndexerMotorSubsystem to use
      */
     public ShootCargoCommand(ShooterSubsystem shooter, IndexerMotorSubsystem indexer) {
-        // ---CANNOT USE this() BECAUSE OF BOOLEAN FLAG---\\
         shooterSubsystem = shooter;
         indexerSubsystem = indexer;
         usingShuffleboard = true;
@@ -82,6 +89,11 @@ public class ShootCargoCommand extends CommandBase {
         addRequirements(shooterSubsystem, indexerSubsystem);
     }
 
+    //----- METHODS -----\\
+
+    /**
+     * <h3>initialize</h3>
+     */
     @Override
     public void initialize() {
         // Gets values from shuffleboard driver tab
@@ -102,8 +114,12 @@ public class ShootCargoCommand extends CommandBase {
         counter = 0;
     }
 
+    /**
+     * <h3>execute</h3>
+     */
     @Override
     public void execute() {
+        // Increments the counter every 20 ms
         counter++;
         // Waits for delay before activating indexer system
         if (counter == INDEXER_DELAY) {
@@ -112,14 +128,17 @@ public class ShootCargoCommand extends CommandBase {
         }
     }
 
+    /**
+     * <h3>isFinished</h3>
+     */
     @Override
     public boolean isFinished() {
         return false;
-        // Finishes if no balls are left
-        //return !BallSensorUtility.getInstance().intakeIsTripped() &&
-        //        !BallSensorUtility.getInstance().loadedIsTripped();
     }
 
+    /**
+     * <h3>end</h3>
+     */
     @Override
     public void end(boolean interrupted) {
         shooterSubsystem.stopMotors();

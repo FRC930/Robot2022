@@ -47,20 +47,32 @@ import frc.robot.utilities.ShuffleboardUtility.ShuffleboardKeys;
 public class PhotonVisionUtility {
     // ----- CONSTANTS ----- \\
 
+    // This is the ip address that the vision server is running on
     private static final String PHOTON_URL_NO_PORT = "10.9.30.25";
+    // This is the port that the vision server web interface is running on
     private static final String PHOTON_URL = PHOTON_URL_NO_PORT + ":5800";
+    // This is the path to where the websocket should point to
     private static final String WEBSOCKET_RELATIVE_PATH = "/websocket";
+    // This is the path to where the config file should be
     private static final String CONFIG_ZIP_RELATIVE_PATH = "/api/settings/photonvision_config.zip";
+    // This is the path to where the camera config file is located
     private static final String PIPELINE_JSON_RELATIVE_PATH = "/cameras/mmal_service_16.1/pipelines";
+    // This is the path to where the robot should unzip the config file to
     private static final String TEMPORARY_UNZIP_LOCATION = Filesystem.getOperatingDirectory().getAbsolutePath()
             + "/settings_unzipped";
 
+    private static final int PI_CAMERA_INDEX = 0;
+
     // ----- VARIABLES ----- \\
 
+    // This is the camera that is used for reflective targets
     private PhotonCamera hubTracking = new PhotonCamera("PiCamera");
+    // This is the camera that is used for ball tracking
     private PhotonCamera ballTracking = new PhotonCamera("CargoCamera");
 
     // Set up the object mapper that we will use for sending data to Photon
+    // The MessagePackFactory is used to tell the object mapper that we are encoding
+    // for sending over the network
     private ObjectMapper objectMapper = new ObjectMapper(new MessagePackFactory());
     private HttpClient httpClient = HttpClient.newHttpClient();
     private WebSocket ws;
@@ -119,7 +131,7 @@ public class PhotonVisionUtility {
                     File destDir = new File(TEMPORARY_UNZIP_LOCATION);
                     // The buffer that will hold the zip file as we are unzipping it
                     byte[] buffer = new byte[1024];
-                    // Zip input stream holds a zip file in the process of unzipping
+                    // A zip input stream is a file stream that can read zip files
                     ZipInputStream zis = new ZipInputStream(zipFile);
                     // Each part of the file (both files and directories) is a zip entry
                     ZipEntry zipEntry = zis.getNextEntry();
@@ -296,7 +308,7 @@ public class PhotonVisionUtility {
         return instance;
     }
 
-    // ----- METHODS ----- \\
+    // ----- STATIC METHODS ----- \\
 
     /**
      * <h3>newFile</h3>
@@ -339,13 +351,19 @@ public class PhotonVisionUtility {
      * @return whether the server responded in time
      */
     private static boolean isReachable(String addr, int openPort, int timeoutMillis) {
+        // Use try-with-resources to ensure we don't err out
         try (Socket soc = new Socket()) {
+            // Attempt to connect to the specified address
             soc.connect(new InetSocketAddress(addr, openPort), timeoutMillis);
+            // We've successfully connected - return true
             return true;
         } catch (IOException e) {
+            // Failed somewhere, usually because of a timeout
             return false;
         }
     }
+
+    // ------ METHODS ------ \\
 
     /**
      * <h3>setPiCameraExposure</h3>
@@ -368,8 +386,8 @@ public class PhotonVisionUtility {
             LinkedHashMap<String, Object> pipelineToggleMap = new LinkedHashMap<>();
             // Tell photon to set the pipeline to the selected index
             pipelineToggleMap.put("currentPipeline", currentPipeline);
-            // Tell photon that we want to operate on the camera at index 0 (PiCamera)
-            pipelineToggleMap.put("cameraIndex", 0);
+            // Tell photon that we want to operate on the camera at pi camera's index
+            pipelineToggleMap.put("cameraIndex", PI_CAMERA_INDEX);
 
             // Use the object mapper to convert the java LinkedHashMap to a bson byte array.
             // BSON stands for binary json, and is just a binary representation of data
@@ -386,7 +404,7 @@ public class PhotonVisionUtility {
             // Set the exposure to the target plus 0.1. This will simulate clicking the up
             // arrow on the web interface.
             exposureValueMap.put("cameraExposure", (double) (exposureValues.get(currentPipeline).second() + 0.1));
-            exposureValueMap.put("cameraIndex", 0);
+            exposureValueMap.put("cameraIndex", PI_CAMERA_INDEX);
             // Put the exposure values (and camera index) into the exposure toggle map to
             // send to photon
             exposureToggleMap.put("changePipelineSetting", exposureValueMap);
@@ -439,7 +457,7 @@ public class PhotonVisionUtility {
             // Set up the map to set the pipeline
             LinkedHashMap<String, Object> pipelineSetMap = new LinkedHashMap<>();
             pipelineSetMap.put("currentPipeline", pipeline);
-            pipelineSetMap.put("cameraIndex", 0);
+            pipelineSetMap.put("cameraIndex", PI_CAMERA_INDEX);
 
             // Convert and send data to photon
             byte[] convertedMap = objectMapper.writeValueAsBytes(pipelineSetMap);

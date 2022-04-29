@@ -17,7 +17,6 @@ import frc.robot.subsystems.DriveSubsystem;
  */
 public class ResetAutonomousCommand extends CommandBase {
 
-    // TO-DO comment this section
     private final DifferentialDriveOdometry m_odometry;
     private final DriveSubsystem m_dSubsystem;
     private final Pose2d m_startingPose;
@@ -47,7 +46,6 @@ public class ResetAutonomousCommand extends CommandBase {
         m_odometry.resetPosition(m_startingPose,
                 new Rotation2d(Math.toRadians(GyroUtility.getInstance().getGyro().getCompassHeading())));
         m_dSubsystem.resetEncoders();
-        // System.out.printf("Current Position x", m_startingPose.toString());
 
     }
 

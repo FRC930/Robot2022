@@ -46,7 +46,7 @@ public class EndgameCloseWhenTouching extends CommandBase {
     /**
      * <h3>EndgameCloseWhenTouching</h3>
      * 
-     * Closes a claw when the sensor is active. Can set a debouncer.
+     * Closes a claw when the sensor is active. Can set a debouncer for rising.
      * 
      * @param _endgamePiston piston of claw to be closed
      * @param sensorPair     sensor pair used to detect
@@ -93,7 +93,7 @@ public class EndgameCloseWhenTouching extends CommandBase {
         endgamePiston.closed();
     }
 
-    // Enum for endgame positions
+    // Enum for endgame positions, sensor pairs are the claws next to eachother
     public static enum EndgameSensorPairs {
         SensorPair2, SensorPair4;
     }

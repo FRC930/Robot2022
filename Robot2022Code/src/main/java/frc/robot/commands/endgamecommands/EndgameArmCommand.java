@@ -22,7 +22,7 @@ import frc.robot.subsystems.EndgameMotorSubsystem;
 public class EndgameArmCommand extends CommandBase {
 
   // -------- CONSTANTS --------\\
-  private static final double PRESET_ARM_SPEED = -0.2;
+  private static final double PRESET_ARM_SPEED = 0.2;
 
   // -------- VARIABLES --------\\
   private double armSpeed;

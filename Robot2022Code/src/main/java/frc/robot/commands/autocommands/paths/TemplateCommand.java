@@ -19,7 +19,7 @@ import frc.robot.subsystems.DriveSubsystem;
  */
 public class TemplateCommand extends AutoBase {
 
-    //----- CONSTANTS -----\\
+    // ----- CONSTANTS -----\\
 
     // Movement Control
     private final static double MAX_SPEED = 0.0;
@@ -29,11 +29,11 @@ public class TemplateCommand extends AutoBase {
     private final double RAMSETE_B = 0.0;
     private final double RAMSETE_ZETA = 0.0;
 
-    //----- ODOMETRY -----\\
+    // ----- ODOMETRY -----\\
 
     private final DifferentialDriveOdometry m_odometry;
 
-    //----- CONSTRUCTOR -----\\
+    // ----- CONSTRUCTOR -----\\
     /**
      * <h3>TemplateCommand</h3>
      * 
@@ -48,30 +48,30 @@ public class TemplateCommand extends AutoBase {
         // initializing gyro for pose2d
         m_odometry = driveSubsystem.getOdometry();
 
-        //----- TRAJECTORIES -----\\
+        // ----- TRAJECTORIES -----\\
+        // Reads path file and puts it into a command for the robot to run
+        
         this.addTrajectory(m_initialTrajectory);
 
-        //----- RAMSETE COMMANDS -----\\
+        // ----- RAMSETE COMMANDS -----\\
         // Creates a command that can be added to the command scheduler in the
         // sequential command
 
         // Creates RAMSETE Command for first trajectory
         Ramsete930Command r_nameYourTrajectoryHere = new Ramsete930Command(
-            m_initialTrajectory,
-            () -> m_odometry.getPoseMeters(),
-            new RamseteController(RAMSETE_B, RAMSETE_ZETA),
-            driveSubsystem.getKinematics(),
-            driveSubsystem::getWheelSpeeds,
-            (Double leftVoltage, Double rightVoltage) -> driveSubsystem.setVoltages(leftVoltage, rightVoltage),
-            driveSubsystem
-        );
+                m_initialTrajectory,
+                () -> m_odometry.getPoseMeters(),
+                new RamseteController(RAMSETE_B, RAMSETE_ZETA),
+                driveSubsystem.getKinematics(),
+                driveSubsystem::getWheelSpeeds,
+                (Double leftVoltage, Double rightVoltage) -> driveSubsystem.setVoltages(leftVoltage, rightVoltage),
+                driveSubsystem);
 
-        //----- AUTO SEQUENCE -----\\
+        // ----- AUTO SEQUENCE -----\\
 
         addCommands(
-            r_nameYourTrajectoryHere,
-            new StopDrive(driveSubsystem)
-        );
+                r_nameYourTrajectoryHere,
+                new StopDrive(driveSubsystem));
 
     } // End of Constructor
 } // End of Class

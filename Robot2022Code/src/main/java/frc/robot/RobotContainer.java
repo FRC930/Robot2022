@@ -88,6 +88,7 @@ public class RobotContainer {
 
     // Intake Motor Subsystem
     private final IntakeMotorSubsystem m_intakeMotorSubsystem;
+
     // Intake Piston Subsystem
     private final IntakePistonSubsystem m_intakePistonSubsystem;
 
@@ -104,6 +105,7 @@ public class RobotContainer {
 
     // Drive Subsystem
     private final DriveSubsystem m_driveSubsystem;
+
     // Drive Command
     private final DriveCommand m_driveCommand;
 
@@ -111,22 +113,27 @@ public class RobotContainer {
 
     // Drivetrain Shifter Subsystem
     private final ShifterSubsystem m_shifterSubsystem;
+
     // Drivetrain Shifter Command
     private final ToggleShifterCommand m_toggleShifterCommand;
 
     //----- SHOOTER -----\\
 
-    // Indexer subsystem
+    // Indexer Subsystem
     private final IndexerMotorSubsystem m_indexerMotorSubsystem;
-    // Shooter subsystems
+
+    // Shooter Subsystems
     private final ShooterSubsystem m_shooterSubsystem;
     private final ShooterHoodSubsystem m_shooterHoodSubsystem;
 
+    // Shooter Command
     private final ShootCargoCommand m_shootCargoCommand;
 
+    // Indexer Commands
     private final IndexerMotorCommand m_indexerMotorForwardCommand;
     private final IndexerMotorCommand m_indexerMotorReverseCommand;
 
+    // Shoot Sequence Command Group
     private final SequentialCommandGroup m_teleopShootSequence;
 
     //----- ENDGAME -----\\
@@ -147,25 +154,30 @@ public class RobotContainer {
 
     //----- LEDS -----\\
 
-    // LED commands
-
+    // LED Subsystem
     private final LEDSubsystem m_LEDSubsystem;
 
+    // LED Pattern Commands
     private final LEDCommand m_autonPatternCommand;
     private final LEDCommand m_idlePatternCommand;
     private final LEDCommand m_endgamePatternCommand;
 
     //----- AUTONOMOUS -----\\
 
+    // Auto Command Manager
     private final AutoCommandManager m_autoManager;
 
     //----- VISION -----\\
 
+    // Driver Camera
     UsbCamera m_driverCamera = new UsbCamera("Driver Camera", 0);
+
+    // This will provide a camera stream that shuffleboard can read
     MjpegServer m_mjpegServer = new MjpegServer("Drive Camera Stream", "", 1185);
 
     //----- PRESSURE MANAGEMENT -----\\
 
+    // Creates air pressure for pistons to work
     private final Compressor compressor = new Compressor(PneumaticsModuleType.REVPH);
 
     //----- CONSTRUCTOR -----\\
@@ -220,11 +232,7 @@ public class RobotContainer {
         m_endgamePiston3 = new EndgamePistonSubsystem(10);
         m_endgamePiston4 = new EndgamePistonSubsystem(11);
 
-        /*
-         * -----------------------------------------------------------------------------
-         * CONSTRUCT COMMAND MANAGER
-         * -----------------------------------------------------------------------------
-         */
+        //----- AUTONOMOUS COMMAND MANAGER INIT -----\\
 
         m_autoManager = new AutoCommandManager();
         m_autoManager.addSubsystem(subNames.DriveSubsystem, m_driveSubsystem);
@@ -234,11 +242,7 @@ public class RobotContainer {
         m_autoManager.addSubsystem(subNames.ShooterHoodSubsystem, m_shooterHoodSubsystem);
         m_autoManager.addSubsystem(subNames.IndexerMotorSubsystem, m_indexerMotorSubsystem);
 
-        /*
-         * -----------------------------------------------------------------------------
-         * SENSOR SINGLETON INITIALIZATIONS
-         * -----------------------------------------------------------------------------
-         */
+        //----- SENSOR UTILITY INITS -----\\
 
         // Create instance for sensor singletons-needed for simulation to work properly.
         BallSensorUtility.getInstance();
@@ -256,10 +260,11 @@ public class RobotContainer {
 
         //----- INTAKE COMMAND INITS -----\\
         
-        // Intake Motor Commandss
+        // Intake Motor Commands
         m_runIntakeMotorsCommand = new RunIntakeMotorsCommand(m_intakeMotorSubsystem, false);
         m_reverseIntakeMotorsCommand = new RunIntakeMotorsCommand(m_intakeMotorSubsystem, true);
         m_stopIntakeMotorsCommand = new StopIntakeMotorsCommand(m_intakeMotorSubsystem);
+
         // Intake Piston Commands
         m_engageIntakePistonsCommand = new EngageIntakePistonsCommand(m_intakePistonSubsystem);
         m_disengageIntakePistonsCommand = new DisengageIntakePistonsCommand(m_intakePistonSubsystem);
@@ -289,7 +294,7 @@ public class RobotContainer {
             new ShootCargoCommand(
                 m_shooterSubsystem, 
                 m_indexerMotorSubsystem
-            ).withTimeout(ShootCargoCommand.SHOOT_TIME)
+            ).withTimeout(ShootCargoCommand.TELEOP_SHOOT_TIME)
         );
 
         //----- ENDGAME COMMAND INITS -----\\
@@ -309,6 +314,8 @@ public class RobotContainer {
 
         //----- SETTING BALL COLOR -----\\
 
+        // If the alliance color is blue on the driver station, set the ball color to blue
+        // Else set the ball color to red
         if (DriverStation.getAlliance() == Alliance.Blue) {
             DriveCameraUtility.getInstance().setBallColor(BallColor.BLUE);
         } else {
@@ -342,15 +349,15 @@ public class RobotContainer {
         scheduler.setDefaultCommand(m_intakePistonSubsystem, m_disengageIntakePistonsCommand);
 
         // ENDGAME DEFAULTS
-        // scheduler.setDefaultCommand(endgameMotorSubsystem, new
-        // EndgameRotateHorizonalCommand(endgameMotorSubsystem)); // -GET ENCODER
-        // WORKING
         scheduler.setDefaultCommand(m_endgamePiston1, new EndgameCloseClawCommand(m_endgamePiston1));
         scheduler.setDefaultCommand(m_endgamePiston2, new EndgameCloseClawCommand(m_endgamePiston2));
         scheduler.setDefaultCommand(m_endgamePiston3, new EndgameCloseClawCommand(m_endgamePiston3));
         scheduler.setDefaultCommand(m_endgamePiston4, new EndgameCloseClawCommand(m_endgamePiston4));
         scheduler.setDefaultCommand(m_indexerMotorSubsystem, m_indexerMotorForwardCommand);
 
+        // Sets the minimum and maximum pressure for the pneumatics system
+        // When the system is beneath the minimum psi, the compressor turns on
+        // When the system is above the maximu psi, the compressor turns off
         compressor.enableAnalog(100, 115);
         System.out.println("COMPRESSOR VALUE: " + compressor.getPressure());
     }
@@ -371,27 +378,29 @@ public class RobotContainer {
             m_toggleShifterCommand
         );
 
+        // Performs the shoot sequence when the left bumper is pressed
         m_driverController.getLeftBumper().whileActiveOnce(
             m_teleopShootSequence
         );
 
+        // Shoots without changing hood or shooter speeds when the right bumper is pressed
         m_driverController.getRightBumper().whileActiveOnce(
             m_shootCargoCommand
         );
 
         //----- CODRIVER CONTROLLER -----\\
 
-        // Checks if LB is pressed, then it will engage the intake pistons
+        // Engages the intake pistons when the left bumper is pressed
         m_codriverController.getLeftBumper().whileActiveOnce(
             m_engageIntakePistonsCommand
         );
 
-        // Checks if LB is pressed and B isn't pressed, then it will run intake
+        // Runs the intake motors if the left bumper is pressed and the B button isn't pressed
         m_codriverController.getLeftBumper().and(m_codriverController.getBButton().negate()).whileActiveOnce(
             m_runIntakeMotorsCommand
         );
 
-        // Checks if LB and B is pressed, then it will reverse the intake
+        // Runs the intake motors in reverse if the left bumper and B button are pressed
         m_codriverController.getLeftBumper().and(m_codriverController.getBButton()).whileActiveOnce(
             new ParallelCommandGroup(
                 m_reverseIntakeMotorsCommand,
@@ -399,6 +408,7 @@ public class RobotContainer {
             )
         );
 
+        // Performs the shoot sequence when the right bumper is pressed
         m_codriverController.getRightBumper().whileActiveOnce(
             m_teleopShootSequence
         );
@@ -413,6 +423,7 @@ public class RobotContainer {
             m_endgameArmRevCommand
         );
 
+        // Tarmac hood angle and shooter motor speed
         m_codriverController.getPOVLeftTrigger().whileActiveOnce(
             new ParallelCommandGroup(
                 new AdjustHoodCommand(
@@ -428,21 +439,23 @@ public class RobotContainer {
             ).withTimeout(0.1)
         );
 
+        // Launchpad hood angle and shooter motor speed
         m_codriverController.getPOVUpTrigger().whileActiveOnce(
             new ParallelCommandGroup(
                 new AdjustHoodCommand(
                     m_shooterHoodSubsystem,
-                    ShooterUtility.calculateHoodPos(17)
+                    ShooterUtility.calculateHoodPos(14.5)
                 ),
                 new ShootCargoCommand(
                     m_shooterSubsystem, 
                     m_indexerMotorSubsystem,
-                    ShooterUtility.calculateTopSpeed(17),
-                    ShooterUtility.calculateBottomSpeed(17)
+                    ShooterUtility.calculateTopSpeed(14.5),
+                    ShooterUtility.calculateBottomSpeed(14.5)
                 )
             ).withTimeout(0.1)
         );
 
+        // Fender shot hood angle and shooter motor speed
         m_codriverController.getPOVDownTrigger().whileActiveOnce(
             new ParallelCommandGroup(
                 new AdjustHoodCommand(
@@ -458,6 +471,7 @@ public class RobotContainer {
             ).withTimeout(0.1)
         );
 
+        // Initiates the endgame sequence when the start button is pressed
         m_codriverController.getStartButton().whileActiveOnce(
             new SequentialCommandGroup(
                 new AdjustHoodCommand(
@@ -473,25 +487,12 @@ public class RobotContainer {
                 )
             )
         );
-        // .whenInactive(new InstantCommand(() -> {
-        //     PhotonVisionUtility.getInstance().getHubTrackingCamera().setLED(VisionLEDMode.kOn);
-        // }));
 
+        // Resets the endgame to its starting position
         m_codriverController.getBackButton().whileActiveOnce(
             new SequentialCommandGroup(
                 new InstantCommand(m_endgameManagerCommand::resetState, m_endgameMotorSubsystem),
                 new EndgameRotateArmCommand(m_endgameMotorSubsystem, EndgamePosition.ResetPosition)));
-
-        /*
-         * codriverController.getXButton().whileActiveOnce(new
-         * InstantCommand(shooterHoodSubsystem::setSlowSpeed, shooterHoodSubsystem));
-         * codriverController.getXButton().negate().whileActiveOnce(new
-         * InstantCommand(shooterHoodSubsystem::stopHood, shooterHoodSubsystem));
-         * codriverController.getBButton().whileActiveOnce(new
-         * InstantCommand(shooterHoodSubsystem::setSlowRevSpeed, shooterHoodSubsystem));
-         * codriverController.getBButton().negate().whileActiveOnce(new
-         * InstantCommand(shooterHoodSubsystem::stopHood, shooterHoodSubsystem));
-         */
     }
 
     /**
@@ -521,13 +522,13 @@ public class RobotContainer {
 
         // Set the video mode for the camera. This will tell the camera that we want a
         // color stream with resolution 160x120
-        m_driverCamera.setVideoMode(PixelFormat.kMJPEG, 160, 120, 30);
+        m_driverCamera.setVideoMode(PixelFormat.kMJPEG, 160, 120, 15);
 
         // Set the source of the stream to the USB camera
         m_mjpegServer.setSource(m_driverCamera);
         // Set the compression. This gives us an OK quality stream while not chewing
         // bandwidth
-        m_mjpegServer.setCompression(37);
+        m_mjpegServer.setCompression(70);
 
         // Get the network table instance
         var currentNTInstance = NetworkTableInstance.getDefault();
@@ -584,6 +585,7 @@ public class RobotContainer {
         // NEED REFOLLOW TO KEEP MASTER-SLAVE PAIR WORKING
         m_endgameMotorSubsystem.refollowEndgameMotors();
         
+        // While left bumper is pressed, buttons below are used to check endgame claw responses
         if (m_driverController.getLeftBumper().get()) {
             if (m_driverController.getYButton().get()) {
                 m_endgamePiston1.open();
@@ -605,11 +607,17 @@ public class RobotContainer {
             } else {
                 m_endgamePiston4.closed();
             }
+
         } else {
+            // Moves the endgame forward at 0.2 speed
             if (m_driverController.getYButton().get()) {
                 m_endgameMotorSubsystem.setMotorSpeed(0.2);
+
+            // Moves the endgame backward at -0.2 speed
             } else if (m_driverController.getAButton().get()) {
                 m_endgameMotorSubsystem.setMotorSpeed(-0.2);
+            
+            // Sets the endgame motor speed to 0.0 to stop it from moving while Y or A aren't pressed
             } else {
                 m_endgameMotorSubsystem.setMotorSpeed(0.0);
             }

@@ -17,7 +17,7 @@ import frc.robot.subsystems.EndgameMotorSubsystem;
 /**
  * <h3>EndgameRotateVerticalCommand</h3>
  * 
- * Rotates the endgame arm to engage the Mid bar.
+ * Rotates the endgame arm to preset positions.
  */
 public class EndgameRotateArmCommand extends CommandBase {
 
@@ -64,7 +64,7 @@ public class EndgameRotateArmCommand extends CommandBase {
     return Math.abs(m_MotorSubsystem.getArmRotation() - target) < DEADBAND;
   }
 
-  @Override
+  @Override // Stops the endgame motors
   public void end(boolean interrupted) {
     m_MotorSubsystem.setMotorSpeed(0.0);
   }

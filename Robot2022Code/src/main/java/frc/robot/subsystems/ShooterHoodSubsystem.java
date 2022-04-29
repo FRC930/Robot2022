@@ -54,39 +54,28 @@ public class ShooterHoodSubsystem extends SubsystemBase {
         // Motor declaration
         hoodMotor = new WPI_TalonFX(hoodMotorID);
 
-        // Config object for all config values
+        // Configuration for all of the talon motors set to config obj
         TalonFXConfiguration config = new TalonFXConfiguration();
 
         // Set PID values
         config.slot0.kP = MOTOR_KP;
         config.slot0.kD = MOTOR_KD;
-        // hoodMotor.config_kP(0, MOTOR_KP);
-        // hoodMotor.config_kD(0, MOTOR_KD);
 
         // Allow encoder deadband to prevent oscillation
         config.slot0.allowableClosedloopError = 25;
-        // hoodMotor.configAllowableClosedloopError(0, 25);
 
         // Set current and voltage control for brake mode
         config.statorCurrLimit = new StatorCurrentLimitConfiguration(true, 30, 30, 0.0);
         config.statorCurrLimit.enable = true;
-        // hoodMotor.configStatorCurrentLimit(
-        // new StatorCurrentLimitConfiguration(true, 30, 30, 0.0));
         config.voltageCompSaturation = 9.0;
-        // hoodMotor.configVoltageCompSaturation(9.0);
 
         // Sets encoder limits so the hood can't break itself by going too far
         config.forwardSoftLimitThreshold = ((HOOD_MAX_POSITION / 360.0) * TALON_CPR / GEAR_RATIO);
         config.reverseSoftLimitThreshold = 250;
         config.forwardSoftLimitEnable = true;
         config.reverseSoftLimitEnable = true;
-        // hoodMotor.configForwardSoftLimitThreshold((HOOD_MAX_POSITION / 360.0) *
-        // TALON_CPR / GEAR_RATIO, 0);
-        // hoodMotor.configReverseSoftLimitThreshold(250, 0);
-        // hoodMotor.configForwardSoftLimitEnable(true, 0);
-        // hoodMotor.configReverseSoftLimitEnable(true, 0);
 
-        // Sets motor so it can't be manually moved when neutral
+        // Sets motor so it can't be manually moved when not being used
         hoodMotor.setNeutralMode(NeutralMode.Brake);
 
         // Motor is not inverted
@@ -117,18 +106,6 @@ public class ShooterHoodSubsystem extends SubsystemBase {
         hoodMotor.set(ControlMode.Position, (angle / 360.0) * TALON_CPR / GEAR_RATIO,
                 DemandType.ArbitraryFeedForward, 0.06);
     }
-
-    /*public void stopHood() {
-        hoodMotor.set(ControlMode.PercentOutput, 0);
-    }
-
-    public void setSlowSpeed() {
-        hoodMotor.set(ControlMode.PercentOutput, 0.1);
-    }
-
-    public void setSlowRevSpeed() {
-        hoodMotor.set(ControlMode.PercentOutput, -0.1);
-    }*/
 
     /**
      * <h3>getHoodPosition</h3>
