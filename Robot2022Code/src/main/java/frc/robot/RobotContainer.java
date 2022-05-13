@@ -388,6 +388,22 @@ public class RobotContainer {
             m_shootCargoCommand
         );
 
+        // Safety Shot(Demo settings)
+        m_driverController.getLeftTrigger().whileActiveOnce(
+            new ParallelCommandGroup(
+                new AdjustHoodCommand(
+                    m_shooterHoodSubsystem,
+                    ShooterUtility.calculateHoodPos(2)
+                ),
+                new ShootCargoCommand(
+                    m_shooterSubsystem, 
+                    m_indexerMotorSubsystem,
+                    ShooterUtility.calculateTopSpeed(2),
+                    ShooterUtility.calculateBottomSpeed(2)
+                )
+            ).withTimeout(0.1)
+        );
+
         //----- CODRIVER CONTROLLER -----\\
 
         // Engages the intake pistons when the left bumper is pressed
