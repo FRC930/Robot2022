@@ -401,7 +401,7 @@ public class RobotContainer {
                     ShooterUtility.calculateTopSpeed(2),
                     ShooterUtility.calculateBottomSpeed(2)
                 )
-            ).withTimeout(0.1)
+            ).withTimeout(6)
         );
 
         //----- CODRIVER CONTROLLER -----\\
