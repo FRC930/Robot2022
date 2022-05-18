@@ -390,18 +390,12 @@ public class RobotContainer {
 
         // Safety Shot(Demo settings)
         m_driverController.getLeftTrigger().whileActiveOnce(
-            new ParallelCommandGroup(
-                new AdjustHoodCommand(
-                    m_shooterHoodSubsystem,
-                    ShooterUtility.calculateHoodPos(2)
-                ),
-                new ShootCargoCommand(
-                    m_shooterSubsystem, 
-                    m_indexerMotorSubsystem,
-                    ShooterUtility.calculateTopSpeed(2),
-                    ShooterUtility.calculateBottomSpeed(2)
-                )
-            ).withTimeout(6)
+            new ShootCargoCommand(
+                m_shooterSubsystem, 
+                m_indexerMotorSubsystem,
+                ShooterUtility.calculateTopSpeed(2),
+                ShooterUtility.calculateBottomSpeed(2)
+            )
         );
 
         //----- CODRIVER CONTROLLER -----\\
