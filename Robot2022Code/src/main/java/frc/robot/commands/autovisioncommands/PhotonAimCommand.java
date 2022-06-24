@@ -34,7 +34,7 @@ public class PhotonAimCommand extends CommandBase {
     public static final double YAW_DEADBAND = 2;
 
     // The height of the camera
-    private final double CAMERA_HEIGHT_METERS = Units.inchesToMeters(48);
+    private final double CAMERA_HEIGHT_METERS = Units.inchesToMeters(26.8);
     // The height of the hub
     private final double HUB_HEIGHT_METERS = Units.inchesToMeters(104);
 
@@ -42,7 +42,7 @@ public class PhotonAimCommand extends CommandBase {
     private final double HEIGHT_DIFFERENCE_METERS = HUB_HEIGHT_METERS - CAMERA_HEIGHT_METERS;
 
     // The pitch of the camera (from ground normal)
-    private final double CAMERA_PITCH_RADIANS = Units.degreesToRadians(20.0);
+    private final double CAMERA_PITCH_RADIANS = Units.degreesToRadians(34.0);
 
     private final double ANGULAR_P = 0.42;
     private final double ANGULAR_I = 0.01;
