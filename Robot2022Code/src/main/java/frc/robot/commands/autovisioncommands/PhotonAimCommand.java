@@ -134,13 +134,9 @@ public class PhotonAimCommand extends CommandBase {
 
             // Use the PhotonUtils library to calcluate the distance from the target
             double range = PhotonUtils.calculateDistanceToTargetMeters(CAMERA_HEIGHT_METERS, HUB_HEIGHT_METERS,
-                    CAMERA_PITCH_RADIANS, Units.degreesToRadians(m_smoothingStack.getAveragePitch()));
-
-            // Use some pythagoras to calculate the horizontal distance to the hub
-            range = Math.sqrt(Math.pow(range, 2) - Math.pow(HEIGHT_DIFFERENCE_METERS, 2))
-                    // Adjusted to measure from front of the robot to hub stand wall.
-                    // This distance is in meters ~43.307 inches
-                    - 0.2;
+                    CAMERA_PITCH_RADIANS, Units.degreesToRadians(m_smoothingStack.getAveragePitch()))
+                    // Offset adjustment for distance math
+                    + Units.inchesToMeters(4);
 
             ShuffleboardUtility.getInstance().putToShuffleboard(ShuffleboardUtility.driverTab,
                     ShuffleboardKeys.DISTANCE_FROM_GOAL, new ShuffleBoardData<Double>(range));
