@@ -129,6 +129,12 @@ public class PhotonVisionUtility {
                     // We need to unzip the files to a temporary directory, so we can create a file
                     // object that points to this directory, in this case CWD/settings_unzipped
                     File destDir = new File(TEMPORARY_UNZIP_LOCATION);
+
+                    // Ensure that the file export location does not exist already
+                    if (destDir.exists()) {
+                        destDir.delete();
+                    }
+
                     // The buffer that will hold the zip file as we are unzipping it
                     byte[] buffer = new byte[1024];
                     // A zip input stream is a file stream that can read zip files
