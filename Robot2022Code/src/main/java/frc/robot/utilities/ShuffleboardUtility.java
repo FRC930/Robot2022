@@ -302,6 +302,7 @@ public class ShuffleboardUtility {
         ENDGAME_SENSOR3("Endgame Sensor 3"),
         ENDGAME_SENSOR4("Endgame Sensor 4"),
         ENDGAME_ENCODER("Endgame Encoder"),
+        ENDGAME_STATE("Endgame State"),
 
         // DRIVE TRAIN
         LEFT_SPEED("Speed of left drivetrain"),

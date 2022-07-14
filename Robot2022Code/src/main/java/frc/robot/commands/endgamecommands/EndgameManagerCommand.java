@@ -25,6 +25,9 @@ import frc.robot.commands.endgamecommands.EndgameRotateArmCommand.EndgamePositio
 import frc.robot.subsystems.EndgameMotorSubsystem;
 import frc.robot.subsystems.EndgamePistonSubsystem;
 import frc.robot.subsystems.IndexerMotorSubsystem;
+import frc.robot.utilities.ShuffleboardUtility;
+import frc.robot.utilities.ShuffleboardUtility.ShuffleBoardData;
+import frc.robot.utilities.ShuffleboardUtility.ShuffleboardKeys;
 
 //-------- COMMAND CLASS --------\\
 /**
@@ -212,6 +215,7 @@ public class EndgameManagerCommand extends CommandBase {
             CommandScheduler.getInstance().schedule(commands.get(newState));
             currentState = newState;
         }
+        ShuffleboardUtility.getInstance().putToShuffleboard(ShuffleboardUtility.driverTab, ShuffleboardKeys.ENDGAME_STATE, new ShuffleBoardData<Integer>(currentState));
     }
 
     /**
