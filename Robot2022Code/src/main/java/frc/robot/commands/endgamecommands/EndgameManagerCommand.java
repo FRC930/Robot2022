@@ -12,6 +12,7 @@ package frc.robot.commands.endgamecommands;
 import java.util.HashMap;
 
 import edu.wpi.first.wpilibj.Compressor;
+import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
@@ -55,6 +56,11 @@ public class EndgameManagerCommand extends CommandBase {
     // Compressor object to disable
     private Compressor m_compressor;
 
+    private EndgamePistonSubsystem endgamePiston1;
+    private EndgamePistonSubsystem endgamePiston2;
+    private EndgamePistonSubsystem endgamePiston3;
+    private EndgamePistonSubsystem endgamePiston4;
+
     // -------- CONSTRUCTOR --------\\
     /**
      * <h3>EndgameManagerCommand</h3>
@@ -73,6 +79,11 @@ public class EndgameManagerCommand extends CommandBase {
             EndgamePistonSubsystem endgamePiston2, EndgamePistonSubsystem endgamePiston3,
             EndgamePistonSubsystem endgamePiston4, IndexerMotorSubsystem indexerMotorSubsystem,
             Compressor compressor) {
+
+        this.endgamePiston1 = endgamePiston1;
+        this.endgamePiston2 = endgamePiston2;
+        this.endgamePiston3 = endgamePiston3;
+        this.endgamePiston4 = endgamePiston4;
 
         // ----- ENDGAME COMMAND GROUP INITS -----\\
 
@@ -120,7 +131,7 @@ public class EndgameManagerCommand extends CommandBase {
         
         // resets the position of the endagame arms
         commands.put(4,  new SequentialCommandGroup(
-                new EndgameRotateArmCommand(endgameMotorSubsystem, EndgamePosition.ResetPosition),
+                new EndgameRotateArmCommand(endgameMotorSubsystem, EndgamePosition.BalancePosition),
                 new EndgameIncrementStateCommand(this)
         ));
 
@@ -216,6 +227,8 @@ public class EndgameManagerCommand extends CommandBase {
             currentState = newState;
         }
         ShuffleboardUtility.getInstance().putToShuffleboard(ShuffleboardUtility.driverTab, ShuffleboardKeys.ENDGAME_STATE, new ShuffleBoardData<Integer>(currentState));
+        System.out.println("1: " + endgamePiston1.isOpen() + " 2: " + endgamePiston2.isOpen() 
+        + " 3: " + endgamePiston3.isOpen() + " 4: " + endgamePiston4.isOpen());
     }
 
     /**

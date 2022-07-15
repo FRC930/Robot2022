@@ -25,6 +25,7 @@ public class EndgameRotateArmCommand extends CommandBase {
 
   private final double APPROACH_POSITION = -0.25;
   private final double RESET_POSITION = 0;
+  private final double BALANCE_POSITION = 0.15;
   private final double DEADBAND = 0.025;
 
   // -------- VARIABLES --------\\
@@ -46,6 +47,8 @@ public class EndgameRotateArmCommand extends CommandBase {
       target = APPROACH_POSITION;
     } else if (position == EndgamePosition.ResetPosition) {
       target = RESET_POSITION;
+    } else if (position == EndgamePosition.BalancePosition) {
+      target = BALANCE_POSITION; 
     } else {
       target = 0;
     }
@@ -71,7 +74,7 @@ public class EndgameRotateArmCommand extends CommandBase {
 
   // Enum for endgame positions
   public static enum EndgamePosition {
-    ApproachPosition, ResetPosition;
+    ApproachPosition, BalancePosition, ResetPosition;
   }
 
 } // End of class EndgameRotateVerticalCommand
