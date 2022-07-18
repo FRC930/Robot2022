@@ -30,7 +30,7 @@ public class ShootCargoCommand extends CommandBase {
 
     public static final double TELEOP_SHOOT_TIME = 5.0;
     // Number of cycles to wait before sending balls into shooter. (Cycles = time(in seconds) / 0.02)
-    private final int INDEXER_DELAY = 20;
+    private final int INDEXER_DELAY = 15;//20;
 
     // -----VARIABLES----\\
 
@@ -122,7 +122,7 @@ public class ShootCargoCommand extends CommandBase {
         // Increments the counter every 20 ms
         counter++;
         // Waits for delay before activating indexer system
-        if (counter == INDEXER_DELAY) {
+        if (counter >= INDEXER_DELAY) {
             indexerSubsystem.setStagedMotorSpeed(1.0);
             indexerSubsystem.setLoadedMotorSpeed(1.0);
         }

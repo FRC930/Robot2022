@@ -144,7 +144,7 @@ public class EndgameManagerCommand extends CommandBase {
                                 new EndgameOpenClawCommand(endgamePiston4)),
                         // this wait since next step is to
                         // step for detecting the bar
-                        new WaitCommand(0.25),
+                        new WaitCommand(3.25),
                         new EndgameIncrementStateCommand(this)));
 
         // Opens #3 claw and closes #4

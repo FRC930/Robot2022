@@ -55,7 +55,7 @@ public class DriveCommand extends CommandBase {
         driveStick = () -> -deadbandCube(driverController.getLeftY() * 0.85)
                 * DriveSubsystem.DRIVETRAIN_MAX_FREE_SPEED_HIGH;
         // The right joystick controls the rotation of the drivetrain
-        rotationStick = () -> -deadbandCube(driverController.getRightX()) * DriveSubsystem.MAX_ANGULAR_SPEED;
+        rotationStick = () -> -deadbandCube(driverController.getRightX()) * DriveSubsystem.MAX_ANGULAR_SPEED * 1.1;
 
         addRequirements(driveSubsystem);
     }

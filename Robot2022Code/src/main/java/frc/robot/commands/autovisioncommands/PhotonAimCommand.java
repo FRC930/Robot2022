@@ -136,7 +136,7 @@ public class PhotonAimCommand extends CommandBase {
             double range = PhotonUtils.calculateDistanceToTargetMeters(CAMERA_HEIGHT_METERS, HUB_HEIGHT_METERS,
                     CAMERA_PITCH_RADIANS, Units.degreesToRadians(m_smoothingStack.getAveragePitch()))
                     // Offset adjustment for distance math
-                    + Units.inchesToMeters(4);
+                    + Units.inchesToMeters(3.5);
 
             ShuffleboardUtility.getInstance().putToShuffleboard(ShuffleboardUtility.driverTab,
                     ShuffleboardKeys.DISTANCE_FROM_GOAL, new ShuffleBoardData<Double>(range));
@@ -218,6 +218,7 @@ public class PhotonAimCommand extends CommandBase {
 
     @Override
     public boolean isFinished() {
-        return cyclesAimed > 4;
+        return cyclesAimed > 2;//4;
+        //how many time is has to find a target
     }
 }
