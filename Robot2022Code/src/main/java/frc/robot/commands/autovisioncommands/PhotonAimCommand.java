@@ -13,7 +13,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.DriveSubsystem;
-import frc.robot.utilities.PhotonVisionUtility;
+import frc.robot.utilities.PhotonVisionUtilityUltimate;
 import frc.robot.utilities.ShooterUtility;
 import frc.robot.utilities.ShuffleboardUtility;
 import frc.robot.utilities.ShuffleboardUtility.ShuffleBoardData;
@@ -52,7 +52,7 @@ public class PhotonAimCommand extends CommandBase {
 
     private PIDController m_turnController = new PIDController(ANGULAR_P, ANGULAR_I, ANGULAR_D);
 
-    protected PhotonCamera m_hubCamera = PhotonVisionUtility.getInstance().getHubTrackingCamera();
+    protected PhotonCamera m_hubCamera = PhotonVisionUtilityUltimate.getInstance().getHubTrackingCamera();
     private DriveSubsystem m_driveSubsystem;
 
     private int cyclesAimed = 0;
@@ -110,8 +110,8 @@ public class PhotonAimCommand extends CommandBase {
 
         // Set the pipeline on the camera to be whatever the user has selected on
         // shuffleboard
-        PhotonVisionUtility.getInstance()
-                .setPiCameraPipeline(ShuffleboardUtility.getInstance().getSelectedPipelineChooser());
+        //PhotonVisionUtilityUltimate.getInstance()
+        //        .setPiCameraPipeline(ShuffleboardUtility.getInstance().getSelectedPipelineChooser());
 
         m_hubCamera.setLED(VisionLEDMode.kOn);
     }
