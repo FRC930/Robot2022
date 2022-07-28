@@ -124,7 +124,7 @@ public class ShuffleboardUtility {
                 writer.write(Integer.toString(pipelineMap.get(pipelineName)));
                 writer.close();
 
-                PhotonVisionUtility.getInstance().setPiCameraPipeline(pipelineMap.get(pipelineName));
+                //PhotonVisionUtility.getInstance().setPiCameraPipeline(pipelineMap.get(pipelineName));
             } catch (IOException e) {
             }
         }, EntryListenerFlags.kUpdate);

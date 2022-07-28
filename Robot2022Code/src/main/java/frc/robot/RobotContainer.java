@@ -60,7 +60,7 @@ import frc.robot.utilities.BallSensorUtility;
 import frc.robot.utilities.DriveCameraUtility;
 import frc.robot.utilities.DriveCameraUtility.BallColor;
 import frc.robot.utilities.EndgameSensorUtility;
-import frc.robot.utilities.PhotonVisionUtility;
+import frc.robot.utilities.PhotonVisionUtilityUltimate;
 import frc.robot.utilities.ShooterUtility;
 
 //----- CLASS -----\\
@@ -489,7 +489,7 @@ public class RobotContainer {
                     -1
                 ),
                 new InstantCommand(() -> {
-                    PhotonVisionUtility.getInstance().getHubTrackingCamera().setDriverMode(true);
+                    PhotonVisionUtilityUltimate.getInstance().getHubTrackingCamera().setDriverMode(true);
                 }),
                 new ParallelCommandGroup(
                     m_endgameManagerCommand, 
@@ -520,7 +520,7 @@ public class RobotContainer {
 
         rescheduleAutonomousLEDs(false);
 
-        PhotonVisionUtility.getInstance().setPiCameraExposure();
+        //PhotonVisionUtilityUltimate.getInstance().setPiCameraExposure();
     }
 
     /**
@@ -573,7 +573,7 @@ public class RobotContainer {
         m_driveSubsystem.setMotorBrakeMode(NeutralMode.Brake);
         rescheduleAutonomousLEDs(true);
 
-        PhotonVisionUtility.getInstance().setPiCameraExposure();
+        //PhotonVisionUtilityUltimate.getInstance().setPiCameraExposure();
     }
 
     /**
