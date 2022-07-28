@@ -409,7 +409,7 @@ public class PhotonVisionUtility {
             LinkedHashMap<String, Object> exposureValueMap = new LinkedHashMap<>();
             // Set the exposure to the target plus 0.1. This will simulate clicking the up
             // arrow on the web interface.
-            exposureValueMap.put("cameraExposure", (double) (exposureValues.get(currentPipeline).second() + 0.1));
+                //exposureValueMap.put("cameraExposure", (double) (exposureValues.get(currentPipeline).second() + 0.1));
             exposureValueMap.put("cameraIndex", PI_CAMERA_INDEX);
             // Put the exposure values (and camera index) into the exposure toggle map to
             // send to photon
@@ -425,7 +425,7 @@ public class PhotonVisionUtility {
 
             // Change the exposure to the target. This simulates pressing the down arrow on
             // the web interface
-            exposureValueMap.put("cameraExposure", (double) (exposureValues.get(currentPipeline).second()));
+                //exposureValueMap.put("cameraExposure", (double) (exposureValues.get(currentPipeline).second()));
 
             // Convert and send data again
             convertedMap = objectMapper.writeValueAsBytes(exposureToggleMap);

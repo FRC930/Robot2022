@@ -35,7 +35,7 @@ public class TaxiTwoBall extends AutoBase {
     private final static double MAX_ACCELERATION = 1.0;
 
     // Distance To The Center of The Hub
-    private double SHOT_DISTANCE_1 = 11.62;
+    private double SHOT_DISTANCE_1 = 11;
 
     // Ramsete Controller Parameters
     private final double RAMSETE_B = 2;
